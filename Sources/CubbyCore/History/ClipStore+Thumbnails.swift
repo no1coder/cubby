@@ -17,6 +17,9 @@ extension ClipHistory {
 }
 
 extension ClipStore {
+    /// 在后台生成并写入缩略图：缩略图名、原图地址、原图引用、blob 目录；返回是否新写入了文件
+    typealias ThumbnailWriter = @concurrent @Sendable (String, URL, ImageRef, BlobStore) async -> Bool
+
     /// 启动后等这么久再回填，避开启动与搜索索引构建
     public nonisolated static let thumbnailBackfillDelay: Duration = .seconds(10)
 
@@ -73,7 +76,7 @@ extension ClipStore {
             guard !Task.isCancelled else { break }
             guard isReferenced(ref), let url = blobs.url(for: ref.name) else { continue }
             let name = ImageThumbnail.name(forImage: ref.name)
-            guard await Self.writeThumbnail(name: name, forImageAt: url, ref: ref, blobs: blobs) else { continue }
+            guard await thumbnailWriter(name, url, ref, blobs) else { continue }
             // 生成期间图片可能已被删除（其文件随之删除）：此时刚写入的缩略图没有主人，立即清理
             if isReferenced(ref) {
                 created += 1
@@ -95,7 +98,7 @@ extension ClipStore {
 
     /// 在后台线程解码原图、生成并写入缩略图（0600）；已存在、原图无法解码或写入失败时返回 false
     @concurrent
-    private nonisolated static func writeThumbnail(
+    nonisolated static func writeThumbnail(
         name: String,
         forImageAt url: URL,
         ref: ImageRef,
