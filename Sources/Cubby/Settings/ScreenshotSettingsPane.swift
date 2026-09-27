@@ -2,16 +2,28 @@ import AppKit
 import SwiftUI
 import CubbyCore
 
-/// 设置 › 通用 › 截图：截图快捷键（可关闭）、存储时是否询问位置、默认保存位置
-struct ScreenshotSettingsSection: View {
+/// 设置 › 截图：截图快捷键（可关闭）、存储时是否询问位置、默认保存位置
+struct ScreenshotSettingsPane: View {
     @Bindable var settings: AppSettings
     let onShortcutRecordingChange: (Bool) -> Void
 
     var body: some View {
-        Section {
-            LabeledContent("Screenshot shortcut") {
-                ScreenshotShortcutRecorder(settings: settings, onRecordingChange: onShortcutRecordingChange)
+        Form {
+            Section {
+                LabeledContent("Screenshot shortcut") {
+                    ScreenshotShortcutRecorder(settings: settings, onRecordingChange: onShortcutRecordingChange)
+                }
+            } header: {
+                Text("Shortcut")
             }
+
+            savingSection
+        }
+        .formStyle(.grouped)
+    }
+
+    private var savingSection: some View {
+        Section {
             LabeledContent {
                 // 与同组快捷键录制器的按钮（small）保持同一尺寸
                 HStack(spacing: 8) {
@@ -33,7 +45,7 @@ struct ScreenshotSettingsSection: View {
                 Text("Choose the folder and file name in a save dialog when you save a screenshot.")
             }
         } header: {
-            Text("Screenshots")
+            Text("Saving")
         }
     }
 

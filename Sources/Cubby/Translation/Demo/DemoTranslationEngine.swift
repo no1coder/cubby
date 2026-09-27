@@ -51,7 +51,7 @@ enum DemoTranslationLog {
 @MainActor
 final class DemoTranslationProvider: ClipTranslationProviding {
     var targetLanguage: String? = DemoTranslationTable.target
-    let selectableLanguages = TranslationLanguageCatalog.selectable(preferred: Locale.preferredLanguages)
+    let selectableLanguages = TranslationLanguageCatalog.selectable(preferred: SystemLanguages.preferred)
     private let engine: DemoTranslationEngine
 
     init(blockDelay: Duration = .milliseconds(90)) {

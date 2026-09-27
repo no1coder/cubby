@@ -135,7 +135,7 @@ Press `⇧⌘2` to freeze the screen, pick a window or an area and mark it up, t
 
 ### Start a screenshot
 
-There are three ways: press `⇧⌘2` (change or turn it off in `Settings › General › Screenshots`), choose **Take Screenshot** from the menu bar icon's menu, or click the camera button to the right of the panel's search field.
+There are three ways: press `⇧⌘2` (change or turn it off in `Settings › Screenshots`), choose **Take Screenshot** from the menu bar icon's menu, or click the camera button to the right of the panel's search field.
 
 The screen freezes right away. If the panel is open, it hides first so it's never in the picture. For your first three screenshots, a hint bar at the bottom of the screen shows what you can do. The first screenshot asks for Screen Recording (see "Getting started"). Pressing the screenshot shortcut again during a screenshot cancels it if you haven't drawn anything yet; once you have, it's ignored so a stray key press can't throw your annotations away.
 
@@ -203,7 +203,7 @@ Until you finish, annotations stay editable. In pointer mode (`V`), click an ann
 - **Pin to Screen:** press `⌘P` or click **Pin to Screen** to pin the screenshot in place at its actual size. It's also added to your history.
 - **Extract Text:** press `⌘T` or click **Extract Text**. Cubby recognizes the Chinese and English text in the selection on your Mac with Apple's Vision framework (annotations are left out), copies it in reading order and adds it to your history as text. If there's no text, you'll see "No text found".
 
-Turn off **Ask where to save each time** in `Settings › General › Screenshots` to have `⌘S` save straight to the folder in **Save screenshots to**, without a dialog. A name that already exists gets a number added, and if the folder isn't available, the file goes to your Desktop. While recording is paused, all of this still works; nothing is added to your history.
+Turn off **Ask where to save each time** in `Settings › Screenshots` to have `⌘S` save straight to the folder in **Save screenshots to**, without a dialog. A name that already exists gets a number added, and if the folder isn't available, the file goes to your Desktop. While recording is paused, all of this still works; nothing is added to your history.
 
 ### Pinned images
 
@@ -428,9 +428,9 @@ Open Settings with **Settings…** in the menu bar icon's menu, the gear button 
 
 ### General
 
+- **Language:** **Interface language** can be **System Default** (the default), **English** or **简体中文**. After you switch, click **Restart Now**; Cubby reopens and comes back to Settings. This only changes Cubby's own menus and text; automatic translation still translates into your system language. It's the same setting as Cubby's entry in `System Settings › General › Language & Region › Applications`, so you can change it in either place.
 - **Shortcut & Panel:** **Keyboard shortcut** (click it, then press a new combination that includes `⌘`, `⌥` or `⌃`; `F1` – `F12` also work on their own) and **Panel position** (**Next to the pointer**, **Below the menu bar icon** or **Center of the screen**).
 - **Pasting:** **When you choose an item** (**Paste into the current app** or **Copy to the clipboard only**) and **Paste text as** (**Original formatting** or **Plain text**; `⇧↩` uses the other one).
-- **Screenshots:** **Screenshot shortcut**, which you can change or turn **Off** (then screenshots start only from the menu bar and the panel); **Save screenshots to**, **Same as macOS screenshots** by default, with **Choose Folder…** and **Reset**; and **Ask where to save each time**, on by default. The panel shortcut and the screenshot shortcut can't be the same.
 - **Startup & Updates:** **Launch at login**, and **Check for updates weekly**, off by default, which only reads release information from GitHub.
 
 ### History
@@ -439,6 +439,11 @@ Open Settings with **Settings…** in the menu bar icon's menu, the gear button 
 - **Search text in images:** on by default. Turning it off deletes all recognized text.
 - **Items**, **Storage used** and **Data folder**; **Show in Finder** reveals the folder.
 - **Clear history:** click **Clear…** and confirm. Favorites are kept.
+
+### Screenshots
+
+- **Shortcut:** **Screenshot shortcut**, which you can change or turn **Off** (then screenshots start only from the menu bar and the panel). The panel shortcut and the screenshot shortcut can't be the same.
+- **Saving:** **Save screenshots to**, **Same as macOS screenshots** by default, with **Choose Folder…** and **Reset**; and **Ask where to save each time**, on by default.
 
 ### Translation (macOS 26)
 
@@ -515,7 +520,7 @@ If something doesn't work as expected, start here.
 ### Screenshots don't start
 
 - The first screenshot needs Screen Recording. In the **Allow Screen Recording to take screenshots** window, click **Open System Settings** and turn on Cubby. If screenshots still don't work after that, click **Quit & Reopen Cubby** in the same window.
-- The screenshot shortcut may be turned off or taken by another app; check `Settings › General › Screenshots`. You can always start a screenshot from the menu bar icon's menu or the camera button in the panel.
+- The screenshot shortcut may be turned off or taken by another app; check `Settings › Screenshots`. You can always start a screenshot from the menu bar icon's menu or the camera button in the panel.
 - If you see "Couldn't capture the screen. Check the permission prompt.", look for a macOS prompt waiting for your answer.
 
 ### macOS asks every time I copy

@@ -1,6 +1,5 @@
 import AppKit
 import SwiftUI
-import os
 
 /// 屏幕录制权限引导窗口：说明为什么需要、去哪里开启；授权后自动关闭并回调。
 /// 视觉沿用首次引导窗口（透明标题栏、强调色渐变背景、胶囊按钮）
@@ -51,7 +50,7 @@ final class ScreenRecordingGuideWindowController: NSObject, NSWindowDelegate {
     private func makeWindow() -> NSWindow {
         let rootView = ScreenRecordingGuideView(
             onOpenSettings: ScreenRecordingAuthorization.openSettings,
-            onQuitAndReopen: AppRelauncher.relaunch,
+            onQuitAndReopen: { AppRelauncher.relaunch() },
             onDismiss: { [weak self] in self?.close() },
             onGranted: { [weak self] in self?.granted() }
         )
@@ -175,48 +174,5 @@ private struct ScreenRecordingGuideView: View {
             endPoint: .center
         )
         .background(Color(nsColor: .windowBackgroundColor))
-    }
-}
-
-/// 重新打开 Cubby：先启动一个新实例，成功后再退出当前实例（macOS 授予屏幕录制后常要求重启应用才生效）
-@MainActor
-private enum AppRelauncher {
-    private static let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Screenshot")
-
-    /// 沿用本次启动的上下文，新实例与当前实例行为一致（开发时不会误用真实数据目录）
-    private static let dataDirectoryVariable = "CUBBY_DATA_DIR"
-
-    static func relaunch() {
-        let configuration = NSWorkspace.OpenConfiguration()
-        // 默认会激活正在运行的自身而不是启动新实例
-        configuration.createsNewApplicationInstance = true
-        configuration.arguments = Array(CommandLine.arguments.dropFirst())
-        if let dataDirectory = ProcessInfo.processInfo.environment[dataDirectoryVariable] {
-            configuration.environment = [dataDirectoryVariable: dataDirectory]
-        }
-        NSWorkspace.shared.openApplication(at: Bundle.main.bundleURL, configuration: configuration) { _, error in
-            let description = error.map { String(describing: $0) }
-            Task { @MainActor in
-                guard let description else {
-                    NSApp.terminate(nil)
-                    return
-                }
-                logger.error("Couldn't relaunch: \(description, privacy: .public)")
-                showFailure()
-            }
-        }
-    }
-
-    private static func showFailure() {
-        guard let anchor = HUDToast.defaultAnchor() else { return }
-        HUDToast.show(
-            String(
-                localized: "Couldn't reopen Cubby. Quit it and open it again.",
-                comment: "HUD when relaunching after granting Screen Recording fails"
-            ),
-            symbolName: "exclamationmark.triangle.fill",
-            tint: .orange,
-            at: anchor
-        )
     }
 }

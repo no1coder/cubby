@@ -36,7 +36,7 @@ struct TranslationSettingsPane: View {
                 Picker("Translate into", selection: target) {
                     Text("Automatic (follow system)").tag(String?.none)
                     Divider()
-                    ForEach(TranslationLanguageCatalog.selectable(preferred: Locale.preferredLanguages), id: \.self) {
+                    ForEach(TranslationLanguageCatalog.selectable(preferred: SystemLanguages.preferred), id: \.self) {
                         Text(verbatim: TranslationLanguageCatalog.nativeName(of: $0)).tag(Optional($0))
                     }
                 }
@@ -91,7 +91,7 @@ struct TranslationSettingsPane: View {
 
     /// 自动规则的说明，带上当前系统语言的名字（系统语言为英语时，英文原文需要在翻译条上选择目标语言）
     private var automaticTargetNote: String {
-        let system = Locale.preferredLanguages.lazy.compactMap(TranslationLanguageCatalog.normalize).first ?? "en"
+        let system = SystemLanguages.preferred.lazy.compactMap(TranslationLanguageCatalog.normalize).first ?? "en"
         let name = TranslationLanguageCatalog.localizedName(of: system)
         guard system != "en" else {
             return String(

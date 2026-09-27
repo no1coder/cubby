@@ -23,7 +23,7 @@ final class ClipTranslationService: ClipTranslating {
         settings: AppSettings,
         provider: any ClipTranslationProviding,
         recognizer: any TranslationTextRecognizing,
-        preferredLanguages: @escaping @MainActor () -> [String] = { Locale.preferredLanguages }
+        preferredLanguages: @escaping @MainActor () -> [String] = { SystemLanguages.preferred }
     ) {
         self.store = store
         self.settings = settings

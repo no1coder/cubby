@@ -18,7 +18,8 @@ enum Diagnostics {
             SigningInfo.current()?.summary
             ?? String(localized: "Unsigned", comment: "Diagnostics: code signature")
         let size = dataSize.map(DirectorySize.formatted) ?? unknown
-        let languages = Locale.preferredLanguages.prefix(3).joined(separator: ", ")
+        let languages = SystemLanguages.preferred.prefix(3).joined(separator: ", ")
+        let interfaceLanguage = Bundle.main.preferredLocalizations.first ?? unknown
 
         // 每行是「标签: 值」；布尔值与枚举原始值保持英文，便于维护者直接比对
         let lines = [
@@ -86,6 +87,7 @@ enum Diagnostics {
                 comment: "Diagnostics line. The value stays in English: on / off"
             ),
             String(localized: "System languages: \(languages)", comment: "Diagnostics line"),
+            String(localized: "Interface language: \(interfaceLanguage)", comment: "Diagnostics line"),
         ]
         return lines.joined(separator: "\n")
     }

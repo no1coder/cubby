@@ -2053,7 +2053,7 @@
       }
     },
     "Couldn't reopen Cubby. Quit it and open it again." : {
-      "comment" : "HUD when relaunching after granting Screen Recording fails",
+      "comment" : "HUD when relaunching Cubby (after granting Screen Recording or changing the language) fails",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -3087,6 +3087,27 @@
         }
       }
     },
+    "Interface language" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "界面语言"
+          }
+        }
+      }
+    },
+    "Interface language: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "界面语言：%@"
+          }
+        }
+      }
+    },
     "International" : {
       "comment" : "Translation provider endpoint region",
       "localizations" : {
@@ -3188,6 +3209,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "钥匙串访问"
+          }
+        }
+      }
+    },
+    "Language" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语言"
           }
         }
       }
@@ -3837,6 +3868,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本机、免费、离线（macOS 自带 Translation）"
+          }
+        }
+      }
+    },
+    "Only changes Cubby's own menus and text. Automatic translation still translates into your system language." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只改变 Cubby 自身的菜单和文字，自动翻译仍译为系统语言。"
           }
         }
       }
@@ -4920,6 +4961,16 @@
         }
       }
     },
+    "Restart Now" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "立即重新打开"
+          }
+        }
+      }
+    },
     "Restore default (%@)" : {
       "localizations" : {
         "zh-Hans" : {
@@ -5135,6 +5186,16 @@
         }
       }
     },
+    "Saving" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存储"
+          }
+        }
+      }
+    },
     "Screen Recording" : {
       "comment" : "Screen Recording guide window title",
       "localizations" : {
@@ -5217,6 +5278,7 @@
       }
     },
     "Screenshots" : {
+      "comment" : "Settings pane",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -5471,6 +5533,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shift"
+          }
+        }
+      }
+    },
+    "Shortcut" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷键"
           }
         }
       }
@@ -5781,6 +5853,17 @@
         }
       }
     },
+    "System Default (%@)" : {
+      "comment" : "Settings: app language option that follows macOS; the argument is the language's own name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟随系统（%@）"
+          }
+        }
+      }
+    },
     "System Settings › General › Language & Region › Translation Languages" : {
       "localizations" : {
         "zh-Hans" : {
@@ -6074,6 +6157,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "网络不可用或请求超时"
+          }
+        }
+      }
+    },
+    "The new language takes effect after Cubby restarts" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新打开 Cubby 后生效"
           }
         }
       }

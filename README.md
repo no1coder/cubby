@@ -80,7 +80,7 @@ Cubby sits in your menu bar and remembers what you copy: text, links, colors, im
 **Native**
 
 - Swift 6 with SwiftUI and AppKit, zero third-party dependencies, Universal binary.
-- Menu bar only, no Dock icon. English and Simplified Chinese interface.
+- Menu bar only, no Dock icon. English and Simplified Chinese interface; it follows macOS by default, or pick one in Settings › General.
 - Works with VoiceOver, and follows Reduce Motion and Increase Contrast.
 
 | Translate a screenshot in place | Translate a clipboard item |
@@ -198,7 +198,7 @@ Press <kbd>⇧⌘2</kbd>, choose **Take Screenshot** from the menu bar icon's ri
 
 | Key | Action |
 | --- | --- |
-| <kbd>⇧⌘2</kbd> | Take a screenshot (global, customizable in Settings › General) |
+| <kbd>⇧⌘2</kbd> | Take a screenshot (global, customizable in Settings › Screenshots) |
 | Click / drag | Select the highlighted window or screen / select an area |
 | <kbd>⇥</kbd> / <kbd>⇧⇥</kbd> or scroll | Step through overlapping windows under the pointer, down to the whole screen |
 | <kbd>Space</kbd> | Window mode: a click or <kbd>↩</kbd> then captures only the highlighted window, unobstructed, with its shadow (<kbd>⌥</kbd>-click leaves out the shadow). Press <kbd>Space</kbd> again to leave |
@@ -221,7 +221,7 @@ While you type in a text box, <kbd>esc</kbd> or <kbd>⌘↩</kbd> finishes the t
 
 A pinned screenshot floats above your windows. Drag it to move it, scroll or pinch to zoom, press <kbd>⌘0</kbd> for actual size, and right-click it to copy, save or change its opacity. Double-click it or press <kbd>esc</kbd> to close it. Images already in your history can be pinned too: select one in the panel and press <kbd>⇧⌘P</kbd>, or choose **Pin to Screen** from its right-click menu or the preview, and it appears in the middle of the screen.
 
-In Settings › General › Screenshots you can change or turn off the shortcut and choose the save folder; by default it's the same folder as macOS screenshots. The save dialog starts in the folder you used last. Turn off **Ask where to save each time** to have <kbd>⌘S</kbd> save straight to that folder without a dialog. While recording is paused, screenshots still work but aren't added to your history. The first screenshot asks for the Screen Recording permission (see [First launch and permissions](#first-launch-and-permissions)).
+In Settings › Screenshots you can change or turn off the shortcut and choose the save folder; by default it's the same folder as macOS screenshots. The save dialog starts in the folder you used last. Turn off **Ask where to save each time** to have <kbd>⌘S</kbd> save straight to that folder without a dialog. While recording is paused, screenshots still work but aren't added to your history. The first screenshot asks for the Screen Recording permission (see [First launch and permissions](#first-launch-and-permissions)).
 
 ### Screenshot translation
 
@@ -283,7 +283,7 @@ If the check fails, delete the app, download it again and [open an issue](https:
 
 - History: `~/Library/Application Support/Cubby` (`history.json` plus an `Images` folder)
 - Preferences: `~/Library/Preferences/io.github.no1coder.Cubby.plist`
-- Saved screenshots: wherever you choose in the save dialog, or, with **Ask where to save each time** turned off, the folder in Settings › General › Screenshots (by default, the same folder as macOS screenshots)
+- Saved screenshots: wherever you choose in the save dialog, or, with **Ask where to save each time** turned off, the folder in Settings › Screenshots (by default, the same folder as macOS screenshots)
 
 Settings › History can reveal the folder in Finder. See [PRIVACY.md](PRIVACY.md) for exactly what is stored.
 

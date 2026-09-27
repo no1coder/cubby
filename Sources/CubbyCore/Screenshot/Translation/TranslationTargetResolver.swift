@@ -9,7 +9,7 @@ public enum TranslationTargetResolver {
     /// 少于这么多个字母时不做语言判断（过短的文本检测结果不可靠，与候选过滤 §3.3 一致）
     static let minimumLettersForDetection = 4
 
-    /// chosen：用户选定的目标（nil = 自动）；preferred：系统首选语言（Locale.preferredLanguages）；
+    /// chosen：用户选定的目标（nil = 自动）；preferred：系统首选语言（SystemLanguages.preferred，不受界面语言影响）；
     /// sample：选区原文（用于检测源语言）。返回 nil 表示自动模式下找不到与原文不同的目标语言
     public static func languages(chosen: String?, preferred: [String], sample: String) -> TranslationLanguages? {
         let source = detectSource(sample)

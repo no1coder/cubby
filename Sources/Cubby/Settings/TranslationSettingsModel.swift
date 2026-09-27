@@ -268,7 +268,7 @@ final class TranslationSettingsModel {
     /// 测试连接的目标语言：选定的，否则第一个非英语的首选语言，否则简体中文
     private var connectionTestTarget: String {
         settings.translationTargetLanguage
-            ?? Locale.preferredLanguages.compactMap(TranslationLanguageCatalog.normalize).first { $0 != "en" }
+            ?? SystemLanguages.preferred.compactMap(TranslationLanguageCatalog.normalize).first { $0 != "en" }
             ?? "zh-Hans"
     }
 

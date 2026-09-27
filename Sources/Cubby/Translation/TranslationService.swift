@@ -34,7 +34,7 @@ final class TranslationService: TranslationProviding {
     }
 
     var selectableLanguages: [String] {
-        TranslationLanguageCatalog.selectable(preferred: Locale.preferredLanguages)
+        TranslationLanguageCatalog.selectable(preferred: SystemLanguages.preferred)
     }
 
     func makeEngine() -> Result<any TranslationEngine, TranslationFailure> {

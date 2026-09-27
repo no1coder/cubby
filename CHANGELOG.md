@@ -12,8 +12,13 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+### Added
+
+- Settings › General › Language: use Cubby in English or Simplified Chinese regardless of the macOS language. **Restart Now** applies it and brings you back to Settings. Automatic translation still translates into your system language.
+
 ### Changed
 
+- Screenshot settings moved from Settings › General to their own Settings › Screenshots pane, which keeps General short enough to show without scrolling.
 - The DMG now opens to a proper install window: drag Cubby onto the Applications shortcut, with a bilingual hint. The mounted disk shows Cubby's icon.
 
 ## [0.2.0] - 2026-09-27

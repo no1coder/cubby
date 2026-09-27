@@ -46,7 +46,7 @@ final class ClipAutoTranslator {
         store: ClipStore,
         settings: AppSettings,
         provider: any ClipTranslationProviding,
-        preferredLanguages: @escaping @MainActor () -> [String] = { Locale.preferredLanguages }
+        preferredLanguages: @escaping @MainActor () -> [String] = { SystemLanguages.preferred }
     ) {
         self.store = store
         self.settings = settings

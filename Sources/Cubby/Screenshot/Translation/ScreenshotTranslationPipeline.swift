@@ -38,7 +38,7 @@ final class ScreenshotTranslationPipeline {
         services: ScreenshotTranslationServices,
         hiddenRegions: @escaping @MainActor () -> [CGRect],
         selection: @escaping @MainActor () -> CGRect? = { nil },
-        preferredLanguages: @escaping @MainActor () -> [String] = { Locale.preferredLanguages },
+        preferredLanguages: @escaping @MainActor () -> [String] = { SystemLanguages.preferred },
         onEvent: @escaping Emit
     ) {
         self.services = services

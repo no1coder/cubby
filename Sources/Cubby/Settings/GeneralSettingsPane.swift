@@ -10,6 +10,8 @@ struct GeneralSettingsPane: View {
 
     var body: some View {
         Form {
+            AppLanguageSection()
+
             Section {
                 LabeledContent("Keyboard shortcut") {
                     ShortcutRecorder(
@@ -46,8 +48,6 @@ struct GeneralSettingsPane: View {
                 Text(alternatePasteHint)
                     .foregroundStyle(.secondary)
             }
-
-            ScreenshotSettingsSection(settings: settings, onShortcutRecordingChange: onShortcutRecordingChange)
 
             Section {
                 LaunchAtLoginToggle()

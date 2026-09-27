@@ -6,6 +6,7 @@ import CubbyCore
 enum SettingsPane: CaseIterable {
     case general
     case history
+    case screenshots
     /// 截图翻译（仅 macOS 26 显示）
     case translation
     case privacy
@@ -15,6 +16,7 @@ enum SettingsPane: CaseIterable {
         switch self {
         case .general: String(localized: "General", comment: "Settings pane")
         case .history: String(localized: "History", comment: "Settings pane")
+        case .screenshots: String(localized: "Screenshots", comment: "Settings pane")
         case .translation: String(localized: "Translation", comment: "Settings pane")
         case .privacy: String(localized: "Privacy", comment: "Settings pane")
         case .about: String(localized: "About", comment: "Settings pane")
@@ -25,6 +27,7 @@ enum SettingsPane: CaseIterable {
         switch self {
         case .general: "gearshape"
         case .history: "clock.arrow.circlepath"
+        case .screenshots: "camera.viewfinder"
         case .translation: "translate"
         case .privacy: "hand.raised"
         case .about: "info.circle"
@@ -134,6 +137,8 @@ final class SettingsWindowController {
             AnyView(GeneralSettingsPane(settings: settings, onShortcutRecordingChange: onShortcutRecordingChange))
         case .history:
             AnyView(HistorySettingsPane(settings: settings, store: store))
+        case .screenshots:
+            AnyView(ScreenshotSettingsPane(settings: settings, onShortcutRecordingChange: onShortcutRecordingChange))
         case .translation:
             translation.map { AnyView(TranslationSettingsPane(model: $0, store: store)) }
         case .privacy:

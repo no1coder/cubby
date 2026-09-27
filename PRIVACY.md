@@ -83,7 +83,7 @@ The global shortcuts (open the panel, take a screenshot) are registered through 
 
 - **When the screen is captured.** Cubby uses the Screen Recording permission only when you start a screenshot yourself: with the screenshot shortcut, **Take Screenshot** in the menu bar icon's menu, or the camera button in the panel. It never captures at launch or in the background. It asks for the permission only when you take your first screenshot, or when you click **Grant Access** next to Screen Recording in Settings › Privacy.
 - **The frozen image stays in memory.** While you select and annotate, the captured image of your screen exists only in memory. It is never written to disk, and it is discarded as soon as the screenshot ends. Canceling leaves no trace.
-- **Only your choice is kept.** Something is written only when you finish, save, pin, extract text or pick a color: the image goes to the clipboard, to a file in the folder you chose (Settings › General), or to a pinned window on screen; extracted text and picked color values go to the clipboard as text. All of these are also added to your history like anything you copy, unless recording is paused. Text and color values also follow the "Don't record likely secrets and tokens" setting. Pinned windows disappear when Cubby quits.
+- **Only your choice is kept.** Something is written only when you finish, save, pin, extract text or pick a color: the image goes to the clipboard, to a file in the folder you chose (Settings › Screenshots), or to a pinned window on screen; extracted text and picked color values go to the clipboard as text. All of these are also added to your history like anything you copy, unless recording is paused. Text and color values also follow the "Don't record likely secrets and tokens" setting. Pinned windows disappear when Cubby quits.
 - **Text recognition is local.** Extracting text from a screenshot uses Apple's Vision framework on your Mac. Nothing is uploaded.
 - Saved files are marked as screenshots for Finder and Spotlight. Cubby adds no other information to them.
 
@@ -217,7 +217,7 @@ Cubby 不会自行下载或安装更新。用 <kbd>⌘O</kbd> 打开历史中的
 
 - **何时捕捉屏幕：** 只有你主动截图时（按截图快捷键、菜单栏图标菜单中的「截图」或面板上的相机按钮），Cubby 才会使用屏幕录制权限。启动时和后台从不捕捉。只有在你第一次截图，或在「设置 › 隐私」中点击屏幕录制旁的「去授权」时，才会申请该权限。
 - **冻结画面只在内存中：** 选择区域和标注期间，捕捉到的屏幕画面只存在于内存，从不写入磁盘，截图结束后立即丢弃。取消截图不留任何痕迹。
-- **只保存你选择的结果：** 只有在你完成、存储、贴图、提取文字或取色时才会写入：图片进入剪贴板、你选择的文件夹（设置 › 通用）中的文件，或屏幕上的贴图窗口；提取的文字与取到的颜色值以文本形式进入剪贴板。这些内容也会像你复制的内容一样加入历史（暂停记录时除外）；文字与颜色值同样遵守「不记录疑似密钥和令牌」设置。贴图在 Cubby 退出时消失。
+- **只保存你选择的结果：** 只有在你完成、存储、贴图、提取文字或取色时才会写入：图片进入剪贴板、你选择的文件夹（设置 › 截图）中的文件，或屏幕上的贴图窗口；提取的文字与取到的颜色值以文本形式进入剪贴板。这些内容也会像你复制的内容一样加入历史（暂停记录时除外）；文字与颜色值同样遵守「不记录疑似密钥和令牌」设置。贴图在 Cubby 退出时消失。
 - **文字识别在本机完成：** 从截图中提取文字使用 Mac 上的 Apple Vision 框架，不上传任何内容。
 - 存储的文件会被标记为屏幕截图，便于访达和聚焦归类。Cubby 不会在文件中添加其他信息。
 

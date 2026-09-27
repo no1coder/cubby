@@ -226,6 +226,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         #endif
+        // 在设置里切换界面语言后重新打开：回到设置，让用户直接看到新语言
+        if CommandLine.arguments.contains(AppRelauncher.showSettingsArgument) {
+            settingsWindow?.show(pane: .general)
+            return
+        }
         guard CommandLine.arguments.contains("--show-panel") else { return }
         panel.show()
     }
