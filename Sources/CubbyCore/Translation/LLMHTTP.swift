@@ -38,10 +38,10 @@ public enum LLMHTTP {
 
     /// 发起流式请求，在 firstByte 内等到响应头；非 2xx 映射为 TranslationFailure
     static func openStream(
-        _ request: URLRequest, session: URLSession, firstByte: Duration
+        _ request: URLRequest, session: URLSession, firstByte: Duration, timer: DeadlineTimer = .dispatch
     ) async throws -> (URLSession.AsyncBytes, HTTPURLResponse) {
         let redirectGuard = RedirectGuard(original: request.url)
-        let (bytes, response) = try await CaptureDeadline.run(firstByte) {
+        let (bytes, response) = try await CaptureDeadline.run(firstByte, timer: timer) {
             try await session.bytes(for: request, delegate: redirectGuard)
         }
         return (bytes, try checked(response))

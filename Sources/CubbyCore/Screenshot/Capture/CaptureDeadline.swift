@@ -16,14 +16,22 @@ public enum CaptureDeadline {
         _ timeout: Duration,
         _ operation: @escaping @Sendable () async throws -> T
     ) async throws -> T {
+        try await run(timeout, timer: .dispatch, operation)
+    }
+
+    /// 同上，计时方式可注入（测试用手动计时器按事件顺序触发超时，不依赖真实时间与线程调度）
+    static func run<T: Sendable>(
+        _ timeout: Duration,
+        timer: DeadlineTimer,
+        _ operation: @escaping @Sendable () async throws -> T
+    ) async throws -> T {
         try Task.checkCancellation()
         let gate = ResumeGate()
         let work = Task { try await operation() }
         return try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<T, any Error>) in
-                // 计时器走 GCD 而非协作线程池：线程池被 CPU 密集任务占满时，超时仍按时触发。
-                // 无需取消：恢复权由 gate 保证唯一，晚到的计时器 claim 失败即返回（至多多持有闭包到超时时刻）
-                DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + timeout.timeInterval) {
+                // 无需取消计时器：恢复权由 gate 保证唯一，晚到的计时器 claim 失败即返回（至多多持有闭包到超时时刻）
+                timer.schedule(timeout) {
                     guard gate.claim() else { return }
                     work.cancel()
                     continuation.resume(throwing: TimedOut())
@@ -78,6 +86,16 @@ private final class ResumeGate: Sendable {
             return state.cancelHandler
         }
         if let handler, claim() { handler() }
+    }
+}
+
+/// 超时计时器：到时后调用 fire（任意线程；可能晚于操作结束，由调用方保证只生效一次）
+struct DeadlineTimer: Sendable {
+    let schedule: @Sendable (_ timeout: Duration, _ fire: @escaping @Sendable () -> Void) -> Void
+
+    /// 默认：走 GCD 而非协作线程池，线程池被 CPU 密集任务占满时超时仍按时触发
+    static let dispatch = DeadlineTimer { timeout, fire in
+        DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + timeout.timeInterval, execute: fire)
     }
 }
 

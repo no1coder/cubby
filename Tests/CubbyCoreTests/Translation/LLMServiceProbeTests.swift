@@ -2,7 +2,7 @@ import Foundation
 import Testing
 @testable import CubbyCore
 
-@Suite("模型列表与测试连接（URLProtocol 桩，不联网）")
+@Suite("模型列表与测试连接（URLProtocol 桩，不联网）", .timeLimit(.minutes(1)))
 struct LLMServiceProbeTests {
     private func json(_ object: Any) -> StubResponse {
         let data = try! JSONSerialization.data(withJSONObject: object)
@@ -56,7 +56,8 @@ struct LLMServiceProbeTests {
             try await LLMServiceProbe.models(
                 for: LLMEndpoint(baseURL: garbage.baseURL, apiKey: nil), session: garbage.makeSession())
         }
-        let slow = StubServer(StubResponse(headerDelay: .seconds(5)))
+        // 响应头一直不来：结果只能来自 200 ms 的超时（原先 5 s 后响应头会到，线程池繁忙时与超时谁先到没有保证）
+        let slow = StubServer(.noResponse)
         await #expect(throws: TranslationFailure.network) {
             try await LLMServiceProbe.models(
                 for: LLMEndpoint(baseURL: slow.baseURL, apiKey: nil), session: slow.makeSession(),
