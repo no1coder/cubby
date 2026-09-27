@@ -87,9 +87,12 @@ jobs:
           CUBBY_FUZZ_SEEDS: "256"
         run: ./scripts/ci/run-tests.sh ./scripts/check-coverage.sh
 
+      # LC_ALL=C：runner 默认是 UTF-8 locale，macOS 上 bash 会把紧跟在 $NAME 后的全角标点的首字节
+      # 当成变量名的一部分，build-app.sh 的 `$VERSION，` 因此报 unbound variable；脚本改为 ${VERSION} 之前先这样规避
       - name: Package smoke test (ad-hoc signed)
         env:
           SIGN_IDENTITY: "-"
+          LC_ALL: C
         run: |
           ./scripts/build-app.sh
           plutil -p build/Cubby.app/Contents/Info.plist | grep -E 'CFBundle(ShortVersionString|Version|Identifier)'
