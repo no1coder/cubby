@@ -23,6 +23,30 @@ enum ReducerFuzzRunner {
         seedBase &+ UInt64(index)
     }
 
+    /// 一个分片的结果：每个不变量的失败种子数，以及每个不变量第一次失败的缩减报告
+    struct ShardOutcome: Sendable {
+        var failures: [ReducerInvariant: Int] = [:]
+        var reports: [String] = []
+    }
+
+    /// 执行一个分片（种子 shard、shard + shardCount、……）。纯同步的 CPU 循环，
+    /// 由调用方放到协作线程池之外执行；问题以结果返回，由测试在自己的上下文里记录
+    static func runShard(_ shard: Int, of shardCount: Int, seedCount: Int) -> ShardOutcome {
+        var coverage = FuzzCoverage(enabled: false)
+        var outcome = ShardOutcome()
+        for index in stride(from: shard, to: seedCount, by: shardCount) {
+            let seed = seed(index)
+            let result = run(seed: seed, coverage: &coverage)
+            guard let violation = result.violation else { continue }
+            outcome.failures[violation.invariant, default: 0] += 1
+            // 每个不变量只缩减并报告第一次失败，避免系统性问题淹没输出
+            if outcome.failures[violation.invariant] == 1 {
+                outcome.reports.append(FuzzRendering.report(shrink(result.trace, violation: violation, seed: seed)))
+            }
+        }
+        return outcome
+    }
+
     /// 按种子生成并执行一条序列；失败时序列截断到失败那一步，并返回违反的不变量
     static func run(
         seed: UInt64,

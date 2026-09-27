@@ -45,7 +45,7 @@ struct ClipTextSegmenterTests {
             String(repeating: "long wrapped line ", count: 3),
         ]
         let separators = ["\n", "\r\n", "\n\n", " "]
-        for _ in 0..<400 {
+        for _ in 0..<FuzzBudget.scaled(400) {
             let count = Int.random(in: 0...12, using: &random)
             let text = (0..<count).map { _ in
                 (pieces.randomElement(using: &random) ?? "") + (separators.randomElement(using: &random) ?? "\n")

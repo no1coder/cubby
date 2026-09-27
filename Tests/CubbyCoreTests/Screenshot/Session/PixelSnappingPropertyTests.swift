@@ -5,7 +5,7 @@ import Testing
 /// 选区吸附像素网格（`ScreenshotReducer.snappedToPixelGrid`）对任意输入成立的性质
 @Suite("选区吸附像素网格 · 性质测试（任意输入）")
 struct PixelSnappingPropertyTests {
-    private static let iterations = 4000
+    private static let iterations = FuzzBudget.scaled(4000)
     private typealias Gen = FuzzGeometry
 
     /// 整数原点（含负坐标）的屏幕，@1x / @2x / @3x

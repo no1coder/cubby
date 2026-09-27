@@ -9,45 +9,41 @@ import Testing
 /// 屏幕间空隙、窗口边缘与小数坐标；每一步之后检查 `ReducerInvariant` 的全部不变量。
 /// 发现违反时自动缩减为最小序列并以 Swift 代码报告，便于固化为回归测试（见 ReducerFuzzRegressionTests）。
 ///
-/// 默认 2048 个种子 × 200 步，分 16 片并行；设置环境变量 `CUBBY_FUZZ_SEEDS` 可放大种子数做深度模糊。
-@Suite("ScreenshotReducer · 基于性质的模糊测试")
+/// 默认 2048 个种子 × 200 步，分 16 片并行；环境变量 `CUBBY_FUZZ_SEEDS` 调整种子数（见 `FuzzBudget`）：
+/// CI 设为 256 缩短 CPU 密集阶段，本地放大即可做深度模糊。
+@Suite("ScreenshotReducer · 基于性质的模糊测试", .timeLimit(.minutes(5)))
 struct ReducerFuzzTests {
-    /// 分片数（Swift Testing 并行执行各分片）
+    /// 分片数（各分片并行执行）
     static let shardCount = 16
-    static let defaultSeedCount = 2048
 
     static var seedCount: Int {
-        ProcessInfo.processInfo.environment["CUBBY_FUZZ_SEEDS"].flatMap(Int.init) ?? defaultSeedCount
+        FuzzBudget.seeds
     }
 
     @Test("固定种子的随机事件序列：每一步之后全部不变量成立", arguments: 0..<ReducerFuzzTests.shardCount)
     func invariantsHold(shard: Int) async {
-        var coverage = FuzzCoverage(enabled: false)
-        var failures: [ReducerInvariant: Int] = [:]
-        for index in stride(from: shard, to: Self.seedCount, by: Self.shardCount) {
-            // 纯 CPU 循环：每个种子后让出协作线程，避免 16 个分片占满线程池、饿死并行运行的计时类测试
-            await Task.yield()
-            let seed = ReducerFuzzRunner.seed(index)
-            let result = ReducerFuzzRunner.run(seed: seed, coverage: &coverage)
-            guard let violation = result.violation else { continue }
-            failures[violation.invariant, default: 0] += 1
-            // 每个不变量只缩减并报告第一次失败，避免系统性问题淹没输出
-            if failures[violation.invariant] == 1 {
-                let failure = ReducerFuzzRunner.shrink(result.trace, violation: violation, seed: seed)
-                Issue.record(Comment(rawValue: FuzzRendering.report(failure)))
-            }
+        // 纯 CPU 循环放到 GCD 上跑，不占协作线程池。原先在协作线程上每个种子后 Task.yield，
+        // 16 个分片仍长时间占满线程池（CI 只有 3 个线程），其他测试的续体与计时器因此晚好几秒
+        let outcome = await runOffCooperativePool {
+            ReducerFuzzRunner.runShard(shard, of: Self.shardCount, seedCount: Self.seedCount)
         }
-        #expect(failures.isEmpty, "failing seeds per invariant: \(failures)")
+        for report in outcome.reports {
+            Issue.record(Comment(rawValue: report))
+        }
+        #expect(outcome.failures.isEmpty, "failing seeds per invariant: \(outcome.failures)")
     }
 
     /// 实测前 22 个种子即可覆盖全部特征，取 64 留出余量
     @Test("生成器覆盖全部事件、命令、出口，并走到深层状态")
-    func generatorCoverage() {
-        var coverage = FuzzCoverage(enabled: true)
-        for index in 0..<64 {
-            _ = ReducerFuzzRunner.run(seed: ReducerFuzzRunner.seed(index), coverage: &coverage)
+    func generatorCoverage() async {
+        let features = await runOffCooperativePool {
+            var coverage = FuzzCoverage(enabled: true)
+            for index in 0..<64 {
+                _ = ReducerFuzzRunner.run(seed: ReducerFuzzRunner.seed(index), coverage: &coverage)
+            }
+            return coverage.features
         }
-        let missing = FuzzCoverage.required.subtracting(coverage.features)
+        let missing = FuzzCoverage.required.subtracting(features)
         #expect(missing.isEmpty, "never reached: \(missing.sorted())")
     }
 
