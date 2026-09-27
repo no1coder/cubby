@@ -6,7 +6,7 @@
 
 | 阶段 | 触发 | 做什么 | 文件 |
 | --- | --- | --- | --- |
-| CI | push 到 `main`、PR | 并行两个任务：① 脚本语法 → swift-format lint → 国际化守卫；② 通用二进制构建 → 测试 + 覆盖率门槛（CubbyCore ≥ 95%）→ ad-hoc 打包冒烟 | `.github/workflows/ci.yml` |
+| CI | push 到 `main`、PR | 并行两个任务：① 脚本语法 → swift-format lint → 国际化守卫；② 通用二进制构建 → 测试 + 覆盖率门槛（CubbyCore ≥ 95%）→ ad-hoc 打包冒烟（.app + DMG） | `.github/workflows/ci.yml` |
 | Release | 推送 `v*` tag | 校验 tag 与 `VERSION` 一致 → 测试 → 导入证书 → 构建并签名 → 公证 .app 与 DMG 并 staple → 构建来源证明 → 创建 **draft** release | `.github/workflows/release.yml` |
 | Publish | 维护者 Publish 正式版 release | 校验 DMG 的 sha256 → 更新 `no1coder/homebrew-tap` 的 `Casks/cubby.rb` | `.github/workflows/publish.yml` |
 
@@ -17,7 +17,8 @@
 | 命令 | 作用 |
 | --- | --- |
 | `./scripts/build-app.sh`（`make app`） | 构建通用二进制并组装、签名 `build/Cubby.app`；版本取自 `VERSION` |
-| `./scripts/make-dmg.sh [App]`（`make dmg`） | 用现有 `build/Cubby.app` 生成 `dist/Cubby-<版本>.dmg`（不重新构建），Developer ID 身份时同时签名 DMG |
+| `./scripts/make-dmg.sh [App]`（`make dmg`） | 用现有 `build/Cubby.app` 生成带安装窗口的 `dist/Cubby-<版本>.dmg`（不重新构建；dmgbuild，见第五节），Developer ID 身份时同时签名 DMG |
+| `swift scripts/make-dmg-background.swift` | 重新生成 DMG 窗口背景 `packaging/dmg/background.png` 与 `background@2x.png` |
 | `./scripts/notarize.sh <App/DMG/PKG>` | 提交公证、等待结果；失败时打印 `notarytool log`；成功后 staple 并用 `spctl` 校验 |
 | `./scripts/release.sh [--skip-notarize]`（`make release`） | 端到端发布，产物输出到 `dist/` |
 | `./scripts/changelog-notes.sh <版本>` | 从 `CHANGELOG.md` 提取对应版本段落 |
@@ -34,6 +35,7 @@
 | `TIMESTAMP` | build-app | `auto`（默认：Developer ID 用安全时间戳，其余 `--timestamp=none`）/ `secure` / `none` |
 | `BUNDLE_ID` | build-app | 覆盖 bundle ID，如 `io.github.no1coder.Cubby.dev` 让开发版与正式版共存 |
 | `BUILD_NUMBER` | build-app | 覆盖 `CFBundleVersion`，默认 `git rev-list --count HEAD`，非 git 仓库为 1 |
+| `DMGBUILD_PYTHON` | make-dmg | 创建 dmgbuild 虚拟环境所用的 Python（需 ≥ 3.10），默认 `python3` |
 | `NOTARY_PROFILE` | notarize | 本机 notarytool 钥匙串配置名，默认 `cubby-notary` |
 | `NOTARY_KEY_PATH` / `NOTARY_KEY_ID` / `NOTARY_ISSUER_ID` | notarize | 使用 App Store Connect API Key 公证（CI 方式）；设置了 `NOTARY_KEY_PATH` 即优先使用 |
 | `NOTARY_TIMEOUT` | notarize | 等待公证的超时，默认 `1h` |
@@ -196,7 +198,36 @@ export SIGN_IDENTITY="Developer ID Application: jiankui sun (69A75B6U2B)"
 ./scripts/notarize.sh dist/Cubby-X.Y.Z.dmg
 ```
 
-## 五、故障排查
+## 五、DMG 安装窗口
+
+用户打开 DMG 后看到的是定制的 Finder 窗口：640×400 pt 内容区（Retina 背景），左侧 Cubby.app、右侧「应用程序」快捷方式（128 pt 图标、固定位置），中间箭头，底部中英双语提示「拖到「应用程序」即可安装 · Drag Cubby to Applications to install」；工具栏、侧边栏、路径栏、状态栏全部隐藏，卷图标为应用图标。
+
+**工具**：[dmgbuild](https://pypi.org/project/dmgbuild/) 1.6.7（Python）直接写入 `.DS_Store` 与背景图别名，不经过 Finder / AppleScript，CI 无界面也能运行；最终格式仍是 hdiutil 的 ULFO（HFS+，LZFSE 压缩），签名、公证与 staple 流程不变。
+
+- 版本与 sha256 固定在 `packaging/dmg/requirements.txt`（含依赖 ds-store、mac-alias），以 `pip install --require-hashes --only-binary :all: --no-deps` 安装，任何一个包被替换都会失败。
+- `make-dmg.sh` 首次运行时在 `build/dmgbuild-venv` 创建虚拟环境并从 PyPI 安装（需联网、Python ≥ 3.10；macOS 自带的 `/usr/bin/python3` 为 3.9，请 `brew install python` 或用 `DMGBUILD_PYTHON` 指定）；`requirements.txt` 未变时直接复用，`make clean` 会一并删除。
+- CI（ci.yml 的打包冒烟、release.yml 发布）先用 `actions/setup-python`（固定 SHA）装好 Python 3.13，其余由 `make-dmg.sh` 自行完成；release.yml 在导入签名凭据之前单独运行 `./scripts/make-dmg.sh --prepare` 安装 dmgbuild，PyPI 不可用时尽早失败，安装过程也不接触任何 secret。
+- 升级 dmgbuild：在 PyPI 的「Download files」页核对新版本 wheel 与 sdist 的 sha256（依赖同理），改写 `requirements.txt`，再跑一遍 `SIGN_IDENTITY=- make release RELEASE_FLAGS=--skip-notarize` 并目测窗口。
+
+**相关文件**：
+
+| 文件 | 作用 |
+| --- | --- |
+| `packaging/dmg/layout.json` | 内容区尺寸、标题栏高度、背景底部出血、图标尺寸与字号、两个图标的中心坐标（背景生成脚本与 dmgbuild 配置共用） |
+| `packaging/dmg/settings.py` | dmgbuild 配置：文件、快捷方式、窗口样式、图标位置、卷图标、ULFO / HFS+ |
+| `scripts/make-dmg-background.swift` | 用 CoreGraphics 生成背景 PNG（1x + 2x），并自检图标名称区域的对比度 |
+| `packaging/dmg/background.png`、`background@2x.png` | 生成后提交的背景图；打包时 dmgbuild 用 `tiffutil` 合并为多分辨率的 `.background.tiff` |
+
+**改外观**：修改 `layout.json` 或生成脚本 → `swift scripts/make-dmg-background.swift` → `make dmg` → 双击 `dist/Cubby-<版本>.dmg`，在浅色、深色模式下各看一眼 → 提交两张 PNG。卷内的 `.DS_Store`、`.background.tiff`、`.VolumeIcon.icns` 都是点文件，Finder 默认不显示；`make-dmg.sh` 挂载校验时会确认它们存在、卷图标标记已设置。
+
+注意事项：
+
+- **图标名称的颜色**：由 Finder 决定，背景无法控制（macOS 26 实测浅色、深色模式下都是黑字，较早的系统在深色模式下可能是白字）。所以格子底部（名称所在处）取黑白两色都可读的中间亮度，生成脚本要求两者的对比度都 ≥ 4:1，否则报错。
+- **窗口尺寸**：Finder 把 `.DS_Store` 里的窗口尺寸当作含标题栏的整个窗口，因此窗口高度 = 内容区 + 32 pt（macOS 26 的标题栏）；标题栏更矮的旧系统多出的几 pt 由背景底部 8 pt 出血填满，不会露出空白。
+- **不给 .app 设「隐藏扩展名」**：dmgbuild 的 `hide_extensions` 会在 .app 根目录写入 FinderInfo，导致 `codesign --verify --strict` 失败；Finder 默认就不显示 `.app` 后缀。
+- **卷图标**：取自 .app 内的 `AppIcon.icns`，去掉用不到的 1024 px 版本以减小体积；「自定义图标」标记由 dmgbuild 调用 `SetFile`（Xcode 命令行工具）设置。
+
+## 六、故障排查
 
 ### 公证失败（status: Invalid）
 
@@ -255,12 +286,14 @@ tccutil reset Accessibility io.github.no1coder.Cubby    # 重置后重新打开 
 
 - **lint 本地通过、CI 失败**：swift-format 行为随 Xcode 版本变化。把工作流中的 `XCODE_VERSION` 固定为与本地相同的精确版本（如 `"26.6"`），或本地升级 Xcode 后执行 `make format`。
 - **`errSecInternalComponent` / 签名卡住**：临时钥匙串被锁或 `set-key-partition-list` 未生效，检查 `DEVELOPER_ID_P12_PASSWORD` 与 .p12 是否包含私钥。
-- **`hdiutil: create failed - Resource busy`**：`make-dmg.sh` 已自动重试 3 次；本地可 `hdiutil info` 查看并 `hdiutil detach` 残留挂载。
+- **`hdiutil: create failed - Resource busy`**：`make-dmg.sh` 会整体重试 dmgbuild 3 次（dmgbuild 自身也会重试卸载）；本地可 `hdiutil info` 查看并 `hdiutil detach` 残留挂载。
+- **dmgbuild 安装失败**：`THESE PACKAGES DO NOT MATCH THE HASHES` 表示下载内容与 `requirements.txt` 中的哈希不符，先到 PyPI 核对文件，不要删掉哈希绕过；提示需要 Python ≥ 3.10 时检查 `python3 --version` 或设置 `DMGBUILD_PYTHON`；离线环境需先在联网时运行一次 `make dmg` 生成 `build/dmgbuild-venv`。
+- **卷图标未生效**：缺少 Xcode 命令行工具时 `SetFile` 不可用，dmgbuild 不会报错，但 `make-dmg.sh` 的挂载校验会失败并给出提示；用 `xcode-select -p` 确认已选中 Xcode。
 - **tag 与 VERSION 不一致**：删除 tag 后重打：`git push --delete origin vX.Y.Z && git tag -d vX.Y.Z`；已生成的 draft release 一并删除。
 - **tap 更新失败**：403 多为 PAT 过期或权限不足；`brew style` 报错时修改 `packaging/homebrew/cubby.rb`；修复后在 Actions → Publish →「Run workflow」输入 tag 重试。
 
-## 六、安全须知
+## 七、安全须知
 
 - PR 工作流（ci.yml）不引用任何 secret，权限只读；签名与公证凭据只在需要审批的 `release` 环境中可用，并在任务结束时（`if: always()`）删除临时钥匙串与密钥文件。
-- 第三方 action 全部固定到 commit SHA（注释标注版本），升级时同时核对 SHA 与版本号。
+- 第三方 action 全部固定到 commit SHA（注释标注版本），升级时同时核对 SHA 与版本号。打包用的 Python 包（dmgbuild 及其依赖）同样固定版本与 sha256（`packaging/dmg/requirements.txt`），只装 wheel、不解析额外依赖。
 - 凭据泄露时：立即在 App Store Connect 撤销 API Key、在 GitHub 撤销 PAT 并替换 secrets；若 Developer ID 私钥泄露，联系 Apple 开发者支持评估是否吊销证书（吊销会影响已分发的版本）。

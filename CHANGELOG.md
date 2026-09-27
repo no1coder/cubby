@@ -12,6 +12,10 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+### Changed
+
+- The DMG now opens to a proper install window: drag Cubby onto the Applications shortcut, with a bilingual hint. The mounted disk shows Cubby's icon.
+
 ## [0.2.0] - 2026-09-27
 
 First public release. The app is renamed from Zhantie to **Cubby**, and is now open source under the MIT License.

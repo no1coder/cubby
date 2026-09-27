@@ -1,6 +1,6 @@
 # 持续集成：两个并行任务
 #   lint：脚本语法 → swift-format lint → 国际化守卫 → String Catalog 同步与翻译完整性
-#   build-and-test：通用二进制构建 → 测试 + 覆盖率门槛 → ad-hoc 打包冒烟
+#   build-and-test：通用二进制构建 → 测试 + 覆盖率门槛 → ad-hoc 打包冒烟（.app + DMG 安装窗口）
 # 安全：本工作流不引用任何 secret，PR（含 fork）只有只读权限。
 name: CI
 
@@ -79,6 +79,12 @@ jobs:
           COVERAGE_MIN: "95"
         run: ./scripts/check-coverage.sh
 
+      # make-dmg.sh 用 dmgbuild（Python ≥ 3.10，版本与哈希固定在 packaging/dmg/requirements.txt）生成 DMG 安装窗口
+      - name: Set up Python (dmgbuild)
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
       - name: Package smoke test (ad-hoc signed)
         env:
           SIGN_IDENTITY: "-"
@@ -86,3 +92,4 @@ jobs:
           ./scripts/build-app.sh
           plutil -p build/Cubby.app/Contents/Info.plist | grep -E 'CFBundle(ShortVersionString|Version|Identifier)'
           lipo -archs build/Cubby.app/Contents/MacOS/Cubby
+          ./scripts/make-dmg.sh

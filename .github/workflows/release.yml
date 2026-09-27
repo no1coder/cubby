@@ -46,6 +46,16 @@ jobs:
       - name: Select Xcode
         run: ./scripts/ci/select-xcode.sh
 
+      # make-dmg.sh 用 dmgbuild（Python ≥ 3.10，版本与哈希固定在 packaging/dmg/requirements.txt）生成 DMG 安装窗口
+      - name: Set up Python (dmgbuild)
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      # 在导入签名凭据、公证 .app 之前装好 dmgbuild：PyPI 不可用时尽早失败，且安装步骤不接触任何 secret
+      - name: Prepare dmgbuild
+        run: ./scripts/make-dmg.sh --prepare
+
       - name: Verify tag matches VERSION
         run: |
           TAG_VERSION="${GITHUB_REF_NAME#v}"

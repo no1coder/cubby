@@ -13,6 +13,7 @@ Everyone taking part is expected to follow the [Code of Conduct](CODE_OF_CONDUCT
 - **Xcode 26 or later** (Swift 6.2 and the macOS 26 SDK; the panel uses `NSGlassEffectView`), on a macOS version that Xcode 26 supports.
 - Cubby itself runs on **macOS 14 or later**. Guard newer APIs with `#available` and keep the macOS 14 code path working.
 - No third-party dependencies and no Xcode project: Cubby is a Swift package. Open `Package.swift` in Xcode if you prefer an IDE.
+- Only building the DMG (`make dmg`, `make release`) needs **Python 3.10 or later** (for example `brew install python`; the `/usr/bin/python3` that ships with macOS is too old). The script installs a pinned, hash-checked copy of [dmgbuild](https://pypi.org/project/dmgbuild/) into `build/dmgbuild-venv` on first use, so that run needs network access. To change the DMG window, see the DMG section of [docs/RELEASING.md](docs/RELEASING.md).
 
 ```sh
 git clone https://github.com/no1coder/cubby.git
@@ -35,6 +36,7 @@ make test
 | `make app` | Build a Universal release app at `build/Cubby.app` |
 | `make run` | Build the app and launch it |
 | `make install` | Build, copy to `/Applications` and launch |
+| `make dmg` | Package the existing `build/Cubby.app` into `dist/Cubby-<version>.dmg` with its install window (needs Python 3.10+, see below) |
 | `make clean` | Remove `.build`, `build` and `dist` |
 
 ### Project layout
@@ -59,6 +61,7 @@ Sources/
 Tests/CubbyCoreTests/ Swift Testing unit tests
 Resources/          Info.plist, app icon, string catalog
 scripts/            Build, release and check scripts
+packaging/          Homebrew cask template; DMG install window (dmgbuild settings, layout, background)
 docs/               Design spec, roadmap, QA checklist, README assets
 ```
 

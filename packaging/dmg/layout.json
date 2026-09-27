@@ -1,0 +1,7 @@
+{
+  "window": { "width": 640, "height": 400, "titleBarHeight": 32, "bleed": 8 },
+  "iconSize": 128,
+  "textSize": 13,
+  "app": { "x": 160, "y": 188 },
+  "applications": { "x": 480, "y": 188 }
+}

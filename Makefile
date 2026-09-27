@@ -66,6 +66,7 @@ coverage:
 	./scripts/check-coverage.sh
 
 # 用现有 build/Cubby.app 生成 dist/Cubby-<版本>.dmg（不会重新构建，避免破坏已 staple 的票据；需要时先 make app）
+# 安装窗口由 dmgbuild 生成，需要 Python ≥ 3.10，首次运行会装到 build/dmgbuild-venv（见 docs/RELEASING.md 第五节）
 dmg:
 	./scripts/make-dmg.sh
 

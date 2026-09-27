@@ -11,3 +11,5 @@ dist/
 *.profraw
 # 本地开发工具（spec-workflow）的模板与记录，不属于项目
 .spec-workflow/
+# Python 字节码（packaging/dmg/settings.py 被检查或导入时生成）
+__pycache__/
