@@ -24,6 +24,7 @@
 | `./scripts/update-tap.sh <版本> <sha256> [--output 文件 \| --push]` | 由 `packaging/homebrew/cubby.rb` 模板生成 cask；`--push` 时提交到 tap 仓库 |
 | `./scripts/check-no-cjk.sh`（`make check-cjk`） | 源码字符串字面量中不得出现汉字 |
 | `./scripts/check-coverage.sh`（`make coverage`） | 测试并检查 CubbyCore 行覆盖率（`COVERAGE_MIN`，默认 95） |
+| `./scripts/ci/run-tests.sh <命令>` | CI 用的测试包装：伪终端逐行输出；长时间无输出时打印未结束的测试与线程调用栈并失败 |
 | `make lint` / `make format` | swift-format 检查 / 就地格式化（配置见 `.swift-format`） |
 
 ### 环境变量
@@ -38,6 +39,8 @@
 | `NOTARY_KEY_PATH` / `NOTARY_KEY_ID` / `NOTARY_ISSUER_ID` | notarize | 使用 App Store Connect API Key 公证（CI 方式）；设置了 `NOTARY_KEY_PATH` 即优先使用 |
 | `NOTARY_TIMEOUT` | notarize | 等待公证的超时，默认 `1h` |
 | `COVERAGE_MIN` | check-coverage | 覆盖率门槛，默认 95 |
+| `CUBBY_FUZZ_SEEDS` | 测试 | 截图状态机模糊测试的种子数，默认 2048；其余随机测试按同一比例缩放（CI 为 256） |
+| `TEST_IDLE_TIMEOUT` | ci/run-tests | 连续多少秒无输出判定为挂起，默认 300 |
 | `TAP_GITHUB_TOKEN` / `TAP_REPO` / `TAP_BRANCH` / `TAP_DRY_RUN` | update-tap | tap 推送凭据与目标，默认 `no1coder/homebrew-tap` 的 `main` |
 
 ## 一、一次性准备（维护者本人执行）

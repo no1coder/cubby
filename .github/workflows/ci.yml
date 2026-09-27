@@ -74,10 +74,18 @@ jobs:
       - name: Build release (universal)
         run: swift build -c release --arch arm64 --arch x86_64
 
+      # 先单独构建（调试 + 覆盖率插桩），下一步只剩运行测试，看门狗的「无输出」判定不受编译耗时影响
+      - name: Build tests (debug, code coverage)
+        run: swift build --build-tests --enable-code-coverage
+
+      # run-tests.sh：伪终端逐行输出；连续 5 分钟无输出即打印线程调用栈并失败（见脚本注释）
       - name: Test with coverage gate
+        timeout-minutes: 15
         env:
           COVERAGE_MIN: "95"
-        run: ./scripts/check-coverage.sh
+          # 模糊 / 性质测试缩到默认规模的 1/8（见 Tests/CubbyCoreTests/Support/FuzzBudget.swift）
+          CUBBY_FUZZ_SEEDS: "256"
+        run: ./scripts/ci/run-tests.sh ./scripts/check-coverage.sh
 
       - name: Package smoke test (ad-hoc signed)
         env:
