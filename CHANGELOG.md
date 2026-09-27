@@ -12,6 +12,8 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+## [0.2.1] - 2026-09-28
+
 ### Added
 
 - Settings › General › Language: use Cubby in English or Simplified Chinese regardless of the macOS language. **Restart Now** applies it and brings you back to Settings. Automatic translation still translates into your system language.
@@ -101,5 +103,6 @@ Internal preview under the working name Zhantie. Not publicly released.
 
 - Menu bar clipboard history with a global shortcut to open it.
 
-[Unreleased]: https://github.com/no1coder/cubby/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/no1coder/cubby/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/no1coder/cubby/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/no1coder/cubby/releases/tag/v0.2.0
