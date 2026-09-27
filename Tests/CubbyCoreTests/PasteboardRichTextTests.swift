@@ -2,7 +2,7 @@ import AppKit
 import Testing
 @testable import CubbyCore
 
-@Suite("剪贴板富文本读写往返与大小限制")
+@Suite("剪贴板富文本读写往返与大小限制", .serializedPasteboardAccess, .timeLimit(.minutes(1)))
 struct PasteboardRichTextTests {
     private let rtfType = NSPasteboard.PasteboardType("public.rtf")
     private let htmlType = NSPasteboard.PasteboardType("public.html")

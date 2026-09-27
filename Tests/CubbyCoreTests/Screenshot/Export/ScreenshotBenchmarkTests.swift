@@ -5,7 +5,9 @@ import Testing
 
 /// 性能基线（只在设置 CUBBY_BENCH=1 时运行；建议 release：
 /// `CUBBY_BENCH=1 swift test -c release -Xswiftc -enable-testing --filter ScreenshotBenchmark`）
-@Suite("ScreenshotBenchmark 6K 性能基线", .enabled(if: ProcessInfo.processInfo.environment["CUBBY_BENCH"] != nil))
+@Suite(
+    "ScreenshotBenchmark 6K 性能基线", .serializedPasteboardAccess,
+    .enabled(if: ProcessInfo.processInfo.environment["CUBBY_BENCH"] != nil))
 struct ScreenshotBenchmarkTests {
     /// 6016×3384 = Pro Display XDR 原生像素（3008×1692 pt @2x）
     private let screen = CaptureScreen(id: 1, frame: CGRect(x: 0, y: 0, width: 3008, height: 1692), scale: 2)

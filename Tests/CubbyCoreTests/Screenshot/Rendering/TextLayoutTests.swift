@@ -97,7 +97,7 @@ struct TextLayoutTests {
     }
 }
 
-@Suite("TextLayout 与 NSTextView 排版一致（R8）")
+@Suite("TextLayout 与 NSTextView 排版一致（R8）", .serializedPasteboardAccess, .timeLimit(.minutes(1)))
 @MainActor
 struct TextLayoutParityTests {
     /// 用与覆盖层编辑器相同的配置测量：NSTextView（TextKit 2）、lineFragmentPadding = 0、同字体、同宽度

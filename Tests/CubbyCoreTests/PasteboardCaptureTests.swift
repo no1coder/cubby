@@ -3,7 +3,7 @@ import Testing
 @testable import CubbyCore
 
 /// 主线程只取原始字节：只提供 TIFF 的图片以 RawImage 交给后台，转码、尺寸解析与大小检查在 ClipStore.prepare 完成
-@Suite("剪贴板采集：TIFF 转码移到后台")
+@Suite("剪贴板采集：TIFF 转码移到后台", .serializedPasteboardAccess, .timeLimit(.minutes(1)))
 struct PasteboardCaptureTests {
     /// 改动前在主线程执行的转码写法，用来确认后台转码的结果逐字节不变（去重哈希因此不变）
     private func legacyPNG(from tiff: Data) throws -> Data {
