@@ -65,7 +65,7 @@ struct ClipInlineMarkupTests {
     func randomizedRoundTrip() {
         var random = SeededGenerator(seed: 42)
         let alphabet = Array(#"ab *[]`\()中文 "#)
-        for _ in 0..<300 {
+        for _ in 0..<FuzzBudget.scaled(300) {
             let runs = (0..<Int.random(in: 1...6, using: &random)).map { _ -> ClipRichRun in
                 let length = Int.random(in: 1...8, using: &random)
                 let raw = String((0..<length).map { _ in alphabet.randomElement(using: &random) ?? "a" })
@@ -156,11 +156,11 @@ struct ClipInlineMarkupTests {
 
     @Test("病态输入保持线性：成千上万个未闭合的链接、粗体、代码标记按字面返回，不卡住")
     func pathologicalInputStaysLinear() {
-        let clock = ContinuousClock()
         for pattern in ["[a](", "[a](((", "**[a](", "[`a`](", "(", "[a]", "`", "\\", "[**"] {
             let input = String(repeating: pattern, count: 20_000)
-            let elapsed = clock.measure { _ = ClipInlineMarkup.parse(input) }
-            #expect(elapsed < .seconds(5), "\(pattern)")
+            // 量线程 CPU 时间而非墙钟，CPU 繁忙时不误报；回溯成指数 / 二次方时远超门槛
+            let cpuTime = threadCPUTime { _ = ClipInlineMarkup.parse(input) }.duration
+            #expect(cpuTime < .seconds(5), "\(pattern)")
         }
         #expect(
             ClipInlineMarkup.plainText(String(repeating: "[a](", count: 20_000))

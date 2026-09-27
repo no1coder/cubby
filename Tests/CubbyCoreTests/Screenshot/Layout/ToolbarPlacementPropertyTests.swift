@@ -5,7 +5,7 @@ import Testing
 /// ToolbarPlacement 对任意输入成立的性质（§2.6：右对齐选区，下 → 上 → 内三档兜底，始终夹紧在屏幕内）
 @Suite("ToolbarPlacement · 性质测试（任意输入）")
 struct ToolbarPlacementPropertyTests {
-    private static let iterations = 4000
+    private static let iterations = FuzzBudget.scaled(4000)
     private typealias Gen = FuzzGeometry
 
     /// 常见工具栏 / 样式条尺寸，外加零尺寸与比屏幕还大的尺寸

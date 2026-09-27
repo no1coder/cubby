@@ -35,6 +35,8 @@ public final class ClipStore {
     @ObservationIgnored var searchIndexTask: Task<Void, Never>?
     /// 旧条目缩略图回填（见 ClipStore+Thumbnails）
     @ObservationIgnored var thumbnailBackfill: Task<Int, Never>?
+    /// 回填时生成并写入一张缩略图；测试可替换为能在生成前后暂停的实现，把删除确定地插在指定的一步
+    @ObservationIgnored var thumbnailWriter: ThumbnailWriter = ClipStore.writeThumbnail
 
     public init(
         storage: HistoryPersisting,

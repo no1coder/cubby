@@ -66,8 +66,17 @@ jobs:
           fi
           echo "VERSION=$FILE_VERSION" >> "$GITHUB_ENV"
 
+      # 先单独构建，下一步只剩运行测试，看门狗的「无输出」判定不受编译耗时影响
+      - name: Build tests
+        run: swift build --build-tests
+
+      # run-tests.sh：伪终端逐行输出；连续 5 分钟无输出即打印线程调用栈并失败（见脚本注释）
       - name: Test (gate)
-        run: swift test
+        timeout-minutes: 20
+        env:
+          # 模糊 / 性质测试缩到默认规模的 1/8（见 Tests/CubbyCoreTests/Support/FuzzBudget.swift）
+          CUBBY_FUZZ_SEEDS: "256"
+        run: ./scripts/ci/run-tests.sh swift test
 
       - name: Import signing certificate and notary key
         env:

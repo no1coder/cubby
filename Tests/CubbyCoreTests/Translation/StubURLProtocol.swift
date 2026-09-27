@@ -24,6 +24,9 @@ struct StubResponse: Sendable {
     static func sse(_ events: [String], status: Int = 200) -> StubResponse {
         StubResponse(status: status, steps: events.map { .send(Data($0.utf8)) })
     }
+
+    /// 响应头一直不来，直到请求被取消：超时用例不必赌「几秒的延迟」与超时谁先到
+    static let noResponse = StubResponse(headerDelay: .seconds(3600))
 }
 
 /// 一个测试专用的桩服务器：以唯一主机名注册，不联网。记录收到的请求与被停止的次数

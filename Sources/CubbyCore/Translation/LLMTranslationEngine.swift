@@ -22,16 +22,27 @@ public struct LLMTranslationEngine: TranslationEngine {
     private let timeouts: LLMTimeouts
     /// 提示词的场景：截图（默认）或剪贴板文本
     private let prompt: LLMTranslationPrompt.Profile
+    /// 首字节与整体超时的计时方式（默认 GCD）
+    private let timer: DeadlineTimer
     private static let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Translation")
 
     public init(
         configuration: LLMConfiguration, session: URLSession, timeouts: LLMTimeouts = .standard,
         prompt: LLMTranslationPrompt.Profile = .screenshot
     ) {
+        self.init(configuration: configuration, session: session, timeouts: timeouts, prompt: prompt, timer: .dispatch)
+    }
+
+    /// 可注入超时计时器：测试用手动计时器在确定的时刻触发超时，而不是依赖真实时间
+    init(
+        configuration: LLMConfiguration, session: URLSession, timeouts: LLMTimeouts,
+        prompt: LLMTranslationPrompt.Profile = .screenshot, timer: DeadlineTimer
+    ) {
         self.configuration = configuration
         self.session = session
         self.timeouts = timeouts
         self.prompt = prompt
+        self.timer = timer
     }
 
     public var displayName: String {
@@ -71,7 +82,7 @@ public struct LLMTranslationEngine: TranslationEngine {
         var previous: [TextBlock] = []
         for batch in LLMTranslationPrompt.batches(blocks) {
             let context = Array(previous.suffix(LLMTranslationPrompt.contextBlockCount))
-            translated += try await CaptureDeadline.run(timeouts.total) {
+            translated += try await CaptureDeadline.run(timeouts.total, timer: timer) {
                 try await translateBatch(batch, context: context, languages: languages, yield: yield)
             }
             previous = batch
@@ -91,7 +102,8 @@ public struct LLMTranslationEngine: TranslationEngine {
         let request = LLMHTTP.request(
             configuration.endpoint, path: "chat/completions", method: "POST", accept: "text/event-stream",
             body: try JSONEncoder().encode(body))
-        let (bytes, response) = try await LLMHTTP.openStream(request, session: session, firstByte: timeouts.firstByte)
+        let (bytes, response) = try await LLMHTTP.openStream(
+            request, session: session, firstByte: timeouts.firstByte, timer: timer)
         var parser = TranslationLineParser(blocks: batch)
         if LLMHTTP.isJSON(response) {
             ChatStreamEvent.completionContent(try await LLMHTTP.collect(bytes)).map {

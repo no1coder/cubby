@@ -110,7 +110,7 @@ struct ClipSearchIndexEquivalenceTests {
                 ? item.translated(TranslationFixtures.image(blob: "t\(index).png", segments: [translated]))
                 : item.translated(TranslationFixtures.text("en", segments: [translated, nil]))
         }
-        let queries = (0..<200).map { _ -> String in
+        let queries = (0..<FuzzBudget.scaled(200)).map { _ -> String in
             let item = items.randomElement(using: &random)
             let preferTranslation = Bool.random(using: &random)
             let source = (preferTranslation ? item?.translationSample : nil) ?? item?.searchSample ?? "a"

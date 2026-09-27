@@ -165,9 +165,12 @@ struct ClipHistoryTests {
     }
 
     @Test("大量条目插入后仍按上限保留最新的")
-    func largeHistory() {
-        let history = (0..<5_000).reduce(ClipHistory.empty) { partial, index in
-            partial.inserting(Fixtures.text("item-\(index)"), limit: 500)
+    func largeHistory() async {
+        // 5000 次不可变插入是纯 CPU 工作（调试构建约 2 s），放到协作线程池之外，不挤占并行测试的线程
+        let history = await runOffCooperativePool {
+            (0..<5_000).reduce(ClipHistory.empty) { partial, index in
+                partial.inserting(Fixtures.text("item-\(index)"), limit: 500)
+            }
         }
         #expect(history.items.count == 500)
         #expect(history.items.first?.text == "item-4999")

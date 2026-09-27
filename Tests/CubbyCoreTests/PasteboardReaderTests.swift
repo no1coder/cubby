@@ -2,7 +2,7 @@ import AppKit
 import Testing
 @testable import CubbyCore
 
-@Suite("PasteboardReader 读取与隐私过滤")
+@Suite("PasteboardReader 读取与隐私过滤", .serializedPasteboardAccess, .timeLimit(.minutes(1)))
 struct PasteboardReaderTests {
     /// 统一比较真实路径，规避 /var 与 /private/var 的符号链接差异
     private func resolvedPaths(_ urls: [URL]) -> [String] {

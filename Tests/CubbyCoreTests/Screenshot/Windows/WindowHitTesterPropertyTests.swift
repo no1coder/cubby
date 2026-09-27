@@ -6,7 +6,7 @@ import Testing
 /// WindowHitTester 对随机窗口栈成立的性质（§3.3.4、§9.2）
 @Suite("WindowHitTester · 性质测试（随机窗口栈）")
 struct WindowHitTesterPropertyTests {
-    private static let iterations = 1500
+    private static let iterations = FuzzBudget.scaled(1500)
     private static let ownPID: pid_t = 4242
     private typealias Gen = FuzzGeometry
 

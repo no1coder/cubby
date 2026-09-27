@@ -7,7 +7,7 @@ import Testing
 /// 输入由固定种子生成：边界含负坐标与小数，矩形含零尺寸、负尺寸、跨边、完全在外、比边界还大。
 @Suite("SelectionGeometry · 性质测试（任意输入）")
 struct SelectionGeometryPropertyTests {
-    private static let iterations = 4000
+    private static let iterations = FuzzBudget.scaled(4000)
     private typealias Gen = FuzzGeometry
 
     @Test("clamped：结果在 bounds 内、尺寸取 min(|原尺寸|, bounds)、幂等、已在内部的矩形不变")

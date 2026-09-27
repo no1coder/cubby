@@ -3,7 +3,7 @@ import Testing
 @testable import CubbyCore
 
 /// 大模型提示词的场景：截图（默认，逐字不变）与剪贴板文本（段落、受限 Markdown 原样保留）
-@Suite("大模型提示词场景")
+@Suite("大模型提示词场景", .timeLimit(.minutes(1)))
 struct LLMPromptProfileTests {
     private let languages = TranslationLanguages(source: "en", target: "zh-Hans")
 

@@ -2,7 +2,7 @@ import AppKit
 import Testing
 @testable import CubbyCore
 
-@Suite("ScreenshotPasteboard 写剪贴板")
+@Suite("ScreenshotPasteboard 写剪贴板", .serializedPasteboardAccess, .timeLimit(.minutes(1)))
 struct ScreenshotPasteboardTests {
     private func types(of pasteboard: NSPasteboard) -> Set<NSPasteboard.PasteboardType> {
         Set(pasteboard.types ?? [])

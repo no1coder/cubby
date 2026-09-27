@@ -3,7 +3,7 @@ import Testing
 @testable import CubbyCore
 
 /// 图片条目的预生成缩略图：随记录生成；删除 / 撤销 / 清空 / 上限淘汰 / 孤儿清理与原图同进退；旧条目后台回填
-@Suite("ClipStore 预生成缩略图的生命周期")
+@Suite("ClipStore 预生成缩略图的生命周期", .timeLimit(.minutes(1)))
 @MainActor
 struct ClipStoreThumbnailTests {
     /// 每个种子生成内容不同（尺寸不同）的大图，确保摘要不同
@@ -245,20 +245,65 @@ struct ClipStoreThumbnailTests {
         #expect(TempDirectory.fileNames(in: dir).isEmpty)
     }
 
-    @Test("回填生成期间条目被删除（撤销机会也已失效）：无论删除落在哪一步，最终都不留下缩略图")
-    func backfillDropsThumbnailOfItemRemovedMidway() async throws {
+    /// 回填开始之后，删除落在哪一步（开始之前见上一个用例）
+    enum RemovalPoint: String, CaseIterable, Sendable {
+        /// 已通过「仍被引用」检查、还没读原图：原图随删除消失，生成失败
+        case beforeDecoding
+        /// 正在解码（原图已读入）：删除之后缩略图才写入，没有主人，回填回到主线程后清理
+        case whileDecoding
+        /// 缩略图已写入、回到主线程检查之前：随放弃撤销一起删除
+        case afterWriting
+        /// 回填已完成：缩略图随条目一起删除
+        case afterCompletion
+    }
+
+    // 用可暂停的生成实现把删除确定地插在指定的一步。原先靠「睡 5 ms + 大图解码较慢」赌删除落在生成期间，
+    // CI 上 5 ms 的睡眠醒来前回填已经完成（得到 1 而不是 0）；现在每一步各测一次，结果都是确定的
+    @Test(
+        "回填期间条目被删除（撤销机会也已失效）：无论删除落在哪一步，最终都不留下缩略图",
+        arguments: RemovalPoint.allCases)
+    func backfillDropsThumbnailOfItemRemovedMidway(_ point: RemovalPoint) async throws {
         let dir = try TempDirectory.make()
         defer { TempDirectory.remove(dir) }
-        // 较大的图让生成耗时更长，删除大概率落在后台生成期间
-        let legacy = try legacyImage(7, in: dir, width: 6000, height: 4000)
+        let legacy = try legacyImage(7, in: dir)
         let store = StoreFactory.make(dir: dir, storage: InMemoryHistoryStorage(initial: ClipHistory(items: [legacy])))
+        let paused = Latch()
+        let resume = Latch(fallback: .seconds(20))
+        store.thumbnailWriter = { name, url, ref, blobs in
+            func pause(at here: RemovalPoint) async {
+                guard here == point else { return }
+                paused.open()
+                await resume.wait()
+            }
+            await pause(at: .beforeDecoding)
+            if point == .whileDecoding {
+                // 模拟解码进行中：原图已读入内存，删除发生后才解码完成并写入
+                let source = try? Data(contentsOf: url)
+                await pause(at: .whileDecoding)
+                guard let source,
+                    let data = ImageThumbnail.make(fromImageData: source, width: ref.width, height: ref.height)
+                else { return false }
+                return (try? blobs.write(data, name: name)) != nil
+            }
+            let written = await ClipStore.writeThumbnail(name: name, forImageAt: url, ref: ref, blobs: blobs)
+            await pause(at: .afterWriting)
+            return written
+        }
 
         let task = store.backfillThumbnails(after: .zero)
-        try await Task.sleep(for: .milliseconds(5))
+        // 回填任务是 background 优先级，CPU 繁忙时可能长时间排不上；立即有一个普通优先级的任务等待它的结果，
+        // 把它的优先级提升上来（与任何调用方 await 它时相同），等待它走到暂停点才不受 CPU 负载影响
+        let created = Task { await task.value }
+        if point == .afterCompletion {
+            #expect(await created.value == 1)
+        } else {
+            await waitUntil("回填停在 \(point.rawValue)") { paused.isOpen }
+        }
         store.remove(id: legacy.id)
         store.discardUndo()
+        resume.open()
 
-        #expect(await task.value == 0)
+        #expect(await created.value == (point == .afterCompletion ? 1 : 0))
         #expect(TempDirectory.fileNames(in: dir).isEmpty)
     }
 

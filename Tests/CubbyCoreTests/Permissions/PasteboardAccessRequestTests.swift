@@ -104,7 +104,7 @@ struct PasteboardAccessRequestTests {
     }
 }
 
-@Suite("读取系统剪贴板以触发询问")
+@Suite("读取系统剪贴板以触发询问", .serializedPasteboardAccess, .timeLimit(.minutes(1)))
 struct SystemPasteboardPromptTriggerTests {
     @Test("优先选择体积小的类型（纯文本、链接），不去读整张图片")
     func prefersLightweightTypes() {
