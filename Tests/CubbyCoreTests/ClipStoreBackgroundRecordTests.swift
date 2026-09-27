@@ -3,7 +3,7 @@ import Testing
 @testable import CubbyCore
 
 /// 后台准备、主线程入历史：摘要与 blob 写入在后台完成，语义与同步 record 一致
-@Suite("ClipStore 后台记录")
+@Suite("ClipStore 后台记录", .timeLimit(.minutes(1)))
 @MainActor
 struct ClipStoreBackgroundRecordTests {
     private func image(_ seed: String) -> ClipContent {

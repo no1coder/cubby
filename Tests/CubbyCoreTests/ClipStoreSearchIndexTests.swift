@@ -3,7 +3,7 @@ import Testing
 @testable import CubbyCore
 
 /// ClipStore 维护搜索索引：加载后后台构建，之后随每次历史变化同步增量更新
-@Suite("ClipStore 搜索索引维护")
+@Suite("ClipStore 搜索索引维护", .timeLimit(.minutes(1)))
 @MainActor
 struct ClipStoreSearchIndexTests {
     private func image(_ seed: String) -> ClipContent {

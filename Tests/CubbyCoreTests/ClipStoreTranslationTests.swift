@@ -3,7 +3,7 @@ import Testing
 @testable import CubbyCore
 
 /// ClipStore 的译文操作与译后图片 blob 的生命周期（docs/CLIP-TRANSLATION-DESIGN.md §2.4）
-@Suite("ClipStore 译文 setTranslation / clearTranslations / 译后图片")
+@Suite("ClipStore 译文 setTranslation / clearTranslations / 译后图片", .timeLimit(.minutes(1)))
 @MainActor
 struct ClipStoreTranslationTests {
     private func image(_ seed: String) -> ClipContent {

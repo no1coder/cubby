@@ -106,7 +106,7 @@ struct ClipSearchTranslationTests {
 }
 
 /// 译文路径的 ClipStore 集成：搜索索引随 setTranslation 更新，会话收窄与全量计算一致
-@Suite("搜索 · 译文与 ClipStore")
+@Suite("搜索 · 译文与 ClipStore", .timeLimit(.minutes(1)))
 @MainActor
 struct ClipStoreTranslationSearchTests {
     @Test("setTranslation 后立即可搜（只重折叠一条），清除译文后搜不到")

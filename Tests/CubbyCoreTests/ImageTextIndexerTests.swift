@@ -48,7 +48,7 @@ actor FakeImageTextRecognizer: ImageTextRecognizing {
 struct SimulatedRecognitionError: Error {}
 
 /// ImageTextIndexer 的执行：回填顺序、串行、批量写盘、暂停 / 关闭 / 停止时的行为
-@Suite("ImageTextIndexer 执行", .serialized)
+@Suite("ImageTextIndexer 执行", .serialized, .timeLimit(.minutes(1)))
 @MainActor
 struct ImageTextIndexerTests {
     /// 测试环境：独立的偏好、临时 blob 目录、内存存储
@@ -93,9 +93,10 @@ struct ImageTextIndexerTests {
         }
     }
 
-    /// 轮询等待条件成立（最多 5 秒）
+    /// 轮询等待条件成立（最多 30 秒）。条件成立即返回，上限只影响失败路径：
+    /// 假识别器是 actor，跑在协作线程池上，CI 上线程池繁忙时 5 秒不够
     private func waitUntil(_ condition: @MainActor () async -> Bool) async throws {
-        let deadline = ContinuousClock.now + .seconds(5)
+        let deadline = ContinuousClock.now + .seconds(30)
         while !(await condition()) {
             guard ContinuousClock.now < deadline else {
                 Issue.record("等待超时")
@@ -144,7 +145,8 @@ struct ImageTextIndexerTests {
         await harness.recognizer.setResult(.failure(SimulatedRecognitionError()), for: try #require(broken.image?.name))
 
         harness.start()
-        try await waitUntil { harness.store.item(id: fine.id)?.recognizedText != nil }
+        // 识别失败不改历史，只能等到识别器被调用两次；原先只等 60 ms，线程池繁忙时第二次调用还没发生
+        try await waitUntil { await harness.recognizer.calls.count == 2 }
         try await settle()
 
         #expect(await harness.recognizer.calls == [fine, broken].compactMap { $0.image?.name })

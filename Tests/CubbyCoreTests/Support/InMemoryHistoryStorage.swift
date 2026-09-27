@@ -71,8 +71,8 @@ final class GatedHistoryStorage: HistoryPersisting {
         try inner.save(history)
     }
 
-    /// 等待首次保存开始；超时返回 false
-    func waitUntilFirstSaveStarted(timeout seconds: Double = 5) -> Bool {
+    /// 等待首次保存开始；超时返回 false（上限只影响失败路径，取得宽一些，慢机器上不误报）
+    func waitUntilFirstSaveStarted(timeout seconds: Double = 30) -> Bool {
         started.wait(timeout: .now() + seconds) == .success
     }
 

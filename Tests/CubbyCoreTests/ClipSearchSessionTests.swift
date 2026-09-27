@@ -3,7 +3,7 @@ import Testing
 @testable import CubbyCore
 
 /// 逐键搜索会话：同一历史版本下新查询以旧查询为前缀时只在上次命中里继续过滤，结果与全量计算完全一致
-@Suite("ClipSearchSession 逐键收窄")
+@Suite("ClipSearchSession 逐键收窄", .timeLimit(.minutes(1)))
 @MainActor
 struct ClipSearchSessionTests {
     private static let items: [ClipItem] = [

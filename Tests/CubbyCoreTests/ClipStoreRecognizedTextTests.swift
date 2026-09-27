@@ -3,7 +3,7 @@ import Testing
 @testable import CubbyCore
 
 /// ClipHistory / ClipStore 的识别文字更新与清除
-@Suite("ClipStore 识别文字 setRecognizedText / clearRecognizedText")
+@Suite("ClipStore 识别文字 setRecognizedText / clearRecognizedText", .timeLimit(.minutes(1)))
 @MainActor
 struct ClipStoreRecognizedTextTests {
     private func image(_ seed: String) -> ClipContent {

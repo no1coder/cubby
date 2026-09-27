@@ -2,7 +2,7 @@ import Foundation
 import Testing
 @testable import CubbyCore
 
-@Suite("CoalescingSaver 合并保存")
+@Suite("CoalescingSaver 合并保存", .timeLimit(.minutes(1)))
 struct CoalescingSaverTests {
     private func snapshot(_ label: String) -> ClipHistory {
         ClipHistory(items: [Fixtures.text(label)])
