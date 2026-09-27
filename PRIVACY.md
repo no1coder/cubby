@@ -50,7 +50,7 @@ Cubby does not connect to the network on its own. It makes a request only when y
 - **When:** only when you click **Check for Updates**, or once a week if you turn on the automatic check in Settings. The automatic check is off by default.
 - **What is sent:** a standard HTTPS request. Like any web request, it reveals your IP address and a user agent to GitHub. It contains no identifiers and no clipboard content. GitHub's handling of such requests is covered by the [GitHub Privacy Statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
 
-**Screenshot translation with a large language model** (Cubby 0.3 and later, macOS 26)
+**Screenshot translation with a large language model** (Cubby 0.2 and later, macOS 26)
 
 - **When:** only when you translate a screenshot (the **Translate** button or <kbd>⇧⌘T</kbd>) while the engine in Settings › Translation is a large language model, and when you click **Refresh** or **Test Connection** in that pane. The default engine, System Translation, runs on your Mac and sends nothing.
 - **Where:** only to the base URL you configured, for example `api.deepseek.com`. Settings shows the host, and the translation bar always shows which engine is in use. HTTPS is required; plain HTTP is allowed only for `localhost`, `127.0.0.1` and `::1`. Redirects to another host are refused, so your API key is never forwarded anywhere else. A saved key is tied to the address it was saved for: if you change the base URL to another host (including another region of the same provider), Cubby doesn't send the old key and asks you to enter one for the new address.
@@ -58,7 +58,7 @@ Cubby does not connect to the network on its own. It makes a request only when y
 - **What is never sent:** the image, text under mosaic, text that looks like a secret (API keys, tokens and similar), and anything from your clipboard history.
 - The service you chose handles the text under its own privacy policy. Cubby draws its reply on the screenshot as plain text and never follows instructions or links in it. Cubby's logs record only counts, durations and HTTP status codes, never the text, the translation or the key.
 
-**Clipboard translation with a large language model** (Cubby 0.3 and later, macOS 26)
+**Clipboard translation with a large language model** (Cubby 0.2 and later, macOS 26)
 
 - **When:** only while the engine in Settings › Translation is a large language model, and only when you translate an item in the panel: <kbd>⌘T</kbd> (the translation card), <kbd>⌥↩</kbd> (translate and paste), holding <kbd>⌥</kbd> on an item, or **Translate** in an item's right-click menu. While the translation card is open it follows your selection, and an item you stay on for 0.6 seconds is translated too. A translation you already have is shown from your Mac without sending anything. **Translate text when you copy it** never uses a large language model.
 - **Where:** the same base URL, with the same rules, as screenshot translation. The translation card shows the engine and the host the text was sent to.
@@ -184,7 +184,7 @@ Cubby 不会主动联网，只在你要求时发出请求，共两种情况。
 - **时机：** 仅在你点击「检查更新」时，或在设置中开启自动检查后每周一次。自动检查默认关闭。
 - **发送内容：** 标准 HTTPS 请求。与任何网络请求一样，GitHub 能看到你的 IP 地址和 User-Agent。请求中不含任何标识符或剪贴板内容。GitHub 对此类请求的处理适用 [GitHub 隐私声明](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement)。
 
-**使用大模型翻译截图**（Cubby 0.3 及以后，macOS 26）
+**使用大模型翻译截图**（Cubby 0.2 及以后，macOS 26）
 
 - **时机：** 仅当「设置 › 翻译」中的引擎为大模型、且你翻译截图（点「翻译」按钮或按 <kbd>⇧⌘T</kbd>）时，以及你在该页点击「刷新」或「测试连接」时。默认引擎「系统翻译」在本机完成，不发送任何内容。
 - **发往何处：** 只发往你配置的接入地址，例如 `api.deepseek.com`。设置页会显示主机名，翻译条上也始终显示正在使用的引擎。必须使用 HTTPS；只有 `localhost`、`127.0.0.1` 与 `::1` 可以使用 HTTP。拒绝重定向到其他主机，你的 API Key 不会被转发到别处。保存的 API Key 与保存时的地址绑定：把接入地址改到其他主机（包括同一服务商的其他地域）后，Cubby 不会发送原来的 Key，而是提示你为新地址重新填写。
@@ -192,7 +192,7 @@ Cubby 不会主动联网，只在你要求时发出请求，共两种情况。
 - **绝不发送：** 图片、被马赛克遮住的文字、疑似密钥的文字（API Key、令牌等），以及剪贴板历史中的任何内容。
 - 你选择的服务按其自身的隐私政策处理收到的文字。Cubby 只把返回内容作为纯文本绘制在截图上，不会执行其中的指令或打开其中的链接。Cubby 的日志只记录数量、耗时与 HTTP 状态码，不记录原文、译文或 API Key。
 
-**使用大模型翻译剪贴板条目**（Cubby 0.3 及以后，macOS 26）
+**使用大模型翻译剪贴板条目**（Cubby 0.2 及以后，macOS 26）
 
 - **时机：** 仅当「设置 › 翻译」中的引擎为大模型、且你在面板中翻译条目时：按 <kbd>⌘T</kbd>（翻译卡）、按 <kbd>⌥↩</kbd>（翻译并粘贴）、在条目上按住 <kbd>⌥</kbd>，或在条目的右键菜单中选「翻译」。翻译卡打开期间会跟随选中项，在某一条上停留 0.6 秒也会翻译该条。已有的译文直接从本机显示，不发送任何内容。「复制外文时自动翻译」从不使用大模型。
 - **发往何处：** 与截图翻译相同的接入地址，规则也相同。翻译卡上会显示所用引擎和文字发往的主机名。
