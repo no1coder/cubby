@@ -8,11 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 <!--
 Add user-visible changes here under Added / Changed / Deprecated / Removed / Fixed / Security.
-When releasing 0.2.0, replace "Unreleased" in the heading below with the release date (YYYY-MM-DD).
-The release script extracts the section that starts with "## [0.2.0]".
+When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section (see docs/RELEASING.md).
+The release script extracts the section that starts with "## [x.y.z]".
 -->
 
-## [0.2.0] - Unreleased
+## [0.2.0] - 2026-09-27
 
 First public release. The app is renamed from Zhantie to **Cubby**, and is now open source under the MIT License.
 
