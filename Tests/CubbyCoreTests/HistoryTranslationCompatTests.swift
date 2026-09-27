@@ -148,13 +148,13 @@ struct HistoryTranslationCompatTests {
         }
         let history = ClipHistory(items: items)
         try storage.save(history)
-        let clock = ContinuousClock()
-        let saves = (0..<3).map { _ in clock.measure { try? storage.save(history) } }
-        let loads = (0..<3).map { _ in clock.measure { _ = try? storage.load() } }
+        // 量线程 CPU 时间而非墙钟：CPU 繁忙时墙钟会被拉长数倍，门槛测的是写盘本身的工作量
+        let saves = (0..<3).map { _ in threadCPUTime { try? storage.save(history) }.duration }
+        let loads = (0..<3).map { _ in threadCPUTime { _ = try? storage.load() }.duration }
         let size = try Data(contentsOf: storage.fileURL).count
         let best = saves.min() ?? .zero
         print(
-            "BENCH translations 500x3: save best \(best), load best \(loads.min() ?? .zero), "
+            "BENCH translations 500x3 (thread CPU time): save best \(best), load best \(loads.min() ?? .zero), "
                 + "file \(size / 1024) KB, \(history.translationLength) chars")
         #expect(try storage.load() == history)
         #expect(best < .milliseconds(500))

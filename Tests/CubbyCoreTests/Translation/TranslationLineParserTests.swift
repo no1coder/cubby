@@ -135,10 +135,10 @@ struct TranslationLineParserTests {
     @Test("一次到达大量行时按线性时间处理")
     func manyLinesInOneFragment() {
         let noise = String(repeating: "noise line that is not json\n", count: 20000)
-        let started = ContinuousClock.now
-        let result = parse([noise + #"{"id":0,"text":"文件"}"# + "\n"])
+        // 量线程 CPU 时间而非墙钟，CPU 繁忙时不误报；退化成二次方时远超门槛
+        let (result, cpuTime) = threadCPUTime { parse([noise + #"{"id":0,"text":"文件"}"# + "\n"]) }
         #expect(result.map(\.blockID) == [0])
-        #expect(ContinuousClock.now - started < .seconds(2))
+        #expect(cpuTime < .seconds(2))
     }
 
     @Test("跨行对象逐行累积深度：很长的多行对象也能解析")

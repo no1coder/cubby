@@ -201,13 +201,10 @@ struct ReducerTextTests {
     @Test("5 万个空白后跟一个字符：提交在线性时间内完成（不能用回溯正则）", .timeLimit(.minutes(1)))
     func longWhitespaceCommitIsLinear() throws {
         let spaces = String(repeating: " ", count: 50_000)
-        let clock = ContinuousClock()
-        var result: SessionHarness?
-        let elapsed = clock.measure {
-            result = editing.send(.textChanged(spaces + "x"), .command(.escape))
-        }
-        #expect(elapsed < .seconds(1))
-        let shape = try #require(result?.session.document.annotations.first?.shape)
+        // 量线程 CPU 时间而非墙钟，CPU 繁忙时不误报；回溯正则在 5 万个空白上远超门槛
+        let (result, cpuTime) = threadCPUTime { editing.send(.textChanged(spaces + "x"), .command(.escape)) }
+        #expect(cpuTime < .seconds(1))
+        let shape = try #require(result.session.document.annotations.first?.shape)
         #expect(shape == .text(spaces + "x", origin: point, maxWidth: 460))
 
         let trailing = editing.send(.textChanged("x" + spaces + "\n\n"), .command(.escape))
