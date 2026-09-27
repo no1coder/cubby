@@ -1,0 +1,3558 @@
+{
+ "scenes": [
+  {
+   "id": "prototype-storage",
+   "title": "Prototype-like Storage pane (light UI, sidebar, list, buttons, card, gradient banner)",
+   "width": 900,
+   "height": 600,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [
+    {
+     "rect": [
+      0,
+      0,
+      900,
+      40
+     ],
+     "fill": {
+      "color": "#ECECEC"
+     }
+    },
+    {
+     "rect": [
+      0,
+      39,
+      900,
+      1
+     ],
+     "fill": {
+      "color": "#D8D8DC"
+     }
+    },
+    {
+     "rect": [
+      14,
+      14,
+      12,
+      12
+     ],
+     "fill": {
+      "color": "#FF5F57"
+     },
+     "oval": true
+    },
+    {
+     "rect": [
+      34,
+      14,
+      12,
+      12
+     ],
+     "fill": {
+      "color": "#FEBC2E"
+     },
+     "oval": true
+    },
+    {
+     "rect": [
+      54,
+      14,
+      12,
+      12
+     ],
+     "fill": {
+      "color": "#28C840"
+     },
+     "oval": true
+    },
+    {
+     "rect": [
+      0,
+      40,
+      220,
+      560
+     ],
+     "fill": {
+      "color": "#F2F2F5"
+     }
+    },
+    {
+     "rect": [
+      220,
+      40,
+      1,
+      560
+     ],
+     "fill": {
+      "color": "#D8D8DC"
+     }
+    },
+    {
+     "rect": [
+      10,
+      52,
+      200,
+      28
+     ],
+     "fill": {
+      "color": "#E3E3E8"
+     },
+     "radius": 7
+    },
+    {
+     "rect": [
+      18,
+      61,
+      10,
+      10
+     ],
+     "fill": {
+      "color": "#8E8E93"
+     },
+     "oval": true
+    },
+    {
+     "rect": [
+      18,
+      97,
+      20,
+      20
+     ],
+     "fill": {
+      "color": "#8E8E93"
+     },
+     "radius": 5
+    },
+    {
+     "rect": [
+      18,
+      129,
+      20,
+      20
+     ],
+     "fill": {
+      "color": "#1C1C1E"
+     },
+     "radius": 5
+    },
+    {
+     "rect": [
+      18,
+      161,
+      20,
+      20
+     ],
+     "fill": {
+      "color": "#FF3B30"
+     },
+     "radius": 5
+    },
+    {
+     "rect": [
+      18,
+      193,
+      20,
+      20
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 5
+    },
+    {
+     "rect": [
+      10,
+      220,
+      200,
+      30
+     ],
+     "fill": {
+      "color": "#0A84FF"
+     },
+     "radius": 7
+    },
+    {
+     "rect": [
+      18,
+      225,
+      20,
+      20
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 5
+    },
+    {
+     "rect": [
+      18,
+      257,
+      20,
+      20
+     ],
+     "fill": {
+      "color": "#636366"
+     },
+     "radius": 5
+    },
+    {
+     "rect": [
+      244,
+      360,
+      80,
+      28
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 7,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      334,
+      360,
+      110,
+      28
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 7,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      454,
+      360,
+      96,
+      28
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 7
+    },
+    {
+     "rect": [
+      640,
+      60,
+      240,
+      190
+     ],
+     "fill": {
+      "color": "#F5F5F7"
+     },
+     "radius": 10,
+     "stroke": "#E4E4E8"
+    },
+    {
+     "rect": [
+      654,
+      98,
+      212,
+      1
+     ],
+     "fill": {
+      "color": "#E4E4E8"
+     }
+    },
+    {
+     "rect": [
+      654,
+      136,
+      212,
+      1
+     ],
+     "fill": {
+      "color": "#E4E4E8"
+     }
+    },
+    {
+     "rect": [
+      654,
+      174,
+      212,
+      1
+     ],
+     "fill": {
+      "color": "#E4E4E8"
+     }
+    },
+    {
+     "rect": [
+      654,
+      212,
+      212,
+      1
+     ],
+     "fill": {
+      "color": "#E4E4E8"
+     }
+    },
+    {
+     "rect": [
+      244,
+      430,
+      636,
+      140
+     ],
+     "fill": {
+      "gradient": [
+       "#5E5CE6",
+       "#0A84FF"
+      ]
+     },
+     "radius": 12
+    },
+    {
+     "rect": [
+      740,
+      520,
+      116,
+      32
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 16
+    }
+   ],
+   "texts": [
+    {
+     "text": "Settings",
+     "x": 450,
+     "y": 11,
+     "size": 13,
+     "weight": "semibold",
+     "color": "#4D4D4D",
+     "align": "center",
+     "translation": "设置"
+    },
+    {
+     "text": "Search",
+     "x": 34,
+     "y": 57,
+     "size": 13,
+     "color": "#8E8E93",
+     "translation": "搜索"
+    },
+    {
+     "text": "General",
+     "x": 46,
+     "y": 98,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "通用"
+    },
+    {
+     "text": "Appearance",
+     "x": 46,
+     "y": 130,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "外观"
+    },
+    {
+     "text": "Notifications",
+     "x": 46,
+     "y": 162,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "通知"
+    },
+    {
+     "text": "Privacy & Security",
+     "x": 46,
+     "y": 194,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "隐私与安全性"
+    },
+    {
+     "text": "Storage",
+     "x": 46,
+     "y": 226,
+     "size": 13,
+     "color": "#FFFFFF",
+     "translation": "储存空间"
+    },
+    {
+     "text": "Advanced",
+     "x": 46,
+     "y": 258,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "高级"
+    },
+    {
+     "text": "Storage",
+     "x": 244,
+     "y": 58,
+     "size": 22,
+     "weight": "bold",
+     "color": "#1D1D1F",
+     "translation": "储存空间"
+    },
+    {
+     "text": "Your Mac is using 186.2 GB of 494.4 GB. Optimize storage to free up space automatically by removing items you no longer need, such as watched movies, old email attachments and duplicate downloads.",
+     "x": 244,
+     "y": 96,
+     "size": 13,
+     "color": "#3C3C43",
+     "width": 370,
+     "lineHeight": 18,
+     "translation": "你的 Mac 已使用 494.4 GB 中的 186.2 GB。优化储存空间可自动移除不再需要的项目（例如已看过的影片、旧的邮件附件和重复的下载项），从而释放空间。"
+    },
+    {
+     "text": "Recommendations",
+     "x": 244,
+     "y": 184,
+     "size": 15,
+     "weight": "semibold",
+     "color": "#1D1D1F",
+     "translation": "建议"
+    },
+    {
+     "text": "Store in iCloud — Keep files and photos in iCloud and free up space when needed.",
+     "x": 262,
+     "y": 212,
+     "size": 13,
+     "color": "#3C3C43",
+     "width": 350,
+     "lineHeight": 18,
+     "translation": "储存在 iCloud 中 — 将文件和照片保留在 iCloud 中，并在需要时释放空间。",
+     "marker": "•"
+    },
+    {
+     "text": "Optimize Storage — Remove movies and TV shows you’ve already watched from this Mac.",
+     "x": 262,
+     "y": 256,
+     "size": 13,
+     "color": "#3C3C43",
+     "width": 350,
+     "lineHeight": 18,
+     "translation": "优化储存空间 — 从这台 Mac 上移除已看过的电影和电视节目。",
+     "marker": "•"
+    },
+    {
+     "text": "Empty Trash Automatically — Erase items that have been in the Trash for more than 30 days.",
+     "x": 262,
+     "y": 300,
+     "size": 13,
+     "color": "#3C3C43",
+     "width": 350,
+     "lineHeight": 18,
+     "translation": "自动清倒废纸篓 — 抹掉在废纸篓中存放超过 30 天的项目。",
+     "marker": "•"
+    },
+    {
+     "text": "Cancel",
+     "x": 284.0,
+     "y": 365.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "取消"
+    },
+    {
+     "text": "Review Files",
+     "x": 389.0,
+     "y": 365.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "查看文件"
+    },
+    {
+     "text": "Optimize",
+     "x": 502.0,
+     "y": 365.0,
+     "size": 13,
+     "weight": "medium",
+     "color": "#FFFFFF",
+     "align": "center",
+     "translation": "优化"
+    },
+    {
+     "text": "Documents",
+     "x": 654,
+     "y": 70,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "文稿"
+    },
+    {
+     "text": "12.4 GB",
+     "x": 866,
+     "y": 70,
+     "size": 13,
+     "color": "#6E6E73",
+     "align": "right"
+    },
+    {
+     "text": "Photos",
+     "x": 654,
+     "y": 108,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "照片"
+    },
+    {
+     "text": "48.1 GB",
+     "x": 866,
+     "y": 108,
+     "size": 13,
+     "color": "#6E6E73",
+     "align": "right"
+    },
+    {
+     "text": "Items in Trash",
+     "x": 654,
+     "y": 146,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "废纸篓中的项目"
+    },
+    {
+     "text": "1,284",
+     "x": 866,
+     "y": 146,
+     "size": 13,
+     "color": "#6E6E73",
+     "align": "right"
+    },
+    {
+     "text": "iCloud Drive",
+     "x": 654,
+     "y": 184,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "iCloud 云盘"
+    },
+    {
+     "text": "Synced",
+     "x": 866,
+     "y": 184,
+     "size": 13,
+     "color": "#248A3D",
+     "align": "right",
+     "translation": "已同步"
+    },
+    {
+     "text": "Last backup:",
+     "x": 654,
+     "y": 222,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "上次备份："
+    },
+    {
+     "text": "Yesterday at 21:30",
+     "x": 866,
+     "y": 222,
+     "size": 13,
+     "color": "#6E6E73",
+     "align": "right",
+     "translation": "昨天 21:30"
+    },
+    {
+     "text": "Cache location",
+     "x": 640,
+     "y": 266,
+     "size": 11,
+     "weight": "medium",
+     "color": "#8E8E93",
+     "translation": "缓存位置"
+    },
+    {
+     "text": "~/Library/Caches/com.example.app",
+     "x": 640,
+     "y": 284,
+     "size": 12,
+     "color": "#1D1D1F"
+    },
+    {
+     "text": "API key: sk-live-8f3a9c21e7d4b5a6c7d8e9f0",
+     "x": 640,
+     "y": 308,
+     "size": 12,
+     "color": "#1D1D1F"
+    },
+    {
+     "text": "Get 2 TB of iCloud+ free for 3 months",
+     "x": 268,
+     "y": 456,
+     "size": 20,
+     "weight": "bold",
+     "color": "#FFFFFF",
+     "translation": "免费畅享 3 个月 2 TB iCloud+"
+    },
+    {
+     "text": "Offer ends October 31. Cancel anytime.",
+     "x": 268,
+     "y": 490,
+     "size": 13,
+     "color": "#FFFFFF",
+     "translation": "优惠截至 10 月 31 日，可随时取消。"
+    },
+    {
+     "text": "Learn More",
+     "x": 798.0,
+     "y": 527.0,
+     "size": 13,
+     "weight": "semibold",
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "了解更多"
+    }
+   ]
+  },
+  {
+   "id": "dark-ui",
+   "title": "Dark UI settings panel with secondary gray text and toggles",
+   "width": 640,
+   "height": 380,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#1E1E1E"
+   },
+   "shapes": [
+    {
+     "rect": [
+      20,
+      20,
+      600,
+      340
+     ],
+     "fill": {
+      "color": "#2A2A2A"
+     },
+     "radius": 10,
+     "stroke": "#3A3A3C"
+    },
+    {
+     "rect": [
+      560,
+      86,
+      38,
+      22
+     ],
+     "fill": {
+      "color": "#30D158"
+     },
+     "radius": 11
+    },
+    {
+     "rect": [
+      576,
+      88,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "oval": true
+    },
+    {
+     "rect": [
+      40,
+      126,
+      560,
+      1
+     ],
+     "fill": {
+      "color": "#3A3A3C"
+     }
+    },
+    {
+     "rect": [
+      560,
+      142,
+      38,
+      22
+     ],
+     "fill": {
+      "color": "#48484A"
+     },
+     "radius": 11
+    },
+    {
+     "rect": [
+      562,
+      144,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "oval": true
+    },
+    {
+     "rect": [
+      40,
+      182,
+      560,
+      1
+     ],
+     "fill": {
+      "color": "#3A3A3C"
+     }
+    },
+    {
+     "rect": [
+      560,
+      198,
+      38,
+      22
+     ],
+     "fill": {
+      "color": "#30D158"
+     },
+     "radius": 11
+    },
+    {
+     "rect": [
+      576,
+      200,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "oval": true
+    },
+    {
+     "rect": [
+      40,
+      238,
+      560,
+      1
+     ],
+     "fill": {
+      "color": "#3A3A3C"
+     }
+    },
+    {
+     "rect": [
+      470,
+      242,
+      130,
+      26
+     ],
+     "fill": {
+      "color": "#3A3A3C"
+     },
+     "radius": 6
+    },
+    {
+     "rect": [
+      40,
+      306,
+      110,
+      28
+     ],
+     "fill": {
+      "color": "#3A3A3C"
+     },
+     "radius": 7
+    },
+    {
+     "rect": [
+      510,
+      306,
+      90,
+      28
+     ],
+     "fill": {
+      "color": "#0A84FF"
+     },
+     "radius": 7
+    }
+   ],
+   "texts": [
+    {
+     "text": "Display",
+     "x": 40,
+     "y": 34,
+     "size": 17,
+     "weight": "bold",
+     "color": "#FFFFFF",
+     "translation": "显示器"
+    },
+    {
+     "text": "True Tone",
+     "x": 40,
+     "y": 80,
+     "size": 13,
+     "color": "#FFFFFF",
+     "translation": "原彩显示"
+    },
+    {
+     "text": "Adjusts colors to match the light around you",
+     "x": 40,
+     "y": 99,
+     "size": 11,
+     "color": "#A1A1A6",
+     "translation": "根据周围环境光自动调整颜色"
+    },
+    {
+     "text": "Night Shift",
+     "x": 40,
+     "y": 136,
+     "size": 13,
+     "color": "#FFFFFF",
+     "translation": "夜览"
+    },
+    {
+     "text": "Warmer colors after sunset",
+     "x": 40,
+     "y": 155,
+     "size": 11,
+     "color": "#A1A1A6",
+     "translation": "日落后使用更暖的色调"
+    },
+    {
+     "text": "Automatically adjust brightness",
+     "x": 40,
+     "y": 192,
+     "size": 13,
+     "color": "#FFFFFF",
+     "translation": "自动调节亮度"
+    },
+    {
+     "text": "Uses the ambient light sensor",
+     "x": 40,
+     "y": 211,
+     "size": 11,
+     "color": "#A1A1A6",
+     "translation": "使用环境光传感器"
+    },
+    {
+     "text": "Refresh Rate",
+     "x": 40,
+     "y": 248,
+     "size": 13,
+     "color": "#FFFFFF",
+     "translation": "刷新率"
+    },
+    {
+     "text": "ProMotion",
+     "x": 482,
+     "y": 246,
+     "size": 13,
+     "color": "#FFFFFF",
+     "translation": "ProMotion"
+    },
+    {
+     "text": "Advanced…",
+     "x": 95.0,
+     "y": 311.0,
+     "size": 13,
+     "color": "#FFFFFF",
+     "align": "center",
+     "translation": "高级…"
+    },
+    {
+     "text": "Done",
+     "x": 555.0,
+     "y": 311.0,
+     "size": 13,
+     "color": "#FFFFFF",
+     "align": "center",
+     "translation": "完成"
+    }
+   ]
+  },
+  {
+   "id": "buttons",
+   "title": "Colored buttons, pills, segmented control, tag and link",
+   "width": 560,
+   "height": 250,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#F5F5F7"
+   },
+   "shapes": [
+    {
+     "rect": [
+      30,
+      30,
+      110,
+      30
+     ],
+     "fill": {
+      "color": "#E5E5EA"
+     },
+     "radius": 8
+    },
+    {
+     "rect": [
+      152,
+      30,
+      120,
+      30
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 8
+    },
+    {
+     "rect": [
+      284,
+      30,
+      110,
+      30
+     ],
+     "fill": {
+      "color": "#FF3B30"
+     },
+     "radius": 8
+    },
+    {
+     "rect": [
+      406,
+      30,
+      120,
+      30
+     ],
+     "fill": {
+      "color": "#34C759"
+     },
+     "radius": 8
+    },
+    {
+     "rect": [
+      30,
+      90,
+      160,
+      32
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 16,
+     "stroke": "#007AFF"
+    },
+    {
+     "rect": [
+      206,
+      90,
+      120,
+      32
+     ],
+     "fill": {
+      "color": "#1D1D1F"
+     },
+     "radius": 16
+    },
+    {
+     "rect": [
+      342,
+      90,
+      184,
+      32
+     ],
+     "fill": {
+      "color": "#E8F0FE"
+     },
+     "radius": 8
+    },
+    {
+     "rect": [
+      30,
+      150,
+      300,
+      28
+     ],
+     "fill": {
+      "color": "#E5E5EA"
+     },
+     "radius": 7
+    },
+    {
+     "rect": [
+      32,
+      152,
+      98,
+      24
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 6
+    },
+    {
+     "rect": [
+      230,
+      156,
+      1,
+      16
+     ],
+     "fill": {
+      "color": "#C7C7CC"
+     }
+    },
+    {
+     "rect": [
+      200,
+      204,
+      70,
+      22
+     ],
+     "fill": {
+      "color": "#FFE8CC"
+     },
+     "radius": 11
+    }
+   ],
+   "texts": [
+    {
+     "text": "Cancel",
+     "x": 85.0,
+     "y": 36.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "取消"
+    },
+    {
+     "text": "Continue",
+     "x": 212.0,
+     "y": 36.0,
+     "size": 13,
+     "weight": "semibold",
+     "color": "#FFFFFF",
+     "align": "center",
+     "translation": "继续"
+    },
+    {
+     "text": "Delete",
+     "x": 339.0,
+     "y": 36.0,
+     "size": 13,
+     "color": "#FFFFFF",
+     "align": "center",
+     "translation": "删除"
+    },
+    {
+     "text": "Install",
+     "x": 466.0,
+     "y": 36.0,
+     "size": 13,
+     "weight": "semibold",
+     "color": "#FFFFFF",
+     "align": "center",
+     "translation": "安装"
+    },
+    {
+     "text": "Add to Library",
+     "x": 110.0,
+     "y": 97.0,
+     "size": 13,
+     "color": "#007AFF",
+     "align": "center",
+     "translation": "添加到资料库"
+    },
+    {
+     "text": "Download",
+     "x": 266.0,
+     "y": 97.0,
+     "size": 13,
+     "color": "#FFFFFF",
+     "align": "center",
+     "translation": "下载"
+    },
+    {
+     "text": "Share Feedback",
+     "x": 434.0,
+     "y": 97.0,
+     "size": 13,
+     "color": "#0B57D0",
+     "align": "center",
+     "translation": "分享反馈"
+    },
+    {
+     "text": "Day",
+     "x": 81,
+     "y": 155.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "日"
+    },
+    {
+     "text": "Week",
+     "x": 180,
+     "y": 155.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "周"
+    },
+    {
+     "text": "Month",
+     "x": 280,
+     "y": 155.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "月"
+    },
+    {
+     "text": "Forgot password?",
+     "x": 30,
+     "y": 206,
+     "size": 13,
+     "color": "#007AFF",
+     "translation": "忘记密码？"
+    },
+    {
+     "text": "Beta",
+     "x": 235.0,
+     "y": 207.5,
+     "size": 11,
+     "weight": "semibold",
+     "color": "#C25400",
+     "align": "center",
+     "translation": "测试版"
+    }
+   ]
+  },
+  {
+   "id": "gradient-banner",
+   "title": "Gradient banner (plate backdrop expected) with a solid white pill",
+   "width": 720,
+   "height": 290,
+   "target": "zh-Hans",
+   "background": {
+    "gradient": [
+     "#FF6B6B",
+     "#7B61FF"
+    ]
+   },
+   "shapes": [
+    {
+     "rect": [
+      48,
+      200,
+      150,
+      40
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 20
+    }
+   ],
+   "texts": [
+    {
+     "text": "Make every screenshot count",
+     "x": 48,
+     "y": 56,
+     "size": 32,
+     "weight": "bold",
+     "color": "#FFFFFF",
+     "translation": "让每一张截图都物尽其用"
+    },
+    {
+     "text": "Annotate, translate and share in seconds — right where you capture.",
+     "x": 48,
+     "y": 112,
+     "size": 15,
+     "color": "#FFFFFF",
+     "width": 420,
+     "lineHeight": 22,
+     "translation": "截图后即可标注、翻译与分享，几秒钟就能完成。"
+    },
+    {
+     "text": "Try It Free",
+     "x": 123.0,
+     "y": 210.0,
+     "size": 15,
+     "weight": "semibold",
+     "color": "#7B61FF",
+     "align": "center",
+     "translation": "免费试用"
+    }
+   ]
+  },
+  {
+   "id": "photo-noise",
+   "title": "Photo-like noisy background with white captions (plate expected)",
+   "width": 720,
+   "height": 380,
+   "target": "zh-Hans",
+   "background": {
+    "noise": 7
+   },
+   "shapes": [
+    {
+     "rect": [
+      626,
+      24,
+      64,
+      24
+     ],
+     "fill": {
+      "color": "#1C1C1E"
+     },
+     "radius": 6
+    }
+   ],
+   "texts": [
+    {
+     "text": "Golden Hour at the Coast",
+     "x": 40,
+     "y": 236,
+     "size": 28,
+     "weight": "bold",
+     "color": "#FFFFFF",
+     "translation": "海岸边的黄金时刻"
+    },
+    {
+     "text": "Shot on iPhone · 26 mm · f/1.8",
+     "x": 40,
+     "y": 280,
+     "size": 14,
+     "color": "#FFFFFF",
+     "translation": "使用 iPhone 拍摄 · 26 毫米 · f/1.8"
+    },
+    {
+     "text": "Waves roll in as the sun sets behind the cliffs, painting the sky in warm orange and pink.",
+     "x": 40,
+     "y": 316,
+     "size": 14,
+     "color": "#FFFFFF",
+     "width": 520,
+     "lineHeight": 20,
+     "translation": "夕阳落到悬崖背后，海浪翻涌而来，把天空染成温暖的橙色和粉色。"
+    },
+    {
+     "text": "Live",
+     "x": 658.0,
+     "y": 28.0,
+     "size": 12,
+     "weight": "semibold",
+     "color": "#FFFFFF",
+     "align": "center",
+     "translation": "实况"
+    }
+   ]
+  },
+  {
+   "id": "paragraph",
+   "title": "Article: title, two paragraphs, caption",
+   "width": 620,
+   "height": 290,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [],
+   "texts": [
+    {
+     "text": "About Clipboard History",
+     "x": 40,
+     "y": 32,
+     "size": 22,
+     "weight": "bold",
+     "color": "#1D1D1F",
+     "translation": "关于剪贴板历史"
+    },
+    {
+     "text": "Cubby keeps a searchable history of everything you copy, including text, images, links and files. Items stay on this Mac and are never uploaded. You can pin frequently used snippets, organize them into collections, and paste any item with a single keystroke.",
+     "x": 40,
+     "y": 76,
+     "size": 13,
+     "color": "#1D1D1F",
+     "width": 520,
+     "lineHeight": 19,
+     "translation": "Cubby 会保存你拷贝过的所有内容的可搜索历史记录，包括文本、图片、链接和文件。所有项目都只保存在这台 Mac 上，绝不会上传。你可以固定常用片段、将它们整理到收藏夹中，并通过一次按键粘贴任意项目。"
+    },
+    {
+     "text": "Older items are removed automatically after thirty days unless they are pinned. To change how long items are kept, open Settings and choose History.",
+     "x": 40,
+     "y": 180,
+     "size": 13,
+     "color": "#1D1D1F",
+     "width": 520,
+     "lineHeight": 19,
+     "translation": "除非已固定，较早的项目会在三十天后自动移除。若要更改项目的保留时长，请打开“设置”并选择“历史记录”。"
+    },
+    {
+     "text": "Last updated September 27, 2026",
+     "x": 40,
+     "y": 250,
+     "size": 11,
+     "color": "#86868B",
+     "translation": "最后更新于 2026 年 9 月 27 日"
+    }
+   ]
+  },
+  {
+   "id": "lists",
+   "title": "Bulleted and numbered lists (markers must stay)",
+   "width": 620,
+   "height": 300,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [],
+   "texts": [
+    {
+     "text": "Before You Begin",
+     "x": 40,
+     "y": 26,
+     "size": 17,
+     "weight": "semibold",
+     "color": "#1D1D1F",
+     "translation": "开始之前"
+    },
+    {
+     "text": "Copy anything: text, images, files and links.",
+     "x": 58,
+     "y": 60,
+     "size": 13,
+     "color": "#1D1D1F",
+     "width": 500,
+     "lineHeight": 19,
+     "translation": "拷贝任何内容：文本、图片、文件和链接。",
+     "marker": "•"
+    },
+    {
+     "text": "Search your history instantly with fuzzy matching, even across thousands of items stored over several months.",
+     "x": 58,
+     "y": 87,
+     "size": 13,
+     "color": "#1D1D1F",
+     "width": 500,
+     "lineHeight": 19,
+     "translation": "使用模糊匹配即时搜索历史记录，即使是数月来储存的数千个项目也能快速找到。",
+     "marker": "•"
+    },
+    {
+     "text": "Pin snippets you use every day.",
+     "x": 58,
+     "y": 133,
+     "size": 13,
+     "color": "#1D1D1F",
+     "width": 500,
+     "lineHeight": 19,
+     "translation": "固定每天都会用到的片段。",
+     "marker": "•"
+    },
+    {
+     "text": "Set Up",
+     "x": 40,
+     "y": 176,
+     "size": 17,
+     "weight": "semibold",
+     "color": "#1D1D1F",
+     "translation": "设置步骤"
+    },
+    {
+     "text": "Open Cubby from the menu bar.",
+     "x": 62,
+     "y": 208,
+     "size": 13,
+     "color": "#1D1D1F",
+     "width": 500,
+     "lineHeight": 19,
+     "translation": "从菜单栏打开 Cubby。",
+     "marker": "1."
+    },
+    {
+     "text": "Choose Settings, then click Shortcuts to pick a hotkey.",
+     "x": 62,
+     "y": 235,
+     "size": 13,
+     "color": "#1D1D1F",
+     "width": 500,
+     "lineHeight": 19,
+     "translation": "选取“设置”，然后点按“快捷键”以选择一个热键。",
+     "marker": "2."
+    },
+    {
+     "text": "Press the hotkey anywhere to show your clipboard history.",
+     "x": 62,
+     "y": 262,
+     "size": 13,
+     "color": "#1D1D1F",
+     "width": 500,
+     "lineHeight": 19,
+     "translation": "在任意位置按下该热键即可显示剪贴板历史记录。",
+     "marker": "3."
+    }
+   ]
+  },
+  {
+   "id": "columns",
+   "title": "Two columns",
+   "width": 760,
+   "height": 220,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [
+    {
+     "rect": [
+      380,
+      24,
+      1,
+      170
+     ],
+     "fill": {
+      "color": "#E5E5EA"
+     }
+    }
+   ],
+   "texts": [
+    {
+     "text": "Screenshots",
+     "x": 40,
+     "y": 30,
+     "size": 15,
+     "weight": "semibold",
+     "color": "#1D1D1F",
+     "translation": "截图"
+    },
+    {
+     "text": "Screenshots are saved to the history automatically. Select any region of the screen, annotate it with arrows, text and highlights, then copy it or drag it straight into another app.",
+     "x": 40,
+     "y": 58,
+     "size": 13,
+     "color": "#3C3C43",
+     "width": 320,
+     "lineHeight": 19,
+     "translation": "截图会自动保存到历史记录中。选择屏幕上的任意区域，用箭头、文字和高亮进行标注，然后拷贝或直接拖到其他应用中。"
+    },
+    {
+     "text": "Privacy",
+     "x": 400,
+     "y": 30,
+     "size": 15,
+     "weight": "semibold",
+     "color": "#1D1D1F",
+     "translation": "隐私"
+    },
+    {
+     "text": "Everything stays on your Mac. Cubby never uploads your clipboard, and it skips passwords and other sensitive items copied from password managers.",
+     "x": 400,
+     "y": 58,
+     "size": 13,
+     "color": "#3C3C43",
+     "width": 320,
+     "lineHeight": 19,
+     "translation": "所有内容都保留在你的 Mac 上。Cubby 从不上传你的剪贴板，并会跳过从密码管理器中拷贝的密码和其他敏感项目。"
+    }
+   ]
+  },
+  {
+   "id": "table",
+   "title": "Table with header row, stripes and a right-aligned column",
+   "width": 640,
+   "height": 210,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [
+    {
+     "rect": [
+      20,
+      20,
+      600,
+      32
+     ],
+     "fill": {
+      "color": "#F5F5F7"
+     }
+    },
+    {
+     "rect": [
+      20,
+      52,
+      600,
+      1
+     ],
+     "fill": {
+      "color": "#D2D2D7"
+     }
+    },
+    {
+     "rect": [
+      20,
+      86,
+      600,
+      1
+     ],
+     "fill": {
+      "color": "#E5E5EA"
+     }
+    },
+    {
+     "rect": [
+      20,
+      87,
+      600,
+      34
+     ],
+     "fill": {
+      "color": "#FAFAFA"
+     }
+    },
+    {
+     "rect": [
+      20,
+      120,
+      600,
+      1
+     ],
+     "fill": {
+      "color": "#E5E5EA"
+     }
+    },
+    {
+     "rect": [
+      20,
+      154,
+      600,
+      1
+     ],
+     "fill": {
+      "color": "#E5E5EA"
+     }
+    },
+    {
+     "rect": [
+      20,
+      155,
+      600,
+      34
+     ],
+     "fill": {
+      "color": "#FAFAFA"
+     }
+    },
+    {
+     "rect": [
+      20,
+      188,
+      600,
+      1
+     ],
+     "fill": {
+      "color": "#E5E5EA"
+     }
+    }
+   ],
+   "texts": [
+    {
+     "text": "Setting",
+     "x": 36,
+     "y": 27,
+     "size": 12,
+     "weight": "semibold",
+     "color": "#6E6E73",
+     "translation": "设置"
+    },
+    {
+     "text": "Status",
+     "x": 330,
+     "y": 27,
+     "size": 12,
+     "weight": "semibold",
+     "color": "#6E6E73",
+     "translation": "状态"
+    },
+    {
+     "text": "Updated",
+     "x": 604,
+     "y": 27,
+     "size": 12,
+     "weight": "semibold",
+     "color": "#6E6E73",
+     "align": "right",
+     "translation": "更新时间"
+    },
+    {
+     "text": "Automatic updates",
+     "x": 36,
+     "y": 61,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "自动更新"
+    },
+    {
+     "text": "On",
+     "x": 330,
+     "y": 61,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "开"
+    },
+    {
+     "text": "2 days ago",
+     "x": 604,
+     "y": 61,
+     "size": 13,
+     "color": "#6E6E73",
+     "align": "right",
+     "translation": "2 天前"
+    },
+    {
+     "text": "Security responses",
+     "x": 36,
+     "y": 95,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "安全响应"
+    },
+    {
+     "text": "Off",
+     "x": 330,
+     "y": 95,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "关"
+    },
+    {
+     "text": "1 week ago",
+     "x": 604,
+     "y": 95,
+     "size": 13,
+     "color": "#6E6E73",
+     "align": "right",
+     "translation": "1 周前"
+    },
+    {
+     "text": "App Store downloads",
+     "x": 36,
+     "y": 129,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "App Store 下载项"
+    },
+    {
+     "text": "On",
+     "x": 330,
+     "y": 129,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "开"
+    },
+    {
+     "text": "Yesterday",
+     "x": 604,
+     "y": 129,
+     "size": 13,
+     "color": "#6E6E73",
+     "align": "right",
+     "translation": "昨天"
+    },
+    {
+     "text": "System data files",
+     "x": 36,
+     "y": 163,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "系统数据文件"
+    },
+    {
+     "text": "Pending",
+     "x": 330,
+     "y": 163,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "待处理"
+    },
+    {
+     "text": "Today",
+     "x": 604,
+     "y": 163,
+     "size": 13,
+     "color": "#6E6E73",
+     "align": "right",
+     "translation": "今天"
+    }
+   ]
+  },
+  {
+   "id": "centered",
+   "title": "Centered onboarding: title, two-line subtitle, button, link",
+   "width": 600,
+   "height": 320,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [
+    {
+     "rect": [
+      268,
+      30,
+      64,
+      64
+     ],
+     "fill": {
+      "gradient": [
+       "#34C759",
+       "#007AFF"
+      ]
+     },
+     "radius": 14
+    },
+    {
+     "rect": [
+      220,
+      222,
+      160,
+      36
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 8
+    }
+   ],
+   "texts": [
+    {
+     "text": "Welcome to Cubby",
+     "x": 300,
+     "y": 110,
+     "size": 26,
+     "weight": "bold",
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "欢迎使用 Cubby"
+    },
+    {
+     "text": "A tidy clipboard history and screenshot tool that lives in your menu bar.",
+     "x": 300,
+     "y": 152,
+     "size": 14,
+     "color": "#6E6E73",
+     "width": 380,
+     "lineHeight": 20,
+     "align": "center",
+     "translation": "一个住在菜单栏里、井井有条的剪贴板历史与截图工具。"
+    },
+    {
+     "text": "Get Started",
+     "x": 300.0,
+     "y": 230.5,
+     "size": 14,
+     "weight": "semibold",
+     "color": "#FFFFFF",
+     "align": "center",
+     "translation": "开始使用"
+    },
+    {
+     "text": "Not Now",
+     "x": 300,
+     "y": 276,
+     "size": 13,
+     "color": "#007AFF",
+     "align": "center",
+     "translation": "以后再说"
+    }
+   ]
+  },
+  {
+   "id": "sidebar",
+   "title": "Finder-like sidebar with section headers, icons and a selected row",
+   "width": 480,
+   "height": 440,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [
+    {
+     "rect": [
+      0,
+      0,
+      240,
+      440
+     ],
+     "fill": {
+      "color": "#F2F2F5"
+     }
+    },
+    {
+     "rect": [
+      240,
+      0,
+      1,
+      440
+     ],
+     "fill": {
+      "color": "#D8D8DC"
+     }
+    },
+    {
+     "rect": [
+      18,
+      43,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      18,
+      73,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#5856D6"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      18,
+      103,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#34AADC"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      8,
+      128,
+      224,
+      28
+     ],
+     "fill": {
+      "color": "#DCDCE0"
+     },
+     "radius": 6
+    },
+    {
+     "rect": [
+      18,
+      133,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#8E8E93"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      18,
+      163,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#FF9500"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      18,
+      225,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#0A84FF"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      18,
+      255,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#8E8E93"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      22,
+      321,
+      10,
+      10
+     ],
+     "fill": {
+      "color": "#FF3B30"
+     },
+     "oval": true
+    },
+    {
+     "rect": [
+      22,
+      351,
+      10,
+      10
+     ],
+     "fill": {
+      "color": "#FF9500"
+     },
+     "oval": true
+    }
+   ],
+   "texts": [
+    {
+     "text": "Favorites",
+     "x": 18,
+     "y": 18,
+     "size": 11,
+     "weight": "semibold",
+     "color": "#8E8E93",
+     "translation": "个人收藏"
+    },
+    {
+     "text": "Recents",
+     "x": 44,
+     "y": 43,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "最近使用"
+    },
+    {
+     "text": "Applications",
+     "x": 44,
+     "y": 73,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "应用程序"
+    },
+    {
+     "text": "Desktop",
+     "x": 44,
+     "y": 103,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "桌面"
+    },
+    {
+     "text": "Documents",
+     "x": 44,
+     "y": 133,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "文稿"
+    },
+    {
+     "text": "Downloads",
+     "x": 44,
+     "y": 163,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "下载"
+    },
+    {
+     "text": "Locations",
+     "x": 18,
+     "y": 200,
+     "size": 11,
+     "weight": "semibold",
+     "color": "#8E8E93",
+     "translation": "位置"
+    },
+    {
+     "text": "iCloud Drive",
+     "x": 44,
+     "y": 225,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "iCloud 云盘"
+    },
+    {
+     "text": "Network",
+     "x": 44,
+     "y": 255,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "网络"
+    },
+    {
+     "text": "Tags",
+     "x": 18,
+     "y": 292,
+     "size": 11,
+     "weight": "semibold",
+     "color": "#8E8E93",
+     "translation": "标签"
+    },
+    {
+     "text": "Red",
+     "x": 44,
+     "y": 317,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "红色"
+    },
+    {
+     "text": "Important",
+     "x": 44,
+     "y": 347,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "重要"
+    },
+    {
+     "text": "No Selection",
+     "x": 360,
+     "y": 200,
+     "size": 15,
+     "color": "#8E8E93",
+     "align": "center",
+     "translation": "未选择"
+    }
+   ]
+  },
+  {
+   "id": "form",
+   "title": "Label : value form with right-aligned labels",
+   "width": 560,
+   "height": 300,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#ECECEC"
+   },
+   "shapes": [
+    {
+     "rect": [
+      162,
+      28,
+      300,
+      24
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 5,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      162,
+      68,
+      300,
+      24
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 5,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      162,
+      108,
+      300,
+      24
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 5,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      162,
+      148,
+      300,
+      24
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 5,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      162,
+      197,
+      14,
+      14
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 3
+    },
+    {
+     "rect": [
+      330,
+      246,
+      90,
+      28
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 7,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      430,
+      246,
+      90,
+      28
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 7
+    }
+   ],
+   "texts": [
+    {
+     "text": "Name:",
+     "x": 150,
+     "y": 31,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "right",
+     "translation": "姓名："
+    },
+    {
+     "text": "John Appleseed",
+     "x": 170,
+     "y": 31,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "John Appleseed"
+    },
+    {
+     "text": "Email:",
+     "x": 150,
+     "y": 71,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "right",
+     "translation": "电子邮件："
+    },
+    {
+     "text": "john@example.com",
+     "x": 170,
+     "y": 71,
+     "size": 13,
+     "color": "#1D1D1F"
+    },
+    {
+     "text": "Plan:",
+     "x": 150,
+     "y": 111,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "right",
+     "translation": "方案："
+    },
+    {
+     "text": "Family (up to 6 people)",
+     "x": 170,
+     "y": 111,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "家庭（最多 6 人）"
+    },
+    {
+     "text": "Renews:",
+     "x": 150,
+     "y": 151,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "right",
+     "translation": "续订日期："
+    },
+    {
+     "text": "October 31, 2026",
+     "x": 170,
+     "y": 151,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "2026 年 10 月 31 日"
+    },
+    {
+     "text": "Send me product news and offers",
+     "x": 184,
+     "y": 194,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "向我发送产品资讯和优惠"
+    },
+    {
+     "text": "Cancel",
+     "x": 375.0,
+     "y": 251.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "取消"
+    },
+    {
+     "text": "Save",
+     "x": 475.0,
+     "y": 251.0,
+     "size": 13,
+     "color": "#FFFFFF",
+     "align": "center",
+     "translation": "存储"
+    }
+   ]
+  },
+  {
+   "id": "low-contrast",
+   "title": "Low-contrast gray text (placeholder, empty state, footnote)",
+   "width": 520,
+   "height": 230,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [
+    {
+     "rect": [
+      20,
+      20,
+      480,
+      32
+     ],
+     "fill": {
+      "color": "#F2F2F7"
+     },
+     "radius": 8
+    }
+   ],
+   "texts": [
+    {
+     "text": "Search messages",
+     "x": 44,
+     "y": 26,
+     "size": 14,
+     "color": "#C7C7CC",
+     "translation": "搜索信息"
+    },
+    {
+     "text": "No messages yet",
+     "x": 260,
+     "y": 96,
+     "size": 17,
+     "weight": "semibold",
+     "color": "#8E8E93",
+     "align": "center",
+     "translation": "还没有信息"
+    },
+    {
+     "text": "Messages you receive will appear here.",
+     "x": 260,
+     "y": 124,
+     "size": 13,
+     "color": "#AEAEB2",
+     "align": "center",
+     "translation": "你收到的信息将显示在这里。"
+    },
+    {
+     "text": "Encrypted end to end",
+     "x": 260,
+     "y": 196,
+     "size": 10,
+     "color": "#C7C7CC",
+     "align": "center",
+     "translation": "端到端加密"
+    }
+   ]
+  },
+  {
+   "id": "chinese-source",
+   "title": "Chinese UI translated to English (expansion)",
+   "width": 600,
+   "height": 380,
+   "target": "en",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [
+    {
+     "rect": [
+      20,
+      64,
+      560,
+      190
+     ],
+     "fill": {
+      "color": "#F5F5F7"
+     },
+     "radius": 10
+    },
+    {
+     "rect": [
+      36,
+      102,
+      528,
+      1
+     ],
+     "fill": {
+      "color": "#E4E4E8"
+     }
+    },
+    {
+     "rect": [
+      36,
+      140,
+      528,
+      1
+     ],
+     "fill": {
+      "color": "#E4E4E8"
+     }
+    },
+    {
+     "rect": [
+      36,
+      178,
+      528,
+      1
+     ],
+     "fill": {
+      "color": "#E4E4E8"
+     }
+    },
+    {
+     "rect": [
+      36,
+      216,
+      528,
+      1
+     ],
+     "fill": {
+      "color": "#E4E4E8"
+     }
+    },
+    {
+     "rect": [
+      380,
+      330,
+      90,
+      28
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 7,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      480,
+      330,
+      90,
+      28
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 7
+    }
+   ],
+   "texts": [
+    {
+     "text": "通用",
+     "x": 30,
+     "y": 20,
+     "size": 22,
+     "weight": "bold",
+     "color": "#1D1D1F",
+     "lang": "zh-Hans",
+     "translation": "General"
+    },
+    {
+     "text": "关于本机",
+     "x": 36,
+     "y": 74,
+     "size": 13,
+     "color": "#1D1D1F",
+     "lang": "zh-Hans",
+     "translation": "About This Mac"
+    },
+    {
+     "text": "软件更新",
+     "x": 36,
+     "y": 112,
+     "size": 13,
+     "color": "#1D1D1F",
+     "lang": "zh-Hans",
+     "translation": "Software Update"
+    },
+    {
+     "text": "有 1 个可用更新",
+     "x": 564,
+     "y": 112,
+     "size": 13,
+     "color": "#6E6E73",
+     "align": "right",
+     "lang": "zh-Hans",
+     "translation": "1 Update Available"
+    },
+    {
+     "text": "储存空间",
+     "x": 36,
+     "y": 150,
+     "size": 13,
+     "color": "#1D1D1F",
+     "lang": "zh-Hans",
+     "translation": "Storage"
+    },
+    {
+     "text": "已使用 186.2 GB",
+     "x": 564,
+     "y": 150,
+     "size": 13,
+     "color": "#6E6E73",
+     "align": "right",
+     "lang": "zh-Hans",
+     "translation": "186.2 GB Used"
+    },
+    {
+     "text": "隔空投送与接力",
+     "x": 36,
+     "y": 188,
+     "size": 13,
+     "color": "#1D1D1F",
+     "lang": "zh-Hans",
+     "translation": "AirDrop & Handoff"
+    },
+    {
+     "text": "登录项与扩展",
+     "x": 36,
+     "y": 226,
+     "size": 13,
+     "color": "#1D1D1F",
+     "lang": "zh-Hans",
+     "translation": "Login Items & Extensions"
+    },
+    {
+     "text": "你可以在这里管理 Mac 的软件更新、储存空间和登录时自动打开的项目。部分设置需要管理员密码。",
+     "x": 30,
+     "y": 272,
+     "size": 12,
+     "color": "#6E6E73",
+     "width": 540,
+     "lineHeight": 18,
+     "lang": "zh-Hans",
+     "translation": "Manage software updates, storage and the items that open automatically when you log in. Some settings require an administrator password."
+    },
+    {
+     "text": "取消",
+     "x": 425.0,
+     "y": 335.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "lang": "zh-Hans",
+     "translation": "Cancel"
+    },
+    {
+     "text": "好",
+     "x": 525.0,
+     "y": 335.0,
+     "size": 13,
+     "color": "#FFFFFF",
+     "align": "center",
+     "lang": "zh-Hans",
+     "translation": "OK"
+    }
+   ]
+  },
+  {
+   "id": "japanese-source",
+   "title": "Japanese UI translated to English (kana re-pass)",
+   "width": 600,
+   "height": 340,
+   "target": "en",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [
+    {
+     "rect": [
+      360,
+      290,
+      100,
+      28
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 7,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      470,
+      290,
+      100,
+      28
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 7
+    }
+   ],
+   "texts": [
+    {
+     "text": "ストレージ",
+     "x": 30,
+     "y": 20,
+     "size": 22,
+     "weight": "bold",
+     "color": "#1D1D1F",
+     "lang": "ja",
+     "translation": "Storage"
+    },
+    {
+     "text": "この Mac は 494.4 GB のうち 186.2 GB を使用しています。ストレージを最適化すると、視聴済みのムービーや古いメールの添付ファイルなど、不要になった項目が自動的に削除されます。",
+     "x": 30,
+     "y": 62,
+     "size": 13,
+     "color": "#3C3C43",
+     "width": 540,
+     "lineHeight": 20,
+     "lang": "ja",
+     "translation": "This Mac is using 186.2 GB of 494.4 GB. Optimizing storage automatically removes items you no longer need, such as watched movies and old email attachments."
+    },
+    {
+     "text": "おすすめ",
+     "x": 30,
+     "y": 140,
+     "size": 15,
+     "weight": "semibold",
+     "color": "#1D1D1F",
+     "lang": "ja",
+     "translation": "Recommendations"
+    },
+    {
+     "text": "iCloud に保存",
+     "x": 48,
+     "y": 172,
+     "size": 13,
+     "color": "#1D1D1F",
+     "lang": "ja",
+     "translation": "Store in iCloud",
+     "marker": "•"
+    },
+    {
+     "text": "ゴミ箱を自動的に空にする",
+     "x": 48,
+     "y": 198,
+     "size": 13,
+     "color": "#1D1D1F",
+     "lang": "ja",
+     "translation": "Empty Trash Automatically",
+     "marker": "•"
+    },
+    {
+     "text": "ストレージを最適化",
+     "x": 48,
+     "y": 224,
+     "size": 13,
+     "color": "#1D1D1F",
+     "lang": "ja",
+     "translation": "Optimize Storage",
+     "marker": "•"
+    },
+    {
+     "text": "キャンセル",
+     "x": 410.0,
+     "y": 295.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "lang": "ja",
+     "translation": "Cancel"
+    },
+    {
+     "text": "最適化",
+     "x": 520.0,
+     "y": 295.0,
+     "size": 13,
+     "color": "#FFFFFF",
+     "align": "center",
+     "lang": "ja",
+     "translation": "Optimize"
+    }
+   ]
+  },
+  {
+   "id": "german-expansion",
+   "title": "German translation (long expansion: extend → shrink → ellipsis)",
+   "width": 620,
+   "height": 360,
+   "target": "de",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [
+    {
+     "rect": [
+      30,
+      66,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#8E8E93"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      30,
+      96,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#FF3B30"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      30,
+      126,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      30,
+      156,
+      18,
+      18
+     ],
+     "fill": {
+      "color": "#34C759"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      30,
+      200,
+      80,
+      28
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 7,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      120,
+      200,
+      70,
+      28
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 7,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      200,
+      200,
+      110,
+      28
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 7,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      320,
+      200,
+      110,
+      28
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 7
+    }
+   ],
+   "texts": [
+    {
+     "text": "Storage",
+     "x": 30,
+     "y": 20,
+     "size": 22,
+     "weight": "bold",
+     "color": "#1D1D1F",
+     "translation": "Speicher"
+    },
+    {
+     "text": "General",
+     "x": 56,
+     "y": 66,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "Allgemein"
+    },
+    {
+     "text": "Notifications",
+     "x": 56,
+     "y": 96,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "Mitteilungen"
+    },
+    {
+     "text": "Privacy & Security",
+     "x": 56,
+     "y": 126,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "Datenschutz & Sicherheit"
+    },
+    {
+     "text": "Accessibility",
+     "x": 56,
+     "y": 156,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "Bedienungshilfen"
+    },
+    {
+     "text": "Cancel",
+     "x": 70.0,
+     "y": 205.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "Abbrechen"
+    },
+    {
+     "text": "Save",
+     "x": 155.0,
+     "y": 205.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "Sichern"
+    },
+    {
+     "text": "Review Files",
+     "x": 255.0,
+     "y": 205.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "Dateien überprüfen"
+    },
+    {
+     "text": "Empty Trash",
+     "x": 375.0,
+     "y": 205.0,
+     "size": 13,
+     "color": "#FFFFFF",
+     "align": "center",
+     "translation": "Papierkorb entleeren"
+    },
+    {
+     "text": "Items in Trash",
+     "x": 30,
+     "y": 252,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "Objekte im Papierkorb"
+    },
+    {
+     "text": "1,284",
+     "x": 300,
+     "y": 252,
+     "size": 13,
+     "color": "#6E6E73",
+     "align": "right"
+    },
+    {
+     "text": "Optimize storage to free up space automatically.",
+     "x": 30,
+     "y": 290,
+     "size": 13,
+     "color": "#3C3C43",
+     "width": 400,
+     "lineHeight": 18,
+     "translation": "Optimiere den Speicher, um automatisch Speicherplatz freizugeben."
+    }
+   ]
+  },
+  {
+   "id": "light-1x",
+   "title": "Light settings at 1x (small pixel sizes)",
+   "width": 460,
+   "height": 210,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#F5F5F7"
+   },
+   "shapes": [
+    {
+     "rect": [
+      20,
+      20,
+      16,
+      16
+     ],
+     "fill": {
+      "color": "#007AFF"
+     },
+     "radius": 4
+    },
+    {
+     "rect": [
+      20,
+      52,
+      16,
+      16
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 4,
+     "stroke": "#AEAEB2"
+    },
+    {
+     "rect": [
+      300,
+      82,
+      120,
+      22
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 5,
+     "stroke": "#C7C7CC"
+    },
+    {
+     "rect": [
+      20,
+      160,
+      90,
+      26
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     },
+     "radius": 7,
+     "stroke": "#C7C7CC"
+    }
+   ],
+   "texts": [
+    {
+     "text": "Show in menu bar",
+     "x": 44,
+     "y": 19,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "在菜单栏中显示"
+    },
+    {
+     "text": "Launch at login",
+     "x": 44,
+     "y": 51,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "登录时启动"
+    },
+    {
+     "text": "Keep history for",
+     "x": 20,
+     "y": 84,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "保留历史记录"
+    },
+    {
+     "text": "30 days",
+     "x": 308,
+     "y": 84,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "30 天"
+    },
+    {
+     "text": "Changes take effect immediately.",
+     "x": 20,
+     "y": 124,
+     "size": 11,
+     "color": "#6E6E73",
+     "translation": "更改会立即生效。"
+    },
+    {
+     "text": "Reset…",
+     "x": 65.0,
+     "y": 164.0,
+     "size": 13,
+     "color": "#1D1D1F",
+     "align": "center",
+     "translation": "重置…"
+    }
+   ],
+   "scale": 1
+  },
+  {
+   "id": "large-5k",
+   "title": "5K selection (2560×1440 pt @2x) recognized in overlapping tiles",
+   "width": 2560,
+   "height": 1440,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [],
+   "texts": [
+    {
+     "text": "Photos",
+     "x": 80,
+     "y": 90,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "照片"
+    },
+    {
+     "text": "Music",
+     "x": 380,
+     "y": 90,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "音乐"
+    },
+    {
+     "text": "Mail",
+     "x": 680,
+     "y": 90,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "邮件"
+    },
+    {
+     "text": "Notes",
+     "x": 980,
+     "y": 90,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "备忘录"
+    },
+    {
+     "text": "Maps",
+     "x": 1280,
+     "y": 90,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "地图"
+    },
+    {
+     "text": "Calendar",
+     "x": 1580,
+     "y": 90,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "日历"
+    },
+    {
+     "text": "Reminders",
+     "x": 1880,
+     "y": 90,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "提醒事项"
+    },
+    {
+     "text": "Weather",
+     "x": 2180,
+     "y": 90,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "天气"
+    },
+    {
+     "text": "Music",
+     "x": 80,
+     "y": 240,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "音乐"
+    },
+    {
+     "text": "Mail",
+     "x": 380,
+     "y": 240,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "邮件"
+    },
+    {
+     "text": "Notes",
+     "x": 680,
+     "y": 240,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "备忘录"
+    },
+    {
+     "text": "Maps",
+     "x": 980,
+     "y": 240,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "地图"
+    },
+    {
+     "text": "Calendar",
+     "x": 1280,
+     "y": 240,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "日历"
+    },
+    {
+     "text": "Reminders",
+     "x": 1580,
+     "y": 240,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "提醒事项"
+    },
+    {
+     "text": "Weather",
+     "x": 1880,
+     "y": 240,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "天气"
+    },
+    {
+     "text": "Photos",
+     "x": 2180,
+     "y": 240,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "照片"
+    },
+    {
+     "text": "Mail",
+     "x": 80,
+     "y": 390,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "邮件"
+    },
+    {
+     "text": "Notes",
+     "x": 380,
+     "y": 390,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "备忘录"
+    },
+    {
+     "text": "Maps",
+     "x": 680,
+     "y": 390,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "地图"
+    },
+    {
+     "text": "Calendar",
+     "x": 980,
+     "y": 390,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "日历"
+    },
+    {
+     "text": "Reminders",
+     "x": 1280,
+     "y": 390,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "提醒事项"
+    },
+    {
+     "text": "Weather",
+     "x": 1580,
+     "y": 390,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "天气"
+    },
+    {
+     "text": "Photos",
+     "x": 1880,
+     "y": 390,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "照片"
+    },
+    {
+     "text": "Music",
+     "x": 2180,
+     "y": 390,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "音乐"
+    },
+    {
+     "text": "Notes",
+     "x": 80,
+     "y": 540,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "备忘录"
+    },
+    {
+     "text": "Maps",
+     "x": 380,
+     "y": 540,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "地图"
+    },
+    {
+     "text": "Calendar",
+     "x": 680,
+     "y": 540,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "日历"
+    },
+    {
+     "text": "Reminders",
+     "x": 980,
+     "y": 540,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "提醒事项"
+    },
+    {
+     "text": "Weather",
+     "x": 1280,
+     "y": 540,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "天气"
+    },
+    {
+     "text": "Photos",
+     "x": 1580,
+     "y": 540,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "照片"
+    },
+    {
+     "text": "Music",
+     "x": 1880,
+     "y": 540,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "音乐"
+    },
+    {
+     "text": "Mail",
+     "x": 2180,
+     "y": 540,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "邮件"
+    },
+    {
+     "text": "Maps",
+     "x": 80,
+     "y": 690,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "地图"
+    },
+    {
+     "text": "Calendar",
+     "x": 380,
+     "y": 690,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "日历"
+    },
+    {
+     "text": "Reminders",
+     "x": 680,
+     "y": 690,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "提醒事项"
+    },
+    {
+     "text": "Weather",
+     "x": 980,
+     "y": 690,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "天气"
+    },
+    {
+     "text": "Photos",
+     "x": 1280,
+     "y": 690,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "照片"
+    },
+    {
+     "text": "Music",
+     "x": 1580,
+     "y": 690,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "音乐"
+    },
+    {
+     "text": "Mail",
+     "x": 1880,
+     "y": 690,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "邮件"
+    },
+    {
+     "text": "Notes",
+     "x": 2180,
+     "y": 690,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "备忘录"
+    },
+    {
+     "text": "Calendar",
+     "x": 80,
+     "y": 840,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "日历"
+    },
+    {
+     "text": "Reminders",
+     "x": 380,
+     "y": 840,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "提醒事项"
+    },
+    {
+     "text": "Weather",
+     "x": 680,
+     "y": 840,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "天气"
+    },
+    {
+     "text": "Photos",
+     "x": 980,
+     "y": 840,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "照片"
+    },
+    {
+     "text": "Music",
+     "x": 1280,
+     "y": 840,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "音乐"
+    },
+    {
+     "text": "Mail",
+     "x": 1580,
+     "y": 840,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "邮件"
+    },
+    {
+     "text": "Notes",
+     "x": 1880,
+     "y": 840,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "备忘录"
+    },
+    {
+     "text": "Maps",
+     "x": 2180,
+     "y": 840,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "地图"
+    },
+    {
+     "text": "Reminders",
+     "x": 80,
+     "y": 990,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "提醒事项"
+    },
+    {
+     "text": "Weather",
+     "x": 380,
+     "y": 990,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "天气"
+    },
+    {
+     "text": "Photos",
+     "x": 680,
+     "y": 990,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "照片"
+    },
+    {
+     "text": "Music",
+     "x": 980,
+     "y": 990,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "音乐"
+    },
+    {
+     "text": "Mail",
+     "x": 1280,
+     "y": 990,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "邮件"
+    },
+    {
+     "text": "Notes",
+     "x": 1580,
+     "y": 990,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "备忘录"
+    },
+    {
+     "text": "Maps",
+     "x": 1880,
+     "y": 990,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "地图"
+    },
+    {
+     "text": "Calendar",
+     "x": 2180,
+     "y": 990,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "日历"
+    },
+    {
+     "text": "Weather",
+     "x": 80,
+     "y": 1140,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "天气"
+    },
+    {
+     "text": "Photos",
+     "x": 380,
+     "y": 1140,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "照片"
+    },
+    {
+     "text": "Music",
+     "x": 680,
+     "y": 1140,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "音乐"
+    },
+    {
+     "text": "Mail",
+     "x": 980,
+     "y": 1140,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "邮件"
+    },
+    {
+     "text": "Notes",
+     "x": 1280,
+     "y": 1140,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "备忘录"
+    },
+    {
+     "text": "Maps",
+     "x": 1580,
+     "y": 1140,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "地图"
+    },
+    {
+     "text": "Calendar",
+     "x": 1880,
+     "y": 1140,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "日历"
+    },
+    {
+     "text": "Reminders",
+     "x": 2180,
+     "y": 1140,
+     "size": 17,
+     "color": "#1D1D1F",
+     "translation": "提醒事项"
+    },
+    {
+     "text": "This long headline deliberately crosses the vertical seam between recognition tiles",
+     "x": 700,
+     "y": 1300,
+     "size": 28,
+     "weight": "bold",
+     "color": "#1D1D1F",
+     "translation": "这条长标题特意跨过识别分片之间的竖直接缝"
+    }
+   ]
+  },
+  {
+   "id": "mixed-kana",
+   "title": "English pane with one Japanese label (kana re-pass limited to its region)",
+   "width": 900,
+   "height": 600,
+   "target": "zh-Hans",
+   "background": {
+    "color": "#FFFFFF"
+   },
+   "shapes": [
+    {
+     "rect": [
+      0,
+      0,
+      900,
+      600
+     ],
+     "fill": {
+      "color": "#FFFFFF"
+     }
+    }
+   ],
+   "texts": [
+    {
+     "text": "Storage",
+     "x": 40,
+     "y": 36,
+     "size": 22,
+     "weight": "bold",
+     "color": "#1D1D1F",
+     "translation": "储存空间"
+    },
+    {
+     "text": "Your Mac is using 186.2 GB of 494.4 GB. Optimize storage to free up space automatically by removing items you no longer need, such as watched movies, old email attachments and duplicate downloads.",
+     "x": 40,
+     "y": 80,
+     "size": 13,
+     "color": "#3C3C43",
+     "width": 520,
+     "lineHeight": 19,
+     "translation": "你的 Mac 已使用 494.4 GB 中的 186.2 GB。优化储存空间可自动移除不再需要的项目（例如已看过的影片、旧的邮件附件和重复的下载项），从而释放空间。"
+    },
+    {
+     "text": "Recommendations",
+     "x": 40,
+     "y": 170,
+     "size": 15,
+     "weight": "semibold",
+     "color": "#1D1D1F",
+     "translation": "建议"
+    },
+    {
+     "text": "Store in iCloud",
+     "x": 40,
+     "y": 200,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "储存在 iCloud 中"
+    },
+    {
+     "text": "Empty Trash Automatically",
+     "x": 40,
+     "y": 226,
+     "size": 13,
+     "color": "#1D1D1F",
+     "translation": "自动清倒废纸篓"
+    },
+    {
+     "text": "ストレージを最適化",
+     "x": 680,
+     "y": 540,
+     "size": 13,
+     "color": "#1D1D1F",
+     "lang": "ja",
+     "translation": "优化储存空间"
+    }
+   ]
+  }
+ ]
+}

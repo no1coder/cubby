@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and ideas
+    url: https://github.com/no1coder/cubby/discussions
+    about: Ask questions, get help and share ideas in GitHub Discussions.
+  - name: Report a security vulnerability
+    url: https://github.com/no1coder/cubby/security/advisories/new
+    about: Please report security and privacy vulnerabilities privately, not in public issues.

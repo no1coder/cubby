@@ -1,0 +1,82 @@
+# 发布后更新 Homebrew tap：release 被 Publish（非 prerelease）→ 校验 DMG 校验和
+#       → scripts/update-tap.sh 更新 no1coder/homebrew-tap 的 Casks/cubby.rb 并推送
+#
+# draft 资产不可公开下载，所以 tap 只能在 Publish 之后更新。
+# 所需配置：secret TAP_GITHUB_TOKEN（细粒度 PAT，仅授权 homebrew-tap 仓库 Contents: Read and write），
+#           建议放在 GitHub Environment "homebrew-tap" 中，详见 docs/RELEASING.md。
+name: Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "已发布的正式版 tag（如 v0.2.0），用于手动重试 tap 更新"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+# bash --noprofile --norc -eo pipefail
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: publish-homebrew-tap
+  cancel-in-progress: false
+
+jobs:
+  update-tap:
+    name: Update Homebrew cask
+    if: github.event_name == 'workflow_dispatch' || !github.event.release.prerelease
+    runs-on: macos-26
+    timeout-minutes: 20
+    environment: homebrew-tap
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Resolve version and verify DMG checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name || inputs.tag }}
+        run: |
+          VERSION="${TAG#v}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::$TAG 不是正式版 tag（预发布版本不进入 tap）"
+            exit 1
+          fi
+
+          # 手动触发时确认 release 已发布且不是 prerelease
+          STATE="$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft,isPrerelease \
+            --jq '"\(.isDraft) \(.isPrerelease)"')"
+          if [[ "$STATE" != "false false" ]]; then
+            echo "::error::$TAG 仍是 draft 或 prerelease（isDraft isPrerelease = $STATE）"
+            exit 1
+          fi
+
+          ASSETS="$RUNNER_TEMP/assets"
+          DMG="Cubby-$VERSION.dmg"
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir "$ASSETS" \
+            --pattern SHA256SUMS.txt --pattern "$DMG"
+
+          EXPECTED="$(awk -v f="$DMG" '$2 == f || $2 == "*" f { print $1 }' "$ASSETS/SHA256SUMS.txt")"
+          ACTUAL="$(shasum -a 256 "$ASSETS/$DMG" | awk '{ print $1 }')"
+          if [[ -z "$EXPECTED" || "$EXPECTED" != "$ACTUAL" ]]; then
+            echo "::error::$DMG 的 sha256（$ACTUAL）与 SHA256SUMS.txt（${EXPECTED:-缺失}）不一致"
+            exit 1
+          fi
+
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "DMG_SHA256=$ACTUAL" >> "$GITHUB_ENV"
+
+      - name: Update tap
+        env:
+          TAP_GITHUB_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
+          TAP_REPO: no1coder/homebrew-tap
+        run: ./scripts/update-tap.sh "$VERSION" "$DMG_SHA256" --push

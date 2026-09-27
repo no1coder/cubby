@@ -1,0 +1,13 @@
+.DS_Store
+.build/
+# 并行开发时各自独立的构建目录（swift build --scratch-path .build-a 等）
+.build-*/
+.build-tests/
+build/
+.swiftpm/
+*.xcodeproj/xcuserdata/
+dist/
+# 覆盖率运行产生的原始数据
+*.profraw
+# 本地开发工具（spec-workflow）的模板与记录，不属于项目
+.spec-workflow/

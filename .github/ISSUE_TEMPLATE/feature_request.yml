@@ -1,0 +1,50 @@
+name: Feature request
+description: Suggest an idea or improvement for Cubby.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion. Before you continue:
+
+        - Check the [roadmap](https://github.com/no1coder/cubby/blob/main/docs/ROADMAP.md); your idea may already be planned.
+        - Search [existing issues](https://github.com/no1coder/cubby/issues?q=is%3Aissue) and [discussions](https://github.com/no1coder/cubby/discussions).
+        - Open-ended ideas are often a better fit for [Discussions](https://github.com/no1coder/cubby/discussions).
+
+        Cubby is local-first and keyboard-first. Ideas that need cloud services, telemetry or keystroke monitoring are unlikely to be accepted.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do, and what gets in the way today?
+      placeholder: When I copy several snippets for a form, I have to open the panel once for each one…
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: How would you like Cubby to handle this? Include keyboard shortcuts or UI details if you have them in mind.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds you use today, or how other clipboard managers handle this.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Mockups, screenshots or anything else that helps.
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I'd be willing to open a pull request for this.

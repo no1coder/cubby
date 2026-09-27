@@ -1,0 +1,88 @@
+# 持续集成：两个并行任务
+#   lint：脚本语法 → swift-format lint → 国际化守卫 → String Catalog 同步与翻译完整性
+#   build-and-test：通用二进制构建 → 测试 + 覆盖率门槛 → ad-hoc 打包冒烟
+# 安全：本工作流不引用任何 secret，PR（含 fork）只有只读权限。
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# bash --noprofile --norc -eo pipefail
+defaults:
+  run:
+    shell: bash
+
+# 同一分支 / PR 有新提交时取消旧的运行
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Xcode 版本前缀（需要 macOS 26 SDK）；可改为精确版本（如 "26.6"）固定 swift-format 行为
+  XCODE_VERSION: "26"
+
+jobs:
+  # 静态检查与构建测试并行执行，格式问题不会掩盖构建 / 测试结果
+  lint:
+    name: Lint
+    # 需要 macOS 26 SDK。若 macos-26 不可用，改为 macos-15：
+    # scripts/ci/select-xcode.sh 会从镜像已安装的 Xcode 26.x 中选择
+    runs-on: macos-26
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Select Xcode
+        run: ./scripts/ci/select-xcode.sh
+
+      - name: Check shell script syntax
+        run: for f in scripts/*.sh scripts/ci/*.sh scripts/lib/*.sh; do bash -n "$f"; done
+
+      - name: Lint (swift-format)
+        run: swift format lint --strict --recursive --parallel Sources Tests
+
+      - name: Check no CJK in string literals
+        if: ${{ !cancelled() }}
+        run: ./scripts/check-no-cjk.sh
+
+      - name: Check String Catalog is in sync and fully translated
+        if: ${{ !cancelled() }}
+        run: ./scripts/sync-strings.sh --check
+
+  build-and-test:
+    name: Build & test
+    runs-on: macos-26 # 同上，回退方式见 lint 任务
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Select Xcode
+        run: ./scripts/ci/select-xcode.sh
+
+      - name: Build release (universal)
+        run: swift build -c release --arch arm64 --arch x86_64
+
+      - name: Test with coverage gate
+        env:
+          COVERAGE_MIN: "95"
+        run: ./scripts/check-coverage.sh
+
+      - name: Package smoke test (ad-hoc signed)
+        env:
+          SIGN_IDENTITY: "-"
+        run: |
+          ./scripts/build-app.sh
+          plutil -p build/Cubby.app/Contents/Info.plist | grep -E 'CFBundle(ShortVersionString|Version|Identifier)'
+          lipo -archs build/Cubby.app/Contents/MacOS/Cubby

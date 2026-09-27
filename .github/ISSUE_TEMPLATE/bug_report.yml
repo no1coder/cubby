@@ -1,0 +1,102 @@
+name: Bug report
+description: Something in Cubby doesn't work as expected.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please search [existing issues](https://github.com/no1coder/cubby/issues?q=is%3Aissue) first.
+
+        - **Direct pasting stopped working?** Try the Accessibility fix in the [README FAQ](https://github.com/no1coder/cubby#faq) first.
+        - **Security or privacy vulnerability?** Don't report it here. Follow [SECURITY.md](https://github.com/no1coder/cubby/blob/main/SECURITY.md) instead.
+        - **Never paste real clipboard content, passwords or tokens into this form.**
+
+  - type: input
+    id: version
+    attributes:
+      label: Cubby version
+      description: Shown in Settings › About.
+      placeholder: "0.2.0"
+    validations:
+      required: true
+
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version
+      description: Apple menu › About This Mac.
+      placeholder: "macOS 26.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: chip
+    attributes:
+      label: Chip
+      options:
+        - Apple silicon
+        - Intel
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: Installation method
+      options:
+        - Homebrew
+        - DMG from GitHub Releases
+        - Built from source
+    validations:
+      required: true
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostic info
+      description: In Cubby, open Settings › About, click **Copy Diagnostic Info** and paste the result here. It contains no clipboard content.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Copy some text in TextEdit
+        2. Press ⇧⌘V
+        3. Press ↩
+        4. …
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Screenshots or additional context
+      description: Screenshots, screen recordings or anything else that helps. Make sure they don't show private content.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and didn't find a report of this bug.
+          required: true
+        - label: This report contains no real clipboard content, passwords or tokens.
+          required: true

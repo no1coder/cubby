@@ -1,0 +1,7618 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ (%lld)" : {
+      "comment" : "Screenshot style bar color tooltip: color name and the number key that selects it",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ (%2$lld)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@（%2$lld）"
+          }
+        }
+      }
+    },
+    "%@ (App Translocation)" : {
+      "comment" : "Diagnostics: install location under App Translocation",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@（系统隔离路径）"
+          }
+        }
+      }
+    },
+    "%@ ([ ])" : {
+      "comment" : "Screenshot style bar weight tooltip: weight name; the [ and ] keys change the weight",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@（[ ] 调节）"
+          }
+        }
+      }
+    },
+    "%@ (disk image)" : {
+      "comment" : "Diagnostics: install location on a disk image",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@（磁盘映像）"
+          }
+        }
+      }
+    },
+    "%@ (on this Mac)" : {
+      "comment" : "Engine name for an on-device engine, e.g. System Translation (on this Mac)",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@（本机）"
+          }
+        }
+      }
+    },
+    "%@ and %lld more (%lld files)" : {
+      "comment" : "Title of an item with several files. %1$@ = first file name, %2$lld = number of other files, %3$lld = total number of files. Translations may omit %2$lld or %3$lld.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ and %2$lld more"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 等 %3$lld 个文件"
+          }
+        }
+      }
+    },
+    "%@ is a system shortcut" : {
+      "comment" : "Shortcut recorder error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 是常用系统快捷键"
+          }
+        }
+      }
+    },
+    "%@ is already in use. Switched back to %@." : {
+      "comment" : "HUD when a new global shortcut is taken. %1$@ = new shortcut, %2$@ = previous shortcut",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ is already in use. Switched back to %2$@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 已被占用，已恢复为 %2$@"
+          }
+        }
+      }
+    },
+    "%@ is limiting requests" : {
+      "comment" : "Translation failure title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 限制了请求频率"
+          }
+        }
+      }
+    },
+    "%@ is used by another app. Choose a different shortcut in Settings." : {
+      "comment" : "HUD when the global shortcut is taken",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 已被其他应用占用，请在设置中更换"
+          }
+        }
+      }
+    },
+    "%@ of text" : {
+      "comment" : "Size of a large text item, e.g. “1.2 MB of text”",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 文本"
+          }
+        }
+      }
+    },
+    "%@ rejected the API key" : {
+      "comment" : "Translation failure title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 拒绝了 API Key"
+          }
+        }
+      }
+    },
+    "%@ returned an error (%lld)" : {
+      "comment" : "Translation failure title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ returned an error (%2$lld)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 返回了错误（%2$lld）"
+          }
+        }
+      }
+    },
+    "%@ translates on this Mac" : {
+      "comment" : "Tooltip of the engine chip for an on-device engine. %@ = engine name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 在这台 Mac 上翻译"
+          }
+        }
+      }
+    },
+    "%@ · Not installed" : {
+      "comment" : "Ignored app that isn't installed. %@ = bundle ID",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 未安装"
+          }
+        }
+      }
+    },
+    "%@ · on this Mac" : {
+      "comment" : "Engine menu header for an on-device engine",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 本机"
+          }
+        }
+      }
+    },
+    "%@ · sends text to %@" : {
+      "comment" : "Engine menu header for a cloud engine",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · sends text to %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ · 文字会发送到 %2$@"
+          }
+        }
+      }
+    },
+    "%@: text is sent to %@ · click for options" : {
+      "comment" : "Tooltip of the engine chip on the translation card for a cloud engine",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: text is sent to %2$@ · click for options"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@：文字会发送到 %2$@ · 点按查看选项"
+          }
+        }
+      }
+    },
+    "%@: translated on this Mac, offline · click for options" : {
+      "comment" : "Tooltip of the engine chip on the translation card for an on-device engine",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：在本机完成，不联网 · 点按查看选项"
+          }
+        }
+      }
+    },
+    "%lld characters" : {
+      "comment" : "Length of a text item",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld character"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld characters"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个字符"
+          }
+        }
+      }
+    },
+    "%lld files" : {
+      "comment" : "Number of files in a file item",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld file"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld files"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个文件"
+          }
+        }
+      }
+    },
+    "%lld items" : {
+      "comment" : "Footer: number of items in the panel\nNumber of items in history",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld item"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld items"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 条"
+          }
+        }
+      }
+    },
+    "%lld items (%lld favorites)" : {
+      "comment" : "Number of items in history",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@items@ (%#@favorites@)"
+          },
+          "substitutions" : {
+            "favorites" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg favorite"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg favorites"
+                    }
+                  }
+                }
+              }
+            },
+            "items" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg item"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg items"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld 条（收藏 %2$lld 条）"
+          }
+        }
+      }
+    },
+    "%lld lines" : {
+      "comment" : "Number of lines of a text item",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld line"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld lines"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 行"
+          }
+        }
+      }
+    },
+    "%lld min ago" : {
+      "comment" : "Relative time of an item, in minutes",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 分钟前"
+          }
+        }
+      }
+    },
+    "%lld models" : {
+      "comment" : "Translation settings: number of models fetched",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld model"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld models"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个模型"
+          }
+        }
+      }
+    },
+    "%lld of %lld" : {
+      "comment" : "Footer: number of matching items of all items, e.g. “3 of 12”",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld of %2$lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld / %2$lld 条"
+          }
+        }
+      }
+    },
+    "%lld text blocks" : {
+      "comment" : "Number of translated text blocks in an image",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld text block"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld text blocks"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 块文字"
+          }
+        }
+      }
+    },
+    "%lld words" : {
+      "comment" : "Length of a translation in words",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld word"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld words"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 词"
+          }
+        }
+      }
+    },
+    "%lld × %lld pixels" : {
+      "comment" : "Translation card footer: image size in pixels",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld × %2$lld pixels"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld × %2$lld 像素"
+          }
+        }
+      }
+    },
+    "%lld × %lld pixels · PNG" : {
+      "comment" : "Image preview statistics: width × height in pixels",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld × %2$lld pixels · PNG"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld × %2$lld 像素 · PNG"
+          }
+        }
+      }
+    },
+    "(auto-detected)" : {
+      "comment" : "Translation card language pill, after the detected source language, e.g. “English (auto-detected)”",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "（自动检测）"
+          }
+        }
+      }
+    },
+    "1. In the Accessibility list, select Cubby and click “−” to remove it." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. 在「辅助功能」列表中选中 Cubby，点击「−」移除"
+          }
+        }
+      }
+    },
+    "2. Come back here, click “Grant Access Again” and turn on Cubby in the list that appears." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. 回到这里点击「重新授权」，在弹出的列表中打开 Cubby"
+          }
+        }
+      }
+    },
+    "3. If it still doesn't work, run this command in Terminal, then repeat step 2:" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3. 仍然无效时，可在终端运行下面的命令后重复第 2 步："
+          }
+        }
+      }
+    },
+    "API Key" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key"
+          }
+        }
+      }
+    },
+    "API keys, private keys, JWTs and more, even from a terminal or browser" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如 API Key、私钥、JWT 等，从终端或浏览器复制时也能识别"
+          }
+        }
+      }
+    },
+    "About" : {
+      "comment" : "Settings pane",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关于"
+          }
+        }
+      }
+    },
+    "Accessibility" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辅助功能"
+          }
+        }
+      }
+    },
+    "Accessibility: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辅助功能: %@"
+          }
+        }
+      }
+    },
+    "Add App…" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加应用…"
+          }
+        }
+      }
+    },
+    "After an update, the old entry in System Settings may still look turned on, but it no longer applies to this version." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新后系统中的旧授权条目可能仍显示为开启，但已不再对当前版本生效。"
+          }
+        }
+      }
+    },
+    "All" : {
+      "comment" : "Category tab: all items",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部"
+          }
+        }
+      }
+    },
+    "All clipboard data stays on this Mac and is never uploaded." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所有剪贴板数据仅保存在本机，不会上传到任何服务器。"
+          }
+        }
+      }
+    },
+    "Allow Clipboard Access…" : {
+      "comment" : "Status menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允许读取剪贴板…"
+          }
+        }
+      }
+    },
+    "Allow Cubby in Login Items" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要在「登录项」中允许 Cubby"
+          }
+        }
+      }
+    },
+    "Allow Cubby in Privacy & Security › Accessibility." : {
+      "comment" : "Panel warning detail. Use the name of the pane in System Settings.",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在「隐私与安全性 › 辅助功能」中允许 Cubby"
+          }
+        }
+      }
+    },
+    "Allow Screen Recording to take screenshots" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图需要屏幕录制权限"
+          }
+        }
+      }
+    },
+    "Allow clipboard access" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允许读取剪贴板"
+          }
+        }
+      }
+    },
+    "Allow direct paste" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允许直接粘贴"
+          }
+        }
+      }
+    },
+    "Allowed" : {
+      "comment" : "Permission status, same wording as System Settings",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已授权"
+          }
+        }
+      }
+    },
+    "Already in %@" : {
+      "comment" : "Translation card state title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原文已是%@"
+          }
+        }
+      }
+    },
+    "Already in %@ · ⌘T to choose a language" : {
+      "comment" : "Inline translation note on a card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原文已是%@ · ⌘T 选择目标语言"
+          }
+        }
+      }
+    },
+    "Already used for screenshots" : {
+      "comment" : "Shortcut recorder error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已用作截图快捷键"
+          }
+        }
+      }
+    },
+    "Already used to open the panel" : {
+      "comment" : "Shortcut recorder error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已用作呼出快捷键"
+          }
+        }
+      }
+    },
+    "Always translate to this when pasting into %@" : {
+      "comment" : "Language menu checkbox. %@ = the app the panel pastes into",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴到 %@ 时总是译为此语言"
+          }
+        }
+      }
+    },
+    "Anything you copy in these apps isn't recorded." : {
+      "comment" : "Ignored apps footer",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在这些应用中复制的内容不会被记录。"
+          }
+        }
+      }
+    },
+    "Anything you copy in these apps isn't recorded. %lld password managers that aren't installed are also ignored by default." : {
+      "comment" : "Ignored apps footer. %lld = number of default password managers that aren't installed",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Anything you copy in these apps isn't recorded. %lld password manager that isn't installed is also ignored by default."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Anything you copy in these apps isn't recorded. %lld password managers that aren't installed are also ignored by default."
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在这些应用中复制的内容不会被记录。另有 %lld 个未安装的密码管理器已默认忽略。"
+          }
+        }
+      }
+    },
+    "Arrow" : {
+      "comment" : "Screenshot tool name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "箭头"
+          }
+        }
+      }
+    },
+    "Arrow (A)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "箭头（A）"
+          }
+        }
+      }
+    },
+    "Ask where to save each time" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每次存储前询问位置"
+          }
+        }
+      }
+    },
+    "Auto-detect" : {
+      "comment" : "Translation card language pill: source language is unknown",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动检测"
+          }
+        }
+      }
+    },
+    "Automatic" : {
+      "comment" : "Screenshot translation bar when the languages are not known yet",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动"
+          }
+        }
+      }
+    },
+    "Automatic (follow system)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动（跟随系统）"
+          }
+        }
+      }
+    },
+    "Automatic follows your system language (%@). Text that's already in that language is translated into English. You can also switch languages from the translation bar while taking a screenshot." : {
+      "comment" : "Translation settings footer. %@ = the system language name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动：跟随系统语言（%@）；原文已是该语言时译为英文。截图时也可以在翻译条上切换，所选语言会被记住。"
+          }
+        }
+      }
+    },
+    "Automatic translates into your system language (%@). If the text is already in English, choose a language from the translation bar while taking a screenshot." : {
+      "comment" : "Translation settings footer when the system language is English. %@ = language name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动：译为系统语言（%@）；原文已是英文时，请在截图时的翻译条上选择目标语言。"
+          }
+        }
+      }
+    },
+    "Automatic update check: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动检查更新: %@"
+          }
+        }
+      }
+    },
+    "Base URL" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Base URL"
+          }
+        }
+      }
+    },
+    "Below the menu bar icon" : {
+      "comment" : "Panel position option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菜单栏图标下方"
+          }
+        }
+      }
+    },
+    "Black" : {
+      "comment" : "Screenshot annotation color",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黑色"
+          }
+        }
+      }
+    },
+    "Blue" : {
+      "comment" : "Screenshot annotation color",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "蓝色"
+          }
+        }
+      }
+    },
+    "Cached" : {
+      "comment" : "Translation came from the cache",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已缓存"
+          }
+        }
+      }
+    },
+    "Cached · not sent this time" : {
+      "comment" : "Translation card privacy line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已缓存 · 本次未发送"
+          }
+        }
+      }
+    },
+    "Can't connect to %@" : {
+      "comment" : "Screenshot translation failure. %@ = service name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法连接到 %@"
+          }
+        }
+      }
+    },
+    "Can't connect to the translation service" : {
+      "comment" : "Screenshot translation failure",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法连接到翻译服务"
+          }
+        }
+      }
+    },
+    "Can't reach %@" : {
+      "comment" : "Translation failure title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法连接 %@"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "comment" : "Button\nScreenshot toolbar button accessibility label",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消"
+          }
+        }
+      }
+    },
+    "Cancel (Esc)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消（Esc）"
+          }
+        }
+      }
+    },
+    "Capture, mark up and pin screenshots on screen. Cubby asks for Screen Recording only when you take your first one." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可以截图、标注，并把截图贴在屏幕上。第一次截图时，Cubby 才会请求屏幕录制权限。"
+          }
+        }
+      }
+    },
+    "Center of the screen" : {
+      "comment" : "Panel position option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "屏幕中央"
+          }
+        }
+      }
+    },
+    "Check for Updates" : {
+      "comment" : "Button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查更新"
+          }
+        }
+      }
+    },
+    "Check for Updates…" : {
+      "comment" : "Status menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查更新…"
+          }
+        }
+      }
+    },
+    "Check for updates weekly" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每周自动检查更新"
+          }
+        }
+      }
+    },
+    "Check your network or proxy settings. Nothing was cached." : {
+      "comment" : "Translation failure detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请检查网络或代理设置。没有写入任何缓存。"
+          }
+        }
+      }
+    },
+    "Checking…" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在检查…"
+          }
+        }
+      }
+    },
+    "China mainland" : {
+      "comment" : "Translation provider endpoint region",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中国内地"
+          }
+        }
+      }
+    },
+    "Chip: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "芯片: %@"
+          }
+        }
+      }
+    },
+    "Chip: %@ (Rosetta)" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "芯片: %@（Rosetta 转译）"
+          }
+        }
+      }
+    },
+    "Choose" : {
+      "comment" : "Confirm button of the screenshot folder picker",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择"
+          }
+        }
+      }
+    },
+    "Choose Folder…" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择文件夹…"
+          }
+        }
+      }
+    },
+    "Choose a different target language above." : {
+      "comment" : "Translation failure detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在上方换一种目标语言。"
+          }
+        }
+      }
+    },
+    "Choose a different target language from the menu above." : {
+      "comment" : "Translation card state detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在上方的语言菜单里选择其他目标语言。"
+          }
+        }
+      }
+    },
+    "Choose a model" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择模型"
+          }
+        }
+      }
+    },
+    "Choose a region" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择地域"
+          }
+        }
+      }
+    },
+    "Choose a target language" : {
+      "comment" : "Screenshot translation bar when no target language could be picked automatically",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择目标语言"
+          }
+        }
+      }
+    },
+    "Choose apps whose copied content shouldn't be recorded" : {
+      "comment" : "Open panel message",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择不需要记录复制内容的应用"
+          }
+        }
+      }
+    },
+    "Choose or enter a model." : {
+      "comment" : "Translation settings: model is missing",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择或输入模型。"
+          }
+        }
+      }
+    },
+    "Choose the folder and file name in a save dialog when you save a screenshot." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存储截图时，在存储对话框中选择文件夹和文件名。"
+          }
+        }
+      }
+    },
+    "Clear" : {
+      "comment" : "Clear history confirmation button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空"
+          }
+        }
+      }
+    },
+    "Clear All Translations…" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除全部译文…"
+          }
+        }
+      }
+    },
+    "Clear History…" : {
+      "comment" : "Status menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空历史记录…"
+          }
+        }
+      }
+    },
+    "Clear Translations" : {
+      "comment" : "Clear translations confirmation button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除译文"
+          }
+        }
+      }
+    },
+    "Clear all translations?" : {
+      "comment" : "Clear translations confirmation title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除全部译文？"
+          }
+        }
+      }
+    },
+    "Clear clipboard history?" : {
+      "comment" : "Clear history confirmation title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空剪贴板历史？"
+          }
+        }
+      }
+    },
+    "Clear history" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空历史记录"
+          }
+        }
+      }
+    },
+    "Clear search" : {
+      "comment" : "Accessibility label of the search field's clear button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空搜索"
+          }
+        }
+      }
+    },
+    "Clear search (esc)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空搜索（esc）"
+          }
+        }
+      }
+    },
+    "Clear…" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清空…"
+          }
+        }
+      }
+    },
+    "Click to capture · ⌥ no shadow · Space to exit" : {
+      "comment" : "Screenshot window capture mode hint under the window label",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单击截取 · ⌥ 去阴影 · 空格 退出"
+          }
+        }
+      }
+    },
+    "Click, then press a new shortcut" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击后按下新的快捷键"
+          }
+        }
+      }
+    },
+    "Clipboard" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪贴板"
+          }
+        }
+      }
+    },
+    "Clipboard access" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "读取剪贴板"
+          }
+        }
+      }
+    },
+    "Clipboard access isn't allowed" : {
+      "comment" : "Panel warning title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未授权读取剪贴板"
+          }
+        }
+      }
+    },
+    "Clipboard access: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪贴板读取权限: %@"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "comment" : "Pinned screenshot context menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
+        }
+      }
+    },
+    "Close Window" : {
+      "comment" : "Menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭窗口"
+          }
+        }
+      }
+    },
+    "Close, one step at a time" : {
+      "comment" : "Shortcut help: esc closes help or preview, then clears the search, then closes the panel",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逐层关闭"
+          }
+        }
+      }
+    },
+    "Code snippets aren't translated" : {
+      "comment" : "Translation unsupported",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代码片段不翻译"
+          }
+        }
+      }
+    },
+    "Color" : {
+      "comment" : "Kind of a single clipboard item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "颜色"
+          }
+        }
+      }
+    },
+    "Colors" : {
+      "comment" : "Category tab: color items",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "颜色"
+          }
+        }
+      }
+    },
+    "Colors can't be translated" : {
+      "comment" : "Translation unsupported",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "颜色不支持翻译"
+          }
+        }
+      }
+    },
+    "Command" : {
+      "comment" : "Key name read by VoiceOver",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command"
+          }
+        }
+      }
+    },
+    "Compare" : {
+      "comment" : "Screenshot translation bar: wipe comparison toggle",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卷帘对比"
+          }
+        }
+      }
+    },
+    "Connected · %@ · %lld ms · “%@”" : {
+      "comment" : "Translation settings: connection test succeeded. %1$@ = model, %2$lld = ms, %3$@ = translation of Hello",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Connected · %1$@ · %2$lld ms · “%3$@”"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连接成功 · %1$@ · %2$lld ms ·「%3$@」"
+          }
+        }
+      }
+    },
+    "Connecting to %@…" : {
+      "comment" : "Translation card status",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在连接 %@…"
+          }
+        }
+      }
+    },
+    "Content marked as concealed or transient, like passwords, is never recorded." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标记为机密或临时的内容（例如密码管理器复制的密码）始终不会被记录。"
+          }
+        }
+      }
+    },
+    "Control" : {
+      "comment" : "Key name read by VoiceOver",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Control"
+          }
+        }
+      }
+    },
+    "Copied" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制"
+          }
+        }
+      }
+    },
+    "Copied %@" : {
+      "comment" : "HUD after copying a color. %@ = color value",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制 %@"
+          }
+        }
+      }
+    },
+    "Copied the translated image" : {
+      "comment" : "Flash on the translation card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制译后图片"
+          }
+        }
+      }
+    },
+    "Copied the translation" : {
+      "comment" : "Flash on the translation card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制译文"
+          }
+        }
+      }
+    },
+    "Copied to clipboard" : {
+      "comment" : "HUD after copying an item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制到剪贴板"
+          }
+        }
+      }
+    },
+    "Copied translation" : {
+      "comment" : "HUD after copying the screenshot translation",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制译文"
+          }
+        }
+      }
+    },
+    "Copied · Allow Accessibility to paste directly" : {
+      "comment" : "HUD after copying",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制 · 授权辅助功能后可直接粘贴"
+          }
+        }
+      }
+    },
+    "Copies the version, system and permission status for bug reports. Never includes clipboard content." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制版本、系统与权限状态等信息，便于反馈问题；不包含任何剪贴板内容"
+          }
+        }
+      }
+    },
+    "Copy" : {
+      "comment" : "Footer hint for ↩ when it only copies",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制"
+          }
+        }
+      }
+    },
+    "Copy (or double-click a card)" : {
+      "comment" : "Shortcut help: ↩ when choosing an item only copies it",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制（双击卡片同效）"
+          }
+        }
+      }
+    },
+    "Copy Command" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制命令"
+          }
+        }
+      }
+    },
+    "Copy Diagnostic Info" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制诊断信息"
+          }
+        }
+      }
+    },
+    "Copy Only" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅复制"
+          }
+        }
+      }
+    },
+    "Copy Translation" : {
+      "comment" : "Context menu item: copy the cached translation\nScreenshot translation bar button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制译文"
+          }
+        }
+      }
+    },
+    "Copy Translation (⌘C)" : {
+      "comment" : "Tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制译文（⌘C）"
+          }
+        }
+      }
+    },
+    "Copy all translated text in reading order" : {
+      "comment" : "Tooltip of the copy translation button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按阅读顺序复制全部译文"
+          }
+        }
+      }
+    },
+    "Copy any text, image or file and it will show up here." : {
+      "comment" : "Empty panel message",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制任意文本、图片或文件，它们会出现在这里"
+          }
+        }
+      }
+    },
+    "Copy as plain text" : {
+      "comment" : "Shortcut hint for ⇧↩ when it only copies",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制为纯文本"
+          }
+        }
+      }
+    },
+    "Copy only" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅复制"
+          }
+        }
+      }
+    },
+    "Copy something first, then click Grant Access again." : {
+      "comment" : "Clipboard permission hint when the clipboard was empty, so macOS didn't ask",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先复制任意内容，再点一次「去授权」"
+          }
+        }
+      }
+    },
+    "Copy the translation" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制译文"
+          }
+        }
+      }
+    },
+    "Copy the translation (↩) · plain text ⇧↩" : {
+      "comment" : "Tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制译文（↩）· 纯文本 ⇧↩"
+          }
+        }
+      }
+    },
+    "Copy to the clipboard only" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅复制到剪贴板"
+          }
+        }
+      }
+    },
+    "Copy with formatting" : {
+      "comment" : "Shortcut hint for ⇧↩ when it only copies",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制并保留格式"
+          }
+        }
+      }
+    },
+    "Couldn't access the Keychain, so the saved API key can't be used." : {
+      "comment" : "Translation settings: reading the saved API key from the Keychain failed",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法访问钥匙串，已保存的 API Key 暂时无法使用。"
+          }
+        }
+      }
+    },
+    "Couldn't access the Keychain. Try again." : {
+      "comment" : "Translation settings: saving or removing the API key failed",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法访问钥匙串，请重试。"
+          }
+        }
+      }
+    },
+    "Couldn't capture the screen. Check the permission prompt." : {
+      "comment" : "HUD when capturing the screen fails or times out",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法截取屏幕，请查看系统权限弹窗"
+          }
+        }
+      }
+    },
+    "Couldn't capture the window" : {
+      "comment" : "HUD when a window screenshot fails",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窗口截图失败"
+          }
+        }
+      }
+    },
+    "Couldn't change the login item: %@" : {
+      "comment" : "Error when turning launch at login on or off",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法更改登录项：%@"
+          }
+        }
+      }
+    },
+    "Couldn't check for updates" : {
+      "comment" : "Update alert title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查更新失败"
+          }
+        }
+      }
+    },
+    "Couldn't check for updates: %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检查失败：%@"
+          }
+        }
+      }
+    },
+    "Couldn't connect to %@." : {
+      "comment" : "Translation settings: network error. %@ = host",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法连接到 %@。"
+          }
+        }
+      }
+    },
+    "Couldn't copy" : {
+      "comment" : "Error when copying an item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制失败"
+          }
+        }
+      }
+    },
+    "Couldn't copy to the clipboard. Saved to history." : {
+      "comment" : "HUD when writing a screenshot to the pasteboard fails but it was added to the history",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法复制到剪贴板，已存入历史"
+          }
+        }
+      }
+    },
+    "Couldn't create the screenshot" : {
+      "comment" : "HUD when exporting a screenshot fails",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图生成失败"
+          }
+        }
+      }
+    },
+    "Couldn't paste the translation" : {
+      "comment" : "Inline translation error on a card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法粘贴译文"
+          }
+        }
+      }
+    },
+    "Couldn't read the history file. Items copied during this session won't be saved to disk." : {
+      "comment" : "Panel warning detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "读取历史文件失败，本次运行的记录不会写入磁盘"
+          }
+        }
+      }
+    },
+    "Couldn't read the release information." : {
+      "comment" : "Update check error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法解析发布信息"
+          }
+        }
+      }
+    },
+    "Couldn't read the translation" : {
+      "comment" : "Screenshot translation failure\nTranslation failure title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回内容无法识别"
+          }
+        }
+      }
+    },
+    "Couldn't recognize text" : {
+      "comment" : "HUD when text recognition fails",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字识别失败"
+          }
+        }
+      }
+    },
+    "Couldn't reopen Cubby. Quit it and open it again." : {
+      "comment" : "HUD when relaunching after granting Screen Recording fails",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法重新打开 Cubby，请手动退出后再打开"
+          }
+        }
+      }
+    },
+    "Couldn't save the screenshot" : {
+      "comment" : "HUD when saving a screenshot fails",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图存储失败"
+          }
+        }
+      }
+    },
+    "Couldn't save · recording may be paused" : {
+      "comment" : "Flash when Save as New Item was refused (paused, secret or too long)",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法存为新条目 · 可能已暂停记录"
+          }
+        }
+      }
+    },
+    "Created by a newer version (v%lld), read-only" : {
+      "comment" : "Diagnostics: history load issue",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "由更新版本创建（v%lld），只读"
+          }
+        }
+      }
+    },
+    "Cubby (paused)" : {
+      "comment" : "Accessibility description of the status item icon",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cubby（已暂停）"
+          }
+        }
+      }
+    },
+    "Cubby can only copy for now" : {
+      "comment" : "Panel warning title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂时只能复制，无法直接粘贴"
+          }
+        }
+      }
+    },
+    "Cubby is running from a disk image or a quarantined location, so permissions and launch at login may not be kept." : {
+      "comment" : "Panel warning detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前从磁盘映像或隔离位置运行，权限与开机启动可能无法保留"
+          }
+        }
+      }
+    },
+    "Cubby is up to date" : {
+      "comment" : "Update alert title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cubby 已是最新版本"
+          }
+        }
+      }
+    },
+    "Cubby needs Screen Recording to capture your screen. It only captures when you take a screenshot, and frames stay in memory until you copy, save or pin them." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cubby 需要屏幕录制权限才能截取屏幕。只有你截图时才会读取画面，并且在你复制、存储或贴图之前，画面只保留在内存中。"
+          }
+        }
+      }
+    },
+    "Cubby records what you copy in the background. Your data stays on this Mac." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cubby 会在后台记录你复制的内容，数据仅保存在本机。"
+          }
+        }
+      }
+    },
+    "Cubby uses clipboard access to record history and Accessibility to paste directly." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "读取剪贴板用于记录历史；辅助功能用于直接粘贴到当前应用。"
+          }
+        }
+      }
+    },
+    "Cubby · Recording paused" : {
+      "comment" : "Status item tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cubby · 已暂停记录"
+          }
+        }
+      }
+    },
+    "Current App" : {
+      "comment" : "Paste target whose name is unknown",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前应用"
+          }
+        }
+      }
+    },
+    "Custom" : {
+      "comment" : "Translation provider preset name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自定义"
+          }
+        }
+      }
+    },
+    "Cut" : {
+      "comment" : "Menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪切"
+          }
+        }
+      }
+    },
+    "Data folder" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数据目录"
+          }
+        }
+      }
+    },
+    "Data format version: %lld, load issue: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data format version: %1$lld, load issue: %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数据格式版本: %1$lld，加载问题: %2$@"
+          }
+        }
+      }
+    },
+    "Data size: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数据占用: %@"
+          }
+        }
+      }
+    },
+    "Decides which version Done, Save and Pin export" : {
+      "comment" : "Tooltip of the original / translation switch in the screenshot translation bar",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "决定完成、存储、贴图导出哪个版本"
+          }
+        }
+      }
+    },
+    "Delete" : {
+      "comment" : "Key name read by VoiceOver\nShortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除"
+          }
+        }
+      }
+    },
+    "Deleted" : {
+      "comment" : "Toast after deleting an item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已删除"
+          }
+        }
+      }
+    },
+    "Developer (Team %@)" : {
+      "comment" : "Diagnostics: code signature",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Developer（Team %@）"
+          }
+        }
+      }
+    },
+    "Development build" : {
+      "comment" : "Version text when running without an app bundle",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开发版"
+          }
+        }
+      }
+    },
+    "Direct paste stopped working" : {
+      "comment" : "Panel warning title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直接粘贴已失效"
+          }
+        }
+      }
+    },
+    "Don't record likely secrets and tokens" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不记录疑似密钥和令牌"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "comment" : "Screenshot toolbar button accessibility label",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成"
+          }
+        }
+      }
+    },
+    "Done (↩)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成（↩）"
+          }
+        }
+      }
+    },
+    "Down Arrow" : {
+      "comment" : "Key name read by VoiceOver",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下箭头"
+          }
+        }
+      }
+    },
+    "Download" : {
+      "comment" : "Button: open the release page",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前往下载"
+          }
+        }
+      }
+    },
+    "Download %@ first" : {
+      "comment" : "Screenshot translation failure. %@ = language pair, for example English → Chinese",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要先下载「%@」语言包"
+          }
+        }
+      }
+    },
+    "Download Languages" : {
+      "comment" : "Button: download translation languages\nLanguage download window title\nScreenshot translation bar button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载语言"
+          }
+        }
+      }
+    },
+    "Download languages to translate on this Mac" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载语言后即可在本机翻译"
+          }
+        }
+      }
+    },
+    "Download the languages you need in System Settings › General › Language & Region › Translation Languages, then click Done." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在「系统设置 › 通用 › 语言与地区 › 翻译语言」中下载所需的语言，然后点「完成」。"
+          }
+        }
+      }
+    },
+    "Download the “%@” languages first" : {
+      "comment" : "Translation failure title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要先下载「%@」语言包"
+          }
+        }
+      }
+    },
+    "Drag" : {
+      "comment" : "Shortcut help: mouse gesture, shown in a key cap",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖拽"
+          }
+        }
+      }
+    },
+    "Drag the divider to compare" : {
+      "comment" : "Translation card status for images",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖动分隔线对比"
+          }
+        }
+      }
+    },
+    "Drag the divider to compare the original and the translation (view only, not exported)" : {
+      "comment" : "Tooltip of the wipe comparison toggle",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖动分隔线对比原文与译文（只用于查看，不影响导出）"
+          }
+        }
+      }
+    },
+    "Drag to select · Click for window · Space clean window · Esc to cancel" : {
+      "comment" : "First-run hint at the bottom of the screenshot overlay",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖拽框选 · 单击选窗口 · 空格 纯净窗口 · Esc 取消"
+          }
+        }
+      }
+    },
+    "Drop a card into another app" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把卡片拖到其他应用"
+          }
+        }
+      }
+    },
+    "Edit" : {
+      "comment" : "Menu title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编辑"
+          }
+        }
+      }
+    },
+    "Ellipse" : {
+      "comment" : "Screenshot tool name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "椭圆"
+          }
+        }
+      }
+    },
+    "Ellipse (O)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "椭圆（O）"
+          }
+        }
+      }
+    },
+    "Enter and save an API key." : {
+      "comment" : "Translation settings: API key is missing",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请填写并保存 API Key。"
+          }
+        }
+      }
+    },
+    "Enter the base URL." : {
+      "comment" : "Translation settings: base URL is empty",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请填写 Base URL。"
+          }
+        }
+      }
+    },
+    "Esc to cancel translation" : {
+      "comment" : "Screenshot translation bar hint while translating",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esc 取消翻译"
+          }
+        }
+      }
+    },
+    "Everything you copy, one shortcut away." : {
+      "comment" : "Product tagline",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制过的一切，一个快捷键找回。"
+          }
+        }
+      }
+    },
+    "Export version" : {
+      "comment" : "Accessibility label of the original / translation switch",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "导出版本"
+          }
+        }
+      }
+    },
+    "Extract Text" : {
+      "comment" : "Screenshot toolbar button accessibility label",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提取文字"
+          }
+        }
+      }
+    },
+    "Extract Text (⌘T)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提取文字（⌘T）"
+          }
+        }
+      }
+    },
+    "Favorite" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收藏"
+          }
+        }
+      }
+    },
+    "Favorite / unfavorite" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收藏 / 取消收藏"
+          }
+        }
+      }
+    },
+    "Favorites" : {
+      "comment" : "Category tab: favorite items",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收藏"
+          }
+        }
+      }
+    },
+    "Favorites are kept" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收藏的条目会保留"
+          }
+        }
+      }
+    },
+    "Favorites will be kept. This can't be undone." : {
+      "comment" : "Clear history confirmation message",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收藏的条目会被保留，此操作无法撤销。"
+          }
+        }
+      }
+    },
+    "File" : {
+      "comment" : "Kind of a single clipboard item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件"
+          }
+        }
+      }
+    },
+    "File no longer exists" : {
+      "comment" : "Error when copying a file item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件已不存在"
+          }
+        }
+      }
+    },
+    "Files" : {
+      "comment" : "Category tab: file items\nTitle of a file item without any path",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件"
+          }
+        }
+      }
+    },
+    "Files can't be translated" : {
+      "comment" : "Translation unsupported",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件不支持翻译"
+          }
+        }
+      }
+    },
+    "Files no longer exist" : {
+      "comment" : "File item whose files were all deleted or moved",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件已不存在"
+          }
+        }
+      }
+    },
+    "First / last item (or Home, End)" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一条 / 最后一条（或 Home、End）"
+          }
+        }
+      }
+    },
+    "Fix…" : {
+      "comment" : "Panel warning button: show how to renew Accessibility access",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修复…"
+          }
+        }
+      }
+    },
+    "Follow the system prompt to download the language files. After that, translation works offline and text never leaves this Mac." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请按系统提示下载语言文件。下载后可离线翻译，文字不会离开这台 Mac。"
+          }
+        }
+      }
+    },
+    "Forget This App's Language" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不再记住此应用的语言"
+          }
+        }
+      }
+    },
+    "Forget the language for %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不再记住 %@ 的语言"
+          }
+        }
+      }
+    },
+    "Full user guide…" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整使用说明…"
+          }
+        }
+      }
+    },
+    "General" : {
+      "comment" : "Settings pane",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通用"
+          }
+        }
+      }
+    },
+    "Get Started" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始使用"
+          }
+        }
+      }
+    },
+    "Go to Settings" : {
+      "comment" : "Button: open translation settings",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "去设置"
+          }
+        }
+      }
+    },
+    "Grant Access" : {
+      "comment" : "Button: ask macOS for the permission",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "去授权"
+          }
+        }
+      }
+    },
+    "Grant Access Again" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新授权"
+          }
+        }
+      }
+    },
+    "Green" : {
+      "comment" : "Screenshot annotation color",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "绿色"
+          }
+        }
+      }
+    },
+    "Has translation" : {
+      "comment" : "VoiceOver: the card has a cached translation",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已翻译"
+          }
+        }
+      }
+    },
+    "Highlighter" : {
+      "comment" : "Screenshot tool name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "荧光笔"
+          }
+        }
+      }
+    },
+    "Highlighter (H)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "荧光笔（H）"
+          }
+        }
+      }
+    },
+    "History" : {
+      "comment" : "Settings pane",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史"
+          }
+        }
+      }
+    },
+    "History can't be saved" : {
+      "comment" : "Panel warning title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史记录无法保存"
+          }
+        }
+      }
+    },
+    "History file was damaged and backed up" : {
+      "comment" : "Diagnostics: history load issue",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史文件曾损坏，已备份"
+          }
+        }
+      }
+    },
+    "History file was damaged, starting over" : {
+      "comment" : "Panel warning title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史文件损坏，已从头开始记录"
+          }
+        }
+      }
+    },
+    "History items: %lld, favorites: %lld, limit: %lld" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "History items: %1$lld, favorites: %2$lld, limit: %3$lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史: %1$lld 条（收藏 %2$lld 条），上限 %3$lld"
+          }
+        }
+      }
+    },
+    "History was created by a newer version of Cubby" : {
+      "comment" : "Panel warning title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史记录由更新版本的 Cubby 创建"
+          }
+        }
+      }
+    },
+    "Hold" : {
+      "comment" : "Translation card status: “Hold [⌥] to see the original”, before the key cap",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按住"
+          }
+        }
+      }
+    },
+    "Hold Space to see the original" : {
+      "comment" : "Screenshot translation bar hint",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按住空格看原文"
+          }
+        }
+      }
+    },
+    "Hold ⌥" : {
+      "comment" : "Shortcut help: key names",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按住 ⌥"
+          }
+        }
+      }
+    },
+    "Ignore" : {
+      "comment" : "Open panel button: ignore the chosen apps",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "忽略"
+          }
+        }
+      }
+    },
+    "Ignored Apps" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "忽略的应用"
+          }
+        }
+      }
+    },
+    "Image" : {
+      "comment" : "Kind of a single clipboard item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片"
+          }
+        }
+      }
+    },
+    "Image %lld×%lld" : {
+      "comment" : "Title of an image item: width × height in pixels",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Image %1$lld×%2$lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片 %1$lld×%2$lld"
+          }
+        }
+      }
+    },
+    "Image file is missing" : {
+      "comment" : "Error when copying an image item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片文件已丢失"
+          }
+        }
+      }
+    },
+    "Image is too large to translate" : {
+      "comment" : "Translation unsupported",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片过大，无法翻译"
+          }
+        }
+      }
+    },
+    "Images" : {
+      "comment" : "Category tab: image items",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片"
+          }
+        }
+      }
+    },
+    "Images are never uploaded. Text under mosaic and text that looks like a secret is never sent." : {
+      "comment" : "Translation settings privacy note when the base URL is not set",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "图片不会上传。被马赛克遮住的文字、疑似密钥的文字不会发送。"
+          }
+        }
+      }
+    },
+    "Include ⌘, ⌥ or ⌃" : {
+      "comment" : "Shortcut recorder error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需包含 ⌘、⌥ 或 ⌃"
+          }
+        }
+      }
+    },
+    "Install location: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安装位置: %@"
+          }
+        }
+      }
+    },
+    "Installed with Homebrew: brew upgrade --cask cubby" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通过 Homebrew 安装：brew upgrade --cask cubby"
+          }
+        }
+      }
+    },
+    "International" : {
+      "comment" : "Translation provider endpoint region",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "国际"
+          }
+        }
+      }
+    },
+    "Items" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前条目"
+          }
+        }
+      }
+    },
+    "Items you copy while paused aren't saved." : {
+      "comment" : "Panel warning detail when clipboard recording is paused",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂停期间复制的内容不会保存"
+          }
+        }
+      }
+    },
+    "Just now" : {
+      "comment" : "Relative time of an item copied less than a minute ago",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刚刚"
+          }
+        }
+      }
+    },
+    "Keep up to" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最多保留"
+          }
+        }
+      }
+    },
+    "Key not supported" : {
+      "comment" : "Shortcut recorder error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不支持这个按键"
+          }
+        }
+      }
+    },
+    "Keyboard Shortcuts" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷键"
+          }
+        }
+      }
+    },
+    "Keyboard shortcut" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "呼出快捷键"
+          }
+        }
+      }
+    },
+    "Keyboard shortcut: %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷键 %@"
+          }
+        }
+      }
+    },
+    "Keychain Access" : {
+      "comment" : "Name of the Apple app",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "钥匙串访问"
+          }
+        }
+      }
+    },
+    "Language packs" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语言包"
+          }
+        }
+      }
+    },
+    "Languages not downloaded" : {
+      "comment" : "Inline translation error on a card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缺少语言包"
+          }
+        }
+      }
+    },
+    "Large" : {
+      "comment" : "Screenshot text size option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大"
+          }
+        }
+      }
+    },
+    "Large Language Model" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大模型"
+          }
+        }
+      }
+    },
+    "Large language model" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大模型"
+          }
+        }
+      }
+    },
+    "Launch at login" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登录时自动启动"
+          }
+        }
+      }
+    },
+    "Link" : {
+      "comment" : "Kind of a single clipboard item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "链接"
+          }
+        }
+      }
+    },
+    "Links" : {
+      "comment" : "Category tab: link items",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "链接"
+          }
+        }
+      }
+    },
+    "Links can't be translated" : {
+      "comment" : "Translation unsupported",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "链接不支持翻译"
+          }
+        }
+      }
+    },
+    "Looks like a secret, not sent to %@" : {
+      "comment" : "Inline translation error on a card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "疑似密钥，未发送到 %@"
+          }
+        }
+      }
+    },
+    "Looks like a secret, not sent · ⌘T to review" : {
+      "comment" : "Hold-Option translation preview: suspected secret",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "疑似包含密钥，未发送 · ⌘T 查看"
+          }
+        }
+      }
+    },
+    "Looks like it contains a secret, not sent" : {
+      "comment" : "Translation card state title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "疑似包含密钥，未发送"
+          }
+        }
+      }
+    },
+    "Manage Languages…" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "管理语言…"
+          }
+        }
+      }
+    },
+    "Medium" : {
+      "comment" : "Screenshot text size option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中"
+          }
+        }
+      }
+    },
+    "Model" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模型"
+          }
+        }
+      }
+    },
+    "Model name" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模型名称"
+          }
+        }
+      }
+    },
+    "More actions, like Pin to Screen" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多操作，如「贴图」"
+          }
+        }
+      }
+    },
+    "More actions, like Pin to Screen or Translate" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多操作，如「贴图」「翻译」"
+          }
+        }
+      }
+    },
+    "Mosaic" : {
+      "comment" : "Screenshot tool name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "马赛克"
+          }
+        }
+      }
+    },
+    "Mosaic (M)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "马赛克（M）"
+          }
+        }
+      }
+    },
+    "Mouse" : {
+      "comment" : "Shortcut help section title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鼠标"
+          }
+        }
+      }
+    },
+    "Move Cubby to the Applications folder" : {
+      "comment" : "Panel warning title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把 Cubby 移到「应用程序」文件夹"
+          }
+        }
+      }
+    },
+    "Next to the pointer" : {
+      "comment" : "Panel position option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "鼠标旁"
+          }
+        }
+      }
+    },
+    "No clipboard history yet" : {
+      "comment" : "Empty panel title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有剪贴板记录"
+          }
+        }
+      }
+    },
+    "No colors" : {
+      "comment" : "Empty panel title for the Colors category",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有颜色类型的记录"
+          }
+        }
+      }
+    },
+    "No favorites yet" : {
+      "comment" : "Empty panel title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有收藏"
+          }
+        }
+      }
+    },
+    "No files" : {
+      "comment" : "Empty panel title for the Files category",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有文件类型的记录"
+          }
+        }
+      }
+    },
+    "No ignored apps" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未忽略任何应用"
+          }
+        }
+      }
+    },
+    "No images" : {
+      "comment" : "Empty panel title for the Images category",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有图片类型的记录"
+          }
+        }
+      }
+    },
+    "No item selected" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有选中的条目"
+          }
+        }
+      }
+    },
+    "No links" : {
+      "comment" : "Empty panel title for the Links category",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有链接类型的记录"
+          }
+        }
+      }
+    },
+    "No longer valid (the app's signature changed after an update)" : {
+      "comment" : "Accessibility permission status",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "授权已失效（应用更新后签名变化）"
+          }
+        }
+      }
+    },
+    "No results for “%@”" : {
+      "comment" : "Empty panel: search without results",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有找到「%@」"
+          }
+        }
+      }
+    },
+    "No text found" : {
+      "comment" : "HUD when a screenshot has no text",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有识别到文字"
+          }
+        }
+      }
+    },
+    "No text items" : {
+      "comment" : "Empty panel title for the Text category",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有文本类型的记录"
+          }
+        }
+      }
+    },
+    "No text to translate" : {
+      "comment" : "Screenshot translation bar when nothing can be translated\nTranslation unsupported",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未发现可翻译的文字"
+          }
+        }
+      }
+    },
+    "No translation service set up" : {
+      "comment" : "Translation failure title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚未配置翻译服务"
+          }
+        }
+      }
+    },
+    "No translation yet" : {
+      "comment" : "Flash on the translation card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有译文"
+          }
+        }
+      }
+    },
+    "None" : {
+      "comment" : "Diagnostics: no history load issue",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无"
+          }
+        }
+      }
+    },
+    "Not Now" : {
+      "comment" : "Button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "稍后"
+          }
+        }
+      }
+    },
+    "Not allowed yet. Choose “Allow Paste” when asked." : {
+      "comment" : "Clipboard permission status. “Allow Paste” is the button title in the macOS prompt.",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚未授权，系统询问时选择「允许粘贴」"
+          }
+        }
+      }
+    },
+    "Not allowed. Choosing an item only copies it." : {
+      "comment" : "Accessibility permission status",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未授权，选中条目后只能复制"
+          }
+        }
+      }
+    },
+    "Not allowed. Cubby can't record the clipboard." : {
+      "comment" : "Clipboard permission status",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未授权，无法记录剪贴板"
+          }
+        }
+      }
+    },
+    "Not allowed. Only needed for screenshots." : {
+      "comment" : "Screen Recording permission status",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未授权，仅截图时需要"
+          }
+        }
+      }
+    },
+    "Not installed" : {
+      "comment" : "Ignored app that isn't installed",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未安装"
+          }
+        }
+      }
+    },
+    "Not required on this version of macOS" : {
+      "comment" : "Clipboard permission status",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前系统无需授权"
+          }
+        }
+      }
+    },
+    "Not sent · looks like it contains a secret" : {
+      "comment" : "Translation card privacy line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未发送 · 疑似包含密钥"
+          }
+        }
+      }
+    },
+    "Not sent · no translation service set up" : {
+      "comment" : "Translation card privacy line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未发送 · 尚未配置翻译服务"
+          }
+        }
+      }
+    },
+    "Not translated: looks like it contains a secret" : {
+      "comment" : "Flash on the translation card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未翻译：内容疑似包含密钥"
+          }
+        }
+      }
+    },
+    "Nothing in this item needs translating." : {
+      "comment" : "Translation card: explanation when an item (for example an image) has no text to translate",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这条内容里没有需要翻译的文字。"
+          }
+        }
+      }
+    },
+    "Nothing was cached." : {
+      "comment" : "Translation card state detail after canceling",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有写入缓存。"
+          }
+        }
+      }
+    },
+    "Nothing was sent" : {
+      "comment" : "Translation card privacy line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未发送任何内容"
+          }
+        }
+      }
+    },
+    "Nothing will be sent" : {
+      "comment" : "Translation card privacy line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不会发送任何内容"
+          }
+        }
+      }
+    },
+    "Nothing you copy while paused is saved" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂停期间复制的内容不会保存"
+          }
+        }
+      }
+    },
+    "Number" : {
+      "comment" : "Screenshot tool name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "序号"
+          }
+        }
+      }
+    },
+    "Number (N)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "序号（N）"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "comment" : "Button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好"
+          }
+        }
+      }
+    },
+    "Off" : {
+      "comment" : "Shortcut recorder state when the shortcut is turned off",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
+        }
+      }
+    },
+    "Ollama (on this Mac)" : {
+      "comment" : "Translation provider preset name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama（本机）"
+          }
+        }
+      }
+    },
+    "On this Mac, free and works offline (built-in macOS Translation)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本机、免费、离线（macOS 自带 Translation）"
+          }
+        }
+      }
+    },
+    "Only reads release information from GitHub and never uploads any data" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只读取 GitHub 上的发布信息，不上传任何数据"
+          }
+        }
+      }
+    },
+    "Only uses system translation on this Mac. Requires the language to be downloaded." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只在本机使用系统翻译，需要已下载对应语言。"
+          }
+        }
+      }
+    },
+    "Opacity" : {
+      "comment" : "Pinned screenshot context menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不透明度"
+          }
+        }
+      }
+    },
+    "Opacity %@" : {
+      "comment" : "Color preview footer. %@ = opacity, e.g. “50%”",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不透明度 %@"
+          }
+        }
+      }
+    },
+    "Opaque" : {
+      "comment" : "Color preview footer: the color has no transparency",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不透明"
+          }
+        }
+      }
+    },
+    "Open" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开"
+          }
+        }
+      }
+    },
+    "Open Accessibility Settings" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开辅助功能设置"
+          }
+        }
+      }
+    },
+    "Open Clipboard" : {
+      "comment" : "Status menu item: open the panel",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开剪贴板"
+          }
+        }
+      }
+    },
+    "Open Language & Region Settings" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开「语言与地区」设置"
+          }
+        }
+      }
+    },
+    "Open Login Items Settings" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开登录项设置"
+          }
+        }
+      }
+    },
+    "Open Settings" : {
+      "comment" : "Screenshot translation bar button for setup problems",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "去设置"
+          }
+        }
+      }
+    },
+    "Open System Settings" : {
+      "comment" : "Button: open the pane in System Settings",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开系统设置"
+          }
+        }
+      }
+    },
+    "Open from anywhere" : {
+      "comment" : "Shown after the global shortcut key caps in the empty panel",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "随时呼出"
+          }
+        }
+      }
+    },
+    "Open in browser" : {
+      "comment" : "Shortcut hint in the link preview",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在浏览器中打开"
+          }
+        }
+      }
+    },
+    "Open link or file" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开链接或文件"
+          }
+        }
+      }
+    },
+    "OpenAI-compatible: DeepSeek, Qwen, Kimi, Ollama and more" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "兼容 OpenAI 接口：DeepSeek、通义千问、Kimi、Ollama 等"
+          }
+        }
+      }
+    },
+    "Option" : {
+      "comment" : "Key name read by VoiceOver",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Option"
+          }
+        }
+      }
+    },
+    "Orange" : {
+      "comment" : "Screenshot annotation color",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "橙色"
+          }
+        }
+      }
+    },
+    "Original" : {
+      "comment" : "Chip on the left of the wipe divider\nScreenshot translation bar: show the original text (export version)\nTitle of the bubble showing a block's original text\nTitle of the bubble that shows a block's original text\nTranslation card view: original only",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原文"
+          }
+        }
+      }
+    },
+    "Original formatting" : {
+      "comment" : "Paste format option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留原格式"
+          }
+        }
+      }
+    },
+    "Original · Release Space for the translation" : {
+      "comment" : "Chip shown while holding Space over a translated screenshot",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原文 · 松开空格回到译文"
+          }
+        }
+      }
+    },
+    "Original · release" : {
+      "comment" : "Translation card status while holding Option: “Original · release [⌥] to go back”",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原文 · 松开"
+          }
+        }
+      }
+    },
+    "Original · release ⌥ to go back" : {
+      "comment" : "Chip over an image while holding Option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原文 · 松开 ⌥ 回到译文"
+          }
+        }
+      }
+    },
+    "Page Down" : {
+      "comment" : "Key name read by VoiceOver",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page Down"
+          }
+        }
+      }
+    },
+    "Page Up" : {
+      "comment" : "Key name read by VoiceOver",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page Up"
+          }
+        }
+      }
+    },
+    "Panel position" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "面板位置"
+          }
+        }
+      }
+    },
+    "Paragraph by paragraph: hover to highlight its original" : {
+      "comment" : "Tooltip of the Side by Side view for text",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逐段对照：悬停一段高亮它的原文"
+          }
+        }
+      }
+    },
+    "Passwords" : {
+      "comment" : "Name of the Apple app",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密码"
+          }
+        }
+      }
+    },
+    "Paste" : {
+      "comment" : "Menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴"
+          }
+        }
+      }
+    },
+    "Paste (or double-click a card)" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴（双击卡片同效）"
+          }
+        }
+      }
+    },
+    "Paste API key" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴 API Key"
+          }
+        }
+      }
+    },
+    "Paste as Plain Text" : {
+      "comment" : "Context menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴为纯文本"
+          }
+        }
+      }
+    },
+    "Paste as plain text" : {
+      "comment" : "Shortcut hint for ⇧↩",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "纯文本粘贴"
+          }
+        }
+      }
+    },
+    "Paste directly: %@, default paste format: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste directly: %1$@, default paste format: %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直接粘贴: %1$@，默认粘贴格式: %2$@"
+          }
+        }
+      }
+    },
+    "Paste into the current app" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直接粘贴到当前应用"
+          }
+        }
+      }
+    },
+    "Paste text as" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本粘贴格式"
+          }
+        }
+      }
+    },
+    "Paste the translation into %@ (↩) · plain text ⇧↩" : {
+      "comment" : "Tooltip of Paste Translation. %@ = target app",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴译文到 %@（↩）· 纯文本 ⇧↩"
+          }
+        }
+      }
+    },
+    "Paste to %@ %@" : {
+      "comment" : "Footer hint for ↩. %1$@ = icon of the target app, %2$@ = name of the target app",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste to %1$@ %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴到 %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "Paste translation to %@ %@" : {
+      "comment" : "Footer hint for ↩ while the translation card is open. %1$@ = app icon, %2$@ = app name",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste translation to %1$@ %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴译文到 %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "Paste with Original Formatting" : {
+      "comment" : "Context menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴为保留原格式"
+          }
+        }
+      }
+    },
+    "Paste with formatting" : {
+      "comment" : "Shortcut hint for ⇧↩",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留格式粘贴"
+          }
+        }
+      }
+    },
+    "Pasted translation · from cache (%@)" : {
+      "comment" : "HUD after pasting a cached translation",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已粘贴译文 · 来自缓存（%@）"
+          }
+        }
+      }
+    },
+    "Pasting" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴"
+          }
+        }
+      }
+    },
+    "Pasting directly requires Accessibility access" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直接粘贴需要辅助功能权限"
+          }
+        }
+      }
+    },
+    "Pasting into %@ will always translate to %@" : {
+      "comment" : "Flash after remembering a target language for the paste target app",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasting into %1$@ will always translate to %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴到 %1$@ 时将总是译为%2$@"
+          }
+        }
+      }
+    },
+    "Pause Recording" : {
+      "comment" : "Status menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂停记录"
+          }
+        }
+      }
+    },
+    "Pause recording" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂停记录"
+          }
+        }
+      }
+    },
+    "Pen" : {
+      "comment" : "Screenshot tool name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画笔"
+          }
+        }
+      }
+    },
+    "Pen (P)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画笔（P）"
+          }
+        }
+      }
+    },
+    "Permissions" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "权限"
+          }
+        }
+      }
+    },
+    "Pin image to screen" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贴图"
+          }
+        }
+      }
+    },
+    "Pin to Screen" : {
+      "comment" : "Screenshot toolbar button accessibility label",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贴图"
+          }
+        }
+      }
+    },
+    "Pin to Screen (⌘P)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贴图（⌘P）"
+          }
+        }
+      }
+    },
+    "Plain text" : {
+      "comment" : "Paste format option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "纯文本"
+          }
+        }
+      }
+    },
+    "Pointer" : {
+      "comment" : "Screenshot tool name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "指针"
+          }
+        }
+      }
+    },
+    "Pointer (V)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "指针（V）"
+          }
+        }
+      }
+    },
+    "Press %@ to capture, mark up and pin screenshots on screen. Cubby asks for Screen Recording only when you take your first one." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 %@ 即可截图、标注，并把截图贴在屏幕上。第一次截图时，Cubby 才会请求屏幕录制权限。"
+          }
+        }
+      }
+    },
+    "Press %@ to open your clipboard anytime" : {
+      "comment" : "HUD after the first-launch guide. %@ = global shortcut",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 %@ 随时打开剪贴板"
+          }
+        }
+      }
+    },
+    "Press %@ to take a screenshot" : {
+      "comment" : "HUD after granting Screen Recording. %@ = screenshot shortcut",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 %@ 截图"
+          }
+        }
+      }
+    },
+    "Press Esc again to discard" : {
+      "comment" : "Screenshot HUD after the first Esc when annotations exist",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再按一次 Esc 放弃截图"
+          }
+        }
+      }
+    },
+    "Press Return to paste, or Space to preview." : {
+      "comment" : "VoiceOver hint for a clipboard card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按回车粘贴，按空格预览。"
+          }
+        }
+      }
+    },
+    "Press a new shortcut, or esc to cancel" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按下新的快捷键，esc 取消"
+          }
+        }
+      }
+    },
+    "Press it in any app to open Cubby." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在任何应用中按下它，就能打开 Cubby。"
+          }
+        }
+      }
+    },
+    "Press it in any app to open Cubby. By default, %@ replaces “Paste and Match Style” in some apps. You can change it anytime." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在任何应用中按下它，就能打开 Cubby。默认的 %@ 会代替部分应用中的「粘贴并匹配样式」，可随时更改。"
+          }
+        }
+      }
+    },
+    "Press the new shortcut…" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按下新的快捷键…"
+          }
+        }
+      }
+    },
+    "Press ⇥ or click a tab above to switch categories." : {
+      "comment" : "Empty panel message for an empty category",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 ⇥ 或点击上方标签切换分类"
+          }
+        }
+      }
+    },
+    "Press ⇧↩ to paste as plain text, or ⌘↩ to copy only." : {
+      "comment" : "Settings footer when the default paste format keeps the original formatting",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 ⇧↩ 以「纯文本」粘贴，按 ⌘↩ 仅复制。"
+          }
+        }
+      }
+    },
+    "Press ⇧↩ to paste with original formatting, or ⌘↩ to copy only." : {
+      "comment" : "Settings footer when the default paste format is plain text",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 ⇧↩ 以「保留原格式」粘贴，按 ⌘↩ 仅复制。"
+          }
+        }
+      }
+    },
+    "Preview" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "预览"
+          }
+        }
+      }
+    },
+    "Preview the translation (in the card: the original)" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "预览译文（翻译卡片中：看原文）"
+          }
+        }
+      }
+    },
+    "Privacy" : {
+      "comment" : "Settings pane",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐私"
+          }
+        }
+      }
+    },
+    "Provider" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服务商"
+          }
+        }
+      }
+    },
+    "Purple" : {
+      "comment" : "Screenshot annotation color",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "紫色"
+          }
+        }
+      }
+    },
+    "Quick copy" : {
+      "comment" : "Shortcut help when direct pasting is unavailable",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快速复制"
+          }
+        }
+      }
+    },
+    "Quick paste" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快速粘贴"
+          }
+        }
+      }
+    },
+    "Quit & Reopen Cubby" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出并重新打开 Cubby"
+          }
+        }
+      }
+    },
+    "Quit Cubby" : {
+      "comment" : "Menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出 Cubby"
+          }
+        }
+      }
+    },
+    "Qwen (Alibaba Cloud)" : {
+      "comment" : "Translation provider preset name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通义千问"
+          }
+        }
+      }
+    },
+    "Recognized text is sent to %@. Images are not uploaded" : {
+      "comment" : "Tooltip of the engine chip for a cloud engine. %@ = engine name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "识别出的文字会发送到 %@（图片不上传）"
+          }
+        }
+      }
+    },
+    "Recognizing text on this Mac…" : {
+      "comment" : "Translation card footer for images",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在本机识别文字…"
+          }
+        }
+      }
+    },
+    "Recognizing text…" : {
+      "comment" : "HUD while recognizing text in a screenshot\nScreenshot translation bar status",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在识别文字…"
+          }
+        }
+      }
+    },
+    "Record" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制"
+          }
+        }
+      }
+    },
+    "Recording is paused" : {
+      "comment" : "Tooltip of Save as New Item while recording is paused",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已暂停记录"
+          }
+        }
+      }
+    },
+    "Recording paused" : {
+      "comment" : "Panel warning title when clipboard recording is paused",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已暂停记录"
+          }
+        }
+      }
+    },
+    "Recording paused: %@, skip likely secrets: %@, ignored apps: %lld" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recording paused: %1$@, skip likely secrets: %2$@, ignored apps: %3$lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂停记录: %1$@，过滤疑似密钥: %2$@，忽略应用: %3$lld 个"
+          }
+        }
+      }
+    },
+    "Recording shortcut" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在录制快捷键"
+          }
+        }
+      }
+    },
+    "Rectangle" : {
+      "comment" : "Screenshot tool name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "矩形"
+          }
+        }
+      }
+    },
+    "Rectangle (R)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "矩形（R）"
+          }
+        }
+      }
+    },
+    "Red" : {
+      "comment" : "Screenshot annotation color",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "红色"
+          }
+        }
+      }
+    },
+    "Redo" : {
+      "comment" : "Menu item\nScreenshot toolbar button accessibility label",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重做"
+          }
+        }
+      }
+    },
+    "Redo (⇧⌘Z)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重做（⇧⌘Z）"
+          }
+        }
+      }
+    },
+    "Refresh" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新"
+          }
+        }
+      }
+    },
+    "Regular" : {
+      "comment" : "Screenshot stroke weight option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "中"
+          }
+        }
+      }
+    },
+    "Reinstall Cubby to restore it." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新安装 Cubby 即可恢复。"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除"
+          }
+        }
+      }
+    },
+    "Remove %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除 %@"
+          }
+        }
+      }
+    },
+    "Remove the user name, password, query or fragment from the URL." : {
+      "comment" : "Translation settings: base URL has extra components",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网址中不能包含用户名、密码、查询参数或片段。"
+          }
+        }
+      }
+    },
+    "Reset" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复默认"
+          }
+        }
+      }
+    },
+    "Restore default (%@)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复默认（%@）"
+          }
+        }
+      }
+    },
+    "Restore default shortcut" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复默认快捷键"
+          }
+        }
+      }
+    },
+    "Resume" : {
+      "comment" : "Panel warning button: resume clipboard recording",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复记录"
+          }
+        }
+      }
+    },
+    "Retry" : {
+      "comment" : "Button\nScreenshot translation bar button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重试"
+          }
+        }
+      }
+    },
+    "Return" : {
+      "comment" : "Key name read by VoiceOver",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Return"
+          }
+        }
+      }
+    },
+    "Rich text" : {
+      "comment" : "Text item has formatting",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "含格式"
+          }
+        }
+      }
+    },
+    "Right-click" : {
+      "comment" : "Shortcut help: mouse gesture, shown in a key cap",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右键"
+          }
+        }
+      }
+    },
+    "Same as macOS screenshots" : {
+      "comment" : "Screenshot save location option: follow the macOS screenshot folder",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "与系统截图相同"
+          }
+        }
+      }
+    },
+    "Save" : {
+      "comment" : "Screenshot toolbar button accessibility label",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存储"
+          }
+        }
+      }
+    },
+    "Save (⌘S)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存储（⌘S）"
+          }
+        }
+      }
+    },
+    "Save Key" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
+          }
+        }
+      }
+    },
+    "Save after the translation finishes" : {
+      "comment" : "Flash on the translation card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "译文完成后才能存"
+          }
+        }
+      }
+    },
+    "Save as New Item (⌘S)" : {
+      "comment" : "Tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存为新条目（⌘S）"
+          }
+        }
+      }
+    },
+    "Save screenshots to" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图存储位置"
+          }
+        }
+      }
+    },
+    "Save the translation as a new item" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "译文存为新条目"
+          }
+        }
+      }
+    },
+    "Saved as a new item" : {
+      "comment" : "Flash on the translation card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已存为新条目"
+          }
+        }
+      }
+    },
+    "Saved to %@" : {
+      "comment" : "HUD after saving a screenshot. %@ = folder name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已存储到「%@」"
+          }
+        }
+      }
+    },
+    "Saved to Desktop (folder unavailable)" : {
+      "comment" : "HUD when the screenshot folder is unavailable and the file was saved to the Desktop",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文件夹不可用，已存储到桌面"
+          }
+        }
+      }
+    },
+    "Saved translations" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已保存的译文"
+          }
+        }
+      }
+    },
+    "Save…" : {
+      "comment" : "Pinned screenshot context menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存储…"
+          }
+        }
+      }
+    },
+    "Screen Recording" : {
+      "comment" : "Screen Recording guide window title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "屏幕录制"
+          }
+        }
+      }
+    },
+    "Screen Recording is only used when you take a screenshot." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "屏幕录制仅在截图时使用。"
+          }
+        }
+      }
+    },
+    "Screen layout changed" : {
+      "comment" : "HUD when a screenshot is cancelled by a display change",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "屏幕布局已变化，截图已取消"
+          }
+        }
+      }
+    },
+    "Screen recording: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "屏幕录制: %@"
+          }
+        }
+      }
+    },
+    "Screenshot" : {
+      "comment" : "Source name of screenshot items in the history",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图"
+          }
+        }
+      }
+    },
+    "Screenshot shortcut" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图快捷键"
+          }
+        }
+      }
+    },
+    "Screenshot shortcut: %@, save location: %@" : {
+      "comment" : "Diagnostics line. Values stay in English: off / system default / custom",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Screenshot shortcut: %1$@, save location: %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图快捷键: %1$@，存储位置: %2$@"
+          }
+        }
+      }
+    },
+    "Screenshots" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图"
+          }
+        }
+      }
+    },
+    "Screenshots are saved here without asking." : {
+      "comment" : "Screenshot settings: folder row note when saving directly",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图会直接存储到这里，不再询问。"
+          }
+        }
+      }
+    },
+    "Search clipboard" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索剪贴板"
+          }
+        }
+      }
+    },
+    "Search text in images" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索图片中的文字"
+          }
+        }
+      }
+    },
+    "Search the Guide" : {
+      "comment" : "User guide window: search field placeholder",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索使用说明"
+          }
+        }
+      }
+    },
+    "Secure input: %@" : {
+      "comment" : "Diagnostics line. The value stays in English: on / off",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安全键盘输入: %@"
+          }
+        }
+      }
+    },
+    "Select (or ⌃P ⌃N)" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择（也可用 ⌃P ⌃N）"
+          }
+        }
+      }
+    },
+    "Select All" : {
+      "comment" : "Menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全选"
+          }
+        }
+      }
+    },
+    "Select an item and press ⌘P to favorite it. Favorites are never removed automatically." : {
+      "comment" : "Empty panel message",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选中条目后按 ⌘P 收藏，收藏不会被自动清理"
+          }
+        }
+      }
+    },
+    "Selection changed" : {
+      "comment" : "Screenshot translation bar when the selection now includes text that wasn't translated",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选区已变化"
+          }
+        }
+      }
+    },
+    "Sending after a moment…" : {
+      "comment" : "Translation card status: cloud engine dwell",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停留片刻后发送…"
+          }
+        }
+      }
+    },
+    "Sends only after you stay on an item for a moment" : {
+      "comment" : "Translation card footer during the cloud dwell",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在这条上停留片刻才发送"
+          }
+        }
+      }
+    },
+    "Sent to %@" : {
+      "comment" : "Translation card privacy line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已发送到 %@"
+          }
+        }
+      }
+    },
+    "Sent, waiting for the first words…" : {
+      "comment" : "Translation card footer",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已发送，等待首个字…"
+          }
+        }
+      }
+    },
+    "Set Cubby to “Allow” in Privacy & Security › Paste from Other Apps so macOS stops asking every time you copy." : {
+      "comment" : "Panel warning detail on macOS 26. Use the name of the pane in System Settings.",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在「隐私与安全性 › 从其他 App 粘贴」中将 Cubby 设为「允许」，macOS 就不会每次复制都询问"
+          }
+        }
+      }
+    },
+    "Set Cubby to “Allow” in Privacy & Security › Paste so macOS stops asking every time you copy." : {
+      "comment" : "Panel warning detail on macOS 15. Use the name of the pane in System Settings.",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在「隐私与安全性 › 粘贴」中将 Cubby 设为「允许」，macOS 就不会每次复制都询问"
+          }
+        }
+      }
+    },
+    "Set from the language menu of the translation card" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在翻译卡的语言菜单中设置"
+          }
+        }
+      }
+    },
+    "Set one up in Settings › Translation. System Translation works on this Mac, free and offline." : {
+      "comment" : "Translation failure detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在「设置 › 翻译」里配置后即可使用。系统翻译在本机完成：免费、离线。"
+          }
+        }
+      }
+    },
+    "Set to “Ask”, so macOS will keep asking when you copy" : {
+      "comment" : "Clipboard permission status. “Ask” is the option name in System Settings › Privacy & Security › Paste from Other Apps.",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前为「询问」，复制时会反复弹窗"
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置"
+          }
+        }
+      }
+    },
+    "Settings (⌘,)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置（⌘,）"
+          }
+        }
+      }
+    },
+    "Settings…" : {
+      "comment" : "Status menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置…"
+          }
+        }
+      }
+    },
+    "Setup Guide…" : {
+      "comment" : "Status menu item: reopen the first-launch guide",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置向导…"
+          }
+        }
+      }
+    },
+    "Shift" : {
+      "comment" : "Key name read by VoiceOver",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shift"
+          }
+        }
+      }
+    },
+    "Shortcut & Panel" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷键与面板"
+          }
+        }
+      }
+    },
+    "Shortcut: %@, panel position: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut: %1$@, panel position: %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "快捷键: %1$@，面板位置: %2$@"
+          }
+        }
+      }
+    },
+    "Show Backup" : {
+      "comment" : "Panel warning button: reveal the backup file in Finder",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看备份"
+          }
+        }
+      }
+    },
+    "Show File" : {
+      "comment" : "Panel warning button: reveal the history file in Finder",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看文件"
+          }
+        }
+      }
+    },
+    "Show Original (⇧⌘T)" : {
+      "comment" : "Screenshot toolbar tooltip when a translation is shown",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示原文 (⇧⌘T)"
+          }
+        }
+      }
+    },
+    "Show Translation (⇧⌘T)" : {
+      "comment" : "Screenshot toolbar tooltip when the original is shown",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示译文 (⇧⌘T)"
+          }
+        }
+      }
+    },
+    "Show in Finder" : {
+      "comment" : "Button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在访达中显示"
+          }
+        }
+      }
+    },
+    "Show translations on cards" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在卡片上显示译文"
+          }
+        }
+      }
+    },
+    "Signature: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "签名: %@"
+          }
+        }
+      }
+    },
+    "Small" : {
+      "comment" : "Screenshot text size option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小"
+          }
+        }
+      }
+    },
+    "Some text wasn't translated" : {
+      "comment" : "Screenshot translation bar after a partial failure",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "部分内容未翻译"
+          }
+        }
+      }
+    },
+    "Something went wrong. Try again." : {
+      "comment" : "Translation settings: unknown error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出现问题，请重试。"
+          }
+        }
+      }
+    },
+    "Source language" : {
+      "comment" : "Language menu: shown next to the language the text is already in",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原文语言"
+          }
+        }
+      }
+    },
+    "Space" : {
+      "comment" : "Key name as written in the user guide, shown in a key cap",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空格"
+          }
+        }
+      }
+    },
+    "Space / ⌘Y" : {
+      "comment" : "Shortcut help: key names",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空格 / ⌘Y"
+          }
+        }
+      }
+    },
+    "Space for clean window" : {
+      "comment" : "Screenshot hover hint: press Space to capture the window without what covers it",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空格 纯净窗口"
+          }
+        }
+      }
+    },
+    "Starting with macOS 15.4, apps need permission to read the clipboard. Your history stays on this Mac." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从 macOS 15.4 起，应用读取剪贴板需要授权。历史记录只保存在本机。"
+          }
+        }
+      }
+    },
+    "Startup & Updates" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启动与更新"
+          }
+        }
+      }
+    },
+    "Steps" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "操作步骤"
+          }
+        }
+      }
+    },
+    "Still translating" : {
+      "comment" : "Flash on the translation card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还在翻译中"
+          }
+        }
+      }
+    },
+    "Stop Ignoring" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不再忽略"
+          }
+        }
+      }
+    },
+    "Storage used" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "占用空间"
+          }
+        }
+      }
+    },
+    "Stored in Keychain" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存储在钥匙串中"
+          }
+        }
+      }
+    },
+    "Swap" : {
+      "comment" : "Tooltip of the swap button: translate the translation back",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对调"
+          }
+        }
+      }
+    },
+    "Swap (after the translation finishes)" : {
+      "comment" : "Tooltip of the swap button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对调（译文完成后可用）"
+          }
+        }
+      }
+    },
+    "Swap (not available for images)" : {
+      "comment" : "Tooltip of the swap button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对调（图片不支持）"
+          }
+        }
+      }
+    },
+    "Swap isn't available for text that looks like a secret with a cloud engine" : {
+      "comment" : "Swap button tooltip and card flash: nothing is sent",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "疑似包含密钥的内容用云端引擎时不能对调"
+          }
+        }
+      }
+    },
+    "Switch category" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换分类"
+          }
+        }
+      }
+    },
+    "System Settings › General › Language & Region › Translation Languages" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统设置 › 通用 › 语言与地区 › 翻译语言"
+          }
+        }
+      }
+    },
+    "System Translation" : {
+      "comment" : "Translation engine name shown in the translation bar",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统翻译"
+          }
+        }
+      }
+    },
+    "System Translation runs on this Mac. A language needs a download the first time; after that it works offline." : {
+      "comment" : "Translation failure detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统翻译在本机完成，首次使用某种语言需要下载语言包，下载后可离线翻译。"
+          }
+        }
+      }
+    },
+    "System languages: %@" : {
+      "comment" : "Diagnostics line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统语言: %@"
+          }
+        }
+      }
+    },
+    "Tab" : {
+      "comment" : "Key name read by VoiceOver",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tab"
+          }
+        }
+      }
+    },
+    "Tab ⇥ cycle · Space clean window" : {
+      "comment" : "Screenshot hover hint when windows overlap: Tab cycles layers, Space captures the clean window",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tab ⇥ 切换层级 · 空格 纯净窗口"
+          }
+        }
+      }
+    },
+    "Tab ⇥ to cycle" : {
+      "comment" : "Screenshot hint: press Tab to cycle overlapping windows",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tab ⇥ 切换层级"
+          }
+        }
+      }
+    },
+    "Take Screenshot" : {
+      "comment" : "Status menu item and panel button tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图"
+          }
+        }
+      }
+    },
+    "Take and pin screenshots" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图与贴图"
+          }
+        }
+      }
+    },
+    "Target app changed, copied instead" : {
+      "comment" : "HUD when the target lost focus",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标应用已切换，已改为仅复制"
+          }
+        }
+      }
+    },
+    "Target language" : {
+      "comment" : "Tooltip of the language pill on the translation card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标语言"
+          }
+        }
+      }
+    },
+    "Target language (saved for next time)" : {
+      "comment" : "Tooltip of the language menu in the screenshot translation bar",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标语言（下次沿用）"
+          }
+        }
+      }
+    },
+    "Target language by app" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按应用记住的目标语言"
+          }
+        }
+      }
+    },
+    "Target language follows the system again" : {
+      "comment" : "Flash after turning off the per-app target language",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已恢复：目标语言跟随系统"
+          }
+        }
+      }
+    },
+    "Test Connection" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "测试连接"
+          }
+        }
+      }
+    },
+    "Text" : {
+      "comment" : "Category tab: text items\nKind of a single clipboard item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文本"
+          }
+        }
+      }
+    },
+    "Text (T)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字（T）"
+          }
+        }
+      }
+    },
+    "Text copied" : {
+      "comment" : "HUD after copying recognized text",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制文字"
+          }
+        }
+      }
+    },
+    "Text is recognized on this Mac and never uploaded" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字在本机识别，不会上传"
+          }
+        }
+      }
+    },
+    "Text is too long to translate" : {
+      "comment" : "Translation unsupported",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字过长，无法翻译"
+          }
+        }
+      }
+    },
+    "The API key is invalid or not allowed" : {
+      "comment" : "Screenshot translation failure",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key 无效或无权限"
+          }
+        }
+      }
+    },
+    "The API key was rejected. Check that it's correct and has access." : {
+      "comment" : "Translation settings: 401 / 403",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key 被拒绝，请检查是否正确、是否有权限。"
+          }
+        }
+      }
+    },
+    "The API key was saved for %@. Enter it again for %@." : {
+      "comment" : "Translation settings: the stored key belongs to another host. %1$@ = old host, %2$@ = new host",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The API key was saved for %1$@. Enter it again for %2$@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "API Key 是为 %1$@ 保存的，请为 %2$@ 重新填写。"
+          }
+        }
+      }
+    },
+    "The app's signature changed after an update, so the old Accessibility entry no longer applies." : {
+      "comment" : "Panel warning detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用更新后签名变化，系统中的旧授权条目已不再生效"
+          }
+        }
+      }
+    },
+    "The first time you translate a language, macOS asks to download its language pack. After that, translation works offline. System Translation runs on this Mac, and text never leaves it." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首次使用某种语言需要下载语言包，下载后可离线翻译。系统翻译在本机完成，文字不会离开这台 Mac。"
+          }
+        }
+      }
+    },
+    "The key may have expired or been mistyped. Nothing was translated or cached." : {
+      "comment" : "Translation failure detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Key 可能已失效或填写有误。没有生成译文，也没有写入缓存。"
+          }
+        }
+      }
+    },
+    "The network is unavailable or the request timed out." : {
+      "comment" : "Update check error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "网络不可用或请求超时"
+          }
+        }
+      }
+    },
+    "The original file was backed up. You can find it in Finder." : {
+      "comment" : "Panel warning detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原文件已备份，可在访达中查看"
+          }
+        }
+      }
+    },
+    "The response couldn't be read. Check the model name." : {
+      "comment" : "Translation settings: invalid response",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返回内容无法识别，请检查模型名称。"
+          }
+        }
+      }
+    },
+    "The save dialog opens the last folder you used." : {
+      "comment" : "Screenshot settings: folder row note when asking where to save each time",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存储对话框会打开上次使用的文件夹。"
+          }
+        }
+      }
+    },
+    "The server returned status %lld." : {
+      "comment" : "Update check error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服务器返回 %lld"
+          }
+        }
+      }
+    },
+    "The service" : {
+      "comment" : "Engine name when unknown",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译服务"
+          }
+        }
+      }
+    },
+    "The service is temporarily unavailable (%lld)" : {
+      "comment" : "Screenshot translation failure. %lld = HTTP status code",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服务暂时不可用（%lld）"
+          }
+        }
+      }
+    },
+    "The service returned an error (%lld)." : {
+      "comment" : "Translation settings: HTTP error. %lld = status code",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服务返回了错误（%lld）。"
+          }
+        }
+      }
+    },
+    "The service returned something unexpected. Nothing was cached." : {
+      "comment" : "Translation failure detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "服务返回的内容无法识别，没有写入缓存。"
+          }
+        }
+      }
+    },
+    "The text is already in %@. Choose a target language" : {
+      "comment" : "Screenshot translation bar. %@ = language of the text",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原文已是%@，请选择目标语言"
+          }
+        }
+      }
+    },
+    "The update address is invalid." : {
+      "comment" : "Update check error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新地址无效"
+          }
+        }
+      }
+    },
+    "The user guide couldn't be loaded." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法载入使用说明。"
+          }
+        }
+      }
+    },
+    "Thick" : {
+      "comment" : "Screenshot stroke weight option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粗"
+          }
+        }
+      }
+    },
+    "Thin" : {
+      "comment" : "Screenshot stroke weight option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "细"
+          }
+        }
+      }
+    },
+    "This Mac" : {
+      "comment" : "Translation provider endpoint region",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本机"
+          }
+        }
+      }
+    },
+    "This isn't a valid URL." : {
+      "comment" : "Translation settings: base URL is invalid",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不是有效的网址。"
+          }
+        }
+      }
+    },
+    "This language pair isn't supported" : {
+      "comment" : "Screenshot translation failure\nTranslation failure title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不支持该语言组合"
+          }
+        }
+      }
+    },
+    "To avoid data loss, history is read-only for now and new copies won't be saved. Please update to the latest version." : {
+      "comment" : "Panel warning detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为避免数据丢失，本次运行只读，新的复制不会保存。请升级到最新版本"
+          }
+        }
+      }
+    },
+    "Too large for history" : {
+      "comment" : "HUD note when a screenshot exceeds the history limit",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内容过大，未存入历史"
+          }
+        }
+      }
+    },
+    "Too many requests or no quota left" : {
+      "comment" : "Screenshot translation failure",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请求过于频繁或额度不足"
+          }
+        }
+      }
+    },
+    "Too many requests, or the account is out of credit." : {
+      "comment" : "Translation settings: 402 / 429",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请求过于频繁，或账户额度不足。"
+          }
+        }
+      }
+    },
+    "Translate" : {
+      "comment" : "Context menu item and title of the translation card\nScreenshot toolbar button accessibility label",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译"
+          }
+        }
+      }
+    },
+    "Translate (press again to close)" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译（再按一次关闭）"
+          }
+        }
+      }
+    },
+    "Translate (⇧⌘T)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译 (⇧⌘T)"
+          }
+        }
+      }
+    },
+    "Translate Again" : {
+      "comment" : "Screenshot translation bar button after the selection changed",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新翻译"
+          }
+        }
+      }
+    },
+    "Translate Anyway" : {
+      "comment" : "Button: send text that looks like a secret",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仍然翻译"
+          }
+        }
+      }
+    },
+    "Translate and Paste" : {
+      "comment" : "Context menu item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译后粘贴"
+          }
+        }
+      }
+    },
+    "Translate into" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译为"
+          }
+        }
+      }
+    },
+    "Translate text when you copy it" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制外文时自动翻译"
+          }
+        }
+      }
+    },
+    "Translate, then paste" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译后粘贴"
+          }
+        }
+      }
+    },
+    "Translated" : {
+      "comment" : "Chip on the right of the wipe divider\nScreenshot translation bar: show the translation (export version)\nTranslation card view: translation only",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "译文"
+          }
+        }
+      }
+    },
+    "Translated Text" : {
+      "comment" : "Source name of saved translations in the history",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "译文"
+          }
+        }
+      }
+    },
+    "Translated on this Mac; nothing leaves it" : {
+      "comment" : "Translation card privacy line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本机翻译，内容未离开此 Mac"
+          }
+        }
+      }
+    },
+    "Translated with %@ and pasted" : {
+      "comment" : "HUD after ⌥↩ / ↩",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已用%@翻译并粘贴"
+          }
+        }
+      }
+    },
+    "Translated with %@ and pasted as plain text" : {
+      "comment" : "HUD after ⌥↩ / ↩",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已用%@翻译并粘贴（纯文本）"
+          }
+        }
+      }
+    },
+    "Translated: %@ (cached)" : {
+      "comment" : "Tooltip of the translation chip on a card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已翻译：%@（已缓存）"
+          }
+        }
+      }
+    },
+    "Translating %lld/%lld" : {
+      "comment" : "Screenshot translation bar status. %1$lld = translated blocks, %2$lld = all blocks",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translating %1$lld/%2$lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在翻译 %1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "Translating %lld/%lld · esc to cancel" : {
+      "comment" : "Inline progress on a card after ⌥↩: segments done / total",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translating %1$lld/%2$lld · esc to cancel"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译中 %1$lld/%2$lld · esc 取消"
+          }
+        }
+      }
+    },
+    "Translating with %@ would send the whole text to %@. Nothing was sent." : {
+      "comment" : "Translation card: why a suspected secret was not sent",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translating with %1$@ would send the whole text to %2$@. Nothing was sent."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 %1$@ 翻译会把全文发送到 %2$@，所以这次没有发送。"
+          }
+        }
+      }
+    },
+    "Translating…" : {
+      "comment" : "Screenshot translation bar status before the first block\nTranslation card status",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在翻译…"
+          }
+        }
+      }
+    },
+    "Translating… %lld done" : {
+      "comment" : "Translation card status for images: blocks done",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在翻译… 已完成 %lld 块"
+          }
+        }
+      }
+    },
+    "Translating… · esc to cancel" : {
+      "comment" : "Inline progress on a card after ⌥↩",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译中… · esc 取消"
+          }
+        }
+      }
+    },
+    "Translation" : {
+      "comment" : "Settings pane",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译"
+          }
+        }
+      }
+    },
+    "Translation Engine" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译引擎"
+          }
+        }
+      }
+    },
+    "Translation Settings…" : {
+      "comment" : "Engine menu item on the translation card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译设置…"
+          }
+        }
+      }
+    },
+    "Translation canceled" : {
+      "comment" : "Translation card state title and footer toast",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已取消翻译"
+          }
+        }
+      }
+    },
+    "Translation cancelled" : {
+      "comment" : "Screenshot HUD after Esc stops a translation in progress",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已取消翻译"
+          }
+        }
+      }
+    },
+    "Translation cancelled · Press Esc again to close" : {
+      "comment" : "Screenshot HUD after Esc stops a translation in progress and nothing else is on the screenshot",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已取消翻译 · 再按一次 Esc 放弃截图"
+          }
+        }
+      }
+    },
+    "Translation closed" : {
+      "comment" : "Screenshot HUD after Esc closes a failed translation",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已关闭翻译"
+          }
+        }
+      }
+    },
+    "Translation copied (%@)" : {
+      "comment" : "HUD after copying a translation instead of pasting it",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "译文已复制（%@）"
+          }
+        }
+      }
+    },
+    "Translation copied as plain text (%@)" : {
+      "comment" : "HUD after copying a translation instead of pasting it",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "译文已复制为纯文本（%@）"
+          }
+        }
+      }
+    },
+    "Translation engine" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译引擎"
+          }
+        }
+      }
+    },
+    "Translation isn't set up" : {
+      "comment" : "Screenshot translation failure",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大模型尚未配置"
+          }
+        }
+      }
+    },
+    "Translation needs macOS 26 or later" : {
+      "comment" : "Translation unsupported",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译需要 macOS 26 或更高版本"
+          }
+        }
+      }
+    },
+    "Translation preview" : {
+      "comment" : "Card meta while holding Option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "译文预览"
+          }
+        }
+      }
+    },
+    "Translation timed out · ⌘T opens the card" : {
+      "comment" : "Inline translation error on a card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译超时 · ⌘T 打开翻译卡"
+          }
+        }
+      }
+    },
+    "Translation works on text, rich text and text in images. Code, links, colors and files stay as they are." : {
+      "comment" : "Translation card: explanation below an unsupported item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译只处理文本、富文本和图片里的文字；代码、链接、颜色和文件保持原样。"
+          }
+        }
+      }
+    },
+    "Translation · %@" : {
+      "comment" : "Tooltip of the translation line on a card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "译文 · %@"
+          }
+        }
+      }
+    },
+    "Translations of translated items are searched too. Press esc to clear the search." : {
+      "comment" : "Empty panel message when translation is available",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已翻译条目的译文也会被搜索。按 esc 清除搜索。"
+          }
+        }
+      }
+    },
+    "Translations saved with your history items will be deleted. Your history isn't affected." : {
+      "comment" : "Clear translations confirmation message",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史条目上保存的译文将被删除，历史本身不受影响。"
+          }
+        }
+      }
+    },
+    "Try Again" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重试"
+          }
+        }
+      }
+    },
+    "Try a different search, or press esc to clear it." : {
+      "comment" : "Empty panel message",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "换个关键词试试，按 esc 清空搜索"
+          }
+        }
+      }
+    },
+    "Try again in a moment." : {
+      "comment" : "Translation failure detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请稍后重试。"
+          }
+        }
+      }
+    },
+    "Undo" : {
+      "comment" : "Menu item\nScreenshot toolbar button accessibility label",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撤销"
+          }
+        }
+      }
+    },
+    "Undo (⌘Z)" : {
+      "comment" : "Screenshot toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撤销（⌘Z）"
+          }
+        }
+      }
+    },
+    "Undo delete" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撤销删除"
+          }
+        }
+      }
+    },
+    "Unfavorite" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消收藏"
+          }
+        }
+      }
+    },
+    "United States" : {
+      "comment" : "Translation provider endpoint region",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "美国"
+          }
+        }
+      }
+    },
+    "Unknown" : {
+      "comment" : "Diagnostics: unknown value",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知"
+          }
+        }
+      }
+    },
+    "Unknown source" : {
+      "comment" : "Source app of an item is unknown",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知来源"
+          }
+        }
+      }
+    },
+    "Unreadable, read-only" : {
+      "comment" : "Diagnostics: history load issue",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法读取，只读"
+          }
+        }
+      }
+    },
+    "Unsigned" : {
+      "comment" : "Diagnostics: code signature",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未签名"
+          }
+        }
+      }
+    },
+    "Up / down 5 items (or Page Up, Page Down)" : {
+      "comment" : "Shortcut help: move the selection by a page",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "向上 / 向下 5 条（或 Page Up、Page Down）"
+          }
+        }
+      }
+    },
+    "Up Arrow" : {
+      "comment" : "Key name read by VoiceOver",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上箭头"
+          }
+        }
+      }
+    },
+    "Use https://. Plain http:// is only allowed for localhost." : {
+      "comment" : "Translation settings: base URL uses http for a remote host",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请使用 https://（仅本机地址可以用 http://）。"
+          }
+        }
+      }
+    },
+    "User Guide" : {
+      "comment" : "User guide window title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用说明"
+          }
+        }
+      }
+    },
+    "User Guide…" : {
+      "comment" : "Status menu item: open the user guide window",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用说明…"
+          }
+        }
+      }
+    },
+    "Version %@" : {
+      "comment" : "About: app version",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 %@"
+          }
+        }
+      }
+    },
+    "Version %@ (%@)" : {
+      "comment" : "About: app version and build number",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %1$@ (%2$@)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "版本 %1$@（%2$@）"
+          }
+        }
+      }
+    },
+    "Version %@ Available…" : {
+      "comment" : "Status menu item shown when an update is available",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新版本 %@ 可用…"
+          }
+        }
+      }
+    },
+    "Version %@ is available" : {
+      "comment" : "Update alert title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发现新版本 %@"
+          }
+        }
+      }
+    },
+    "View (← / → to switch)" : {
+      "comment" : "Accessibility label of the translation card view picker",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示方式（← / → 切换）"
+          }
+        }
+      }
+    },
+    "Wait a moment, then try again." : {
+      "comment" : "Translation failure detail",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请稍等片刻再重试。"
+          }
+        }
+      }
+    },
+    "Welcome to Cubby" : {
+      "comment" : "Onboarding window title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "欢迎使用 Cubby"
+          }
+        }
+      }
+    },
+    "When the limit is reached, the oldest items are removed. Favorites don't count toward the limit." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超出后自动删除最早的条目，收藏的条目不计入上限。"
+          }
+        }
+      }
+    },
+    "When translating, text recognized in the selection is sent to %@. Images are never uploaded. Text under mosaic and text that looks like a secret is never sent." : {
+      "comment" : "Translation settings privacy note. %@ = host name of the translation service",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译时，选区中识别出的文字会发送到 %@。图片不会上传。被马赛克遮住的文字、疑似密钥的文字不会发送。"
+          }
+        }
+      }
+    },
+    "When translating, text recognized in the selection is sent to Ollama on this Mac (%@) and never leaves it. Images are never uploaded." : {
+      "comment" : "Translation settings privacy note for a local Ollama. %@ = host",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译时，选区中识别出的文字会发送到本机的 Ollama（%@），不会离开这台 Mac。图片不会上传。"
+          }
+        }
+      }
+    },
+    "When you choose an item" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选中条目后"
+          }
+        }
+      }
+    },
+    "White" : {
+      "comment" : "Screenshot annotation color",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "白色"
+          }
+        }
+      }
+    },
+    "Will be sent to %@" : {
+      "comment" : "Translation card privacy line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将发送到 %@"
+          }
+        }
+      }
+    },
+    "Wipe position: original on the left, translation on the right" : {
+      "comment" : "Accessibility label of the wipe divider",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卷帘位置：左侧原文，右侧译文"
+          }
+        }
+      }
+    },
+    "Wipe: drag the divider to compare" : {
+      "comment" : "Tooltip of the Side by Side view for images",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "卷帘对比：拖动分隔线"
+          }
+        }
+      }
+    },
+    "With Accessibility access, choosing an item pastes it into the current app. Otherwise it's only copied to the clipboard." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "授予辅助功能权限后，选中条目会直接粘贴到当前应用；否则只复制到剪贴板。"
+          }
+        }
+      }
+    },
+    "Yellow" : {
+      "comment" : "Screenshot annotation color",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黄色"
+          }
+        }
+      }
+    },
+    "Yesterday %@" : {
+      "comment" : "Time of an item copied yesterday, e.g. “Yesterday 23:11”",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "昨天 %@"
+          }
+        }
+      }
+    },
+    "You can change this later in Privacy & Security › Paste from Other Apps." : {
+      "comment" : "Clipboard permission hint below the Grant Access button. “Paste from Other Apps” is the pane name in System Settings › Privacy & Security (macOS 26).",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "之后可在「隐私与安全性 › 从其他 App 粘贴」中修改"
+          }
+        }
+      }
+    },
+    "You can change this later in Privacy & Security › Paste." : {
+      "comment" : "Clipboard permission hint below the Grant Access button. “Paste” is the pane name in System Settings › Privacy & Security (macOS 15).",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "之后可在「隐私与安全性 › 粘贴」中修改"
+          }
+        }
+      }
+    },
+    "You're running version %@." : {
+      "comment" : "Update alert message",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前版本 %@。"
+          }
+        }
+      }
+    },
+    "You're running version %@. If you installed Cubby with Homebrew, run: brew upgrade --cask cubby" : {
+      "comment" : "Update alert message",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前版本 %@。通过 Homebrew 安装的用户可运行：brew upgrade --cask cubby"
+          }
+        }
+      }
+    },
+    "You're up to date (%@)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已是最新版本（%@）"
+          }
+        }
+      }
+    },
+    "Zhipu GLM" : {
+      "comment" : "Translation provider preset name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "智谱 GLM"
+          }
+        }
+      }
+    },
+    "card.copyButton" : {
+      "comment" : "Translation card button: copy the translation. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制译文"
+          }
+        }
+      }
+    },
+    "card.mode.compare" : {
+      "comment" : "Translation card view: original and translation side by side. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compare"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对照"
+          }
+        }
+      }
+    },
+    "card.pasteButton" : {
+      "comment" : "Translation card primary button: paste the translation. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴译文"
+          }
+        }
+      }
+    },
+    "card.pasteWhenDoneButton" : {
+      "comment" : "Translation card primary button while translating. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste When Done"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成后粘贴"
+          }
+        }
+      }
+    },
+    "card.recognizingText" : {
+      "comment" : "Translation card status for images while the text in the image is being recognized",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recognizing text…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在识别文字…"
+          }
+        }
+      }
+    },
+    "card.saveButton" : {
+      "comment" : "Translation card button: save the translation as a new history item. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存为新条目"
+          }
+        }
+      }
+    },
+    "card.translatedChip" : {
+      "comment" : "Tiny chip on a card that has a cached translation. Keep it to 1–2 characters.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tr"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "译"
+          }
+        }
+      }
+    },
+    "footer.closeTranslation" : {
+      "comment" : "Footer hint for esc while the translation card is open. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
+        }
+      }
+    },
+    "footer.copyPlainText" : {
+      "comment" : "Footer hint for ⇧↩ when it only copies: copy as plain text. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy plain text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制纯文本"
+          }
+        }
+      }
+    },
+    "footer.copyTranslation" : {
+      "comment" : "Footer hint for ⌘C while the translation card is open. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制译文"
+          }
+        }
+      }
+    },
+    "footer.copyWithFormatting" : {
+      "comment" : "Footer hint for ⇧↩ when it only copies: copy keeping the formatting. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy with format"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留格式复制"
+          }
+        }
+      }
+    },
+    "footer.holdAfter" : {
+      "comment" : "Footer hint “Hold [⌥] to preview the translation”, after the key cap. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "preview"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "预览译文"
+          }
+        }
+      }
+    },
+    "footer.holdBefore" : {
+      "comment" : "Footer hint “Hold [⌥] to preview”, before the key cap",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hold"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按住"
+          }
+        }
+      }
+    },
+    "footer.pastePlainText" : {
+      "comment" : "Footer hint for ⇧↩: paste as plain text. Keep it short (12 characters or fewer).",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plain text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "纯文本粘贴"
+          }
+        }
+      }
+    },
+    "footer.pasteWithFormatting" : {
+      "comment" : "Footer hint for ⇧↩: paste keeping the formatting. Keep it short (12 characters or fewer).",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep format"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留格式粘贴"
+          }
+        }
+      }
+    },
+    "footer.saveTranslation" : {
+      "comment" : "Footer hint for ⌘S while the translation card is open: save as a new item. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存为新条目"
+          }
+        }
+      }
+    },
+    "footer.translateAndPaste" : {
+      "comment" : "Footer hint for ⌥↩: translate, then paste. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Translate"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译后粘贴"
+          }
+        }
+      }
+    },
+    "footer.translationPlainText" : {
+      "comment" : "Footer hint for ⇧↩ while the translation card is open. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plain text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "纯文本"
+          }
+        }
+      }
+    },
+    "macOS may ask you to quit and reopen Cubby after granting access." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "授权后，macOS 可能会要求退出并重新打开 Cubby。"
+          }
+        }
+      }
+    },
+    "menu.edit.copy" : {
+      "comment" : "Edit menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拷贝"
+          }
+        }
+      }
+    },
+    "pastes when done…" : {
+      "comment" : "Card meta while holding Option and Return",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成后粘贴…"
+          }
+        }
+      }
+    },
+    "pin.copy" : {
+      "comment" : "Pinned screenshot context menu item",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拷贝"
+          }
+        }
+      }
+    },
+    "release ⌥ to restore" : {
+      "comment" : "Card meta while holding Option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "松开 ⌥ 恢复"
+          }
+        }
+      }
+    },
+    "screenshot.tool.text" : {
+      "comment" : "Screenshot tool name",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字"
+          }
+        }
+      }
+    },
+    "to go back" : {
+      "comment" : "Translation card status while holding Option, after the key cap",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "回到译文"
+          }
+        }
+      }
+    },
+    "to see the original" : {
+      "comment" : "Translation card status: “Hold [⌥] to see the original”, after the key cap",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "看原文"
+          }
+        }
+      }
+    },
+    "↩ pastes this translation" : {
+      "comment" : "Card meta while holding Option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "↩ 粘贴这段译文"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
