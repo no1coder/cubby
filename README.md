@@ -83,6 +83,10 @@ Cubby sits in your menu bar and remembers what you copy: text, links, colors, im
 - Menu bar only, no Dock icon. English and Simplified Chinese interface.
 - Works with VoiceOver, and follows Reduce Motion and Increase Contrast.
 
+| Translate a screenshot in place | Translate a clipboard item |
+| :---: | :---: |
+| <img src="docs/assets/screenshots/screenshot-translate-dark.png" alt="A screenshot of two English windows with every label and line replaced in place by its Chinese translation"> | <img src="docs/assets/screenshots/clipboard-translate-dark.png" alt="The translation card next to the panel, showing an English email and its Chinese translation paragraph by paragraph"> |
+
 <details>
 <summary><b>More screenshots</b></summary>
 <br>
@@ -172,6 +176,10 @@ The keyboard button at the right of the panel footer shows this list inside the 
 
 On macOS 26, select an item in the panel and press <kbd>⌘T</kbd> (or <kbd>⇧⌘T</kbd>). A translation card opens beside the panel and fills in paragraph by paragraph. Rich text keeps its headings, lists, bold text and links, and inline code isn't translated. Images are translated in place, like screenshots. While the card is open, it follows your selection. In the card, <kbd>↩</kbd> pastes the translation, <kbd>⇧↩</kbd> pastes it as plain text, <kbd>⌘C</kbd> copies it and <kbd>⌘S</kbd> saves it as a new item. Copying or pasting a translation doesn't add it to your history.
 
+<p align="center">
+  <img src="docs/assets/screenshots/clipboard-translate-image-dark.png" width="640" alt="An English app screenshot from the history translated into Chinese in the translation card, with the panel beside it">
+</p>
+
 - <kbd>⌥↩</kbd> translates the selected item and pastes the translation in one step.
 - Hold <kbd>⌥</kbd> on an item to preview its translation in the list, and release it to go back. Pressing <kbd>↩</kbd> while you hold it pastes what you see.
 - The card's language menu can remember a target language for the app you're pasting into, for example always English when pasting into Slack. Settings › Translation lists these apps.
@@ -218,6 +226,10 @@ In Settings › General › Screenshots you can change or turn off the shortcut 
 ### Screenshot translation
 
 On macOS 26, click **Translate** in the screenshot toolbar or press <kbd>⇧⌘T</kbd>. Cubby recognizes the text in the selection, translates it block by block and draws each translation where the original was. Hold <kbd>Space</kbd> to peek at the original, or use the slider to compare. Copying and saving use whichever version the Original / Translation switch shows.
+
+<p align="center">
+  <img src="docs/assets/screenshots/screenshot-translate-compare-dark.png" width="640" alt="Comparing a translated screenshot: the original English on the left of the divider, the Chinese translation on the right">
+</p>
 
 Choose the engine in **Settings › Translation**:
 

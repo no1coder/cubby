@@ -2,7 +2,7 @@
 import AppKit
 import CubbyCore
 
-/// 展示场景的画面：渐变壁纸、发布说明窗口与下载量仪表盘。
+/// 展示场景的画面：渐变壁纸、发布说明窗口与天气窗口。
 /// 在「左上原点、y 向下、单位为点、全局坐标」的坐标系里画，输出 BGRA 位图（与真实采集一致）
 enum ShowcasePainter {
     private static let windowRadius: CGFloat = 12
@@ -15,7 +15,8 @@ enum ShowcasePainter {
     private static let secondary = color(0x8E8E93)
     private static let hairline = color(0xE5E5EA)
     private static let brand = color(0x5F2EEA)
-    private static let positive = color(0x248A3D)
+    /// 天气窗口的暖色说明文字（晴、紫外线强）
+    private static let warm = color(0xC2570C)
 
     /// 整块屏幕；layout 为 nil 时只有壁纸（其他屏幕）
     static func desktop(for screen: CaptureScreen, layout: ShowcaseLayout?, copy: ShowcaseCopy) -> CGImage? {
@@ -23,7 +24,7 @@ enum ShowcasePainter {
         context.translateBy(x: -screen.frame.minX, y: -screen.frame.minY)
         drawWallpaper(screen.frame, scene: layout ?? ShowcaseLayout(screen: screen), in: context)
         if let layout {
-            drawDashboard(layout, copy: copy, shadow: true, in: context)
+            drawWeather(layout, copy: copy, shadow: true, in: context)
             drawNotes(layout, copy: copy, shadow: true, in: context)
         }
         return context.makeImage()
@@ -33,7 +34,7 @@ enum ShowcasePainter {
     static func window(id: UInt32, layout: ShowcaseLayout, copy: ShowcaseCopy, scale: CGFloat, includeShadow: Bool)
         -> CGImage?
     {
-        let frame = id == ShowcaseLayout.notesID ? layout.notes : layout.dashboard
+        let frame = id == ShowcaseLayout.notesID ? layout.notes : layout.weather
         let padding = includeShadow ? shadowPadding : 0
         let size = CGSize(width: frame.width + padding * 2, height: frame.height + padding * 2)
         guard let context = makeContext(pointSize: size, scale: scale) else { return nil }
@@ -41,7 +42,7 @@ enum ShowcasePainter {
         if id == ShowcaseLayout.notesID {
             drawNotes(layout, copy: copy, shadow: includeShadow, in: context)
         } else {
-            drawDashboard(layout, copy: copy, shadow: includeShadow, in: context)
+            drawWeather(layout, copy: copy, shadow: includeShadow, in: context)
         }
         return context.makeImage()
     }
@@ -211,65 +212,64 @@ enum ShowcasePainter {
         endWindow(frame, in: context)
     }
 
-    // MARK: - 仪表盘
+    // MARK: - 天气窗口
 
-    private static func drawDashboard(
+    private static func drawWeather(
         _ layout: ShowcaseLayout, copy: ShowcaseCopy, shadow: Bool, in context: CGContext
     ) {
-        let frame = layout.dashboard
-        beginWindow(frame, title: copy.dashboardTitle, shadow: shadow, in: context)
-        let x = layout.dashboardContentX
+        let frame = layout.weather
+        beginWindow(frame, title: copy.weatherTitle, shadow: shadow, in: context)
+        let x = layout.weatherContentX
         ShowcaseText.draw(
-            copy.chartTitle, at: CGPoint(x: x, y: frame.minY + 42), size: 18, weight: .bold, color: ink, in: context)
+            copy.city, at: CGPoint(x: x, y: frame.minY + 42), size: 18, weight: .bold, color: ink, in: context)
         ShowcaseText.draw(
-            copy.chartSubtitle, at: CGPoint(x: x, y: frame.minY + 66), size: 12, color: secondary, in: context)
-        for (index, kpi) in copy.kpis.enumerated() {
-            drawKPI(kpi, in: layout.kpiTile(index), highlighted: index == 0, context: context)
+            copy.outlook, at: CGPoint(x: x, y: frame.minY + 66), size: 12, color: secondary, in: context)
+        for (index, tile) in copy.tiles.enumerated() {
+            drawTile(tile, in: layout.tile(index), highlighted: index == 0, context: context)
         }
-        drawChart(layout, in: context)
+        drawForecast(layout, copy: copy, in: context)
         endWindow(frame, in: context)
     }
 
-    private static func drawKPI(_ kpi: ShowcaseCopy.KPI, in tile: CGRect, highlighted: Bool, context: CGContext) {
-        context.addPath(CGPath(roundedRect: tile, cornerWidth: 10, cornerHeight: 10, transform: nil))
-        context.setFillColor(highlighted ? color(0xF3EFFF) : color(0xF4F5F7))
+    private static func drawTile(_ tile: ShowcaseCopy.Tile, in rect: CGRect, highlighted: Bool, context: CGContext) {
+        context.addPath(CGPath(roundedRect: rect, cornerWidth: 10, cornerHeight: 10, transform: nil))
+        context.setFillColor(highlighted ? color(0xEAF3FF) : color(0xF4F5F7))
         context.fillPath()
         ShowcaseText.draw(
-            kpi.label, at: CGPoint(x: tile.minX + 12, y: tile.minY + 9), size: 11, color: secondary, in: context)
+            tile.label, at: CGPoint(x: rect.minX + 12, y: rect.minY + 9), size: 11, color: secondary, in: context)
         ShowcaseText.draw(
-            kpi.value, at: CGPoint(x: tile.minX + 12, y: tile.minY + 26), size: 20, weight: .bold, color: ink,
+            tile.value, at: CGPoint(x: rect.minX + 12, y: rect.minY + 26), size: 20, weight: .bold, color: ink,
             in: context)
         ShowcaseText.draw(
-            kpi.delta, at: CGPoint(x: tile.maxX - 10, y: tile.minY + 33), size: 11, weight: .semibold,
-            color: positive, trailing: true, in: context)
+            tile.detail, at: CGPoint(x: rect.maxX - 10, y: rect.minY + 33), size: 11, weight: .semibold,
+            color: warm, trailing: true, in: context)
     }
 
-    /// 基线、柱子（最后一周橙色）与首尾周标签
-    private static func drawChart(_ layout: ShowcaseLayout, in context: CGContext) {
+    /// 基线、七天最高气温的柱子（最后一天橙色）与首尾两天的标签
+    private static func drawForecast(_ layout: ShowcaseLayout, copy: ShowcaseCopy, in context: CGContext) {
         let plot = layout.chartPlot
         context.setFillColor(hairline)
         context.fill(CGRect(x: plot.minX, y: plot.maxY, width: plot.width, height: 1))
-        let last = ShowcaseLayout.chartValues.count - 1
-        let purple = gradient([(0, color(0x8E6CF5)), (1, color(0x5F2EEA))])
-        let orange = gradient([(0, color(0xFFB340)), (1, color(0xFF8A00))])
-        for index in ShowcaseLayout.chartValues.indices {
+        let sky = gradient([(0, color(0x7CC4FF)), (1, color(0x2F7FE0))])
+        let sun = gradient([(0, color(0xFFB340)), (1, color(0xFF8A00))])
+        for index in ShowcaseLayout.forecastHighs.indices {
             let bar = layout.barRect(index)
             context.saveGState()
-            context.addPath(CGPath(roundedRect: bar, cornerWidth: 3, cornerHeight: 3, transform: nil))
+            context.addPath(CGPath(roundedRect: bar, cornerWidth: 4, cornerHeight: 4, transform: nil))
             context.clip()
-            if let fill = index == last ? orange : purple {
+            if let fill = index == layout.lastBarIndex ? sun : sky {
                 context.drawLinearGradient(
                     fill, start: CGPoint(x: bar.minX, y: bar.minY), end: CGPoint(x: bar.minX, y: bar.maxY), options: [])
             }
             context.restoreGState()
         }
         let first = layout.barRect(0)
-        let final = layout.barRect(last)
+        let final = layout.barRect(layout.lastBarIndex)
         ShowcaseText.draw(
-            "W27", at: CGPoint(x: first.minX - 4, y: plot.maxY + 6), size: 10, color: secondary, in: context)
+            copy.firstDay, at: CGPoint(x: first.minX - 2, y: plot.maxY + 6), size: 10, color: secondary, in: context)
         ShowcaseText.draw(
-            "W38", at: CGPoint(x: final.maxX + 4, y: plot.maxY + 6), size: 10, color: secondary, trailing: true,
-            in: context)
+            copy.lastDay, at: CGPoint(x: final.maxX + 2, y: plot.maxY + 6), size: 10, color: secondary,
+            trailing: true, in: context)
     }
 }
 #endif

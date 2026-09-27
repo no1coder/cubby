@@ -83,6 +83,10 @@ Cubby 常驻菜单栏，记住你复制过的文本、链接、颜色、图片�
 - 只在菜单栏，不占 Dock。界面支持英文与简体中文。
 - 支持 VoiceOver，并遵循「减弱动态效果」与「增强对比度」。
 
+| 原位翻译截图 | 翻译剪贴板条目 |
+| :---: | :---: |
+| <img src="docs/assets/screenshots/screenshot-translate-dark-zh.png" alt="截图中两个英文窗口的标题、标签与正文都在原位换成了中文译文"> | <img src="docs/assets/screenshots/clipboard-translate-dark-zh.png" alt="面板旁的翻译卡：英文邮件与中文译文逐段对照"> |
+
 <details>
 <summary><b>更多截图</b></summary>
 <br>
@@ -172,6 +176,10 @@ make install    # 构建 Universal Release 版，复制到 /Applications 并启�
 
 macOS 26 上，在面板中选中一条，按 <kbd>⌘T</kbd>（或 <kbd>⇧⌘T</kbd>）。翻译卡在面板旁打开，译文逐段出现。富文本保留标题、列表、粗体和链接，行内代码不翻译；图片与截图一样原位翻译。翻译卡打开期间会跟随选中项。在翻译卡中，<kbd>↩</kbd> 粘贴译文，<kbd>⇧↩</kbd> 以纯文本粘贴，<kbd>⌘C</kbd> 复制译文，<kbd>⌘S</kbd> 存为新条目。复制或粘贴译文不会加入历史。
 
+<p align="center">
+  <img src="docs/assets/screenshots/clipboard-translate-image-dark-zh.png" width="640" alt="历史中的英文应用截图在翻译卡中原位译成中文，旁边是面板">
+</p>
+
 - <kbd>⌥↩</kbd> 一步完成：翻译选中的条目并粘贴译文。
 - 在条目上按住 <kbd>⌥</kbd> 可在列表中预览译文，松开即恢复；按住期间按 <kbd>↩</kbd> 粘贴的就是所见的内容。
 - 翻译卡的语言菜单可以为当前粘贴目标应用记住目标语言，例如粘贴到 Slack 时总是译为英语。「设置 › 翻译」中会列出这些应用。
@@ -218,6 +226,10 @@ macOS 26 上，在面板中选中一条，按 <kbd>⌘T</kbd>（或 <kbd>⇧⌘T
 ### 截图翻译
 
 macOS 26 上，点截图工具栏中的「翻译」或按 <kbd>⇧⌘T</kbd>。Cubby 识别选区中的文字，逐块翻译，并把译文画在原文所在的位置。按住 <kbd>空格</kbd> 可查看原文，也可以用卷帘对比。复制和存储使用「原文 | 译文」开关当前所选的版本。
+
+<p align="center">
+  <img src="docs/assets/screenshots/screenshot-translate-compare-dark-zh.png" width="640" alt="卷帘对比译后的截图：分隔线左侧是英文原文，右侧是中文译文">
+</p>
 
 在「设置 › 翻译」中选择引擎：
 

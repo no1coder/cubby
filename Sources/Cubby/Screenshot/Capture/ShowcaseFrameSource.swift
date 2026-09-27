@@ -3,7 +3,7 @@ import CoreGraphics
 import CubbyCore
 import Foundation
 
-/// README 展示场景的冻结帧：合成的桌面（渐变壁纸 + 发布说明 + 下载量仪表盘），用来拍截图标注的宣传图。
+/// README 展示场景的冻结帧：合成的桌面（渐变壁纸 + 发布说明 + 天气窗口），用来拍截图标注与截图翻译的宣传图。
 /// 与 FixtureFrameSource 一样不需要屏幕录制权限，也不会截到用户的真实屏幕；窗口列表与画面一致，悬停识别可用
 struct ShowcaseFrameSource: FrameSource, WindowImageSource {
     let screens: [CaptureScreen]
@@ -26,7 +26,7 @@ struct ShowcaseFrameSource: FrameSource, WindowImageSource {
     /// 只画这一个窗口：圆角外透明，includeShadow 时四周留出阴影
     func captureWindow(id: UInt32, includeShadow: Bool, timeout: Duration) async throws -> WindowImage {
         guard let screen = screens.first,
-            [ShowcaseLayout.notesID, ShowcaseLayout.dashboardID].contains(id),
+            [ShowcaseLayout.notesID, ShowcaseLayout.weatherID].contains(id),
             let image = ShowcasePainter.window(
                 id: id, layout: ShowcaseLayout(screen: screen), copy: copy, scale: screen.scale,
                 includeShadow: includeShadow)

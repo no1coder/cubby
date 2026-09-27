@@ -13,6 +13,7 @@ extension ScreenshotCoordinator {
     /// - showcase：README 截图用的展示场景（合成桌面 + 预置标注），见 ShowcaseScenario.swift
     /// - save-dialog：annotating 场景上屏后按 ⌘S 弹出真实的存储对话框，4 秒后自动点「取消」（走查 §9.4 用，不写文件）
     /// - translate：展示场景上屏后自动翻译（桩引擎、真实的 Vision 识别，不联网；走查截图翻译用）
+    /// - translate-demo、translate-demo:compare：README 截图用的翻译演示（手写译文），见 TranslateDemoScenario.swift
     /// - 其余名称交给 ScreenshotDebugScenario（hovering、adjusting、annotating:<tool>、hover-cycle、window-mode 等）
     func startDebugScenario(_ scenario: String) {
         let name =
@@ -25,6 +26,8 @@ extension ScreenshotCoordinator {
         case "showcase": startShowcase()
         case "save-dialog": startSaveDialogWalkthrough()
         case "translate": startTranslationShowcase()
+        case "translate-demo": startTranslationDemo(compare: false)
+        case "translate-demo:compare": startTranslationDemo(compare: true)
         default: startFixture(named: name)
         }
     }

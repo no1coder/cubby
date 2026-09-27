@@ -35,6 +35,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.mainMenu = MainMenu.make()
         #if DEBUG
         if Self.launchDebugTool() { return }
+        DebugInputLock.installIfRequested()
         #endif
         AppPaths.prepare()
         #if DEBUG
@@ -42,12 +43,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if CommandLine.arguments.contains("--light") {
             NSApp.appearance = NSAppearance(named: .aqua)
         }
+        // 剪贴板翻译演示：在创建存储之前写入演示历史（只写 CUBBY_DATA_DIR，没设置时不写、也不运行演示）
+        if let demo = Self.debugScenario.flatMap(PanelTranslationDemo.init(scenario:)),
+            !TranslationDemoHistory.seed(demo)
+        {
+            logger.error("Could not write the translation demo history (it needs CUBBY_DATA_DIR)")
+            NSApp.terminate(nil)
+            return
+        }
         #endif
         let panel = makeComponents()
 
         #if DEBUG
-        // 设置页、翻译与使用说明走查用不到剪贴板：不启动监听，避免读取用户的剪贴板
-        let skipsClipboard = ["settings:", "translation:", "guide"].contains {
+        // 设置页、翻译、使用说明与翻译演示用不到剪贴板：不启动监听，避免读取用户的剪贴板
+        let skipsClipboard = [
+            "settings:", "translation:", "guide", PanelTranslationDemo.prefix, "screenshot:translate-demo",
+        ]
+        .contains {
             Self.debugScenario?.hasPrefix($0) == true
         }
         if !skipsClipboard { monitor?.start() }
@@ -272,9 +284,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } else if scenario.hasPrefix("screenshot:") {
             // screenshot:<名称>，见 ScreenshotCoordinator.startDebugScenario
             screenshots?.start(.debugScenario(scenario))
+        } else if let demo = PanelTranslationDemo(scenario: scenario) {
+            startTranslationDemo(demo, panel: panel)
         } else {
             panel.applyDebugScenario(scenario)
         }
+    }
+
+    /// 剪贴板翻译演示：面板换上接演示引擎的真实翻译服务（Vision 识别、排版与绘制照常），再打开翻译卡
+    private func startTranslationDemo(_ demo: PanelTranslationDemo, panel: PanelController) {
+        guard #available(macOS 26, *), let store else {
+            logger.error("The translation demo needs macOS 26")
+            return
+        }
+        panel.clipTranslation = ClipTranslationService(
+            store: store, settings: settings, provider: DemoTranslationProvider(),
+            recognizer: VisionTranslationRecognizer())
+        panel.startTranslationDemo(demo)
     }
     #endif
 

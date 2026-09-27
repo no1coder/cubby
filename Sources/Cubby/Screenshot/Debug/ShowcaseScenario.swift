@@ -42,6 +42,15 @@ enum ShowcaseSession {
         return events.reduce(initial) { ScreenshotReducer.reduce($0, event: $1, topology: topology).session }
     }
 
+    /// 只有预置选区、没有标注的会话（截图翻译演示用）
+    static func selectionOnly(topology: ScreenTopology) -> ScreenshotSession? {
+        guard let screen = topology.screens.first else { return nil }
+        let selection = ShowcaseLayout(screen: screen).selection
+        let start = CGPoint(x: selection.minX, y: selection.minY)
+        let initial = ScreenshotSession.initial(styles: .default, cursor: start, topology: topology)
+        return select(selection).reduce(initial) { ScreenshotReducer.reduce($0, event: $1, topology: topology).session }
+    }
+
     // MARK: - 事件序列
 
     /// 从左上角拖到右下角
@@ -66,9 +75,9 @@ enum ShowcaseSession {
         return tool(.mosaic) + stroke(points(from: email.minX + 8, to: email.maxX - 8, y: email.midY + 1.5))
     }
 
-    /// 橙色矩形框住「下载量」指标卡
+    /// 橙色矩形框住「现在」气温卡
     private static func rectangle(_ layout: ShowcaseLayout) -> [ScreenshotEvent] {
-        let tile = layout.kpiTile(0).insetBy(dx: -5, dy: -5)
+        let tile = layout.tile(0).insetBy(dx: -5, dy: -5)
         return tool(.rectangle) + [.command(.selectColor(.orange))]
             + stroke([
                 CGPoint(x: tile.minX, y: tile.minY), CGPoint(x: tile.midX, y: tile.midY),
@@ -96,14 +105,14 @@ enum ShowcaseSession {
         ]
     }
 
-    /// 箭头从文字右侧指向最后一周（最高）的柱子；画完仍停在箭头工具上
+    /// 箭头从文字右侧指向最后一天（最高）的柱子；画完仍停在箭头工具上
     private static func arrow(_ layout: ShowcaseLayout, copy: ShowcaseCopy) -> [ScreenshotEvent] {
         // 与 callout 中加粗一档后的字号一致（regular → heavy）
         let fontSize = ScreenshotTool.text.fontSize(for: .heavy)
         let textSize = TextLayout.size(of: copy.callout, fontSize: fontSize, maxWidth: .infinity)
         let origin = layout.calloutOrigin
         let tail = CGPoint(x: origin.x + textSize.width + 8, y: origin.y + textSize.height * 0.55)
-        let bar = layout.barRect(ShowcaseLayout.chartValues.count - 1)
+        let bar = layout.barRect(layout.lastBarIndex)
         let head = CGPoint(x: bar.minX - 5, y: bar.minY + 3)
         let middle = CGPoint(x: (tail.x + head.x) / 2, y: (tail.y + head.y) / 2)
         return tool(.arrow) + stroke([tail, middle, head])

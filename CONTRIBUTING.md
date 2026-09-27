@@ -102,6 +102,9 @@ Debug builds accept `--scenario <name>` to open the UI in a known state. In this
 | `screenshot:<state>` | The screenshot overlay in a preset state on a generated desktop with three overlapping fake windows. It needs no Screen Recording permission and never captures your real screen. States: `hovering`, `selecting`, `adjusting`, `annotating`, `annotating:<tool>`, `text`, `tiny`, `edge`, `fullscreen`, `hover-cycle`, `window-mode` |
 | `screenshot:live` | A real capture of all screens (needs Screen Recording). The capture time is written to the unified log (`log show --predicate 'subsystem == "io.github.no1coder.Cubby"'`) |
 | `screenshot:translate` | The screenshot overlay translating the generated desktop with a stub engine (macOS 26; nothing is sent anywhere) |
+| `screenshot:showcase` | The README screenshot: a generated desktop (release notes and a weather window, all made up) with preset annotations |
+| `screenshot:translate-demo` | The README screenshot of screenshot translation: the same desktop in English, translated into Chinese in place. Text recognition, layout and drawing are the real ones; only the engine is a demo that returns hand-written translations from `DemoTranslationTable`, so nothing is sent anywhere (macOS 26). `screenshot:translate-demo:compare` opens the comparison divider once it's done |
+| `translate-demo:text` / `translate-demo:image` | The README screenshots of clipboard translation: the panel with demo items and the translation card open on an English email (Compare view) or an English app screenshot. Uses the real clipboard translation service with the demo engine (macOS 26). **Requires `CUBBY_DATA_DIR`**: the demo history is written there, replacing any history in that folder |
 | `translation:download` | The system translation language download window (macOS 26). Close it; don't confirm a download you don't want |
 | `screenshot:window-probe` | Captures Cubby's own demo pin with and without the window shadow and logs the size and corner transparency; with `CUBBY_DATA_DIR` set, both images are written there (needs Screen Recording) |
 
@@ -110,6 +113,10 @@ Add `--light` to force the light appearance:
 ```sh
 CUBBY_DATA_DIR=/tmp/cubby-demo .build/debug/Cubby --scenario search:swift --light
 ```
+
+Add `--lock-input` to ignore your mouse and keyboard while a scenario is on screen, so a stray click or <kbd>↩</kbd> can't change it (or copy a screenshot to your clipboard) while you capture it. Quit with `kill` or Activity Monitor.
+
+To see the Simplified Chinese interface, run a debug build from an app bundle with the compiled string catalog (the bare executable only shows English), for example with a separate bundle ID such as `io.github.no1coder.Cubby.devshots` so it doesn't share preferences or permissions with your installed copy. Capture only Cubby's own windows (`screencapture -o -l <window ID>`), never the whole screen.
 
 Translation walkthroughs can add `--fake-translation-key <preset id>` (an obviously fake key held in memory only, to see the masked display), `--fake-keychain-failure` (every key read or write fails, as if Keychain access was denied) and `--translation-probes` (refreshes the model list and tests the connection when the pane opens; only loopback addresses are allowed). None of them touch your Keychain or a real service.
 
