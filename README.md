@@ -32,7 +32,7 @@ Or download the notarized DMG from [Releases](https://github.com/no1coder/cubby/
   </picture>
 </p>
 
-Cubby sits in your menu bar and remembers what you copy: text, links, colors, images and files. Press <kbd>⇧⌘V</kbd>, type a few letters to find what you need, and press <kbd>↩</kbd> to paste it into the app you were using. Press <kbd>⇧⌘2</kbd> to take a screenshot, mark it up, and it lands in your history next to everything else you copied. It never goes online unless you ask it to check for updates.
+Cubby sits in your menu bar and remembers what you copy: text, links, colors, images and files. Press <kbd>⇧⌘V</kbd>, type a few letters to find what you need, and press <kbd>↩</kbd> to paste it into the app you were using. Press <kbd>⇧⌘2</kbd> to take a screenshot, mark it up, and it lands in your history next to everything else you copied. It only goes online when you check for updates or translate with a language model you set up yourself.
 
 ## Features
 
