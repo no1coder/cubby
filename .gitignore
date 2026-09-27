@@ -13,3 +13,5 @@ dist/
 .spec-workflow/
 # Python 字节码（packaging/dmg/settings.py 被检查或导入时生成）
 __pycache__/
+# Claude Code 的本地工作目录（代理工作副本等），不属于项目
+.claude/
