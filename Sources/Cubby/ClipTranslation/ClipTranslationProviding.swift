@@ -13,6 +13,11 @@ struct ClipEngine: Sendable {
         engine.displayName
     }
 
+    /// 徽标上的简称（只用于显示；缓存比对用 displayName）
+    var shortName: String {
+        engine.shortName
+    }
+
     var sendsTextOffDevice: Bool {
         engine.sendsTextOffDevice
     }

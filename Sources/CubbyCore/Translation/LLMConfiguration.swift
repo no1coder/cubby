@@ -103,10 +103,16 @@ public struct LLMConfiguration: Equatable, Sendable {
         !LLMBaseURL.isLoopback(baseURL)
     }
 
-    /// 翻译条上的引擎名：「DeepSeek · 模型名」；自定义服务显示主机名
+    /// 完整的引擎名：「DeepSeek · 模型名」；自定义服务显示主机名。
+    /// 用于悬停说明、读屏，以及剪贴板翻译缓存的引擎匹配（写入历史，不可改格式）
     public var displayName: String {
         let provider = preset.isCustom ? LLMBaseURL.displayHost(endpoint.baseURL) : preset.shortName
         return "\(provider) · \(model)"
+    }
+
+    /// 徽标上的简称：预设只显示品牌（「DeepSeek」）；自定义服务显示域名主体（api.siliconflow.cn → siliconflow）
+    public var shortName: String {
+        preset.isCustom ? LLMBaseURL.shortHost(endpoint.baseURL) : preset.shortName
     }
 }
 

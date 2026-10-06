@@ -93,7 +93,8 @@ final class PanelE2EStubTranslator: ClipTranslating {
         return .success(
             ClipTranslationPlan(
                 languages: TranslationLanguages(source: source, target: resolved), detectedSource: source,
-                engineName: engine.name, sendsTextOffDevice: !engine.isOnDevice, host: engine.host,
+                engineName: engine.name, engineShortName: TranslationCopy.shortEngineName(engine.name),
+                sendsTextOffDevice: !engine.isOnDevice, host: engine.host,
                 needsSecretConfirmation: !engine.isOnDevice && SecretDetector.containsSecret(text),
                 isCached: isCached(item, target: resolved)))
     }

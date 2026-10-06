@@ -12,8 +12,8 @@ struct TranslationCardHeader: View {
     @State private var pillAnchor: NSView?
     @State private var engineAnchor: NSView?
 
-    /// 引擎名不超过这么多字符时显示在徽标上（「系统翻译」「DeepSeek」）；更长的（英文「System Translation」）
-    /// 只显示图标，把宽度让给语言胶囊，完整名称与文字去向在悬停说明里
+    /// 引擎简称不超过这么多字符时显示在徽标上（「系统翻译」「DeepSeek」「openrouter」）；更长的
+    /// （英文「System Translation」）只显示图标，把宽度让给语言胶囊，完整名称与文字去向在悬停说明里
     private static let engineNameMaxLength = 10
 
     var body: some View {
@@ -145,7 +145,7 @@ struct TranslationCardHeader: View {
             Image(systemName: plan.sendsTextOffDevice ? "cloud" : "laptopcomputer")
                 .font(.system(size: FontSize.footnote))
             if showsName {
-                Text(TranslationCopy.shortEngineName(plan.engineName))
+                Text(plan.engineShortName)
                     .lineLimit(1)
             }
             Image(systemName: "chevron.down")
@@ -160,16 +160,14 @@ struct TranslationCardHeader: View {
             let menu = TranslationMenus.engineMenu(for: plan, openSettings: openSettings)
             TranslationMenus.popUp(menu, below: engineAnchor)
         } label: {
-            engineLabel(
-                plan, showsName: TranslationCopy.shortEngineName(plan.engineName).count <= Self.engineNameMaxLength
-            )
-            .font(.system(size: FontSize.caption))
-            .foregroundStyle(.secondary)
-            .padding(.leading, 8)
-            .padding(.trailing, 6)
-            .frame(height: 26)
-            .background(HoverFill(cornerRadius: Radius.control, base: 0, hover: 0.08))
-            .contentShape(Rectangle())
+            engineLabel(plan, showsName: plan.engineShortName.count <= Self.engineNameMaxLength)
+                .font(.system(size: FontSize.caption))
+                .foregroundStyle(.secondary)
+                .padding(.leading, 8)
+                .padding(.trailing, 6)
+                .frame(height: 26)
+                .background(HoverFill(cornerRadius: Radius.control, base: 0, hover: 0.08))
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .background(MenuAnchor { engineAnchor = $0 })

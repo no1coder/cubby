@@ -59,7 +59,7 @@ final class ClipTranslationService: ClipTranslating {
                 shared: provider.targetLanguage, preferred: preferredLanguages(), sample: Self.sample(of: current))
             return ClipTranslationPlan(
                 languages: languages, detectedSource: languages.source, engineName: engine.displayName,
-                sendsTextOffDevice: engine.sendsTextOffDevice, host: engine.host,
+                engineShortName: engine.shortName, sendsTextOffDevice: engine.sendsTextOffDevice, host: engine.host,
                 needsSecretConfirmation: needsSecretConfirmation(current, engine: engine),
                 isCached: cachedTranslation(of: current, target: languages.target, engine: engine) != nil)
         }

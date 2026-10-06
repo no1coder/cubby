@@ -12,6 +12,10 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+### Changed
+
+- The engine badge on the screenshot translation bar now shows a short name instead of the provider and model: the provider's brand (for example DeepSeek), or the main part of a custom service's domain (for example `siliconflow` for `api.siliconflow.cn`). Long names no longer stretch the bar; hover over the badge to see the full host and model. The clipboard translation card uses the same short name when it fits.
+
 ## [0.2.1] - 2026-09-28
 
 ### Added

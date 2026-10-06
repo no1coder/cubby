@@ -49,6 +49,10 @@ public struct LLMTranslationEngine: TranslationEngine {
         configuration.displayName
     }
 
+    public var shortName: String {
+        configuration.shortName
+    }
+
     public var sendsTextOffDevice: Bool {
         configuration.endpoint.sendsTextOffDevice
     }

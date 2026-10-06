@@ -30,7 +30,10 @@ struct ClipTranslationPlan: Equatable, Sendable {
     let languages: TranslationLanguages
     /// 检测到的源语言（BCP-47），用于「英语（自动检测）」；未知为 nil
     let detectedSource: String?
+    /// 完整的引擎名（「DeepSeek · 模型名」）：悬停说明、引擎选单，以及与缓存译文的引擎比对
     let engineName: String
+    /// 引擎徽标上的简称（「DeepSeek」「siliconflow」）：只用于显示，不写入缓存
+    let engineShortName: String
     let sendsTextOffDevice: Bool
     /// 云端引擎的主机名（「已发送到 api.deepseek.com」）；本机引擎为 nil
     let host: String?

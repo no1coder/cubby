@@ -234,7 +234,7 @@ public enum HistoryImageFrame {
 
 ## 7. 引擎与设置
 
-- **复用**：同一个 T2 `TranslationService`（实现 `TranslationProviding`）同时赋给截图协调器和面板；语言选单读写同一个 `targetLanguage`（`TranslationProviding.swift:11`），与截图共享。引擎徽标用 `displayName` / `sendsTextOffDevice`（`TranslationContract.swift:91-100`）。
+- **复用**：同一个 T2 `TranslationService`（实现 `TranslationProviding`）同时赋给截图协调器和面板；语言选单读写同一个 `targetLanguage`（`TranslationProviding.swift:11`），与截图共享。引擎徽标显示 `shortName`（与截图翻译条同一规则：品牌名或自定义服务的域名主体），悬停说明用完整的 `displayName`，图标看 `sendsTextOffDevice`（`TranslationContract.swift`）；缓存比对仍只用 `displayName`。
 - **文本 → 引擎的适配**：每段构造 `TextBlock(id: i, lines: [], alignment: .leading, text: 段落)`；`frame` 为 `.null` 无妨，引擎按契约不读坐标（`TranslationContract.swift:25-26,43-45`）。
 - **缺口（需 T2 配合，不动契约文件）**：
   1. 大模型提示词是为截图写的（「截图文字」「界面标签简短」，`TRANSLATION-DESIGN.md:128`），不适合段落文本。请 T2 让 Core 的大模型引擎接受提示词参数（默认 = 截图版），本功能传「剪贴板文本版」。

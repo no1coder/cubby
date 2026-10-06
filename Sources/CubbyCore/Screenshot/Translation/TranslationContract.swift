@@ -89,8 +89,10 @@ public enum TranslationFailure: Error, Equatable, Sendable {
 
 /// 翻译引擎：系统翻译（本机）或兼容 OpenAI 接口的大模型
 public protocol TranslationEngine: Sendable {
-    /// 界面上显示的引擎名（例如「系统翻译」「DeepSeek」），用于告知用户文字发往何处
+    /// 界面上显示的引擎名（例如「系统翻译」「DeepSeek · 模型名」），用于告知用户文字发往何处
     var displayName: String { get }
+    /// 徽标上的简称（例如「DeepSeek」「siliconflow」）；完整名称见 displayName。默认与 displayName 相同
+    var shortName: String { get }
     /// 是否把文字发送到本机以外
     var sendsTextOffDevice: Bool { get }
     /// 按块流式返回译文：顺序不限；同一块至多返回一次；未返回的块保留原文。
@@ -98,4 +100,11 @@ public protocol TranslationEngine: Sendable {
     func translate(_ blocks: [TextBlock], languages: TranslationLanguages) -> AsyncThrowingStream<
         BlockTranslation, any Error
     >
+}
+
+extension TranslationEngine {
+    /// 名称本来就短的引擎（系统翻译等）简称即显示名
+    public var shortName: String {
+        displayName
+    }
 }

@@ -97,9 +97,12 @@ enum TranslationBarMetrics {
     static let segmentSelectedOpacity: Double = 0.2
     static let spinnerScale: CGFloat = 0.55
     static let hintHorizontalPadding: CGFloat = 5
+    /// 引擎名的最大宽度：更长的简称从中间截断，翻译条不会被拉得过长
+    static let engineNameMaxWidth: CGFloat = 160
 }
 
-/// 引擎徽标：云端引擎带云图标，本机引擎带电脑图标；悬停说明文字会发往何处
+/// 引擎徽标：云端引擎带云图标，本机引擎带电脑图标；徽标只显示简称（「DeepSeek」「siliconflow」），
+/// 悬停说明与读屏给出完整名称（服务商主机与模型）并说明文字会发往何处
 private struct EngineChip: View {
     let engine: TranslationEngineBadge
 
@@ -107,18 +110,24 @@ private struct EngineChip: View {
         HStack(spacing: TranslationBarMetrics.itemSpacing) {
             Image(systemName: engine.sendsTextOffDevice ? "cloud" : "laptopcomputer")
                 .font(.system(size: FontSize.footnote, weight: .medium))
-            Text(engine.name)
+            Text(engine.shortName)
                 .font(.system(size: FontSize.footnote))
+                .lineLimit(1)
+                .truncationMode(.middle)
+                .frame(maxWidth: TranslationBarMetrics.engineNameMaxWidth)
         }
         .foregroundStyle(.secondary)
         .padding(.horizontal, TranslationBarMetrics.horizontalPadding)
         .frame(height: OverlayTokens.toolbarButtonSize)
-        .help(
-            engine.sendsTextOffDevice
-                ? TranslationBarText.offDevice(engine.name) : TranslationBarText.onDevice(engine.name)
-        )
+        .help(fullDescription)
         .accessibilityElement(children: .combine)
+        .accessibilityLabel(Text(fullDescription))
         .translationBarItem(.engine)
+    }
+
+    /// 完整名称与文字去向（悬停说明与读屏标签）
+    private var fullDescription: String {
+        engine.sendsTextOffDevice ? TranslationBarText.offDevice(engine.name) : TranslationBarText.onDevice(engine.name)
     }
 }
 

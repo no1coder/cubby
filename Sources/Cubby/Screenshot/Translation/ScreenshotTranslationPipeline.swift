@@ -166,7 +166,8 @@ final class ScreenshotTranslationPipeline {
         case .success(let made):
             engine = made
         }
-        let badge = TranslationEngineBadge(name: engine.displayName, sendsTextOffDevice: engine.sendsTextOffDevice)
+        let badge = TranslationEngineBadge(
+            name: engine.displayName, shortName: engine.shortName, sendsTextOffDevice: engine.sendsTextOffDevice)
         emit(.started(run, TranslationPlan(blockIDs: blocks.map(\.id), languages: languages, engine: badge)))
         let byID = Dictionary(blocks.map { ($0.id, $0) }) { first, _ in first }
         logger.info("Translating \(blocks.count, privacy: .public) block(s)")

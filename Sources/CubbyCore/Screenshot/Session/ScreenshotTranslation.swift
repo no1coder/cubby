@@ -16,13 +16,17 @@ public struct TranslationRunID: Hashable, Sendable {
     }
 }
 
-/// 翻译条上显示的引擎：名称，以及文字是否会离开本机（云端引擎带云图标）
+/// 翻译条上显示的引擎：名称与简称，以及文字是否会离开本机（云端引擎带云图标）
 public struct TranslationEngineBadge: Equatable, Sendable {
+    /// 完整名称（「api.siliconflow.cn · Qwen/Qwen2.5-72B-Instruct」）：悬停说明、读屏与失败提示用
     public let name: String
+    /// 徽标上显示的简称（「siliconflow」）；未给出时与 name 相同
+    public let shortName: String
     public let sendsTextOffDevice: Bool
 
-    public init(name: String, sendsTextOffDevice: Bool) {
+    public init(name: String, shortName: String? = nil, sendsTextOffDevice: Bool) {
         self.name = name
+        self.shortName = shortName ?? name
         self.sendsTextOffDevice = sendsTextOffDevice
     }
 }
