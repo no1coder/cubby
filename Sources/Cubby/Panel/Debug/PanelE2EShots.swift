@@ -7,7 +7,7 @@ import CubbyCore
 @MainActor
 enum PanelE2EShots {
     static var all: [PanelE2EScenario] {
-        [shots]
+        [shots] + updateShots
     }
 
     private static var shots: PanelE2EScenario {
@@ -171,7 +171,7 @@ enum PanelE2EShots {
     // MARK: - 截图
 
     /// 截下本进程所有可见窗口（主面板、详情区、HUD）
-    private static func shot(_ context: PanelE2EContext, _ name: String) async throws {
+    static func shot(_ context: PanelE2EContext, _ name: String) async throws {
         try await context.settle()
         guard let directory = ProcessInfo.processInfo.environment["CUBBY_SHOTS_DIR"] else { return }
         let language = Bundle.main.preferredLocalizations.first ?? "en"

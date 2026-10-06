@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 import CubbyCore
 
-/// 主面板旁的详情区面板（空格预览 / 翻译卡，K1）：不成为 key window，键盘焦点始终留在主面板。
+/// 主面板旁的详情区面板（空格预览 / 翻译卡 / 拆词卡，K1）：不成为 key window，键盘焦点始终留在主面板。
 /// 高度随内容自适应（短内容紧凑、长内容与主面板等高），顶部与主面板对齐，显示期间随选中项实时更新。
 @MainActor
 final class PreviewPanelController {
@@ -97,13 +97,20 @@ final class PreviewPanelController {
     }
 
     private var minHeight: CGFloat {
-        viewModel.detailPane == .translation ? TranslationCardMetrics.minHeight : PreviewMetrics.minHeight
+        switch viewModel.detailPane {
+        case .translation: TranslationCardMetrics.minHeight
+        case .textPick: TextPickMetrics.minHeight
+        case .preview, nil: PreviewMetrics.minHeight
+        }
     }
 
     /// 以不受约束的高度测量内容的理想高度；图片按宽高比计算，长文本直接取最大高度
     private func idealHeight() -> CGFloat {
         if viewModel.detailPane == .translation {
             return translationHeight()
+        }
+        if viewModel.detailPane == .textPick {
+            return textPickHeight()
         }
         guard let item = viewModel.selectedItem else { return PreviewMetrics.minHeight }
         if case .image(let ref) = item.payload {
@@ -138,6 +145,20 @@ final class PreviewPanelController {
         let height = TranslationCardMetrics.chromeHeight + body
         heightCache[.translation(key)] = height
         return height
+    }
+
+    /// 拆词卡（docs/TEXT-PICK-DESIGN.md §3）：头部 + 底栏 + 词块区内容 + 结果条（按两行预留，选取出现时不跳动）；
+    /// 不支持的条目为状态页；长文本在后台分词期间直接取最大高度（必然超过主面板高度）
+    private func textPickHeight() -> CGFloat {
+        let controller = viewModel.textPick
+        if controller.isUnsupported {
+            return TextPickMetrics.chromeHeight + TranslationCardMetrics.stateMinHeight
+        }
+        guard let layout = controller.layout(width: TextPickMetrics.contentWidth) else {
+            return .greatestFiniteMagnitude
+        }
+        return TextPickMetrics.chromeHeight + TextPickTypesetter.contentHeight(of: layout)
+            + TextPickMetrics.resultReservedHeight
     }
 
     /// 头部（与工具条）+ 底栏 + 上下留白 + 图片按宽度等比缩放后的高度（不放大到超过原始像素）。

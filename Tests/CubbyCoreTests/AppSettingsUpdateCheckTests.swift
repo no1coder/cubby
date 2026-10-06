@@ -17,7 +17,7 @@ struct AppSettingsUpdateCheckTests {
         #expect(!settings.isAutomaticUpdateCheckDue())
     }
 
-    @Test("设置值写入 UserDefaults 后可被新实例读回")
+    @Test("设置值写入 UserDefaults 后可被新实例读回（沿用原来的键）")
     func persists() {
         let defaults = makeDefaults()
         let date = Date(timeIntervalSinceReferenceDate: 800_000_000)
@@ -28,16 +28,32 @@ struct AppSettingsUpdateCheckTests {
         let reloaded = AppSettings(defaults: defaults)
         #expect(reloaded.checksForUpdatesAutomatically)
         #expect(reloaded.lastUpdateCheck == date)
+        #expect(defaults.bool(forKey: "checksForUpdatesAutomatically"))
     }
 
-    @Test("开启后：从未检查过或距上次超过一周才需要检查")
-    func dueRules() {
+    @Test("老版本写入的开关（同一个键）原样保留")
+    func keepsExistingChoice() {
+        let defaults = makeDefaults()
+        defaults.set(true, forKey: "checksForUpdatesAutomatically")
+        #expect(AppSettings(defaults: defaults).checksForUpdatesAutomatically)
+    }
+
+    /// 已完成欢迎页的用户（到期规则只对他们生效）
+    private func onboardedSettings() -> AppSettings {
         let settings = AppSettings(defaults: makeDefaults())
+        settings.hasCompletedOnboarding = true
+        return settings
+    }
+
+    @Test("开启后：从未检查过或距上次满一天才需要检查（U1）")
+    func dueRules() {
+        let settings = onboardedSettings()
         let now = Date(timeIntervalSinceReferenceDate: 900_000_000)
+        #expect(AppSettings.updateCheckInterval == 24 * 60 * 60)
         settings.checksForUpdatesAutomatically = true
         #expect(settings.isAutomaticUpdateCheckDue(now: now))
 
-        settings.lastUpdateCheck = now.addingTimeInterval(-AppSettings.updateCheckInterval + 60)
+        settings.lastUpdateCheck = now.addingTimeInterval(-AppSettings.updateCheckInterval / 2)
         #expect(!settings.isAutomaticUpdateCheckDue(now: now))
 
         settings.lastUpdateCheck = now.addingTimeInterval(-AppSettings.updateCheckInterval)
@@ -45,5 +61,26 @@ struct AppSettingsUpdateCheckTests {
 
         settings.checksForUpdatesAutomatically = false
         #expect(!settings.isAutomaticUpdateCheckDue(now: now))
+    }
+
+    @Test("最近一次失败后一小时内不重试")
+    func retriesAfterFailure() {
+        let settings = onboardedSettings()
+        let now = Date(timeIntervalSinceReferenceDate: 900_000_000)
+        settings.checksForUpdatesAutomatically = true
+        #expect(!settings.isAutomaticUpdateCheckDue(now: now, lastFailure: now.addingTimeInterval(-60)))
+        let old = now.addingTimeInterval(-UpdateCheckSchedule.retryAfterFailure)
+        #expect(settings.isAutomaticUpdateCheckDue(now: now, lastFailure: old))
+    }
+
+    @Test("完成欢迎页之前从不到期：欢迎页显示期间开关已默认打开，用户还可能取消勾选（U3）")
+    func neverDueBeforeOnboarding() {
+        let settings = AppSettings(defaults: makeDefaults())
+        let now = Date(timeIntervalSinceReferenceDate: 900_000_000)
+        #expect(settings.applyFirstRunUpdateDefault())
+        #expect(settings.checksForUpdatesAutomatically)
+        #expect(!settings.isAutomaticUpdateCheckDue(now: now))
+        settings.hasCompletedOnboarding = true
+        #expect(settings.isAutomaticUpdateCheckDue(now: now))
     }
 }

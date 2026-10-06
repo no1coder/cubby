@@ -1,6 +1,6 @@
 # Cubby User Guide
 
-Cubby (小格子) is a native macOS clipboard manager: it remembers the text, links, colors, images and files you copy, and brings them back with one shortcut. It also takes WeChat-style screenshots that you can mark up and pin, and on macOS 26 it translates screenshots and clipboard items. Everything stays on your Mac: Cubby only goes online when you check for updates or translate with a language model you set up yourself.
+Cubby (小格子) is a native macOS clipboard manager: it remembers the text, links, colors, images and files you copy, and brings them back with one shortcut. It also takes WeChat-style screenshots that you can mark up and pin, and on macOS 26 it translates screenshots and clipboard items. Everything stays on your Mac: Cubby only goes online to check for a new version (once a day, and you can turn that off) or to translate with a language model you set up yourself.
 
 ## Getting started
 
@@ -22,7 +22,7 @@ The first time you open Cubby, a **Welcome to Cubby** window shows four cards:
 3. **Allow direct paste:** with Accessibility access, choosing an item pastes it into the current app.
 4. **Take and pin screenshots:** set the screenshot shortcut, `⇧⌘2` by default. This card only explains screenshots; it doesn't ask for Screen Recording.
 
-The status of the two permission cards updates live. Turn on **Launch at login** at the bottom if you like, then click **Get Started**. To see the guide again, choose **Setup Guide…** from the menu bar icon's menu.
+The status of the two permission cards updates live. At the bottom, turn on **Launch at login** if you like. Below it, **Remind me about new versions** ("Reads the latest version number from GitHub once a day") is ticked; untick it if you don't want Cubby to check. Then click **Get Started**. Cubby doesn't check for updates until you close this window. To see the guide again, choose **Setup Guide…** from the menu bar icon's menu; reopening it shows your current setting and doesn't change it.
 
 ### Permissions
 
@@ -53,7 +53,7 @@ Click the menu bar icon to open the panel. Right-click it (or Control-click) to 
 - **Setup Guide…:** reopens the first-launch guide.
 - **Check for Updates…**, **Settings…** (`⌘,`) and **Quit Cubby** (`⌘Q`).
 
-When something needs your attention, **Allow Clipboard Access…** appears at the top of the menu; if the automatic update check finds a new release, **Version x.y.z Available…** appears there too.
+When something needs your attention, **Allow Clipboard Access…** appears at the top of the menu. When a new version is available, the menu bar icon gets a blue dot at its top right and **Version x.y.z Available…** appears at the top of the menu; choose it to open the release page. See "Update reminders" under Settings.
 
 ## The clipboard panel
 
@@ -79,6 +79,18 @@ Just start typing when the panel is open. Matches are highlighted.
 ### Preview
 
 Press `Space` (while the search field is empty) or `⌘Y` to show the full content in a preview next to the panel, and again to close it. The preview follows your selection and never takes keyboard focus. Its footer shows details such as length and lines, a link's domain, a color's opacity or an image's pixel size, and it offers buttons such as **Paste**, **Open** and **Pin to Screen**, depending on the item.
+
+### Pick words
+
+When you only need part of a long text, such as an address, a phone number or a few words from a message, press `⌘B` (or press and hold a card for about half a second, or choose **Pick Words** from its right-click menu). The text is split into word chips next to the panel; Chinese and Japanese are split into words, and links, email addresses and phone numbers stay in one piece.
+
+- Click a chip to pick it, click again to unpick. Drag across chips to pick a run (starting on a picked chip unpicks instead), and `⇧`-click to pick everything from your last click.
+- `⌘A` or **Select All** picks every chip; press it again to clear.
+- `↩`, `⇧↩` or **Paste** pastes the picked words into the current app. `⌘C`, `⌘↩` or **Copy** only copies them, and the panel stays open.
+- Picked words keep their original spacing and line breaks. Separate runs are joined with a line break if they were on different lines, directly between Chinese, Japanese or Korean characters, and with a space otherwise.
+- The picked words aren't added to your history as a new item.
+
+Pick Words works with text (including rich text and code) and with images whose text Cubby has recognized. Links, colors, files and images without text only beep. Only the first 20,000 characters are split. The card follows your selection; press `Space` or `⌘Y` to switch to the preview, `⌘T` to the translation card, and `⌘B` or `esc` to close it.
 
 ### Choose and paste
 
@@ -109,14 +121,14 @@ Without Accessibility access, or with `Settings › General › When you choose 
 
 Right-click a card to see what you can do with it, with each shortcut shown on the right:
 
-- **Paste**, **Copy Only**, **Preview**, **Delete**, and **Favorite** or **Unfavorite**.
+- **Paste**, **Copy Only**, **Preview**, **Pick Words**, **Delete**, and **Favorite** or **Unfavorite**. **Pick Words** is dimmed for items without text to pick.
 - Rich text also offers **Paste as Plain Text** or **Paste with Original Formatting**.
 - Links, files and images have **Open**; images have **Pin to Screen**; files have **Show in Finder**.
 - On macOS 26 there are also **Translate** and **Translate and Paste**, plus **Copy Translation** for items you've translated. Both are dimmed for items that can't be translated.
 
 ### esc and the shortcut help
 
-`esc` steps back one level at a time: close the shortcut help → cancel a translation in progress → close the translation card or the preview → clear the search → close the panel.
+`esc` steps back one level at a time: close the shortcut help → cancel a translation in progress → close the translation card, the Pick Words card or the preview → clear the search → close the panel.
 
 Click the keyboard icon (**Keyboard Shortcuts**) at the right of the footer to see every shortcut and mouse action inside the panel; click an empty spot or press `esc` to close it. The list follows the current state: when Cubby can't paste directly, the `↩` row says **Copy**, and when translation is available, a few translation rows are added.
 
@@ -431,7 +443,7 @@ Open Settings with **Settings…** in the menu bar icon's menu, the gear button 
 - **Language:** **Interface language** can be **System Default** (the default), **English** or **简体中文**. After you switch, click **Restart Now**; Cubby reopens and comes back to Settings. This only changes Cubby's own menus and text; automatic translation still translates into your system language. It's the same setting as Cubby's entry in `System Settings › General › Language & Region › Applications`, so you can change it in either place.
 - **Shortcut & Panel:** **Keyboard shortcut** (click it, then press a new combination that includes `⌘`, `⌥` or `⌃`; `F1` – `F12` also work on their own) and **Panel position** (**Next to the pointer**, **Below the menu bar icon** or **Center of the screen**).
 - **Pasting:** **When you choose an item** (**Paste into the current app** or **Copy to the clipboard only**) and **Paste text as** (**Original formatting** or **Plain text**; `⇧↩` uses the other one).
-- **Startup & Updates:** **Launch at login**, and **Check for updates weekly**, off by default, which only reads release information from GitHub.
+- **Startup & Updates:** **Launch at login**, and **Check for updates automatically**, which reads the latest version number from GitHub once a day and never uploads any data. It's on if you left **Remind me about new versions** ticked on the welcome screen or chose **Remind Me** when Cubby asked; otherwise it's off. If you turned on the weekly check in an earlier version, it stays on and now checks daily.
 
 ### History
 
@@ -459,12 +471,31 @@ This pane has **Translation Engine** (**System Translation** or **Large language
 ### About
 
 - The version number.
-- **Check for Updates:** contacts GitHub only when you click it. If there's a new version, click **Download**; if you installed with Homebrew, run `brew upgrade --cask cubby`.
+- **Check for Updates:** checks GitHub right away, whether or not the automatic check is on. If there's a new version, it shows "Version x.y.z is available" with **View & Download**, which opens the release page; if you installed with Homebrew, it offers **Copy Upgrade Command** and **Release Notes** instead.
 - **Copy Diagnostic Info:** copies the version, system and permission status for bug reports. It never includes clipboard content.
+
+### Update reminders
+
+When a newer version of Cubby is found, by the automatic check or by **Check for Updates**, Cubby shows it in three places. There are no system notifications.
+
+- **The menu bar icon** gets a blue dot at its top right (VoiceOver reads "Cubby, update available"), and **Version x.y.z Available…** appears at the top of its right-click menu.
+- **The panel** shows a blue banner at the top, "Version x.y.z is available", with the version you're running. **View & Download** opens the release page on GitHub. If a permission problem needs your attention, its banner comes first.
+- **Settings › About** shows the new version with the same button.
+
+**Not Now** on the banner hides it for that version only, even after a restart. The blue dot and the menu item stay, and a newer version brings the banner back.
+
+If you installed with Homebrew, the banner says to run `brew upgrade --cask cubby` in Terminal, and Settings › About offers the same buttons:
+
+- **Copy Upgrade Command** copies the command, and the button shows **Copied** for a moment. The command isn't added to your clipboard history.
+- **Release Notes** opens the release page.
+
+Cubby remembers the latest version it found, so the dot and the banner are back right after a restart without going online. Once you've upgraded, they disappear. Cubby never downloads or installs updates by itself.
+
+If you upgraded from an earlier version and the automatic check was off, the panel asks once, "Remind you about new versions?". **Remind Me** turns on the check and checks right away; **No Thanks** keeps it off. Either way, Cubby doesn't ask again, and you can change it later in `Settings › General`.
 
 ## Privacy and data
 
-Your data stays on your Mac, and Cubby only goes online when you ask it to.
+Your data stays on your Mac. Cubby only goes online to check for a new version, which you can turn off, and to translate with a language model you set up.
 
 ### What's stored on your Mac
 
@@ -483,9 +514,9 @@ Your data stays on your Mac, and Cubby only goes online when you ask it to.
 
 ### When Cubby goes online
 
-Cubby never connects to the network on its own, and has no analytics, telemetry or crash reporting. It sends a request only in two cases:
+Cubby has no analytics, telemetry or crash reporting. It sends a request only in two cases:
 
-- **Checking for updates:** when you click **Check for Updates**, or weekly if you turn on the automatic check, Cubby asks `api.github.com` for the latest release. No clipboard content is sent.
+- **Checking for updates:** when you click **Check for Updates**, and once a day if **Check for updates automatically** is on, Cubby asks `api.github.com` for the latest release and reads only its version number. The automatic check is ticked by default on the welcome screen of a new install, and you can turn it off in `Settings › General`. No data is uploaded, and no clipboard content is sent.
 - **Translating with a language model:** only while the engine is a language model and you translate a screenshot or an item (including when the translation card follows your selection and you stay on an item for about 0.6 seconds, or when you hold `⌥` to preview), and when you click **Refresh** or **Test Connection** in Settings. Requests go only to the address you configured; remote addresses must use HTTPS, and redirects to other hosts are refused, so your key is never forwarded anywhere else.
 
 What's sent to a language model:

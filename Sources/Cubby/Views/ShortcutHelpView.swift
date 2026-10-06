@@ -8,6 +8,8 @@ struct HelpOverlay: View {
     let pastesDirectly: Bool
     /// 翻译可用时加 ⌘T、⌥↩、按住 ⌥ 三行；翻译卡打开时再加 ⌘C、⌘S
     var translation: ShortcutHelpView.Translation = .unavailable
+    /// 拆词卡打开时加 ⌘A、⌘C 两行（docs/TEXT-PICK-DESIGN.md §2）
+    var textPickOpen = false
     /// 底部「完整使用说明…」链接
     var onOpenUserGuide: (() -> Void)?
     let onClose: () -> Void
@@ -23,6 +25,7 @@ struct HelpOverlay: View {
                 alternateFormat: alternateFormat,
                 pastesDirectly: pastesDirectly,
                 translation: translation,
+                textPickOpen: textPickOpen,
                 onOpenUserGuide: onOpenUserGuide
             )
             .background(
@@ -51,6 +54,7 @@ struct ShortcutHelpView: View {
     let alternateFormat: PasteFormat
     let pastesDirectly: Bool
     var translation: Translation = .unavailable
+    var textPickOpen = false
     /// 底部「完整使用说明…」链接；nil 时不显示
     var onOpenUserGuide: (() -> Void)?
 
@@ -89,7 +93,7 @@ struct ShortcutHelpView: View {
                 String(localized: "Space / ⌘Y", comment: "Shortcut help: key names"),
                 String(localized: "Preview", comment: "Shortcut help")
             ),
-        ] + translationRows + [
+        ] + textPickRows + translationRows + [
             Row("⇥ / ⇧⇥", String(localized: "Switch category", comment: "Shortcut help")),
             Row("⌘P", String(localized: "Favorite / unfavorite", comment: "Shortcut help")),
             Row("⇧⌘P", String(localized: "Pin image to screen", comment: "Shortcut help")),
@@ -104,6 +108,19 @@ struct ShortcutHelpView: View {
                     comment: "Shortcut help: esc closes help or preview, then clears the search, then closes the panel"
                 )
             ),
+        ]
+    }
+
+    /// ⌘B（长按卡片写在同一行，像「双击卡片」写在 ↩ 一行：帮助浮层要放进 620pt 的面板）；
+    /// 拆词卡打开时另有 ⌘A、⌘C
+    private var textPickRows: [Row] {
+        let open = Row(
+            "⌘B", String(localized: "Pick words (or long-press a card)", comment: "Shortcut help"))
+        guard textPickOpen else { return [open] }
+        return [
+            open,
+            Row("⌘A", String(localized: "Select all words (again to clear)", comment: "Shortcut help")),
+            Row("⌘C", String(localized: "Copy the picked words", comment: "Shortcut help")),
         ]
     }
 

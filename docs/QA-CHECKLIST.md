@@ -64,6 +64,8 @@ Manual smoke test to run before publishing a release draft. Copy this checklist 
   引导窗口、「设置 › 隐私」、面板横幅与屏幕录制引导窗口用词一致：只有系统能直接询问时按钮才叫「去授权」，必须到系统设置修改时叫「打开系统设置」；状态为「已授权」/「未授权」。
 - [ ] After finishing the guide it does not reappear on the next launch, and it can be reopened with **Setup Guide…** in the menu bar icon's right-click menu.<br>
   完成引导后下次启动不再自动出现，并可从菜单栏图标右键菜单的「设置向导…」重新打开。
+- [ ] Under **Launch at login**, the guide shows **Remind me about new versions** ("Reads the latest version number from GitHub once a day"), ticked on a fresh account. Unticking it turns off Settings › General › **Check for updates automatically**, and ticking it turns it back on. While the guide is open, `lsof -i -a -p $(pgrep -x Cubby)` shows no connection to `api.github.com`. Reopening the guide with **Setup Guide…** shows the current setting and doesn't change it.<br>
+  引导窗口「登录时自动启动」下方显示「有新版本时提醒我」（每天从 GitHub 读取一次最新版本号），新账户默认勾选。取消勾选后「设置 › 通用 › 自动检查更新」随之关闭，重新勾选则打开。引导窗口打开期间 `lsof -i` 看不到到 `api.github.com` 的连接。用「设置向导…」重新打开时显示当前设置，不会改动它。
 
 ## 4. Capturing content · 记录各类内容
 
@@ -137,10 +139,12 @@ Manual smoke test to run before publishing a release draft. Copy this checklist 
   <kbd>⌘⌫</kbd> 删除条目，底栏出现撤销提示，<kbd>⌘Z</kbd> 恢复到原位置。
 - [ ] <kbd>⌘P</kbd> toggles favorite; favorites appear in the Favorites category and survive the history limit and Clear History.<br>
   <kbd>⌘P</kbd> 切换收藏；收藏出现在「收藏」分类，不受历史上限与清空历史影响。
-- [ ] <kbd>esc</kbd> steps back: help or preview → search → close. The help overlay (the keyboard button in the footer) lists every shortcut.<br>
-  <kbd>esc</kbd> 逐层退出：帮助或预览 → 搜索 → 关闭。<kbd>?</kbd> 帮助浮层列出全部快捷键。
+- [ ] <kbd>esc</kbd> steps back: help → translation card → Pick Words card → preview → search → close. The help overlay (the keyboard button in the footer) lists every shortcut.<br>
+  <kbd>esc</kbd> 逐层退出：帮助 → 翻译卡 → 拆词卡 → 预览 → 搜索 → 关闭。<kbd>?</kbd> 帮助浮层列出全部快捷键。
 - [ ] <kbd>⌘,</kbd> opens Settings.<br>
   <kbd>⌘,</kbd> 打开设置。
+- [ ] **Pick Words:** copy a long message with an address, a phone number, an email and a link. <kbd>⌘B</kbd> opens the card next to the panel (again closes it); pressing and holding the card for half a second and **Pick Words** in its right-click menu do the same, while a single click still only selects, a double-click still pastes and dragging the card out still works. The phone number, the email and the link are single chips. Click, drag across chips (dragging back shrinks the run) and <kbd>⇧</kbd>-click to pick; <kbd>⌘A</kbd> selects all and again clears. <kbd>↩</kbd> pastes the picked words into TextEdit, <kbd>⌘C</kbd> copies them with a "Copied …" toast, and neither adds a history item. On a link, color or file <kbd>⌘B</kbd> beeps with "This item has no text to pick"; with the card open, moving to such an item shows the same message and moving back shows the chips again. <kbd>esc</kbd> closes the card (back to the preview if it was opened from there).<br>
+  **拆词：** 复制一段含地址、电话、邮箱与网址的长消息。<kbd>⌘B</kbd> 在面板旁打开拆词卡（再按关闭）；在卡片上按住半秒、右键菜单「拆词」效果相同，同时单击仍只是选中、双击仍粘贴、拖出卡片仍可用。电话、邮箱与网址各是一整块。单击、拖过（往回拖收缩）、<kbd>⇧</kbd> 单击都能选取；<kbd>⌘A</kbd> 全选，再按清空。<kbd>↩</kbd> 把所选粘贴到文本编辑，<kbd>⌘C</kbd> 复制并提示「已复制 …」，二者都不新增历史条目。对链接、颜色、文件按 <kbd>⌘B</kbd> 发出提示音并提示「这个条目没有可拆分的文字」；拆词卡打开时移到这类条目显示同一句话，移回来恢复词块。<kbd>esc</kbd> 关闭拆词卡（从预览切来的回到预览）。
 
 ## 7. Settings · 设置
 
@@ -158,8 +162,8 @@ Manual smoke test to run before publishing a release draft. Copy this checklist 
   **隐私：** 权限行实时显示状态，并能跳转到正确的系统设置页面。
 - [ ] **About:** version is correct; **Check for Updates** reports "up to date" or offers the new release; **Copy Diagnostic Info** output contains no clipboard content.<br>
   **关于：** 版本正确；「检查更新」提示已是最新或给出新版本；「复制诊断信息」的输出不含任何剪贴板内容。
-- [ ] The weekly automatic update check is off by default.<br>
-  每周自动检查更新默认关闭。
+- [ ] **General › Startup & Updates:** the switch reads **Check for updates automatically**, with "Reads the latest version number from GitHub once a day and never uploads any data". On a fresh account it matches the welcome-screen checkbox: on unless you unticked it there.<br>
+  **通用 › 启动与更新：** 开关名为「自动检查更新」，说明为「每天从 GitHub 读取一次最新版本号，不上传任何数据」。新账户上与欢迎页的勾选项一致：没有在欢迎页取消勾选即为开启。
 - [ ] The Settings window does not scroll and nothing is clipped on any pane.<br>
   设置窗口各页不滚动，内容无截断。
 
@@ -179,8 +183,8 @@ Manual smoke test to run before publishing a release draft. Copy this checklist 
   **文件权限：** 目录为 `drwx------`，文件为 `-rw-------`。
 - [ ] **Time Machine:** `tmutil isexcluded ~/Library/Application\ Support/Cubby` reports `[Excluded]`.<br>
   **Time Machine：** `tmutil isexcluded` 输出 `[Excluded]`。
-- [ ] **Network:** from launch through normal use, `lsof -i -a -p $(pgrep -x Cubby)` shows no connections. A connection to `api.github.com` appears only after clicking Check for Updates.<br>
-  **网络：** 从启动到正常使用期间 `lsof -i` 看不到任何连接；只有点击「检查更新」后才出现到 `api.github.com` 的连接。
+- [ ] **Network:** with **Check for updates automatically** off, from launch through normal use, `lsof -i -a -p $(pgrep -x Cubby)` shows no connections, and a connection to `api.github.com` appears only after clicking **Check for Updates**. With it on, the only other connection is to `api.github.com` when a check is due: at launch or later, at most once a day (a failed check is retried no sooner than an hour later), and never while the welcome screen is open.<br>
+  **网络：** 关闭「自动检查更新」时，从启动到正常使用期间 `lsof -i` 看不到任何连接，只有点击「检查更新」后才出现到 `api.github.com` 的连接。开启时，唯一多出的连接是检查到期时到 `api.github.com` 的连接：启动时或之后，每天最多一次（检查失败至少一小时后才重试），欢迎页打开期间不会出现。
 
 ## 9. Screenshots · 截图
 
@@ -326,12 +330,12 @@ Set up overlapping TextEdit, Safari and Finder windows and add a Chinese input m
   复数形式正确（1 item / 2 items）。
 - [ ] **Dark** and **light** mode: panel, cards (color, code, image), preview, settings and guide are legible; switching appearance while the panel is open updates it.<br>
   **深色**与**浅色**模式下，面板、各类卡片、预览、设置与引导均清晰可读；面板打开时切换外观能即时更新。
-- [ ] **VoiceOver spot check** (<kbd>⌘F5</kbd>): with the panel open, moving to a card reads its source, title and relative time plus "Press Return to paste, or Space to preview."; a deleted file card also says "File no longer exists". VO-Space on a card pastes it, and the Actions rotor offers Favorite (or Unfavorite), Preview, Pin to Screen (images only) and Delete. Category tabs read their names and which one is selected; the camera, gear and <kbd>?</kbd> buttons read "Take Screenshot", "Settings" and "Keyboard Shortcuts"; key caps in the help overlay are read as key names ("Shift Return"), not symbols. Searching, choosing and pasting an item works with VoiceOver alone.<br>
-  **VoiceOver 抽查**（<kbd>⌘F5</kbd>）：面板打开时移到卡片上，朗读来源、标题、相对时间以及提示「按回车粘贴，按空格预览」；文件已被删除的文件卡另外朗读「文件已不存在」。在卡片上按 VO-空格即粘贴，「操作」转子中有收藏（或取消收藏）、预览、贴图（仅图片）、删除。分类标签朗读名称与选中状态；相机、齿轮与 <kbd>?</kbd> 按钮分别朗读「截图」「设置」「快捷键」；帮助浮层中的键帽按键名朗读（如「Shift Return」），而不是逐个念符号。只用 VoiceOver 也能完成搜索、选择、粘贴。
-- [ ] **Reduce Motion** (System Settings › Accessibility › Display): the panel fades in where it is, without dropping into place; the preview appears and changes height without animating; the help overlay, banners, category highlight and scrolling to the selection change without animation. In the screenshot overlay the toolbar appears without scaling, the active-tool highlight jumps instead of sliding, handles grow without animation, and hints disappear without fading. Turning it off brings the animations back.<br>
-  **减弱动态效果**（系统设置 › 辅助功能 › 显示）：面板原地淡入，不再下落；预览出现与高度变化都没有动画；帮助浮层、横幅、分类高亮与滚动到选中项都直接切换。截图覆盖层中工具栏出现时不缩放，激活工具的底块直接跳到位而不滑动，手柄放大没有动画，提示直接消失而不淡出。关闭该选项后动画恢复。
-- [ ] **Increase Contrast** (System Settings › Accessibility › Display): card outlines and secondary text get stronger on all card types, and panel banners get an orange outline; everything stays legible in dark and light mode.<br>
-  **增强对比度**（系统设置 › 辅助功能 › 显示）：各类卡片的描边与次要文字更明显，面板横幅加上橙色描边；深色与浅色模式下均清晰可读。
+- [ ] **VoiceOver spot check** (<kbd>⌘F5</kbd>): with the panel open, moving to a card reads its source, title and relative time plus "Press Return to paste, or Space to preview."; a deleted file card also says "File no longer exists". VO-Space on a card pastes it, and the Actions rotor offers Favorite (or Unfavorite), Preview, Pick Words (items with text), Pin to Screen (images only) and Delete. In the Pick Words card each chip reads its text, picked chips say "Selected", and VO-Space picks or unpicks a chip. Category tabs read their names and which one is selected; the camera, gear and <kbd>?</kbd> buttons read "Take Screenshot", "Settings" and "Keyboard Shortcuts"; key caps in the help overlay are read as key names ("Shift Return"), not symbols. Searching, choosing and pasting an item works with VoiceOver alone.<br>
+  **VoiceOver 抽查**（<kbd>⌘F5</kbd>）：面板打开时移到卡片上，朗读来源、标题、相对时间以及提示「按回车粘贴，按空格预览」；文件已被删除的文件卡另外朗读「文件已不存在」。在卡片上按 VO-空格即粘贴，「操作」转子中有收藏（或取消收藏）、预览、拆词（有文字的条目）、贴图（仅图片）、删除。拆词卡里每个词块朗读其文字，已选的块朗读「已选」，按 VO-空格选取或取消。分类标签朗读名称与选中状态；相机、齿轮与 <kbd>?</kbd> 按钮分别朗读「截图」「设置」「快捷键」；帮助浮层中的键帽按键名朗读（如「Shift Return」），而不是逐个念符号。只用 VoiceOver 也能完成搜索、选择、粘贴。
+- [ ] **Reduce Motion** (System Settings › Accessibility › Display): the panel fades in where it is, without dropping into place; the preview appears and changes height without animating; the Pick Words chips appear without fading or scaling and a pressed card doesn't shrink; the help overlay, banners, category highlight and scrolling to the selection change without animation. In the screenshot overlay the toolbar appears without scaling, the active-tool highlight jumps instead of sliding, handles grow without animation, and hints disappear without fading. Turning it off brings the animations back.<br>
+  **减弱动态效果**（系统设置 › 辅助功能 › 显示）：面板原地淡入，不再下落；预览出现与高度变化都没有动画；拆词卡的词块直接出现、不淡入不放大，按下卡片不缩小；帮助浮层、横幅、分类高亮与滚动到选中项都直接切换。截图覆盖层中工具栏出现时不缩放，激活工具的底块直接跳到位而不滑动，手柄放大没有动画，提示直接消失而不淡出。关闭该选项后动画恢复。
+- [ ] **Increase Contrast** (System Settings › Accessibility › Display): card outlines and secondary text get stronger on all card types, Pick Words chips get an outline, and panel banners get an orange outline; everything stays legible in dark and light mode.<br>
+  **增强对比度**（系统设置 › 辅助功能 › 显示）：各类卡片的描边与次要文字更明显，拆词卡的词块加上描边，面板横幅加上橙色描边；深色与浅色模式下均清晰可读。
 
 ## 11. Multiple displays · 多显示器
 
@@ -363,6 +367,26 @@ Set up overlapping TextEdit, Safari and Finder windows and add a Chinese input m
   升级后历史、图片、收藏与设置完好，两项权限无需重新授权即可使用。
 - [ ] Check for Updates in the old version finds the new release.<br>
   旧版本的「检查更新」能发现新版本。
+- [ ] **Asking once:** upgrade from 0.2.1 or earlier with the weekly check off. The first time you open the panel, a blue banner asks "Remind you about new versions?". **Remind Me** turns on **Check for updates automatically** and checks once; **No Thanks** leaves it off. Either way it doesn't ask again, also after a relaunch. Upgrading with the weekly check on keeps it on and doesn't ask; changing the switch in Settings before opening the panel also means no question.<br>
+  **只问一次：** 从 0.2.1 或更早版本升级，且原来没开每周检查。第一次打开面板时顶部出现蓝色横幅「有新版本时提醒你吗？」。「提醒我」打开「自动检查更新」并检查一次；「不用了」保持关闭。无论选哪个都不再询问，重启后也不会。原来开着每周检查的，升级后保持开启且不询问；打开面板前先在设置中改过开关的，也不会询问。
+
+**Update reminders · 更新提醒**
+
+Use a build whose version is lower than the latest release: set `VERSION` to, for example, `0.1.0`, run `make install`, then restore `VERSION`.<br>
+使用版本号低于最新正式版的构建：把 `VERSION` 临时改为例如 `0.1.0`，运行 `make install`，之后改回。
+
+- [ ] Click **Check for Updates…**: the menu bar icon gets a blue dot at its top right, and the right-click menu starts with **Version x.y.z Available…**, which opens the release page. No system notification appears. With VoiceOver, the menu bar icon reads "Cubby, update available".<br>
+  点「检查更新…」：菜单栏图标右上角出现蓝点，右键菜单顶部为「新版本 x.y.z 可用…」，点击打开发布页。不出现系统通知。开启 VoiceOver 时，菜单栏图标朗读有可用更新（英文界面为“Cubby, update available”）。
+- [ ] The panel shows a blue banner "Version x.y.z is available" with "You're running 0.1.0.", **View & Download** (opens the release page) and **Not Now**. It comes after the orange permission banners and before "Recording paused". Settings › About shows the new version with **View & Download**.<br>
+  面板顶部出现蓝色横幅「新版本 x.y.z 可用」，显示「你在用 0.1.0。」以及「查看并下载」（打开发布页）和「稍后」。它排在橙色权限横幅之后、「已暂停记录」之前。「设置 › 关于」显示新版本和「查看并下载」。
+- [ ] **Homebrew:** before clicking **Not Now**, create an empty `/opt/homebrew/Caskroom/cubby` folder (`/usr/local/Caskroom/cubby` on Intel; remove it after the test) and relaunch Cubby. The banner says "Run brew upgrade --cask cubby in Terminal to upgrade." with **Copy Upgrade Command**, **Release Notes** and **Not Now**. **Copy Upgrade Command** briefly shows **Copied** and puts `brew upgrade --cask cubby` on the clipboard, and no history item is added. **Release Notes** opens the release page. Settings › About offers the same two buttons.<br>
+  **Homebrew：** 在点「稍后」之前，新建空文件夹 `/opt/homebrew/Caskroom/cubby`（Intel 上为 `/usr/local/Caskroom/cubby`，测完删除），然后重新打开 Cubby。横幅提示「在终端运行 brew upgrade --cask cubby 升级。」，按钮为「复制升级命令」「更新内容」「稍后」。「复制升级命令」短暂显示「已复制」，剪贴板中为 `brew upgrade --cask cubby`，历史中没有新增条目。「更新内容」打开发布页。「设置 › 关于」提供同样的两个按钮。
+- [ ] **Not Now** hides the banner; it stays hidden after quitting and relaunching Cubby, while the blue dot and the menu item stay.<br>
+  「稍后」隐藏横幅，退出并重新打开 Cubby 后仍不显示；蓝点和菜单项保留。
+- [ ] With Wi-Fi off, relaunching Cubby shows the blue dot and the menu item right away.<br>
+  关闭 Wi-Fi 后重新打开 Cubby，蓝点和菜单项立即出现。
+- [ ] After installing a version at least as new as the one found (restore `VERSION` and `make install`, or install the release), the blue dot, the menu item and the banner are gone.<br>
+  安装不低于所发现版本的版本后（改回 `VERSION` 并 `make install`，或安装该发布版），蓝点、菜单项和横幅都消失。
 
 ## 14. Uninstall · 卸载
 

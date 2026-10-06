@@ -536,6 +536,143 @@
         }
       }
     },
+    "%lld words · %lld characters selected" : {
+      "comment" : "Pick-words card footer. %1$lld = picked words, %2$lld = characters of the result",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@words@ · %#@characters@ selected"
+          },
+          "substitutions" : {
+            "characters" : {
+              "argNum" : 2,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg character"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg characters"
+                    }
+                  }
+                }
+              }
+            },
+            "words" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg word"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg words"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已选 %1$lld 个词 · %2$lld 个字符"
+          }
+        }
+      }
+    },
+    "%lld words · Click or drag to pick" : {
+      "comment" : "Pick-words card subtitle: number of words and how to pick them",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@words@ · Click or drag to pick"
+          },
+          "substitutions" : {
+            "words" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg word"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg words"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 个词 · 点选或拖过来选取"
+          }
+        }
+      }
+    },
+    "%lld words · Showing the first %@ characters" : {
+      "comment" : "Pick-words card subtitle when the text is too long. %1$lld = words, %2$@ = 20,000",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%#@words@ · Showing the first %2$@ characters"
+          },
+          "substitutions" : {
+            "words" : {
+              "argNum" : 1,
+              "formatSpecifier" : "lld",
+              "variations" : {
+                "plural" : {
+                  "one" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg word"
+                    }
+                  },
+                  "other" : {
+                    "stringUnit" : {
+                      "state" : "translated",
+                      "value" : "%arg words"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld 个词 · 只显示前 %2$@ 个字符"
+          }
+        }
+      }
+    },
     "%lld × %lld pixels" : {
       "comment" : "Translation card footer: image size in pixels",
       "localizations" : {
@@ -1132,12 +1269,12 @@
         }
       }
     },
-    "Check for updates weekly" : {
+    "Check for updates automatically" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每周自动检查更新"
+            "value" : "自动检查更新"
           }
         }
       }
@@ -1620,6 +1757,7 @@
       }
     },
     "Copied" : {
+      "comment" : "Button title right after copying",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1636,6 +1774,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已复制 %@"
+          }
+        }
+      }
+    },
+    "Copied %lld characters" : {
+      "comment" : "Footer toast after copying the picked words",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Copied %lld character"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Copied %lld characters"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制 %lld 个字符"
           }
         }
       }
@@ -1779,6 +1946,17 @@
         }
       }
     },
+    "Copy Upgrade Command" : {
+      "comment" : "Button: copy the brew upgrade command",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制升级命令"
+          }
+        }
+      }
+    },
     "Copy all translated text in reading order" : {
       "comment" : "Tooltip of the copy translation button",
       "localizations" : {
@@ -1830,6 +2008,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "先复制任意内容，再点一次「去授权」"
+          }
+        }
+      }
+    },
+    "Copy the picked words" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制所选"
+          }
+        }
+      }
+    },
+    "Copy the picked words (⌘C)" : {
+      "comment" : "Tooltip of the Copy button in the pick-words card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制所选（⌘C）"
           }
         }
       }
@@ -2107,6 +2307,17 @@
         }
       }
     },
+    "Cubby (paused), update available" : {
+      "comment" : "Accessibility description of the status item icon when paused and an update is available",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cubby（已暂停），有新版本可用"
+          }
+        }
+      }
+    },
     "Cubby can only copy for now" : {
       "comment" : "Panel warning title",
       "localizations" : {
@@ -2177,6 +2388,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cubby · 已暂停记录"
+          }
+        }
+      }
+    },
+    "Cubby · Version %@ available" : {
+      "comment" : "Status item tooltip when an update is available",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cubby · 新版本 %@ 可用"
+          }
+        }
+      }
+    },
+    "Cubby, update available" : {
+      "comment" : "Accessibility description of the status item icon when an update is available",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cubby，有新版本可用"
           }
         }
       }
@@ -2357,17 +2590,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "下箭头"
-          }
-        }
-      }
-    },
-    "Download" : {
-      "comment" : "Button: open the release page",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "前往下载"
           }
         }
       }
@@ -3077,16 +3299,6 @@
         }
       }
     },
-    "Installed with Homebrew: brew upgrade --cask cubby" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "通过 Homebrew 安装：brew upgrade --cask cubby"
-          }
-        }
-      }
-    },
     "Interface language" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3465,6 +3677,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "鼠标旁"
+          }
+        }
+      }
+    },
+    "No Thanks" : {
+      "comment" : "Button: keep automatic update checks off",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不用了"
           }
         }
       }
@@ -3882,16 +4105,6 @@
         }
       }
     },
-    "Only reads release information from GitHub and never uploads any data" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "只读取 GitHub 上的发布信息，不上传任何数据"
-          }
-        }
-      }
-    },
     "Only uses system translation on this Mac. Requires the language to be downloaded." : {
       "localizations" : {
         "zh-Hans" : {
@@ -4263,12 +4476,51 @@
         }
       }
     },
+    "Paste selection to %@ %@" : {
+      "comment" : "Footer hint for ↩ while the pick-words card is open. %1$@ = app icon, %2$@ = app name",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste selection to %1$@ %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴所选到 %1$@ %2$@"
+          }
+        }
+      }
+    },
     "Paste text as" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "文本粘贴格式"
+          }
+        }
+      }
+    },
+    "Paste the picked words (↩)" : {
+      "comment" : "Tooltip of the Paste button in the pick-words card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴所选（↩）"
+          }
+        }
+      }
+    },
+    "Paste the picked words into %@ (↩)" : {
+      "comment" : "Tooltip of the Paste button in the pick-words card. %@ = target app",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把所选粘贴到「%@」（↩）"
           }
         }
       }
@@ -4441,6 +4693,28 @@
         }
       }
     },
+    "Pick Words" : {
+      "comment" : "Title of the pick-words card, context menu item and VoiceOver action",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拆词"
+          }
+        }
+      }
+    },
+    "Pick words (or long-press a card)" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拆词（或长按卡片）"
+          }
+        }
+      }
+    },
     "Pin image to screen" : {
       "comment" : "Shortcut help",
       "localizations" : {
@@ -4601,6 +4875,17 @@
         }
       }
     },
+    "Press to pick or unpick this word" : {
+      "comment" : "VoiceOver hint of a word chip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按下以选取或取消这个词"
+          }
+        }
+      }
+    },
     "Press ⇥ or click a tab above to switch categories." : {
       "comment" : "Empty panel message for an empty category",
       "localizations" : {
@@ -4738,6 +5023,37 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "通义千问"
+          }
+        }
+      }
+    },
+    "Reads the latest version number from GitHub once a day" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每天从 GitHub 读取一次最新版本号"
+          }
+        }
+      }
+    },
+    "Reads the latest version number from GitHub once a day and never uploads any data" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每天从 GitHub 读取一次最新版本号，不上传任何数据"
+          }
+        }
+      }
+    },
+    "Reads the latest version number from GitHub once a day and never uploads any data. You can change this later in Settings › General." : {
+      "comment" : "Panel banner asking to turn on update checks",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每天从 GitHub 读取一次最新版本号，不上传任何数据。之后可在「设置 › 通用」更改。"
           }
         }
       }
@@ -4920,6 +5236,49 @@
         }
       }
     },
+    "Release Notes" : {
+      "comment" : "Button: open the release page to read what's new",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新内容"
+          }
+        }
+      }
+    },
+    "Remind Me" : {
+      "comment" : "Button: turn on automatic update checks",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提醒我"
+          }
+        }
+      }
+    },
+    "Remind me about new versions" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有新版本时提醒我"
+          }
+        }
+      }
+    },
+    "Remind you about new versions?" : {
+      "comment" : "Panel banner asking to turn on update checks",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有新版本时提醒你吗？"
+          }
+        }
+      }
+    },
     "Remove" : {
       "localizations" : {
         "zh-Hans" : {
@@ -5042,6 +5401,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "右键"
+          }
+        }
+      }
+    },
+    "Run %@ in Terminal to upgrade." : {
+      "comment" : "Update banner detail for Homebrew installs. %@ = the brew command, keep it as is",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在终端运行 %@ 升级。"
           }
         }
       }
@@ -5353,12 +5723,23 @@
       }
     },
     "Select All" : {
-      "comment" : "Menu item",
+      "comment" : "Menu item\nPick-words card: button that selects every word",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "全选"
+          }
+        }
+      }
+    },
+    "Select all words (again to clear)" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全选（再按一次清空）"
           }
         }
       }
@@ -5370,6 +5751,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选中条目后按 ⌘P 收藏，收藏不会被自动清理"
+          }
+        }
+      }
+    },
+    "Selected" : {
+      "comment" : "VoiceOver value of a picked word chip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已选"
           }
         }
       }
@@ -6335,6 +6727,17 @@
         }
       }
     },
+    "This item has no text to pick" : {
+      "comment" : "Shown when an item (link, color, file, image without text) has no words to pick",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这个条目没有可拆分的文字"
+          }
+        }
+      }
+    },
     "This language pair isn't supported" : {
       "comment" : "Screenshot translation failure\nTranslation failure title",
       "localizations" : {
@@ -7058,12 +7461,23 @@
       }
     },
     "Version %@ is available" : {
-      "comment" : "Update alert title",
+      "comment" : "Update alert title, panel banner title and About pane. %@ = new version",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "发现新版本 %@"
+            "value" : "新版本 %@ 可用"
+          }
+        }
+      }
+    },
+    "View & Download" : {
+      "comment" : "Button: open the release page of the new version",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看并下载"
           }
         }
       }
@@ -7197,6 +7611,17 @@
         }
       }
     },
+    "Words" : {
+      "comment" : "VoiceOver label of the word chips area in the pick-words card",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "词块"
+          }
+        }
+      }
+    },
     "Yellow" : {
       "comment" : "Screenshot annotation color",
       "localizations" : {
@@ -7241,6 +7666,17 @@
         }
       }
     },
+    "You're running %@." : {
+      "comment" : "Update banner detail. %@ = installed version",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你在用 %@。"
+          }
+        }
+      }
+    },
     "You're running version %@." : {
       "comment" : "Update alert message",
       "localizations" : {
@@ -7248,17 +7684,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前版本 %@。"
-          }
-        }
-      }
-    },
-    "You're running version %@. If you installed Cubby with Homebrew, run: brew upgrade --cask cubby" : {
-      "comment" : "Update alert message",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "当前版本 %@。通过 Homebrew 安装的用户可运行：brew upgrade --cask cubby"
           }
         }
       }
@@ -7403,6 +7828,23 @@
         }
       }
     },
+    "footer.closePick" : {
+      "comment" : "Footer hint for esc while the pick-words card is open. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭"
+          }
+        }
+      }
+    },
     "footer.closeTranslation" : {
       "comment" : "Footer hint for esc while the translation card is open. Keep it short.",
       "localizations" : {
@@ -7416,6 +7858,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关闭"
+          }
+        }
+      }
+    },
+    "footer.copyPicked" : {
+      "comment" : "Footer hint for ⌘C while the pick-words card is open. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制"
           }
         }
       }
@@ -7556,6 +8015,23 @@
         }
       }
     },
+    "footer.selectAllWords" : {
+      "comment" : "Footer hint for ⌘A while the pick-words card is open. Keep it short.",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select all"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全选"
+          }
+        }
+      }
+    },
     "footer.translateAndPaste" : {
       "comment" : "Footer hint for ⌥↩: translate, then paste. Keep it short.",
       "localizations" : {
@@ -7628,6 +8104,40 @@
         }
       }
     },
+    "pick.copy" : {
+      "comment" : "Pick-words card: copy the picked words",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制"
+          }
+        }
+      }
+    },
+    "pick.paste" : {
+      "comment" : "Pick-words card: paste the picked words",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paste"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴"
+          }
+        }
+      }
+    },
     "pin.copy" : {
       "comment" : "Pinned screenshot context menu item",
       "localizations" : {
@@ -7691,6 +8201,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "看原文"
+          }
+        }
+      }
+    },
+    "“%@”" : {
+      "comment" : "Pick-words result strip: the picked text in quotation marks",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」"
           }
         }
       }

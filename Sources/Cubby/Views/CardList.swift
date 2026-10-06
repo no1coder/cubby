@@ -52,7 +52,8 @@ struct CardList: View {
         }
     }
 
-    /// 一张卡片及其手势、右键菜单、拖拽与读屏操作
+    /// 一张卡片及其手势、右键菜单、拖拽与读屏操作。长按（0.45 秒、移动不超过 4pt）打开拆词卡，
+    /// 与单击选中、双击粘贴、拖出并存（docs/TEXT-PICK-DESIGN.md §2）
     private func card(_ item: ClipItem, index: Int, isSelected: Bool, keywords: [String]) -> some View {
         ClipCardView(
             item: item,
@@ -63,8 +64,11 @@ struct CardList: View {
             translation: CardTranslationDecorations.make(for: item, keywords: keywords, viewModel: viewModel),
             onInlineAction: { viewModel.translation?.inline.performAction() }
         )
+        .e2eAnchor("list.card.\(item.id)")
         .onTapGesture { viewModel.select(item) }
         .simultaneousGesture(TapGesture(count: 2).onEnded { viewModel.paste(item) })
+        // 长按挂在单击 / 双击之外：内层手势优先，挂在里面会吞掉单击选中
+        .modifier(CardLongPress { viewModel.openTextPick(for: item) })
         .contextMenu { CardContextMenu(item: item, viewModel: viewModel) }
         .onDrag { DragProvider.provider(for: item, imageURL: viewModel.imageURL(for: item)) }
         .modifier(CardAccessibilityActions(item: item, viewModel: viewModel))
@@ -97,6 +101,9 @@ private struct CardContextMenu: View {
             viewModel.setPreviewVisible(true)
         }
         .keyboardShortcut(.space, modifiers: [])
+        Button(TextPickCopy.title) { viewModel.openTextPick(for: item) }
+            .keyboardShortcut("b", modifiers: .command)
+            .disabled(TextPickSource(item: item).text == nil)
         if item.kind == .link || item.kind == .file || item.kind == .image {
             Button("Open") { viewModel.open(item) }
                 .keyboardShortcut("o", modifiers: .command)
@@ -145,6 +152,9 @@ private struct CardAccessibilityActions: ViewModifier {
                 Button("Preview") {
                     viewModel.select(item)
                     viewModel.setPreviewVisible(true)
+                }
+                if TextPickSource(item: item).text != nil {
+                    Button(TextPickCopy.title) { viewModel.openTextPick(for: item) }
                 }
                 if item.kind == .image {
                     Button("Pin to Screen") { viewModel.pin(item) }

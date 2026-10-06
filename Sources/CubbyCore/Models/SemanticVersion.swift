@@ -1,7 +1,7 @@
 import Foundation
 
 /// 语义化版本号（SemVer 2.0）：比较规则遵循官方优先级，预发布版本低于同号正式版本
-public struct SemanticVersion: Comparable, Sendable, CustomStringConvertible {
+public struct SemanticVersion: Comparable, Hashable, Sendable, CustomStringConvertible {
     public let major: Int
     public let minor: Int
     public let patch: Int

@@ -27,12 +27,15 @@ extension PanelViewModel {
             return
         }
         select(item)
-        if let reason = translation.card.open(item, fromPreview: isPreviewVisible || cardOpenedFromPreview) {
+        // 从拆词卡切来时沿用它的来源：关闭翻译卡后同样回到预览
+        let fromPreview = isPreviewVisible || cardOpenedFromPreview || (isTextPickOpen && textPick.openedFromPreview)
+        if let reason = translation.card.open(item, fromPreview: fromPreview) {
             rejectTranslation(reason)
             return
         }
         translation.inline.cancel()
         translation.peek.cancel()
+        textPick.close()
         setDetailPane(.translation)
     }
 
@@ -107,8 +110,9 @@ extension PanelViewModel {
         return true
     }
 
-    /// 选中项变化（PanelView 观察后调用）：翻译卡跟随；⌥↩ 与预览属于原条目，取消
+    /// 选中项变化（PanelView 观察后调用）：翻译卡与拆词卡跟随；⌥↩ 与预览属于原条目，取消
     func selectionDidChange() {
+        textPickSelectionChanged()
         guard let translation else { return }
         translation.selectionChanged(to: selectedItem)
         if isTranslationCardOpen, !translation.card.isOpen {
@@ -131,7 +135,7 @@ extension PanelViewModel {
         translation?.keyPressed(isOptionReturn: isOptionReturn, isEscape: isEscape)
     }
 
-    private var cardOpenedFromPreview: Bool {
+    var cardOpenedFromPreview: Bool {
         translation?.card.card?.openedFromPreview ?? false
     }
 

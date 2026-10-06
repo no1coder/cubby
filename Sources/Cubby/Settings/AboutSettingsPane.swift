@@ -12,14 +12,9 @@ struct AboutSettingsPane: View {
     private static let iconSize: CGFloat = 96
     private static let copiedFeedbackDuration: Duration = .seconds(2)
 
-    @State private var updateState: UpdateState = .idle
+    /// 在本页点「检查更新」得到的结果（已知的新版本由 AboutUpdateStatus 直接从协调器读取）
+    @State private var manualResult: UpdateChecker.Result?
     @State private var didCopyDiagnostics = false
-
-    private enum UpdateState: Equatable {
-        case idle
-        case checking
-        case finished(UpdateChecker.Result)
-    }
 
     private var versionText: String {
         let info = Bundle.main.infoDictionary
@@ -55,7 +50,7 @@ struct AboutSettingsPane: View {
 
             actions
                 .padding(.top, 16)
-            updateStatus
+            AboutUpdateStatus(updates: updates, manualResult: manualResult)
                 .padding(.top, 8)
 
             privacyNote
@@ -78,8 +73,8 @@ struct AboutSettingsPane: View {
     private var actions: some View {
         HStack(spacing: 8) {
             Button("User Guide", action: openUserGuide)
-            Button(updateState == .checking ? "Checking…" : "Check for Updates", action: checkForUpdates)
-                .disabled(updateState == .checking)
+            Button(updates.isChecking ? "Checking…" : "Check for Updates", action: checkForUpdates)
+                .disabled(updates.isChecking)
             Button(didCopyDiagnostics ? "Copied" : "Copy Diagnostic Info", action: copyDiagnostics)
                 .disabled(didCopyDiagnostics)
                 .help(
@@ -91,38 +86,9 @@ struct AboutSettingsPane: View {
         }
     }
 
-    @ViewBuilder
-    private var updateStatus: some View {
-        switch updateState {
-        case .idle, .checking:
-            EmptyView()
-        case .finished(.upToDate(let current)):
-            Label("You're up to date (\(current))", systemImage: "checkmark.circle.fill")
-                .foregroundStyle(.green)
-                .font(.callout)
-        case .finished(.available(let version, let url)):
-            VStack(spacing: 6) {
-                Label("Version \(version) is available", systemImage: "arrow.down.circle.fill")
-                    .foregroundStyle(Color.accentColor)
-                    .font(.callout.weight(.medium))
-                Button("Download") { NSWorkspace.shared.open(url) }
-                    .buttonStyle(CapsuleButtonStyle())
-                Text("Installed with Homebrew: brew upgrade --cask cubby")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .textSelection(.enabled)
-            }
-        case .finished(.failed(let reason)):
-            Label("Couldn't check for updates: \(reason)", systemImage: "exclamationmark.triangle.fill")
-                .foregroundStyle(.orange)
-                .font(.callout)
-        }
-    }
-
     private func checkForUpdates() {
-        updateState = .checking
         Task { @MainActor in
-            updateState = .finished(await updates.check())
+            manualResult = await updates.check()
         }
     }
 

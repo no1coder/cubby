@@ -5,7 +5,7 @@ import CubbyCore
 /// 有轻提示（如删除后可撤销）时，提示替换右侧快捷键区域，不遮挡卡片。
 /// 宽度不足时按优先级降级：先收窄「↩ 粘贴到」短语，再隐藏「⇧↩」提示，最后隐藏数量。
 /// 翻译可用时追加「按住 ⌥ 预览译文」「⌥↩ 翻译后粘贴」（原型的优先级：⇧↩ → 数量 → 按住 ⌥ → ⌥↩ 依次让位）；
-/// 翻译卡打开时换成卡片的按键提示（TranslationFooterHints）
+/// 翻译卡打开时换成卡片的按键提示（TranslationFooterHints），拆词卡打开时换成拆词的按键提示（TextPickFooterHints）
 struct PanelFooter: View {
     let viewModel: PanelViewModel
     let count: Int
@@ -35,6 +35,10 @@ struct PanelFooter: View {
                 if viewModel.isTranslationCardOpen && viewModel.toast == nil {
                     ForEach(TranslationFooterHints.Level.allCases, id: \.self) { level in
                         cardContent(level)
+                    }
+                } else if viewModel.isTextPickOpen && viewModel.toast == nil {
+                    ForEach(TextPickFooterHints.Level.allCases, id: \.self) { level in
+                        textPickContent(level)
                     }
                 } else {
                     ForEach(layouts, id: \.self) { layout in
@@ -88,6 +92,16 @@ struct PanelFooter: View {
             Spacer(minLength: 4)
             TranslationFooterHints(target: pastesIntoTarget ? viewModel.target : nil, level: level)
                 .transition(.opacity)
+        }
+    }
+
+    /// 拆词卡打开时：拆词的按键提示（靠右，不显示数量）
+    private func textPickContent(_ level: TextPickFooterHints.Level) -> some View {
+        HStack(spacing: 10) {
+            Spacer(minLength: 4)
+            TextPickFooterHints(target: pastesIntoTarget ? viewModel.target : nil, level: level)
+                .transition(.opacity)
+                .e2eAnchor("footer.pick")
         }
     }
 

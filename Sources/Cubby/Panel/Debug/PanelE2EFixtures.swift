@@ -213,6 +213,25 @@ enum PanelE2EFixtures {
                     """
                 ]
             ]),
+        // 拆词（docs/TEXT-PICK-DESIGN.md §4）：带地址、电话、邮箱的长中文，与带网址的英文；排在列表最后，不影响翻译脚本
+        Entry(
+            key: "pick-zh",
+            text: """
+                \u{4F1A}\u{8BAE}\u{6539}\u{5230}\u{5468}\u{56DB}\u{4E0B}\u{5348}3\u{70B9}\u{FF0C}\u{5730}\u{5740}\u{FF1A}\
+                \u{5317}\u{4EAC}\u{5E02}\u{671D}\u{9633}\u{533A}\u{5EFA}\u{56FD}\u{8DEF}88\u{53F7}SOHO\u{73B0}\u{4EE3}\
+                \u{57CE}A\u{5EA7}1203\u{5BA4}\u{FF0C}\u{8054}\u{7CFB}\u{4EBA}\u{738B}\u{5C0F}\u{660E} 13812345678\u{FF0C}\
+                \u{90AE}\u{7BB1} wang.xm@example.com\u{3002}
+
+                \u{8BF7}\u{63D0}\u{524D}\u{5341}\u{5206}\u{949F}\u{5230}\u{FF0C}\u{524D}\u{53F0}\u{767B}\u{8BB0}\u{540E}\
+                \u{4E0A} 12 \u{697C}\u{3002}\u{6587}\u{4EF6}\u{6211}\u{5DF2}\u{7ECF}\u{53D1}\u{5230}\u{7FA4}\u{91CC}\
+                \u{4E86}\u{FF0C}\u{6253}\u{5370}\u{4E24}\u{4EFD}\u{5E26}\u{8FC7}\u{53BB}\u{3002}
+                """, isImage: false,
+            bundleID: "com.tencent.xinWeChat", appName: "WeChat", minutesAgo: 70, source: "zh-Hans"),
+        Entry(
+            key: "pick-en",
+            text:
+                "Please review PR #1234 at https://github.com/no1coder/cubby/pull/1234 before 5:30pm. It's ready to merge once CI is green (v0.2.1).",
+            isImage: false, bundleID: "com.apple.mail", appName: "Mail", minutesAgo: 75, source: "en"),
     ]
 
     /// 只在 LINE 条目的中文译文里出现的词（「资料」），用于「只因译文命中搜索」

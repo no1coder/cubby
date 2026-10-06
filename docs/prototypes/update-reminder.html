@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<title>小格子 · 更新提醒 · 简易原型</title>
+<link rel="icon" href="data:,">
+<style>
+:root{--acc:#0A84FF;--t1:#F2F2F5;--t2:rgba(235,235,245,.6);--t3:rgba(235,235,245,.3);--org:#FF9F0A;
+  --sans:-apple-system,"SF Pro Text","PingFang SC","Helvetica Neue",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;padding:28px 36px 60px;background:#0b0b0d;color:var(--t1);font:13px/1.45 var(--sans);-webkit-font-smoothing:antialiased}
+h2{font-size:15px;margin:0 0 4px}
+.note{color:var(--t2);font-size:12px;margin:0 0 14px;max-width:860px}
+section{margin-bottom:38px}
+.row{display:flex;gap:28px;align-items:flex-start;flex-wrap:wrap}
+.cap{color:var(--t2);font-size:11px;margin:0 0 6px}
+kbd{font:600 10px var(--sans);padding:1px 5px;border-radius:5px;border:.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08)}
+button{font:inherit;color:inherit;cursor:default}
+
+/* 菜单栏 */
+.menubar{width:360px;height:26px;border-radius:8px;background:rgba(40,40,46,.9);display:flex;align-items:center;justify-content:flex-end;gap:14px;padding:0 12px;font-size:12px}
+.sicon{position:relative;width:18px;height:18px}
+.sicon .dot{position:absolute;right:-2px;top:-1px;width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 1.5px rgba(40,40,46,.9)}
+.menu{width:240px;margin-top:6px;padding:5px;border-radius:9px;background:rgba(44,44,48,.97);box-shadow:0 0 0 .5px rgba(255,255,255,.15),0 10px 30px rgba(0,0,0,.5);font-size:13px}
+.menu div{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:3px 10px;border-radius:5px}
+.menu div span{color:var(--t2)}
+.menu .upd{color:#fff;font-weight:600}
+.menu .upd i{font-style:normal;color:var(--acc)}
+.menu hr{border:0;border-top:.5px solid rgba(255,255,255,.12);margin:4px 6px}
+
+/* 面板顶部 */
+.panel{width:380px;border-radius:18px;background:rgba(32,32,36,.96);box-shadow:0 0 0 .5px rgba(255,255,255,.14),0 20px 50px rgba(0,0,0,.55);padding:12px}
+.search{height:34px;border-radius:8px;background:rgba(255,255,255,.07);color:var(--t3);font-size:14px;display:flex;align-items:center;padding:0 12px}
+.banner{margin-top:10px;border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.banner.blue{background:rgba(10,132,255,.13);box-shadow:inset 0 0 0 .5px rgba(10,132,255,.35)}
+.banner .ic{width:18px;height:18px;border-radius:50%;background:var(--acc);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;flex:none;margin-top:1px}
+.banner b{display:block;font-size:13px}
+.banner small{display:block;color:rgba(235,235,245,.75);font-size:11px;margin-top:2px}
+.banner .acts{display:flex;gap:6px;margin-top:8px}
+.pill{height:24px;padding:0 12px;border-radius:12px;border:0;font-size:12px;font-weight:600;background:rgba(255,255,255,.1)}
+.pill.pri{background:var(--acc);color:#fff}
+code{font:11px ui-monospace,Menlo,monospace;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px}
+.card{margin-top:10px;height:64px;border-radius:12px;background:rgba(255,255,255,.08)}
+.card+.card{margin-top:8px;height:52px}
+
+/* 欢迎页底部 */
+.onb{width:560px;border-radius:14px;background:#1f2329;padding:16px 20px;display:flex;align-items:center;gap:18px}
+.chk{display:flex;align-items:flex-start;gap:8px;font-size:13px}
+.chk i{width:16px;height:16px;border-radius:4px;background:rgba(255,255,255,.12);flex:none;margin-top:1px;display:grid;place-items:center;font-style:normal;font-size:11px;color:#fff}
+.chk i.on{background:var(--acc)}
+.chk small{display:block;color:var(--t2);font-size:11px}
+.onb .start{margin-left:auto;height:32px;padding:0 26px;border-radius:16px;border:0;background:var(--acc);color:#fff;font-weight:600;font-size:14px}
+
+/* 设置 */
+.form{width:460px;border-radius:10px;background:rgba(255,255,255,.05);padding:2px 14px}
+.form .it{display:flex;justify-content:space-between;align-items:center;padding:10px 0}
+.form .it+.it{border-top:.5px solid rgba(255,255,255,.08)}
+.form small{display:block;color:var(--t2);font-size:11px}
+.sw{width:30px;height:18px;border-radius:9px;background:var(--acc);position:relative;flex:none}
+.sw:after{content:"";position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:#fff}
+.ok{color:#30D158}
+.bad{text-decoration:line-through;color:var(--t3)}
+</style>
+</head>
+<body>
+
+<p class="note" style="font-size:13px;color:var(--t1)">现在的问题：自动检查默认关闭；开了也只在启动时查；查到后只在<b>右键</b>菜单里多一项，几乎没人看得到。下面是调整后的样子。</p>
+
+<section>
+  <h2>① 菜单栏图标：有新版本时右上角出现蓝点</h2>
+  <p class="note">左键照常打开面板（面板顶部会有横幅，见 ②）；右键菜单顶部是醒目的「新版本 0.3.0 可用…」。升级后蓝点自动消失。</p>
+  <div class="row">
+    <div>
+      <p class="cap">现在</p>
+      <div class="menubar"><span>🔋</span><span>Wi-Fi</span><svg class="sicon" viewBox="0 0 18 18"><rect x="1.6" y="5.8" width="14.8" height="10.6" rx="2.6" fill="none" stroke="#fff" stroke-width="1.3"/><rect x="3.6" y="7.7" width="4.6" height="2.9" rx=".9" fill="#fff"/><rect x="3.6" y="11.6" width="4.6" height="2.9" rx=".9" fill="#fff"/><rect x="9.8" y="11.6" width="4.6" height="2.9" rx=".9" fill="#fff"/><rect x="10" y="1.5" width="4.4" height="7.4" rx="1" fill="#fff" transform="rotate(-6 12 5)"/></svg><span>周一 10:24</span></div>
+    </div>
+    <div>
+      <p class="cap">调整后</p>
+      <div class="menubar"><span>🔋</span><span>Wi-Fi</span><span class="sicon"><svg viewBox="0 0 18 18" width="18" height="18"><rect x="1.6" y="5.8" width="14.8" height="10.6" rx="2.6" fill="none" stroke="#fff" stroke-width="1.3"/><rect x="3.6" y="7.7" width="4.6" height="2.9" rx=".9" fill="#fff"/><rect x="3.6" y="11.6" width="4.6" height="2.9" rx=".9" fill="#fff"/><rect x="9.8" y="11.6" width="4.6" height="2.9" rx=".9" fill="#fff"/><rect x="10" y="1.5" width="4.4" height="7.4" rx="1" fill="#fff" transform="rotate(-6 12 5)"/></svg><i class="dot"></i></span><span>周一 10:24</span></div>
+      <div class="menu">
+        <div class="upd"><span style="color:#fff">⬇︎ 新版本 0.3.0 可用…</span><i>●</i></div>
+        <hr>
+        <div>打开 Cubby<span>⇧⌘V</span></div><div>截图<span>⇧⌘2</span></div><div>暂停记录</div>
+        <hr><div>设置…<span>⌘,</span></div><div>检查更新…</div><div>退出 Cubby<span>⌘Q</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>② 面板顶部横幅：每个新版本提醒一次</h2>
+  <p class="note">蓝色（不是警告的橙色），和现有的权限横幅同一位置、同一样式。点「稍后」后这个版本不再出横幅（蓝点和菜单项保留）；下一个版本再提醒。用 Homebrew 安装的，按钮换成「复制升级命令」。</p>
+  <div class="row">
+    <div>
+      <p class="cap">从 GitHub 下载安装的</p>
+      <div class="panel">
+        <div class="search">搜索剪贴板</div>
+        <div class="banner blue"><span class="ic">↓</span><div>
+          <b>新版本 0.3.0 可用</b><small>你在用 0.2.1。新增「拆词」、截图翻译条更紧凑。</small>
+          <div class="acts"><button class="pill pri">查看并下载</button><button class="pill">稍后</button></div></div></div>
+        <div class="card"></div><div class="card"></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">用 Homebrew 安装的</p>
+      <div class="panel">
+        <div class="search">搜索剪贴板</div>
+        <div class="banner blue"><span class="ic">↓</span><div>
+          <b>新版本 0.3.0 可用</b><small>在终端运行 <code>brew upgrade --cask cubby</code> 升级。</small>
+          <div class="acts"><button class="pill pri" onclick="this.textContent='已复制'">复制升级命令</button><button class="pill">更新内容</button><button class="pill">稍后</button></div></div></div>
+        <div class="card"></div><div class="card"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>③ 征得同意：新用户在欢迎页，老用户升级后问一次</h2>
+  <p class="note">自动检查只读取 GitHub 上的最新版本号，不上传任何数据。</p>
+  <div class="row">
+    <div>
+      <p class="cap">新用户：欢迎页底部（默认勾选，可取消）</p>
+      <div class="onb">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label class="chk"><i></i>登录时自动启动</label>
+          <label class="chk" onclick="this.firstElementChild.classList.toggle('on');this.firstElementChild.textContent=this.firstElementChild.classList.contains('on')?'✓':''"><i class="on">✓</i><span>有新版本时提醒我<small>每天从 GitHub 读取一次最新版本号</small></span></label>
+        </div>
+        <button class="start">开始使用</button>
+      </div>
+    </div>
+    <div>
+      <p class="cap">老用户（自动检查是关的）：升级到 0.3.0 后第一次打开面板，问一次</p>
+      <div class="panel">
+        <div class="search">搜索剪贴板</div>
+        <div class="banner blue"><span class="ic">?</span><div>
+          <b>有新版本时提醒你吗？</b><small>每天从 GitHub 读取一次最新版本号，不上传任何数据。之后可在「设置 › 通用」更改。</small>
+          <div class="acts"><button class="pill pri">提醒我</button><button class="pill">不用了</button></div></div></div>
+        <div class="card"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>④ 设置与关于</h2>
+  <p class="note">开关改名并改为每天一次：运行期间也会查（以前只在启动时查，菜单栏应用常常几周不重启）。「关于」页直接显示有新版本。</p>
+  <div class="row">
+    <div>
+      <p class="cap">设置 › 通用</p>
+      <div class="form">
+        <div class="it"><span>登录时自动启动</span><span class="sw" style="background:rgba(255,255,255,.15)"></span></div>
+        <div class="it"><span><span class="bad">每周检查更新</span> → 自动检查更新<small>每天从 GitHub 读取一次最新版本号，不上传任何数据</small></span><span class="sw"></span></div>
+      </div>
+    </div>
+    <div>
+      <p class="cap">设置 › 关于</p>
+      <div class="form">
+        <div class="it"><span>版本 0.2.1<small style="color:var(--acc)">新版本 0.3.0 可用</small></span><button class="pill pri">查看并下载</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

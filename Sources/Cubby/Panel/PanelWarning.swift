@@ -17,6 +17,10 @@ enum PanelWarning: Hashable, Identifiable {
     case historyRestored(backupURL: URL)
     /// 从磁盘映像或系统隔离位置运行，权限与开机启动可能无法保留
     case runningFromTemporaryLocation
+    /// 新版本可用（蓝色，docs/UPDATE-REMINDER-DESIGN.md U5、U6、U8；排在权限类提醒之后、暂停之前）
+    case updateAvailable(UpdateNotice)
+    /// 询问老用户是否开启自动检查（蓝色，U4）
+    case updatePermission
     /// 用户暂停了记录：复制的内容不会进入历史（优先级低于权限类提醒，排在最后）
     case paused
 
@@ -43,6 +47,10 @@ enum PanelWarning: Hashable, Identifiable {
             String(localized: "History was created by a newer version of Cubby", comment: "Panel warning title")
         case .historyRestored:
             String(localized: "History file was damaged, starting over", comment: "Panel warning title")
+        case .updateAvailable(let notice):
+            UpdateCopy.versionAvailable(notice.release.version.description)
+        case .updatePermission:
+            UpdateCopy.askTitle
         case .paused:
             String(localized: "Recording paused", comment: "Panel warning title when clipboard recording is paused")
         }
@@ -109,6 +117,10 @@ enum PanelWarning: Hashable, Identifiable {
                 localized: "The original file was backed up. You can find it in Finder.",
                 comment: "Panel warning detail"
             )
+        case .updateAvailable(let notice):
+            notice.viaHomebrew ? UpdateCopy.homebrewHint : UpdateCopy.runningVersion(notice.currentVersion)
+        case .updatePermission:
+            UpdateCopy.askDetail
         case .paused:
             String(
                 localized: "Items you copy while paused aren't saved.",
@@ -135,6 +147,10 @@ enum PanelWarning: Hashable, Identifiable {
             String(localized: "Check for Updates", comment: "Button")
         case .historyRestored:
             String(localized: "Show Backup", comment: "Panel warning button: reveal the backup file in Finder")
+        case .updateAvailable(let notice):
+            notice.viaHomebrew ? UpdateCopy.copyUpgradeCommand : UpdateCopy.viewAndDownload
+        case .updatePermission:
+            UpdateCopy.remindMe
         case .paused:
             String(localized: "Resume", comment: "Panel warning button: resume clipboard recording")
         }
@@ -154,6 +170,7 @@ enum PanelWarning: Hashable, Identifiable {
         }
     }
 
+    /// 主按钮。更新横幅的按钮由 PanelViewModel+Update 交给更新协调器（需要「已复制」反馈），这里不处理
     @MainActor
     func performAction(settings: AppSettings) {
         switch self {
@@ -165,6 +182,7 @@ enum PanelWarning: Hashable, Identifiable {
         case .runningFromTemporaryLocation: ItemOpener.revealInFinder([Bundle.main.bundlePath])
         case .historyFromNewerVersion: Self.checkForUpdates?()
         case .historyRestored(let backupURL): ItemOpener.revealInFinder([backupURL.path])
+        case .updateAvailable, .updatePermission: break
         case .paused: settings.isPaused = false
         }
     }

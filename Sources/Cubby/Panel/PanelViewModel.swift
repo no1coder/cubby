@@ -2,10 +2,12 @@ import AppKit
 import Observation
 import CubbyCore
 
-/// 面板旁的详情区（设计文档 K1）
+/// 面板旁的详情区（设计文档 K1）：空格预览、翻译卡、拆词卡三者互斥，共用预览面板窗口
 enum DetailPane: Equatable {
     case preview
     case translation
+    /// 拆词卡（docs/TEXT-PICK-DESIGN.md P3）
+    case textPick
 }
 
 /// 面板的交互状态：搜索、分类、选中项、预览、提示以及各类操作
@@ -23,7 +25,7 @@ final class PanelViewModel {
     private(set) var selectedID: UUID?
     /// 每次面板显示时递增，驱动视图重新聚焦搜索框并滚动到顶部
     private(set) var focusToken = 0
-    /// 面板旁的详情区：空格预览或翻译卡（二者互斥，共用预览面板窗口）
+    /// 面板旁的详情区：空格预览、翻译卡或拆词卡（三者互斥，共用预览面板窗口）
     private(set) var detailPane: DetailPane?
     private(set) var isShowingHelp = false
     /// 面板显示时计算一次：是否能直接粘贴（避免每次渲染都查询辅助功能权限）
@@ -44,6 +46,15 @@ final class PanelViewModel {
     @ObservationIgnored var onDetailPaneChange: ((DetailPane?) -> Void)?
     /// 把图片条目贴到屏幕上（由 PanelController 注入）
     @ObservationIgnored var onPinImage: ((ClipItem) -> Void)?
+    /// 拆词结果的粘贴 / 复制（由 PanelController 注入：写剪贴板，粘贴时再走条目粘贴的投递段）；复制返回是否写入
+    @ObservationIgnored var onPastePicked: ((TextPickRequest) -> Void)?
+    @ObservationIgnored var onCopyPicked: ((TextPickRequest) -> Bool)?
+    /// 拆词卡（docs/TEXT-PICK-DESIGN.md）；状态在控制器里，视图直接观察它
+    @ObservationIgnored let textPick = TextPickController()
+    /// 更新提醒（顶部蓝色横幅，见 PanelViewModel+Update）；nil 表示没有接线
+    @ObservationIgnored var updates: UpdateCoordinator?
+    /// 横幅上「复制升级命令」的「已复制」反馈
+    @ObservationIgnored let upgradeCommandFeedback = TransientFeedback()
     /// 面板上次隐藏的时间，用于判断是否保留分类
     @ObservationIgnored private var lastHiddenAt: Date?
     /// 搜索会话：预折叠索引 + 前缀逐键收窄，同一次渲染内多次访问不重复计算
@@ -74,20 +85,22 @@ final class PanelViewModel {
         return visible.first { $0.id == selectedID } ?? visible.first
     }
 
-    /// 已恢复记录时立即隐藏「已暂停」横幅（settings 可观察，横幅随之消失）
+    /// 已恢复记录时立即隐藏「已暂停」横幅（settings 可观察，横幅随之消失）；更新横幅实时插在暂停之前
     var visibleWarnings: [PanelWarning] {
-        warnings.filter { warning in
+        let attention = warnings.filter { warning in
             guard warning != .paused || settings.isPaused else { return false }
             return dismissedWarnings[warning] != warning.stateSignature
         }
+        return PanelWarning.inserting(updateWarning, into: attention)
     }
 
     func dismissWarning(_ warning: PanelWarning) {
-        guard warning.isDismissible else { return }
+        guard warning.isDismissible, !dismissUpdateWarning(warning) else { return }
         dismissedWarnings[warning] = warning.stateSignature
     }
 
     func performAction(for warning: PanelWarning) {
+        guard !performUpdateAction(warning) else { return }
         warning.performAction(settings: settings)
     }
 
@@ -117,8 +130,10 @@ final class PanelViewModel {
     func panelDidHide(at date: Date = Date()) {
         lastHiddenAt = date
         translation?.tearDown()
+        textPick.close()
         setDetailPane(nil)
         dismissToast()
+        upgradeCommandFeedback.clear()
     }
 
     private static func remembersCategory(hiddenAt: Date?, now: Date) -> Bool {
@@ -147,6 +162,8 @@ final class PanelViewModel {
         case .translate: toggleTranslationCard()
         case .translateAndPaste: translateAndPasteSelected()
         case .copyTranslation, .saveTranslation, .stepTranslationView: return handleCardCommand(command)
+        case .pickWords: toggleTextPick()
+        case .copyPickedWords, .selectAllWords: return handleTextPickCommand(command)
         case .open: if let item = selectedItem { open(item) }
         case .openSettings: onOpenSettings?()
         case .takeScreenshot: onTakeScreenshot?()
@@ -182,9 +199,9 @@ final class PanelViewModel {
         onPaste?(item, mode)
     }
 
-    /// ↩ / ⇧↩ / ⌘↩：翻译卡打开时改为粘贴 / 纯文本粘贴 / 复制译文（§1.1）
+    /// ↩ / ⇧↩ / ⌘↩：翻译卡打开时改为粘贴 / 纯文本粘贴 / 复制译文（§1.1）；拆词卡打开时粘贴 / 复制所选
     private func pasteSelected(_ command: PanelCommand) {
-        if handleCardCommand(command) { return }
+        if handleCardCommand(command) || handleTextPickCommand(command) { return }
         guard let item = selectedItem else { return }
         switch command {
         case .pasteAlternate: paste(item, mode: .alternate)
@@ -252,10 +269,11 @@ final class PanelViewModel {
         detailPane == .preview
     }
 
-    /// 空格 / ⌘Y：翻译卡打开时切到预览（§1.5）
+    /// 空格 / ⌘Y：翻译卡或拆词卡打开时切到预览（§1.5，docs/TEXT-PICK-DESIGN.md §2）
     func setPreviewVisible(_ visible: Bool) {
         if visible {
             translation?.card.close()
+            textPick.close()
             setDetailPane(.preview)
         } else if isPreviewVisible {
             setDetailPane(nil)
@@ -301,7 +319,7 @@ final class PanelViewModel {
         onOpenUserGuide?()
     }
 
-    /// 帮助 → 取消进行中的翻译 → 关闭详情区（翻译卡 / 预览）→ 清空搜索 → 关闭面板（§1.5）
+    /// 帮助 → 取消进行中的翻译 → 翻译卡 → 拆词卡 → 预览 → 清空搜索 → 关闭面板（§1.5，docs/TEXT-PICK-DESIGN.md §2）
     private func escape() {
         if isShowingHelp {
             isShowingHelp = false
@@ -309,6 +327,8 @@ final class PanelViewModel {
             if cancelled == .inline { showToast(.info(TranslationCopy.cancelledTitle, symbolName: "xmark")) }
         } else if detailPane == .translation {
             closeTranslationCard()
+        } else if isTextPickOpen {
+            closeTextPick()
         } else if isPreviewVisible {
             setPreviewVisible(false)
         } else if !searchText.isEmpty {

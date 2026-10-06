@@ -32,7 +32,7 @@ Or download the notarized DMG from [Releases](https://github.com/no1coder/cubby/
   </picture>
 </p>
 
-Cubby sits in your menu bar and remembers what you copy: text, links, colors, images and files. Press <kbd>⇧⌘V</kbd>, type a few letters to find what you need, and press <kbd>↩</kbd> to paste it into the app you were using. Press <kbd>⇧⌘2</kbd> to take a screenshot, mark it up, and it lands in your history next to everything else you copied. It only goes online when you check for updates or translate with a language model you set up yourself.
+Cubby sits in your menu bar and remembers what you copy: text, links, colors, images and files. Press <kbd>⇧⌘V</kbd>, type a few letters to find what you need, and press <kbd>↩</kbd> to paste it into the app you were using. Press <kbd>⇧⌘2</kbd> to take a screenshot, mark it up, and it lands in your history next to everything else you copied. It only goes online to check for a new version (once a day, and you can turn that off) or to translate with a language model you set up yourself.
 
 ## Features
 
@@ -75,7 +75,7 @@ Cubby sits in your menu bar and remembers what you copy: text, links, colors, im
 - History is stored only on your Mac and is excluded from Time Machine.
 - Skips content that password managers mark as concealed or transient, apps in your **Ignored Apps** list, and, by default, text that looks like an API key, private key or JWT.
 - Pause recording at any time from the menu bar; the panel shows a banner until you resume.
-- No network access unless you ask for it (checking for updates, or translating with a model you set up). No analytics, no telemetry. See [Privacy](#privacy).
+- No network access except a daily update check, which only reads the latest version number from GitHub (ticked by default on the welcome screen, and you can turn it off), and translating with a model you set up. No analytics, no telemetry. See [Privacy](#privacy).
 
 **Native**
 
@@ -245,7 +245,7 @@ Your API key is stored in the macOS login Keychain, one entry per provider. It n
 - **Pastes where you expect.** Cubby checks that the target app is still frontmost before sending <kbd>⌘V</kbd>.
 - **Screenshots stay on your Mac.** The screen is captured only when you take a screenshot. While you select and annotate, the image stays in memory, and canceling leaves nothing behind. Text is recognized on your Mac with Apple's Vision framework.
 - **Image text stays local.** To make images searchable, text in them is recognized on your Mac and kept only in your history file. Turning off Settings › History › Search text in images deletes it.
-- **Offline by default.** Cubby goes online only when you ask it to. **Check for Updates** (or the weekly check, off by default) reads `api.github.com/repos/no1coder/cubby/releases/latest`. Screenshot translation with a large language model sends the text recognized in the selection, and nothing else, to the service you set up; translating a clipboard item with it sends that item's text. System Translation, and translating when you copy, stay on your Mac.
+- **Online only for updates and the translation service you set up.** The automatic update check (once a day, ticked by default on the welcome screen, and you can turn it off in Settings › General) and **Check for Updates** only read the latest version number from `api.github.com/repos/no1coder/cubby/releases/latest` and upload nothing. Screenshot translation with a large language model sends the text recognized in the selection, and nothing else, to the service you set up; translating a clipboard item with it sends that item's text. System Translation, and translating when you copy, stay on your Mac.
 - **No analytics, no telemetry, no crash reporting.**
 
 Full details in [PRIVACY.md](PRIVACY.md).

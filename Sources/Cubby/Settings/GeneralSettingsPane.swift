@@ -51,9 +51,10 @@ struct GeneralSettingsPane: View {
 
             Section {
                 LaunchAtLoginToggle()
+                // 沿用原来的设置键，老用户的选择不变（docs/UPDATE-REMINDER-DESIGN.md U2）
                 Toggle(isOn: $settings.checksForUpdatesAutomatically) {
-                    Text("Check for updates weekly")
-                    Text("Only reads release information from GitHub and never uploads any data")
+                    Text("Check for updates automatically")
+                    Text("Reads the latest version number from GitHub once a day and never uploads any data")
                 }
             } header: {
                 Text("Startup & Updates")

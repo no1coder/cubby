@@ -22,6 +22,8 @@ final class OnboardingWindowController: NSObject, NSWindowDelegate {
     }
 
     func show() {
+        // 新用户第一次显示欢迎页：「有新版本时提醒我」默认勾选；从菜单重开时只反映当前设置（U3）
+        settings.applyFirstRunUpdateDefault()
         let window = self.window ?? makeWindow()
         self.window = window
         if !window.isVisible {

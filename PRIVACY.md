@@ -27,7 +27,7 @@ Everything lives in `~/Library/Application Support/Cubby`:
 - History is limited to the number of items you choose in Settings › History. Favorites don't count toward the limit.
 - Translations are kept with the item they belong to and are deleted with it. **Settings › Translation › Clear All Translations…** deletes all of them.
 
-Your settings (shortcuts, panel position, ignored apps, screenshot folder, translation engine, provider, base URL, model, clipboard translation options, the target language you chose for each app you paste into, and so on) are stored in `~/Library/Preferences/io.github.no1coder.Cubby.plist`. They contain no clipboard content and no API keys.
+Your settings (shortcuts, panel position, ignored apps, screenshot folder, translation engine, provider, base URL, model, clipboard translation options, the target language you chose for each app you paste into, the latest version found by the update check, and so on) are stored in `~/Library/Preferences/io.github.no1coder.Cubby.plist`. They contain no clipboard content and no API keys.
 
 If you set up a large language model for screenshot translation, its API key is stored in your login Keychain, not in these files. See [Screenshot translation](#screenshot-translation).
 
@@ -42,12 +42,13 @@ Text that looks like a secret is also never sent to a large language model for t
 
 ### Network access
 
-Cubby does not connect to the network on its own. It makes a request only when you ask for it, in two cases.
+Cubby connects to the network only in the two cases below. The automatic update check is an option you control: it is ticked by default on the welcome screen of a new install, and you can turn it off at any time. Translation with a large language model happens only when you ask for it, with a service you set up yourself.
 
 **Checking for updates**
 
 - **Request:** `GET https://api.github.com/repos/no1coder/cubby/releases/latest`
-- **When:** only when you click **Check for Updates**, or once a week if you turn on the automatic check in Settings. The automatic check is off by default.
+- **When:** when you click **Check for Updates**, and once a day if the automatic check is on (at launch when a check is due, then whenever a day has passed while Cubby is running or after your Mac wakes; after a failed check, Cubby waits an hour before trying again, or until it is next launched). On a new install, **Remind me about new versions** on the welcome screen is ticked by default and turns the automatic check on; untick it to keep it off. Cubby doesn't check until you close the welcome screen. On an install upgraded from an earlier version, the automatic check stays off unless you turn it on or answer **Remind Me** when Cubby asks once in the panel. If you had already turned on the weekly check in Cubby 0.2, it stays on and now runs once a day. Turn it off at any time with **Check for updates automatically** in Settings › General.
+- **What is read:** only the version number of the latest release and the address of its release page. Cubby keeps them in its settings, so it can show that a new version is available without going online again.
 - **What is sent:** a standard HTTPS request. Like any web request, it reveals your IP address and a user agent to GitHub. It contains no identifiers and no clipboard content. GitHub's handling of such requests is covered by the [GitHub Privacy Statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement).
 
 **Screenshot translation with a large language model** (Cubby 0.2 and later, macOS 26)
@@ -66,7 +67,7 @@ Cubby does not connect to the network on its own. It makes a request only when y
 - **What is never sent:** link addresses; text that looks like a secret, unless you confirm it for that item each time (a confirmation applies only to the service shown when you gave it); text that looks like a secret in an image, which can't be confirmed; and the other items in your history.
 - Cubby shows the reply as plain text with the item's formatting and puts the original link addresses back on your Mac. A translated image is kept only in `Images/` with its item; Cubby writes no temporary copies.
 
-Cubby does not download or install updates by itself. Opening a link from your history with <kbd>⌘O</kbd> hands it to your default browser; Cubby does not fetch link previews or titles. macOS itself may contact Apple to verify the app's notarization. That is system behavior, not something Cubby does.
+Cubby does not download or install updates by itself: **View & Download** opens the release page in your default browser. Opening a link from your history with <kbd>⌘O</kbd> hands it to your default browser; Cubby does not fetch link previews or titles. macOS itself may contact Apple to verify the app's notarization. That is system behavior, not something Cubby does.
 
 ### Permissions
 
@@ -161,7 +162,7 @@ Cubby 不收集、不上传、不分享任何数据。没有账户、统计、�
 - 历史条数受「设置 › 历史」中的上限约束，收藏不计入上限。
 - 译文随所属条目保存、随条目删除；「设置 › 翻译 › 清除全部译文…」可删除全部译文。
 
-设置（快捷键、面板位置、排除的应用、截图存储位置、翻译引擎、服务商、接入地址、模型名、剪贴板翻译选项、按粘贴目标应用记住的目标语言等）保存在 `~/Library/Preferences/io.github.no1coder.Cubby.plist`，不含任何剪贴板内容，也不含 API Key。
+设置（快捷键、面板位置、排除的应用、截图存储位置、翻译引擎、服务商、接入地址、模型名、剪贴板翻译选项、按粘贴目标应用记住的目标语言、更新检查查到的最新版本号等）保存在 `~/Library/Preferences/io.github.no1coder.Cubby.plist`，不含任何剪贴板内容，也不含 API Key。
 
 如果你为截图翻译配置了大模型，其 API Key 保存在登录钥匙串中，而不是上述文件里。详见[截图翻译](#截图翻译)。
 
@@ -176,12 +177,13 @@ Cubby 不收集、不上传、不分享任何数据。没有账户、统计、�
 
 ### 网络访问
 
-Cubby 不会主动联网，只在你要求时发出请求，共两种情况。
+Cubby 只在以下两种情况下联网。自动检查更新是一个由你决定的选项：新安装时欢迎页默认勾选，可随时关闭。使用大模型翻译只在你要求时进行，发往你自己配置的服务。
 
 **检查更新**
 
 - **请求：** `GET https://api.github.com/repos/no1coder/cubby/releases/latest`
-- **时机：** 仅在你点击「检查更新」时，或在设置中开启自动检查后每周一次。自动检查默认关闭。
+- **时机：** 你点击「检查更新」时；开启自动检查后每天一次（启动时到期即检查，之后在 Cubby 运行期间或 Mac 从睡眠中唤醒后，满一天再检查；检查失败时等一小时再重试，或到下次启动时再试）。新安装时，欢迎页上的「有新版本时提醒我」默认勾选，会开启自动检查；取消勾选即保持关闭。关闭欢迎页之前不会检查。从旧版本升级的安装，除非你自己开启，或在面板询问时（只问一次）选择「提醒我」，自动检查保持关闭；在 Cubby 0.2 中已开启每周检查的，保持开启并改为每天一次。随时可以在「设置 › 通用」中关闭「自动检查更新」。
+- **读取内容：** 只读取最新正式版的版本号和发布页地址。Cubby 把它们保存在设置中，之后不必再联网也能提示有新版本。
 - **发送内容：** 标准 HTTPS 请求。与任何网络请求一样，GitHub 能看到你的 IP 地址和 User-Agent。请求中不含任何标识符或剪贴板内容。GitHub 对此类请求的处理适用 [GitHub 隐私声明](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement)。
 
 **使用大模型翻译截图**（Cubby 0.2 及以后，macOS 26）
@@ -200,7 +202,7 @@ Cubby 不会主动联网，只在你要求时发出请求，共两种情况。
 - **绝不发送：** 链接地址；疑似密钥的文字（除非你每次针对该条确认，且确认只对当时显示的服务有效）；图片中的疑似密钥（无法确认发送）；历史中的其他条目。
 - Cubby 以纯文本加上条目原有格式显示返回内容，并在本机把原文的链接地址放回。译后的图片只随条目保存在 `Images/` 中，Cubby 不写入任何临时副本。
 
-Cubby 不会自行下载或安装更新。用 <kbd>⌘O</kbd> 打开历史中的链接时，由你的默认浏览器打开；Cubby 不抓取链接预览或标题。macOS 可能会联系 Apple 验证应用的公证状态，这属于系统行为，并非 Cubby 发起。
+Cubby 不会自行下载或安装更新：「查看并下载」只是在默认浏览器中打开发布页。用 <kbd>⌘O</kbd> 打开历史中的链接时，由你的默认浏览器打开；Cubby 不抓取链接预览或标题。macOS 可能会联系 Apple 验证应用的公证状态，这属于系统行为，并非 Cubby 发起。
 
 ### 权限
 

@@ -9,7 +9,7 @@ final class PreviewMount {
     var isActive = false
 }
 
-/// 详情区面板：空格预览或翻译卡（二者互斥）。预览显示期间随选中项实时更新，展示完整内容与元信息。
+/// 详情区面板：空格预览、翻译卡或拆词卡（三者互斥）。预览显示期间随选中项实时更新，展示完整内容与元信息。
 /// 面板隐藏时不挂载内容：不读取 selectedItem、不触发 onChange，
 /// 选中项变化（每次按键、方向键）不再在后台排版预览文本、解码预览图
 struct PreviewPanelView: View {
@@ -21,6 +21,8 @@ struct PreviewPanelView: View {
     var body: some View {
         if !mount.isActive {
             Color.clear
+        } else if viewModel.detailPane == .textPick {
+            TextPickCardView(viewModel: viewModel, controller: viewModel.textPick, onLayoutChange: onItemChange)
         } else if viewModel.detailPane == .translation, let translation = viewModel.translation {
             TranslationCardView(viewModel: viewModel, translation: translation, onLayoutChange: onItemChange)
         } else {

@@ -155,7 +155,7 @@ final class PanelE2EContext {
     }
 
     /// 悬停：跟踪区域按真实光标位置判断，合成的 mouseMoved 触发不了它，所以把全局点直接交给详情区里
-    /// 包含该点的跟踪视图（图片译文层、对照视图的指针跟踪）
+    /// 包含该点的跟踪视图（图片译文层、对照视图的指针跟踪、拆词卡的词块区）
     func hover(at point: CGPoint?) {
         let window = detailWindow
         let windowPoint = point.map { window.convertPoint(fromScreen: ScreenTopologyProvider.toAppKit($0)) }
@@ -165,6 +165,8 @@ final class PanelE2EContext {
                 overlay.debugHover(atWindowPoint: inside ? windowPoint : nil)
             } else if let tracker = view as? PointerTracker.TrackingView {
                 tracker.debugMove(toWindowPoint: inside ? windowPoint : nil)
+            } else if let canvas = view as? TextPickCanvasView {
+                canvas.debugHover(atWindowPoint: inside ? windowPoint : nil)
             }
         }
     }

@@ -2,20 +2,37 @@ import AppKit
 
 /// 菜单栏图标：与 App 图标同构的「小格子」剪影（模板图，自动适配深浅色菜单栏）。
 /// 正常状态：储物盒实心 + 右上格抽出卡片；暂停记录：储物盒空心、没有卡片。
+/// 有新版本时右上角留出一个圆形缺口，强调色蓝点由 StatusItemUpdateBadge 叠在缺口里（模板图只能是单色）
 enum StatusBarIcon {
-    private static let size = NSSize(width: 18, height: 18)
+    static let size = NSSize(width: 18, height: 18)
+    /// 蓝点圆心（图标坐标，左下原点）与直径：与原型一致，略超出图标右上角
+    static let badgeCenter = CGPoint(x: 16.5, y: 15.5)
+    static let badgeDiameter: CGFloat = 7
+    /// 蓝点四周擦出的留白，让它在任何菜单栏底色上都与图标分开
+    static let badgeGap: CGFloat = 1.5
 
-    static func image(paused: Bool) -> NSImage {
+    static func image(paused: Bool, badged: Bool = false) -> NSImage {
         let image = NSImage(size: size, flipped: false) { _ in
             draw(paused: paused)
+            if badged { clearBadgeNotch() }
             return true
         }
         image.isTemplate = true
-        image.accessibilityDescription =
-            paused
-            ? String(localized: "Cubby (paused)", comment: "Accessibility description of the status item icon")
-            : "Cubby"
+        image.accessibilityDescription = UpdateCopy.statusItemAccessibility(paused: paused, updateAvailable: badged)
         return image
+    }
+
+    /// 擦除蓝点及其留白所在的圆
+    private static func clearBadgeNotch() {
+        guard let context = NSGraphicsContext.current else { return }
+        let radius = badgeDiameter / 2 + badgeGap
+        let notch = NSBezierPath(
+            ovalIn: NSRect(
+                x: badgeCenter.x - radius, y: badgeCenter.y - radius, width: radius * 2, height: radius * 2))
+        context.saveGraphicsState()
+        context.compositingOperation = .clear
+        notch.fill()
+        context.restoreGraphicsState()
     }
 
     private static func draw(paused: Bool) {

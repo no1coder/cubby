@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<title>小格子 · 截图翻译条引擎名 + 拆词 · 简易原型</title>
+<link rel="icon" href="data:,">
+<style>
+:root{--acc:#0A84FF;--t1:#F2F2F5;--t2:rgba(235,235,245,.6);--t3:rgba(235,235,245,.3);
+  --sans:-apple-system,"SF Pro Text","PingFang SC","Helvetica Neue",sans-serif}
+*{box-sizing:border-box}
+body{margin:0;padding:28px 36px 60px;background:#0b0b0d;color:var(--t1);font:13px/1.45 var(--sans);-webkit-font-smoothing:antialiased;user-select:none}
+h2{font-size:15px;margin:0 0 4px}
+.note{color:var(--t2);font-size:12px;margin:0 0 14px}
+section{margin-bottom:40px}
+kbd{font:600 10px var(--sans);padding:1px 5px;border-radius:5px;border:.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08)}
+
+/* ① 翻译条 */
+.row{display:flex;align-items:center;gap:14px;margin:10px 0}
+.tag{width:52px;color:var(--t2);font-size:12px;text-align:right}
+.bar{display:inline-flex;align-items:center;height:40px;padding:0 6px;border-radius:12px;background:rgba(40,40,44,.92);box-shadow:0 0 0 .5px rgba(255,255,255,.12),0 8px 24px rgba(0,0,0,.5);white-space:nowrap}
+.bar>*{padding:0 9px;display:flex;align-items:center;gap:5px;height:28px}
+.bar .lang{font-weight:600}
+.bar .sep{width:1px;height:18px;background:rgba(255,255,255,.14);padding:0}
+.bar .eng{color:var(--t2);font-size:11px;position:relative}
+.bar .eng span:not(.bad){max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.bar .seg{background:rgba(255,255,255,.08);border-radius:8px;padding:2px;gap:2px;font-size:11px}
+.bar .seg i{font-style:normal;padding:3px 10px;border-radius:6px;color:var(--t2)}
+.bar .seg i.on{background:rgba(255,255,255,.2);color:var(--t1);font-weight:600}
+.bar .act{font-size:11px}.bar .hint{font-size:10.5px;color:var(--t2)}
+.width{color:var(--t3);font-size:11px}
+.eng[data-tip]:hover::after{content:attr(data-tip);position:absolute;left:0;top:34px;z-index:5;white-space:pre;padding:7px 10px;border-radius:8px;background:#2c2c30;color:var(--t1);font-size:11px;line-height:1.5;box-shadow:0 0 0 .5px rgba(255,255,255,.15),0 6px 18px rgba(0,0,0,.5)}
+.bad{outline:1.5px dashed rgba(255,159,10,.7);outline-offset:2px;border-radius:6px}
+
+/* ② 拆词 */
+.stage{display:flex;gap:16px;align-items:flex-start}
+.win{border-radius:18px;background:rgba(32,32,36,.96);box-shadow:0 0 0 .5px rgba(255,255,255,.14),0 20px 50px rgba(0,0,0,.55);overflow:hidden;display:flex;flex-direction:column}
+.panel{width:380px;height:560px}
+.search{margin:12px 12px 8px;height:34px;border-radius:8px;background:rgba(255,255,255,.07);color:var(--t3);font-size:14px;display:flex;align-items:center;padding:0 12px}
+.list{flex:1;padding:4px 12px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.card{position:relative;border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.08);box-shadow:0 0 0 .5px rgba(255,255,255,.06);transition:transform .15s}
+.card.sel{box-shadow:0 0 0 2px var(--acc)}
+.card.press{transform:scale(.985)}
+.card .txt{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card .meta{color:var(--t2);font-size:11px;margin-top:4px;display:flex;justify-content:space-between}
+.card.color{background:#5F2EEA}
+.pfoot{height:36px;border-top:.5px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:0 12px;font-size:11px;color:rgba(235,235,245,.75)}
+.pfoot.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+.pick{width:440px;max-height:560px}
+.pick[hidden]{display:none}
+.phead{height:56px;flex:none;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:.5px solid rgba(255,255,255,.1)}
+.phead .ico{width:20px;height:20px;border-radius:6px;background:#07C160}
+.phead b{font-size:13px}.phead small{display:block;color:var(--t2);font-size:11px;font-weight:400}
+.phead .sp{flex:1}
+.tbtn{font-size:12px;color:var(--t1);padding:4px 10px;border-radius:8px}.tbtn:hover{background:rgba(255,255,255,.08)}
+.body{flex:1;overflow:auto;padding:12px 14px;line-height:0}
+.tok{display:inline-block;font-size:13px;line-height:20px;padding:3px 7px;margin:0 4px 6px 0;border-radius:6px;background:rgba(255,255,255,.07);cursor:default}
+.tok:hover{background:rgba(255,255,255,.13)}
+.tok.p{font-size:12px;padding:3px 4px;color:var(--t2)}
+.tok.ent{color:#4DA3FF}
+.tok.on{background:var(--acc);color:#fff}
+.br{display:block;height:0}.br.para{height:8px}
+.result{flex:none;margin:0 14px 10px;padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.05);font-size:12px;display:flex;gap:10px}
+.result span{flex:1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-all}
+.result em{font-style:normal;color:var(--t2)}
+.ffoot{height:44px;flex:none;border-top:.5px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:8px;padding:0 12px;font-size:11px;color:var(--t2)}
+.ffoot .sp{flex:1}
+.cap{height:26px;padding:0 14px;border-radius:13px;border:0;font:600 12px var(--sans);color:var(--t1);background:rgba(255,255,255,.1)}
+.cap.pri{background:var(--acc);color:#fff}
+.cap:disabled{opacity:.35}
+.menu{position:fixed;z-index:9;min-width:190px;padding:5px;border-radius:9px;background:rgba(44,44,48,.97);box-shadow:0 0 0 .5px rgba(255,255,255,.15),0 10px 30px rgba(0,0,0,.5);font-size:13px}
+.menu div{display:flex;justify-content:space-between;padding:3px 10px;border-radius:5px}
+.menu div span{color:var(--t2)}
+.menu div:hover{background:var(--acc)}.menu div:hover span{color:#fff}
+.menu hr{border:0;border-top:.5px solid rgba(255,255,255,.12);margin:4px 6px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);padding:8px 14px;border-radius:10px;background:#2c2c30;box-shadow:0 0 0 .5px rgba(255,255,255,.15);font-size:12px;max-width:600px}
+</style>
+</head>
+<body>
+
+<section>
+  <h2>① 截图翻译条：引擎名缩短</h2>
+  <p class="note">预设服务商只显示品牌名；自定义服务显示域名主体（api.siliconflow.cn → siliconflow）；模型名和完整地址放到悬停说明里。悬停「调整后」的引擎名可以看到说明。</p>
+  <div id="bars"></div>
+</section>
+
+<section>
+  <h2>② 拆词：长文本只取一部分</h2>
+  <p class="note">打开方式：选中卡片按 <kbd>⌘B</kbd> / 在卡片上<b>长按</b> 0.45 秒 / <b>右键 → 拆词</b>。
+    拆词卡里：点一个词选中 / 再点取消；按住拖过一串词连选；<kbd>⌘A</kbd> 全选；<kbd>⌘C</kbd> 复制；<kbd>↩</kbd> 粘贴到目标应用；<kbd>esc</kbd> 关闭。</p>
+  <div class="stage">
+    <div class="win pick" id="pick" hidden>
+      <div class="phead"><div class="ico" id="pIco"></div><div><b>拆词</b><small id="pSub"></small></div><div class="sp"></div><span class="tbtn" id="allBtn">全选</span></div>
+      <div class="body" id="body"></div>
+      <div class="result" id="result" hidden><span id="resTxt"></span><em id="resCnt"></em></div>
+      <div class="ffoot"><span id="fInfo"></span><span class="sp"></span>
+        <button class="cap" id="copyBtn" title="⌘C">复制</button>
+        <button class="cap pri" id="pasteBtn" title="↩">粘贴到「备忘录」</button></div>
+    </div>
+    <div class="win panel">
+      <div class="search">搜索剪贴板</div>
+      <div class="list" id="list"></div>
+      <div class="pfoot" id="pfoot"></div>
+    </div>
+  </div>
+</section>
+
+<div class="menu" id="menu" hidden></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+// ---------- ① 翻译条 ----------
+const cloud = '<svg width="13" height="10" viewBox="0 0 13 10" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3.5 9h6.3a2.6 2.6 0 0 0 .3-5.2A3.6 3.6 0 0 0 3.3 4.5 2.3 2.3 0 0 0 3.5 9z"/></svg>';
+const laptop = '<svg width="14" height="10" viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="2.5" y="1" width="9" height="6" rx="1"/><path d="M1 9h12"/></svg>';
+const cases = [
+  {name:'自定义服务', before:'api.siliconflow.cn · Qwen/Qwen2.5-72B-Instruct', after:'siliconflow', host:'api.siliconflow.cn', model:'Qwen/Qwen2.5-72B-Instruct'},
+  {name:'预设服务商', before:'DeepSeek · deepseek-chat', after:'DeepSeek', host:'api.deepseek.com', model:'deepseek-chat'},
+  {name:'系统翻译（不变）', before:'系统翻译', after:'系统翻译', local:true},
+];
+function bar(engine, tip, icon, bad){
+  return `<div class="bar"><div class="lang">英语 → 简体中文 ⌄</div><i class="sep"></i>
+    <div class="eng" ${tip?`data-tip="${tip}"`:''}>${icon}<span class="${bad?'bad':''}">${engine}</span></div><i class="sep"></i>
+    <div class="seg"><i>原文</i><i class="on">译文</i></div><div class="act">◫ 卷帘对比</div><i class="sep"></i>
+    <div class="act">⧉ 复制译文</div><div class="hint">按住空格看原文</div></div>`;
+}
+document.getElementById('bars').innerHTML = cases.map(c => {
+  const icon = c.local ? laptop : cloud;
+  const tip = c.local ? '系统翻译在这台 Mac 上完成' : `大模型翻译 · ${c.host} · ${c.model}\n识别出的文字会发送到 ${c.host}，图片不会上传`;
+  return `<p class="note" style="margin:18px 0 0">${c.name}</p>
+    <div class="row"><span class="tag">现在</span>${bar(c.before, '', icon, !c.local)}<span class="width"></span></div>
+    <div class="row"><span class="tag">调整后</span>${bar(c.after, tip, icon, false)}<span class="width"></span></div>`;
+}).join('');
+document.querySelectorAll('.row').forEach(r => r.querySelector('.width').textContent = r.querySelector('.bar').offsetWidth + ' px');
+
+// ---------- ② 拆词 ----------
+const items = [
+  {app:'微信', color:'#07C160', text:'会议改到周四下午3点，地址：北京市朝阳区建国路88号SOHO现代城A座1203室，联系人王小明 13812345678，邮箱 wang.xm@example.com。\n\n请提前十分钟到，前台登记后上 12 楼。资料我已经发到群里了，打印两份带过去。'},
+  {app:'邮件', color:'#3B82F6', text:'Please review PR #1234 at https://github.com/no1coder/cubby/pull/1234 before 5:30pm. It\'s ready to merge once CI is green (v0.2.1).'},
+  {app:'数码测色计', kind:'颜色', text:'#5F2EEA'},
+  {app:'访达', kind:'文件', text:'发布说明.md'},
+];
+let cur = 0, open = false, toks = [], sel = new Set();
+const $ = id => document.getElementById(id);
+const isCJK = s => /[　-鿿＀-￯]/.test(s);
+
+// 分词：先把网址、邮箱、电话保护成一个词，其余交给系统分词（这里用 Intl.Segmenter 模拟 NLTokenizer）
+function tokenize(text){
+  const ent = /https?:\/\/[^\s，。）)]+|[\w.+-]+@[\w-]+(\.[\w-]+)+|1[3-9]\d{9}/g;
+  const seg = new Intl.Segmenter(isCJK(text) ? 'zh' : 'en', {granularity:'word'});
+  const out = []; let last = 0, m;
+  const plain = (from, to) => { for (const s of seg.segment(text.slice(from, to))) {
+    const a = from + s.index, b = a + s.segment.length;
+    if (/^\s+$/.test(s.segment)) continue;
+    out.push({a, b, s:s.segment, p:!s.isWordLike});
+  }};
+  while ((m = ent.exec(text))) { plain(last, m.index); out.push({a:m.index, b:m.index+m[0].length, s:m[0], ent:true}); last = ent.lastIndex; }
+  plain(last, text.length);
+  return out;
+}
+
+// 结果：相邻选中（中间只有空白）的词按原文连成一段；段与段之间：跨行用换行，两边都是中文直接相连，否则加空格
+function result(){
+  const text = items[cur].text, idx = [...sel].sort((x, y) => x - y);
+  let out = '', prev = null;
+  for (const i of idx) {
+    const t = toks[i];
+    if (prev === null) out = t.s;
+    else {
+      const gap = text.slice(toks[prev].b, t.a);
+      if (i === prev + 1 && /^\s*$/.test(gap)) out += gap + t.s;
+      else out += (/\n/.test(gap) ? '\n' : (isCJK(out.slice(-1)) && isCJK(t.s[0]) ? '' : ' ')) + t.s;
+    }
+    prev = i;
+  }
+  return out;
+}
+
+function renderList(){
+  $('list').innerHTML = items.map((it, i) => `<div class="card ${i===cur?'sel':''} ${it.kind==='颜色'?'color':''}" data-i="${i}">
+    <div class="txt">${it.text.replace(/\n/g,' ')}</div><div class="meta"><span>${it.app}${it.kind?' · '+it.kind:' · '+it.text.length+' 个字符'}</span><span>⌘${i+1}</span></div></div>`).join('');
+  $('pfoot').innerHTML = open
+    ? '<span><kbd>↩</kbd> 粘贴所选到 备忘录</span><span><kbd>⌘C</kbd> 复制所选</span><span><kbd>⌘A</kbd> 全选</span><span><kbd>esc</kbd> 关闭</span>'
+    : '<span><kbd>↩</kbd> 粘贴到 备忘录</span><span><kbd>⌘B</kbd> 拆词</span>';
+}
+function renderPick(){
+  $('pick').hidden = !open;
+  if (!open) return;
+  const it = items[cur], text = it.text;
+  $('pIco').style.background = it.color;
+  $('pSub').textContent = `${toks.filter(t=>!t.p).length} 个词 · 点选或拖过来选取`;
+  let html = '';
+  toks.forEach((t, i) => {
+    const gap = text.slice(i ? toks[i-1].b : 0, t.a);
+    const nl = (gap.match(/\n/g) || []).length;
+    if (nl) html += `<span class="br ${nl>1?'para':''}"></span>`;
+    html += `<span class="tok ${t.p?'p':''} ${t.ent?'ent':''} ${sel.has(i)?'on':''}" data-t="${i}">${t.s}</span>`;
+  });
+  $('body').innerHTML = html;
+  updateFooter();
+}
+function updateFooter(){
+  document.querySelectorAll('.tok').forEach(el => el.classList.toggle('on', sel.has(+el.dataset.t)));
+  const r = result(), words = [...sel].filter(i => !toks[i].p).length;
+  $('result').hidden = !sel.size;
+  $('resTxt').textContent = '「' + r + '」'; $('resCnt').textContent = r.length + ' 字';
+  $('fInfo').textContent = sel.size ? `已选 ${words} 个词 · ${r.length} 字` : '⌘A 全选';
+  $('copyBtn').disabled = $('pasteBtn').disabled = !sel.size;
+}
+function openPick(i){
+  if (items[i].kind) { cur = i; renderList(); beep(`${items[i].kind}没有可拆分的文字`); return; }
+  cur = i; open = true; sel = new Set(); toks = tokenize(items[i].text);
+  renderList(); renderPick();
+}
+function closePick(){ open = false; renderList(); renderPick(); }
+function beep(msg){ toast(msg); $('pfoot').classList.remove('shake'); void $('pfoot').offsetWidth; $('pfoot').classList.add('shake'); }
+function toast(msg){ $('toast').textContent = msg; $('toast').hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => $('toast').hidden = true, 1800); }
+function copy(){ if (!sel.size) return; const r = result(); navigator.clipboard?.writeText(r).catch(()=>{}); toast(`已复制 ${r.length} 字`); }
+function paste(){ if (!sel.size) return; toast('已粘贴到「备忘录」：' + result()); closePick(); }
+
+// 卡片：单击选中、长按 0.45 秒打开、右键菜单
+let press = null;
+$('list').addEventListener('mousedown', e => {
+  const c = e.target.closest('.card'); if (!c || e.button) return;
+  cur = +c.dataset.i; if (open && !items[cur].kind) openPick(cur); else { renderList(); renderPick(); }
+  const el = $('list').children[cur]; el.classList.add('press');
+  press = {x:e.clientX, y:e.clientY, t:setTimeout(() => { el.classList.remove('press'); press = null; openPick(cur); }, 450)};
+});
+addEventListener('mousemove', e => { if (press && Math.hypot(e.clientX-press.x, e.clientY-press.y) > 4) cancelPress(); });
+addEventListener('mouseup', cancelPress);
+function cancelPress(){ if (!press) return; clearTimeout(press.t); press = null; document.querySelectorAll('.card.press').forEach(c => c.classList.remove('press')); }
+$('list').addEventListener('contextmenu', e => {
+  const c = e.target.closest('.card'); if (!c) return; e.preventDefault();
+  cur = +c.dataset.i; renderList();
+  const dis = items[cur].kind ? 'style="opacity:.35"' : '';
+  $('menu').innerHTML = `<div>粘贴<span>↩</span></div><div>仅复制<span>⌘↩</span></div><div>预览<span>⌘Y</span></div><div>翻译<span>⌘T</span></div><hr><div id="mPick" ${dis}>拆词<span>⌘B</span></div><hr><div>收藏<span>⌘P</span></div><div>删除<span>⌘⌫</span></div>`;
+  Object.assign($('menu').style, {left:e.clientX+'px', top:e.clientY+'px'}); $('menu').hidden = false;
+  $('mPick').onclick = () => { if (!items[cur].kind) openPick(cur); };
+});
+addEventListener('click', () => $('menu').hidden = true);
+
+// 拆词卡：点选切换，按住拖过连选（起点没选中 = 加选，起点已选中 = 取消）
+let drag = null;
+$('body').addEventListener('mousedown', e => {
+  const t = e.target.closest('.tok'); if (!t) return;
+  const i = +t.dataset.t; drag = {from:i, add:!sel.has(i), base:new Set(sel)};
+  applyDrag(i);
+});
+$('body').addEventListener('mouseover', e => { const t = e.target.closest('.tok'); if (drag && t) applyDrag(+t.dataset.t); });
+addEventListener('mouseup', () => drag = null);
+function applyDrag(to){
+  sel = new Set(drag.base);
+  for (let i = Math.min(drag.from, to); i <= Math.max(drag.from, to); i++) drag.add ? sel.add(i) : sel.delete(i);
+  updateFooter();
+}
+$('allBtn').onclick = selectAll;
+function selectAll(){ sel = sel.size === toks.length ? new Set() : new Set(toks.map((_, i) => i)); updateFooter(); }
+$('copyBtn').onclick = copy; $('pasteBtn').onclick = paste;
+
+addEventListener('keydown', e => {
+  const cmd = e.metaKey || e.ctrlKey, k = e.key.toLowerCase();
+  if (cmd && k === 'b') { e.preventDefault(); open ? closePick() : openPick(cur); }
+  else if (open && cmd && k === 'a') { e.preventDefault(); selectAll(); }
+  else if (open && cmd && k === 'c') { e.preventDefault(); copy(); }
+  else if (open && e.key === 'Enter') { e.preventDefault(); paste(); }
+  else if (e.key === 'Escape' && open) closePick();
+  else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    e.preventDefault(); cur = Math.max(0, Math.min(items.length-1, cur + (e.key === 'ArrowDown' ? 1 : -1)));
+    if (open && !items[cur].kind) openPick(cur); else { if (open) closePick(); renderList(); }
+  }
+});
+renderList();
+</script>
+</body>
+</html>

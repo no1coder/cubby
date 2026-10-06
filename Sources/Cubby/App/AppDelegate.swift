@@ -77,7 +77,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         observeSettings()
         imageTextIndexer?.start()
         store?.backfillThumbnails()
-        updates.checkAutomaticallyIfDue()
+        // 更新提醒：升级后清除记住的版本、到期就查，之后每小时与唤醒时再判断（docs/UPDATE-REMINDER-DESIGN.md U1）
+        updates.start()
         logger.info(
             """
             Launched. Clipboard access: \(PasteboardAccess.status.rawValue, privacy: .public), \
@@ -112,9 +113,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
         configureTranslation(screenshots: screenshots, panel: panel, store: store, settingsWindow: settingsWindow)
         let statusBar = makeStatusBar(panel: panel, settingsWindow: settingsWindow, screenshots: screenshots)
-        updates.onUpdateAvailable = { [weak statusBar] version, url in
-            statusBar?.showUpdateAvailable(version: version, url: url)
-        }
         connectPanel(panel, settingsWindow: settingsWindow, statusBar: statusBar)
 
         self.store = store
@@ -146,6 +144,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             settingsWindow.show(pane: .privacy)
         }
         panel.statusItemFrame = { [weak statusBar] in statusBar?.buttonFrame }
+        panel.updates = updates
     }
 
     /// 截图协调器：面板顶栏按钮与快捷键共用；采集前先无动画隐藏面板（面板不能出现在冻结帧里）。
@@ -206,6 +205,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     ) -> StatusBarController {
         StatusBarController(
             settings: settings,
+            updates: updates,
             actions: .init(
                 togglePanel: { anchor in panel.toggle(anchor.map { .statusItem($0) } ?? .hotKey) },
                 takeScreenshot: { [weak screenshots] in screenshots?.start(.menu) },
@@ -437,6 +437,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             self.store?.setLimit(self.settings.historyLimit)
         }
         observe({ [settings] in settings.isPaused }) { [weak self] in self?.statusBar?.refreshAppearance() }
+        // 查到新版本、点了「稍后」或升级后：菜单栏蓝点与菜单项随之更新
+        observe({ [updates] in updates.reminder }) { [weak self] in self?.statusBar?.refreshAppearance() }
     }
 
     private func observe<Value>(

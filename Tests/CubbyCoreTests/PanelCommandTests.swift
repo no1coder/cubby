@@ -11,6 +11,7 @@ struct KeyCase: Sendable, CustomTestStringConvertible {
     let characters: String?
     let allowsSpace: Bool
     let translationCardOpen: Bool
+    let textPickOpen: Bool
     let expected: PanelCommand?
 
     init(
@@ -20,6 +21,7 @@ struct KeyCase: Sendable, CustomTestStringConvertible {
         _ characters: String? = nil,
         allowsSpace: Bool = false,
         cardOpen translationCardOpen: Bool = false,
+        pickOpen textPickOpen: Bool = false,
         expect expected: PanelCommand?
     ) {
         self.label = label
@@ -28,6 +30,7 @@ struct KeyCase: Sendable, CustomTestStringConvertible {
         self.characters = characters
         self.allowsSpace = allowsSpace
         self.translationCardOpen = translationCardOpen
+        self.textPickOpen = textPickOpen
         self.expected = expected
     }
 
@@ -39,7 +42,8 @@ struct KeyCase: Sendable, CustomTestStringConvertible {
             modifiers: modifiers,
             characters: characters,
             allowsSpace: allowsSpace,
-            translationCardOpen: translationCardOpen
+            translationCardOpen: translationCardOpen,
+            textPickOpen: textPickOpen
         )
     }
 }

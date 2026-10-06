@@ -21,7 +21,9 @@ extension PanelE2EScenarios {
             context.checkEqual(
                 "… with a footer flash", TranslationCopy.copiedFlash(isImage: false),
                 context.translation?.card.flash?.message)
-            context.check("copying adds nothing to history", context.world.store.history.items.count == 9)
+            context.check(
+                "copying adds nothing to history",
+                context.world.store.history.items.count == PanelE2EFixtures.entries.count)
             try await context.command("s")
             context.checkEqual("⌘S hands the result to the service", 1, context.stub?.saved.count)
             context.checkEqual(

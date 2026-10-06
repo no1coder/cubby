@@ -12,9 +12,15 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+### Added
+
+- **Pick Words**: press `⌘B` (or press and hold a card, or choose **Pick Words** from its right-click menu) to split a text item, or the recognized text of an image, into word chips next to the panel. Click, drag or `⇧`-click to pick the words you need, then press `↩` to paste them or `⌘C` to copy them. Links, email addresses and phone numbers stay in one piece, and picked words aren't added to your history.
+- **Update reminders**: when a newer version is available, the menu bar icon shows a blue dot, **Version x.y.z Available…** appears at the top of its menu, and the panel shows a banner with **View & Download**. **Not Now** hides the banner for that version only; the next version brings it back. If you installed with Homebrew, the banner offers **Copy Upgrade Command** and **Release Notes** instead; the first copies `brew upgrade --cask cubby` without adding it to your history. New installs get **Remind me about new versions** on the welcome screen, ticked by default. If you're upgrading with the automatic check off, the panel asks once whether to remind you.
+
 ### Changed
 
 - The engine badge on the screenshot translation bar now shows a short name instead of the provider and model: the provider's brand (for example DeepSeek), or the main part of a custom service's domain (for example `siliconflow` for `api.siliconflow.cn`). Long names no longer stretch the bar; hover over the badge to see the full host and model. The clipboard translation card uses the same short name when it fits.
+- The automatic update check now runs once a day instead of once a week. Cubby sees whether a check is due at launch, every hour while it's running, and when your Mac wakes from sleep. It still only reads the latest version number from GitHub. The setting is renamed **Check for updates automatically**, and your existing choice is kept. [PRIVACY.md](PRIVACY.md) is updated to match.
 
 ## [0.2.1] - 2026-09-28
 

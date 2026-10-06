@@ -2,7 +2,7 @@ import AppKit
 import CubbyCore
 import os
 
-/// 检查更新：只在用户手动触发（或开启了每周自动检查）时请求 GitHub 最新正式版本，
+/// 检查更新：只在用户手动触发（或开启了每天自动检查）时请求 GitHub 最新正式版本，
 /// 不下载、不替换应用，只告知结果并引导前往发布页或使用 Homebrew 升级。
 @MainActor
 enum UpdateChecker {
@@ -13,7 +13,6 @@ enum UpdateChecker {
     }
 
     private static let latestReleaseAPI = URL(string: "https://api.github.com/repos/no1coder/cubby/releases/latest")
-    static let releasesPage = URL(string: "https://github.com/no1coder/cubby/releases")
     private static let timeout: TimeInterval = 10
     private static let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Update")
 
@@ -77,16 +76,11 @@ enum UpdateChecker {
             )
         }
 
-        guard let current = SemanticVersion(currentVersion), current < latest else {
+        // 预发布版本（v0.3.0-rc.1）即使被误标成正式版也不提醒
+        guard latest.prerelease.isEmpty, let current = SemanticVersion(currentVersion), current < latest else {
             return .upToDate(current: currentVersion)
         }
-        return .available(version: latest.description, releaseURL: safeReleaseURL(release.htmlURL))
-    }
-
-    /// 只打开 GitHub 上的 https 链接，其余一律回退到固定的发布页
-    private static func safeReleaseURL(_ url: URL?) -> URL {
-        let fallback = releasesPage ?? URL(fileURLWithPath: "/")
-        guard let url, url.scheme == "https", url.host == "github.com" else { return fallback }
-        return url
+        // 只打开 GitHub 上的 https 链接，其余一律回退到固定的发布页
+        return .available(version: latest.description, releaseURL: UpdateReleaseURL.sanitized(release.htmlURL))
     }
 }

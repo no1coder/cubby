@@ -12,6 +12,9 @@ struct OnboardingView: View {
     private static let iconSize: CGFloat = 52
     private static let headerSpacing: CGFloat = 12
     private static let sectionSpacing: CGFloat = 20
+    /// 底部两个勾选项之间的间距；勾选项标题与说明之间的间距
+    private static let footerToggleSpacing: CGFloat = 8
+    private static let toggleDetailSpacing: CGFloat = 2
 
     @Bindable var settings: AppSettings
     let onShortcutRecordingChange: (Bool) -> Void
@@ -132,12 +135,27 @@ struct OnboardingView: View {
 
     private var footer: some View {
         HStack(alignment: .center) {
-            LaunchAtLoginToggle()
+            VStack(alignment: .leading, spacing: Self.footerToggleSpacing) {
+                LaunchAtLoginToggle()
+                updateReminderToggle
+            }
             Spacer(minLength: 16)
             // 自定义样式：窗口失去 key 状态时仍保持强调色；回车仍可触发
             Button("Get Started", action: onStart)
                 .buttonStyle(CapsuleButtonStyle(size: .large))
                 .keyboardShortcut(.defaultAction)
+        }
+    }
+
+    /// 新用户第一次显示欢迎页时默认勾选；之后只反映当前设置（docs/UPDATE-REMINDER-DESIGN.md U3）
+    private var updateReminderToggle: some View {
+        Toggle(isOn: $settings.checksForUpdatesAutomatically) {
+            VStack(alignment: .leading, spacing: Self.toggleDetailSpacing) {
+                Text("Remind me about new versions")
+                Text("Reads the latest version number from GitHub once a day")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 

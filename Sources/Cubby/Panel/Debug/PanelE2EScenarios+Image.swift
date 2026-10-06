@@ -131,7 +131,7 @@ extension PanelE2EScenarios {
             try await context.settle(.milliseconds(400))
             context.check("⌥↓ keeps its meaning and cancels the hold", context.translation?.peek.peek == nil)
             context.checkEqual(
-                "… jumping to the last item", PanelE2EFixtures.id("terminal"), context.viewModel.selectedItem?.id)
+                "… jumping to the last item", context.viewModel.items.last?.id, context.viewModel.selectedItem?.id)
             try await context.holdOption(false)
             try context.select("mail")
             try await context.holdOption(true)

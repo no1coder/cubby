@@ -32,6 +32,10 @@ public final class AppSettings {
         static let settingsVersion = "settingsVersion"
         static let checksForUpdatesAutomatically = "checksForUpdatesAutomatically"
         static let lastUpdateCheck = "lastUpdateCheck"
+        static let latestKnownVersion = "latestKnownVersion"
+        static let latestKnownReleaseURL = "latestKnownReleaseURL"
+        static let dismissedUpdateVersion = "dismissedUpdateVersion"
+        static let hasAnsweredUpdatePrompt = "hasAnsweredUpdatePrompt"
         static let screenshotHotKey = "screenshotHotKey"
         /// 用户主动关闭截图快捷键的标记：与「从未设置（用默认值）」区分
         static let screenshotHotKeyDisabled = "screenshotHotKeyDisabled"
@@ -77,14 +81,36 @@ public final class AppSettings {
         didSet { defaults.set(indexesImageText, forKey: Keys.indexesImageText) }
     }
 
-    /// 每周自动检查更新（默认关闭：应用默认不联网）
+    /// 每天自动检查更新（默认关闭；新用户第一次显示欢迎页时打开，见 applyFirstRunUpdateDefault）。
+    /// 用户对开关的任何改动都算回答过询问：在设置里关掉的人不会再被面板横幅问（docs/UPDATE-REMINDER-DESIGN.md U4）
     public var checksForUpdatesAutomatically: Bool {
-        didSet { defaults.set(checksForUpdatesAutomatically, forKey: Keys.checksForUpdatesAutomatically) }
+        didSet {
+            defaults.set(checksForUpdatesAutomatically, forKey: Keys.checksForUpdatesAutomatically)
+            if !hasAnsweredUpdatePrompt { hasAnsweredUpdatePrompt = true }
+        }
     }
 
-    /// 最近一次检查更新的时间
+    /// 最近一次成功检查更新的时间
     public var lastUpdateCheck: Date? {
         didSet { defaults.set(lastUpdateCheck, forKey: Keys.lastUpdateCheck) }
+    }
+
+    /// 最近查到的新版本（U7）：重启后不联网也能显示蓝点与横幅；读写请用 AppSettings+Updates 中的方法
+    public internal(set) var knownRelease: KnownRelease? {
+        didSet {
+            Self.store(knownRelease?.version.description, forKey: Keys.latestKnownVersion, in: defaults)
+            Self.store(knownRelease?.releaseURL.absoluteString, forKey: Keys.latestKnownReleaseURL, in: defaults)
+        }
+    }
+
+    /// 用户点了「稍后」的版本（U6）：只隐藏这个版本的横幅，重启后仍有效
+    public internal(set) var dismissedUpdateVersion: SemanticVersion? {
+        didSet { Self.store(dismissedUpdateVersion?.description, forKey: Keys.dismissedUpdateVersion, in: defaults) }
+    }
+
+    /// 是否回答过「有新版本时提醒你吗？」（欢迎页的勾选、询问横幅的两个按钮或设置里的开关，U3 / U4）
+    public internal(set) var hasAnsweredUpdatePrompt: Bool {
+        didSet { defaults.set(hasAnsweredUpdatePrompt, forKey: Keys.hasAnsweredUpdatePrompt) }
     }
 
     /// 截图全局快捷键；nil 表示用户已关闭（只能从菜单栏与面板按钮截图）。从未设置过时为 ⇧⌘2
@@ -166,14 +192,14 @@ public final class AppSettings {
         didSet { defaults.set(clipTranslationTargets.languages, forKey: Keys.clipTranslationTargets) }
     }
 
-    /// 开启自动检查且距上次检查已超过一周
-    public func isAutomaticUpdateCheckDue(now: Date = Date()) -> Bool {
-        guard checksForUpdatesAutomatically else { return false }
-        guard let lastUpdateCheck else { return true }
-        return now.timeIntervalSince(lastUpdateCheck) >= Self.updateCheckInterval
+    /// 开启了自动检查、完成了欢迎页且已到期（每天一次；lastFailure 为本次运行中最近一次失败的时间，见 UpdateCheckSchedule）。
+    /// 欢迎页显示期间开关已默认打开（U3），但用户还可能取消勾选：完成欢迎页之前一律不到期，不联网
+    public func isAutomaticUpdateCheckDue(now: Date = Date(), lastFailure: Date? = nil) -> Bool {
+        guard checksForUpdatesAutomatically, hasCompletedOnboarding else { return false }
+        return UpdateCheckSchedule.isDue(lastCheck: lastUpdateCheck, lastFailure: lastFailure, now: now)
     }
 
-    public static let updateCheckInterval: TimeInterval = 7 * 24 * 60 * 60
+    public static let updateCheckInterval = UpdateCheckSchedule.interval
 
     /// 非收藏条目的保留上限
     public var historyLimit: Int {
@@ -209,6 +235,10 @@ public final class AppSettings {
         indexesImageText = defaults.object(forKey: Keys.indexesImageText) as? Bool ?? true
         checksForUpdatesAutomatically = defaults.bool(forKey: Keys.checksForUpdatesAutomatically)
         lastUpdateCheck = defaults.object(forKey: Keys.lastUpdateCheck) as? Date
+        knownRelease = Self.storedKnownRelease(
+            version: Keys.latestKnownVersion, releaseURL: Keys.latestKnownReleaseURL, in: defaults)
+        dismissedUpdateVersion = defaults.string(forKey: Keys.dismissedUpdateVersion).flatMap(SemanticVersion.init)
+        hasAnsweredUpdatePrompt = defaults.bool(forKey: Keys.hasAnsweredUpdatePrompt)
         let storedLimit = defaults.integer(forKey: Keys.historyLimit)
         historyLimit = storedLimit > 0 ? storedLimit : Self.defaultHistoryLimit
         pasteDirectly = defaults.object(forKey: Keys.pasteDirectly) as? Bool ?? true

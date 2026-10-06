@@ -35,6 +35,11 @@ final class PanelController {
     }
     /// 翻译交互的时长（E2E 换成更短的值；须在设置 clipTranslation 之前设置）
     var translationTimings = TranslationTimings()
+    /// 更新提醒：面板顶部的蓝色横幅（AppDelegate 注入；面板 E2E 注入接桩的协调器）
+    var updates: UpdateCoordinator? {
+        get { viewModel.updates }
+        set { viewModel.updates = newValue }
+    }
     #if DEBUG
     /// 面板 E2E：其他进程抢走焦点时不收起
     var debugKeepsOpen = false
@@ -97,6 +102,7 @@ final class PanelController {
         keyboard.handler = { [weak self] event in self?.handleKeyDown(event) ?? false }
         keyboard.onOptionChange = { [weak self] isDown in self?.viewModel.optionKeyChanged(isDown: isDown) }
         keyboard.onPointerDown = { [weak self] in self?.viewModel.pointerPressed() }
+        configureTextPick()
     }
 
     func toggle(_ trigger: Trigger = .hotKey) {
@@ -291,13 +297,14 @@ final class PanelController {
             modifiers: event.modifierFlags,
             characters: event.charactersIgnoringModifiers,
             allowsSpace: viewModel.searchText.isEmpty,
-            translationCardOpen: viewModel.isTranslationCardOpen
+            translationCardOpen: viewModel.isTranslationCardOpen,
+            textPickOpen: viewModel.isTextPickOpen
         )
         // 任何其他按键都取消「按住 ⌥ 预览」（⌥↩ 粘贴正在显示的内容）
         viewModel.keyPressed(isOptionReturn: command == .translateAndPaste, isEscape: command == .escape)
         guard let command else { return false }
-        // 搜索框里选中了文字时 ⌘C 仍是「拷贝」
-        if command == .copyTranslation, hasSearchSelection { return false }
+        // 搜索框里选中了文字时 ⌘C 仍是「拷贝」（翻译卡与拆词卡都一样）
+        if command == .copyTranslation || command == .copyPickedWords, hasSearchSelection { return false }
         return viewModel.handle(command)
     }
 

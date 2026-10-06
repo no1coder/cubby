@@ -16,7 +16,10 @@ final class StatusBarController: NSObject, NSMenuDelegate {
 
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private let settings: AppSettings
+    private let updates: UpdateCoordinator
     private let actions: Actions
+    /// 有新版本时图标右上角的蓝点（U5）
+    private var updateBadge: StatusItemUpdateBadge?
     private let menu = NSMenu()
     private let openItem: ClosureMenuItem
     private let screenshotItem: ClosureMenuItem
@@ -29,11 +32,12 @@ final class StatusBarController: NSObject, NSMenuDelegate {
     ) {
         PasteboardAccess.openSettings()
     }
-    /// 自动检查发现新版本后显示在菜单顶部
+    /// 已知有新版本时显示在菜单顶部（U5）
     private let updateAvailableItem = ClosureMenuItem(title: "", handler: {})
 
-    init(settings: AppSettings, actions: Actions) {
+    init(settings: AppSettings, updates: UpdateCoordinator, actions: Actions) {
         self.settings = settings
+        self.updates = updates
         self.actions = actions
         self.openItem = ClosureMenuItem(title: Self.openTitle) { actions.togglePanel(nil) }
         self.screenshotItem = ClosureMenuItem(title: Self.screenshotTitle, handler: actions.takeScreenshot)
@@ -42,7 +46,8 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         pauseItem.handler = { [weak self] in self?.settings.isPaused.toggle() }
         accessWarningItem.image = NSImage(
             systemSymbolName: "exclamationmark.triangle.fill", accessibilityDescription: nil)
-        updateAvailableItem.image = NSImage(systemSymbolName: "arrow.down.circle.fill", accessibilityDescription: nil)
+        updateAvailableItem.image = NSImage(systemSymbolName: "arrow.down.circle.fill", accessibilityDescription: nil)?
+            .withSymbolConfiguration(NSImage.SymbolConfiguration(hierarchicalColor: .controlAccentColor))
         updateAvailableItem.isHidden = true
         configureButton()
         buildMenu()
@@ -55,22 +60,40 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         return window.convertToScreen(button.convert(button.bounds, to: nil))
     }
 
-    /// 发现新版本：菜单顶部显示可点击的提示项
-    func showUpdateAvailable(version: String, url: URL) {
-        updateAvailableItem.title = String(
-            localized: "Version \(version) Available…",
-            comment: "Status menu item shown when an update is available"
-        )
-        updateAvailableItem.handler = { NSWorkspace.shared.open(url) }
-        updateAvailableItem.isHidden = false
+    /// 暂停状态与更新状态变化时调用：图标、蓝点、提示文字与菜单顶部的新版本项
+    func refreshAppearance() {
+        let release = updates.reminder.availableRelease
+        if let button = statusItem.button {
+            Self.applyAppearance(to: button, badge: updateBadge, paused: settings.isPaused, release: release)
+        }
+        refreshUpdateItem(release)
     }
 
-    func refreshAppearance() {
-        statusItem.button?.image = StatusBarIcon.image(paused: settings.isPaused)
-        statusItem.button?.toolTip =
-            settings.isPaused
-            ? String(localized: "Cubby · Recording paused", comment: "Status item tooltip")
-            : "Cubby"
+    /// 按暂停与更新状态设置图标（有新版本时带缺口与读屏说明）、蓝点与提示文字；面板 E2E 用同一函数检查蓝点
+    static func applyAppearance(
+        to button: NSButton, badge: StatusItemUpdateBadge?, paused: Bool, release: KnownRelease?
+    ) {
+        button.image = StatusBarIcon.image(paused: paused, badged: release != nil)
+        badge?.isVisible = release != nil
+        button.toolTip = toolTip(paused: paused, release: release)
+    }
+
+    private static func toolTip(paused: Bool, release: KnownRelease?) -> String {
+        if paused { return String(localized: "Cubby · Recording paused", comment: "Status item tooltip") }
+        return release.map { UpdateCopy.statusItemToolTip($0.version.description) } ?? "Cubby"
+    }
+
+    /// 已知有新版本：菜单顶部显示醒目的「新版本 x 可用…」，点击打开发布页；升级后隐藏
+    private func refreshUpdateItem(_ release: KnownRelease?) {
+        guard let release else {
+            updateAvailableItem.isHidden = true
+            return
+        }
+        let font = NSFontManager.shared.convert(.menuFont(ofSize: 0), toHaveTrait: .boldFontMask)
+        updateAvailableItem.attributedTitle = NSAttributedString(
+            string: UpdateCopy.menuItem(release.version.description), attributes: [.font: font])
+        updateAvailableItem.handler = { [weak updates] in updates?.openRelease(release) }
+        updateAvailableItem.isHidden = false
     }
 
     // MARK: - NSMenuDelegate
@@ -100,6 +123,7 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         button.target = self
         button.action = #selector(handleClick(_:))
         button.sendAction(on: [.leftMouseUp, .rightMouseUp])
+        updateBadge = StatusItemUpdateBadge(button: button)
     }
 
     @objc private func handleClick(_ sender: NSStatusBarButton) {

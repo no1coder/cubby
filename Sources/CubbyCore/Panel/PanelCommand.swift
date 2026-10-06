@@ -45,6 +45,12 @@ public enum PanelCommand: Equatable, Sendable {
     /// 翻译卡打开且搜索框为空时的 ← / →（参数为 ±1，⇧ 为 ±largeTranslationStep）：
     /// 切换「译文 / 对照 / 原文」；图片卷帘获得焦点时改为微调分隔线
     case stepTranslationView(Int)
+    /// ⌘B 打开 / 关闭拆词卡（docs/TEXT-PICK-DESIGN.md P2）；不支持的条目由视图模型给出提示音
+    case pickWords
+    /// ⌘C：仅在拆词卡打开时映射，复制所选（否则放行给搜索框的「拷贝」）
+    case copyPickedWords
+    /// ⌘A：仅在拆词卡打开且搜索框为空时映射，全选 / 已全选时清空（否则留给搜索框的「全选」）
+    case selectAllWords
 
     /// ⌘ + 数字键的虚拟键码（按键位而非字符匹配，兼容 AZERTY 等布局）
     private static let digitKeyCodes: [Int] = [
@@ -56,14 +62,17 @@ public enum PanelCommand: Equatable, Sendable {
     public static let largeTranslationStep = 5
 
     /// - Parameters:
-    ///   - allowsSpace: 搜索框为空：空格用作预览开关，翻译卡里 ← / → 切换视图（否则这些键用于输入与移动光标）
+    ///   - allowsSpace: 搜索框为空：空格用作预览开关，翻译卡里 ← / → 切换视图、拆词卡里 ⌘A 全选
+    ///     （否则这些键用于输入、移动光标与搜索框的全选）
     ///   - translationCardOpen: 翻译卡打开时 ⌘C / ⌘S 归卡片，← / → 切换视图
+    ///   - textPickOpen: 拆词卡打开时 ⌘C / ⌘A 归卡片
     public static func from(
         keyCode: UInt16,
         modifiers: NSEvent.ModifierFlags,
         characters: String?,
         allowsSpace: Bool = false,
-        translationCardOpen: Bool = false
+        translationCardOpen: Bool = false,
+        textPickOpen: Bool = false
     ) -> PanelCommand? {
         let flags = modifiers.intersection([.command, .option, .control, .shift])
         let code = Int(keyCode)
@@ -79,6 +88,9 @@ public enum PanelCommand: Equatable, Sendable {
         }
         let character = characters?.lowercased()
         if translationCardOpen, let command = cardCommand(flags: flags, character: character) {
+            return command
+        }
+        if textPickOpen, let command = textPickCommand(flags: flags, character: character, allowsSpace: allowsSpace) {
             return command
         }
         return characterCommand(flags: flags, character: character)
@@ -104,6 +116,17 @@ public enum PanelCommand: Equatable, Sendable {
         switch (flags, character) {
         case (.command, "c"): .copyTranslation
         case (.command, "s"): .saveTranslation
+        default: nil
+        }
+    }
+
+    /// 只在拆词卡打开时占用的字母快捷键；⌘A 还要求搜索框为空
+    private static func textPickCommand(
+        flags: NSEvent.ModifierFlags, character: String?, allowsSpace: Bool
+    ) -> PanelCommand? {
+        switch (flags, character) {
+        case (.command, "c"): .copyPickedWords
+        case (.command, "a") where allowsSpace: .selectAllWords
         default: nil
         }
     }
@@ -162,6 +185,7 @@ public enum PanelCommand: Equatable, Sendable {
         case (.command, "o"): .open
         case (.command, "y"): .togglePreview
         case (.command, "t"), ([.command, .shift], "t"): .translate
+        case (.command, "b"): .pickWords
         case (.command, ","): .openSettings
         case (.control, "n"): .moveDown
         case (.control, "p"): .moveUp

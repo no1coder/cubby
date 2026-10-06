@@ -65,6 +65,17 @@ final class PanelPaster {
         }
     }
 
+    /// 写入纯文本（拆词结果，docs/TEXT-PICK-DESIGN.md P10）：带本应用的写入标记，监听器跳过，不记录为新条目。返回是否写入
+    func write(plainText: String) -> Bool {
+        do {
+            try PasteboardWriter.write(text: plainText, to: pasteboard)
+            return true
+        } catch {
+            logger.error("Failed to write picked words: \(String(describing: error), privacy: .public)")
+            return false
+        }
+    }
+
     /// ↩ 按「默认粘贴格式」：保留格式时写富文本；⇧↩ 总是纯文本（A2）
     func writesRichText(_ style: TranslationPasteStyle) -> Bool {
         style == .standard && settings.pasteFormat == .original
