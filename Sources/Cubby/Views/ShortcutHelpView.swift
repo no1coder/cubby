@@ -63,6 +63,15 @@ struct HelpOverlay: View {
                     HelpSectionView(section: section).frame(width: 340)
                 }
             }
+            // 横条放不下四列时（如 1440pt 宽的屏幕）先排成两列，再退成单列
+            HStack(alignment: .top, spacing: 32) {
+                ForEach(Self.halves(of: content.sections), id: \.first?.id) { column in
+                    VStack(alignment: .leading, spacing: 14) {
+                        ForEach(column) { HelpSectionView(section: $0) }
+                    }
+                    .frame(width: 340)
+                }
+            }
             VStack(alignment: .leading, spacing: 14) {
                 ForEach(content.sections) { section in
                     HelpSectionView(section: section)
@@ -72,6 +81,12 @@ struct HelpOverlay: View {
         }
         .padding(EdgeInsets(top: 2, leading: 18, bottom: 10, trailing: 18))
         .frame(maxWidth: .infinity)
+    }
+
+    /// 把分组按顺序分成前后两半（两列排布）
+    private static func halves(of sections: [ShortcutHelpContent.Section]) -> [[ShortcutHelpContent.Section]] {
+        let middle = (sections.count + 1) / 2
+        return [Array(sections[..<middle]), Array(sections[middle...])].filter { !$0.isEmpty }
     }
 
     private var footer: some View {

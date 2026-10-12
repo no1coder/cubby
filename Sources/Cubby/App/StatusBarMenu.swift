@@ -46,6 +46,8 @@ final class StatusBarMenu: NSObject, NSMenuDelegate {
             .withSymbolConfiguration(NSImage.SymbolConfiguration(hierarchicalColor: .controlAccentColor))
         updateAvailableItem.isHidden = true
         headerItem.view = header
+        // 只是展示：键盘 ↑↓ 不停在这一行
+        headerItem.isEnabled = false
         build(actions)
         refresh()
     }

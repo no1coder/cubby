@@ -131,11 +131,13 @@ public enum PanelPosition: String, CaseIterable, Sendable {
 
     /// 面板顶栏「布局」按钮的循环顺序：浮动（保留用户选过的浮动位置）→ 右侧 → 底部 → 浮动
     public func cycledLayout(floatingFallback: PanelPosition) -> PanelPosition {
-        switch layout {
-        case .floating: .dockRight
-        case .sidebar: .dockBottom
-        case .shelf: floatingFallback.layout == .floating ? floatingFallback : .mouse
-        }
+        let next: PanelLayout =
+            switch layout {
+            case .floating: .sidebar
+            case .sidebar: .shelf
+            case .shelf: .floating
+            }
+        return next.position(floatingFallback: floatingFallback)
     }
 }
 

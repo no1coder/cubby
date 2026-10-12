@@ -93,7 +93,11 @@ final class SettingsWindowController {
         window.setContentSize(Self.contentSize)
         // 标题栏不显示文字，但窗口标题仍随分页变化（窗口菜单与辅助功能使用）
         window.title = navigation.selection.title
-        navigation.onChange = { [weak window] pane in window?.title = pane.title }
+        navigation.onChange = { [weak self, weak window] pane in
+            // 切页会销毁页面视图：先提交翻译页里输入了一半的内容（幂等）
+            self?.translation?.commitPendingEdits()
+            window?.title = pane.title
+        }
         closeObserver = NotificationCenter.default.addObserver(
             forName: NSWindow.willCloseNotification, object: window, queue: .main
         ) { [weak self] _ in
@@ -105,7 +109,8 @@ final class SettingsWindowController {
     /// 默认高度不超过屏幕可见区域
     private func fittedContentSize(on screen: NSScreen?) -> NSSize {
         guard let screen else { return Self.contentSize }
-        let limit = screen.visibleFrame.height - Self.screenMargin * 2 - 28
+        // 内容铺满整个窗口（含标题栏），内容高度即窗口高度
+        let limit = screen.visibleFrame.height - Self.screenMargin * 2
         return NSSize(
             width: Self.contentSize.width, height: max(min(Self.contentSize.height, limit), Self.minContentHeight))
     }

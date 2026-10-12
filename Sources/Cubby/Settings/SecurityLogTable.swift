@@ -1,7 +1,7 @@
 import SwiftUI
 import CubbyCore
 
-/// 安全记录表（时间 · 事件 · 当时的前台应用，新的在前，最多 20 行）：放在定高列表框里（设置页整体不滚动）
+/// 安全记录表（时间 · 事件 · 当时的前台应用，新的在前，最多 20 行）：放在定高列表框里，长记录不会把整页撑得很长
 struct SecurityLogTable: View {
     let entries: [SecurityLogEntry]
 

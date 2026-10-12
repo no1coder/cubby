@@ -22,7 +22,8 @@ struct SettingsRootView: View {
     private static let titleInset = EdgeInsets(top: 18, leading: 28, bottom: 4, trailing: 28)
 
     var body: some View {
-        NavigationSplitView {
+        // 侧边栏始终显示：没有切换按钮，也不能拖动分隔线把它折叠
+        NavigationSplitView(columnVisibility: .constant(.all)) {
             List(panes, id: \.self, selection: selectionBinding) { pane in
                 Label(pane.title, systemImage: pane.symbolName)
             }

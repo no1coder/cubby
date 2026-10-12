@@ -4,7 +4,7 @@ import UniformTypeIdentifiers
 import CubbyCore
 
 /// 忽略的应用：不记录这些应用中复制的内容。
-/// 列表放在定高的框内滚动，保证设置页整体高度固定、页面本身不滚动（见 SettingsHostingController 说明）。
+/// 列表放在定高的框内滚动，长列表不会把整页撑得很长。
 struct IgnoredAppsSection: View {
     @Bindable var settings: AppSettings
 
@@ -32,8 +32,6 @@ struct IgnoredAppsSection: View {
                 }
                 .frame(height: CGFloat(min(apps.count, Self.maxVisibleRows)) * Self.rowHeight)
                 .scrollIndicators(apps.count > Self.maxVisibleRows ? .automatic : .never)
-                // 设置页整体禁用了滚动（环境值会透传到子树），列表框需显式恢复
-                .scrollDisabled(false)
             }
             HStack {
                 Spacer()

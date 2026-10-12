@@ -8,7 +8,6 @@ struct AboutSettingsPane: View {
     let updates: UpdateCoordinator
     let openUserGuide: () -> Void
 
-    private static let contentWidth: CGFloat = 520
     private static let iconSize: CGFloat = 96
     private static let copiedFeedbackDuration: Duration = .seconds(2)
 
@@ -31,7 +30,14 @@ struct AboutSettingsPane: View {
         Bundle.main.object(forInfoDictionaryKey: "NSHumanReadableCopyright") as? String
     }
 
+    /// 窗口拖得很矮时可以滚动（其他页是自带滚动的分组 Form）
     var body: some View {
+        ScrollView {
+            content
+        }
+    }
+
+    private var content: some View {
         VStack(spacing: 0) {
             AppIconImage(size: Self.iconSize)
 
@@ -67,7 +73,7 @@ struct AboutSettingsPane: View {
         .padding(.horizontal, 40)
         .padding(.top, 28)
         .padding(.bottom, 24)
-        .frame(width: Self.contentWidth)
+        .frame(maxWidth: .infinity)
     }
 
     private var actions: some View {

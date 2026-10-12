@@ -76,8 +76,6 @@ private struct RememberedTargetsView: View {
             }
             .frame(height: CGFloat(min(entries.count, Self.maxVisibleRows)) * Self.rowHeight)
             .scrollIndicators(entries.count > Self.maxVisibleRows ? .automatic : .never)
-            // 设置页整体禁用了滚动（环境值会透传到子树），列表框需显式恢复
-            .scrollDisabled(false)
         }
     }
 }
