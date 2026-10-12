@@ -30,6 +30,8 @@ final class ClotheslineController {
     #if DEBUG
     /// 截图走查：悬停状态由 debugShow 固定，不随指针变化
     var debugHoverLocked = false
+    /// 演示动图：用假指针的位置与按键状态代替真实指针（DemoCursor 每帧更新），不读真实鼠标
+    var debugPointer: (location: CGPoint, isPressed: Bool)?
     #endif
 
     init(store: ClipStore, settings: AppSettings) {
@@ -206,7 +208,13 @@ final class ClotheslineController {
     // MARK: - 轮询
 
     private func tick() {
+        #if DEBUG
+        let pointer = debugPointer?.location ?? NSEvent.mouseLocation
+        let isPressed = debugPointer?.isPressed ?? (NSEvent.pressedMouseButtons & 1 != 0)
+        #else
         let pointer = NSEvent.mouseLocation
+        let isPressed = NSEvent.pressedMouseButtons & 1 != 0
+        #endif
         guard let pointerScreen = screen(containing: pointer) else { return }
         if !model.isShown, pointerScreen != screen {
             screen = pointerScreen
@@ -218,7 +226,6 @@ final class ClotheslineController {
         // 绳子区域向上延伸到屏幕顶边：从顶边滑下后指针还停在菜单栏上时不算离开
         let bottom = frame.maxY - model.layout.occupiedHeight
         let area = CGRect(x: frame.minX, y: bottom, width: frame.width, height: current.frame.maxY - bottom)
-        let isPressed = NSEvent.pressedMouseButtons & 1 != 0
         let sample = ClotheslineReveal.PointerSample(
             location: pointer, screenTopY: current.frame.maxY, lineArea: area,
             now: ProcessInfo.processInfo.systemUptime, isPressed: isPressed,
@@ -347,6 +354,11 @@ extension ClotheslineController {
         guard hoveringSecond, model.entries.count > 1 else { return }
         debugHoverLocked = true
         model.hoveredID = model.entries[1].id
+    }
+
+    /// 演示动图：立即按假指针的位置轮询一次
+    func debugTick() {
+        tick()
     }
 }
 #endif

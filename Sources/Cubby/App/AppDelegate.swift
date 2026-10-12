@@ -131,7 +131,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             blobs: BlobStore(directory: AppPaths.imagesDirectory),
             limit: settings.historyLimit
         )
+        #if DEBUG
+        // 演示脚本只写私有剪贴板
+        let panel = PanelController(store: store, settings: settings, pasteboard: DemoPasteboard.output)
+        #else
         let panel = PanelController(store: store, settings: settings)
+        #endif
         let addressGuard = makeAddressGuard()
         self.addressGuard = addressGuard
         let screenshots = makeScreenshotCoordinator(store: store, panel: panel)
@@ -192,6 +197,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             store: store,
             overlayFactory: ScreenshotCoordinator.overlayFactory(ScreenshotOverlayController.self),
             pins: PinnedImageController(settings: settings),
+            pasteboard: Self.screenshotPasteboard,
             onImageRecorded: { [weak self] item in self?.hangScreenshotIfEnabled(item) }
         )
         panel.takeScreenshot = { [weak coordinator] in coordinator?.start(.panelButton) }
@@ -200,6 +206,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             coordinator?.pins.pin(image: pin.image, pixelSize: pin.pixelSize, scale: pin.scale, at: pin.center)
         }
         return coordinator
+    }
+
+    /// 截图输出的剪贴板：调试构建的演示脚本写私有剪贴板
+    private static var screenshotPasteboard: NSPasteboard {
+        #if DEBUG
+        DemoPasteboard.output
+        #else
+        .general
+        #endif
     }
 
     // MARK: - 截图翻译（仅 macOS 26，docs/TRANSLATION-DESIGN.md D5）
@@ -335,6 +350,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             debugEditOnClothesline()
         } else if scenario.hasPrefix(SecurityDemo.prefix) {
             applySecurityScenario(scenario)
+        } else if let demo = DemoScenario(rawValue: scenario) {
+            // README 动图的演示脚本，见 Debug/DemoScenario.swift
+            runDemo(demo)
         } else if scenario.hasPrefix("screenshot:") {
             // screenshot:<名称>，见 ScreenshotCoordinator.startDebugScenario
             screenshots?.start(.debugScenario(scenario))

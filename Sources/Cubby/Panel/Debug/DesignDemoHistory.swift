@@ -19,7 +19,7 @@ enum DesignDemoHistory {
         do {
             let blobs = BlobStore(directory: AppPaths.imagesDirectory)
             let file = try demoFile(in: URL(fileURLWithPath: dataDirectory, isDirectory: true))
-            let items = try entries(blobs: blobs, file: file).enumerated().map { index, entry in
+            let items = try ordered(entries(blobs: blobs, file: file)).enumerated().map { index, entry in
                 try entry.item(id: id(index), now: now, blobs: blobs)
             }
             try JSONHistoryStorage(fileURL: AppPaths.historyFile).save(ClipHistory(items: items))
@@ -35,12 +35,40 @@ enum DesignDemoHistory {
         }
     }
 
+    /// README 首图（`--demo-hero`）：文件卡提到第五条（紧跟颜色卡、在图片之前，时间改到今天），
+    /// 首屏就能看到文字、链接、代码、颜色、文件与图片
+    static let heroArgument = "--demo-hero"
+    private static let heroFilePosition = 4
+    private static let heroFileMinutes: Double = 17
+    private static let heroNote = "Thursday: record the demo GIF and ship 0.3."
+
+    private static func ordered(_ entries: [Entry]) -> [Entry] {
+        guard CommandLine.arguments.contains(heroArgument),
+            let index = entries.firstIndex(where: { if case .files = $0.content { true } else { false } })
+        else { return entries }
+        var reordered = entries
+        // 第一条笔记缩成一行，给图片卡留出位置
+        if let first = reordered.first, case .text = first.content {
+            reordered[0] = Entry(content: .text(heroNote), app: first.app, minutes: first.minutes)
+        }
+        let file = reordered.remove(at: index)
+        let today = Entry(content: file.content, app: file.app, minutes: heroFileMinutes)
+        reordered.insert(today, at: min(heroFilePosition, reordered.count))
+        return reordered
+    }
+
     private static func id(_ index: Int) -> UUID {
         UUID(uuidString: String(format: "D35160D0-0000-4000-8000-%012d", index + 1)) ?? UUID()
     }
 
-    /// 文件卡指向的演示文件：放在数据目录里，不涉及真实文件
+    /// 首图里文件卡指向的系统字体（只读、每台 Mac 都有；路径比临时目录好看）
+    private static let heroFile = "/System/Library/Fonts/NewYork.ttf"
+
+    /// 文件卡指向的演示文件：放在数据目录里，不涉及真实文件（首图用只读的系统字体文件）
     private static func demoFile(in directory: URL) throws -> String {
+        if CommandLine.arguments.contains(heroArgument), FileManager.default.fileExists(atPath: heroFile) {
+            return heroFile
+        }
         let folder = directory.appendingPathComponent("Documents/Work", isDirectory: true)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         let file = folder.appendingPathComponent("Quarterly Report.key")
