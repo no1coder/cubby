@@ -155,6 +155,16 @@ public enum PanelLayout: Sendable, CaseIterable {
     public var imageGridColumns: Int {
         self == .shelf ? 1 : 2
     }
+
+    /// 选中这种排布时使用的面板位置：浮动时沿用用户选过的浮动位置（鼠标旁 / 菜单栏图标下 / 屏幕中央），
+    /// 传入的不是浮动位置时回到鼠标旁（首次引导「选择样子」与布局按钮共用同一规则）
+    public func position(floatingFallback: PanelPosition) -> PanelPosition {
+        switch self {
+        case .floating: floatingFallback.layout == .floating ? floatingFallback : .mouse
+        case .sidebar: .dockRight
+        case .shelf: .dockBottom
+        }
+    }
 }
 
 /// 粘贴文本时的默认格式

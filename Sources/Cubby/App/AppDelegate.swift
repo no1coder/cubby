@@ -24,7 +24,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     var tamperAwaitingRecord: (incident: TamperIncident, changeCount: Int)?
     /// 剪贴板监听已启动（调试走查不启动，守护也不启动）
     var isGuardingClipboard = false
-    private var onboardingWindow: OnboardingWindowController?
+    var onboardingWindow: OnboardingWindowController?
     /// 使用说明窗口：第一次打开时才创建并载入文档
     private lazy var userGuide = UserGuideWindowController()
     var screenshots: ScreenshotCoordinator?
@@ -321,8 +321,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             if #available(macOS 26, *), let translation = screenshots?.translation {
                 DebugTranslationFixtures.runDownloadScenario(translation)
             }
-        } else if scenario == "onboarding" {
-            showOnboarding()
+        } else if let step = OnboardingScenario.step(for: scenario) {
+            showOnboardingScenario(step)
         } else if scenario == "guide" || scenario.hasPrefix("guide:") {
             // guide:<搜索词> 预先填入搜索框
             userGuide.show(query: scenario.hasPrefix("guide:") ? String(scenario.dropFirst("guide:".count)) : nil)
@@ -419,28 +419,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     // MARK: - 窗口
 
-    private func showOnboarding() {
-        let controller =
-            onboardingWindow
-            ?? OnboardingWindowController(
-                settings: settings,
-                onShortcutRecordingChange: { [weak self] in self?.setShortcutRecording($0) },
-                onFinish: { [weak self] in
-                    self?.onboardingWindow = nil
-                    self?.showHotKeyTip()
-                }
-            )
-        onboardingWindow = controller
-        controller.show()
-    }
-
     /// 使用说明（菜单栏、设置 › 关于、面板帮助浮层共用）
     private func showUserGuide() {
         userGuide.show()
     }
 
     /// 引导结束后提示呼出方式（不直接弹出面板，避免打断用户）
-    private func showHotKeyTip() {
+    func showHotKeyTip() {
         guard let anchor = HUDToast.defaultAnchor() else { return }
         HUDToast.show(
             String(

@@ -97,7 +97,8 @@ Debug builds accept `--scenario <name>` to open the UI in a known state. In this
 | `security:alert` / `security:alert:no-monitoring` | The address replacement warning with made-up Ethereum addresses, with and without Input Monitoring (the menu bar icon turns into the red pill). Nothing is read from or written to your clipboard |
 | `security:hud` | The paste check HUD shown after pasting an address from Cubby (stays on screen for the capture) |
 | `security:panel` | The panel scrolled to the address guard items of `--demo-history`: an Ethereum address marked **Guarding**, the red replaced record, a TRON address and a bank card number. Needs `--demo-history` |
-| `onboarding` | The first-launch guide |
+| `onboarding` | The first-launch guide on its first step (Welcome) |
+| `onboarding:permissions` / `onboarding:style` / `onboarding:shortcut` | The first-launch guide opened on the Permissions, Choose a Style or Shortcut step. Every onboarding scenario uses temporary settings with first-launch defaults, so what you pick or tick in it, and finishing it, doesn't change your real settings |
 | `guide` | The user guide window (the English or Simplified Chinese guide, following the app language) |
 | `guide:<text>` | The user guide with `<text>` in its search field |
 | `screenshot:permission` | The Screen Recording permission guide |

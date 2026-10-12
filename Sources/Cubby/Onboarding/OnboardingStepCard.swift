@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
 
-/// 引导页的步骤卡片：图标 + 标题 + 说明 +（可选）权限状态与补充说明，右侧放操作控件。
+/// 引导向导里的步骤卡片：图标 + 标题 + 说明 +（可选）权限状态与补充说明，右侧放操作控件。
 /// 已完成的步骤在图标右下角显示绿色对勾角标、文字弱化，操作控件隐藏。
 struct OnboardingStepCard<Accessory: View>: View {
     let systemImage: String
@@ -92,16 +92,11 @@ struct OnboardingStepCard<Accessory: View>: View {
     }
 
     private var cardBackground: some View {
-        let shape = RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
-        return
-            shape
-            .fill(cardFill)
-            .overlay(shape.strokeBorder(Color.primary.opacity(0.06), lineWidth: 0.5))
-            .shadow(color: .black.opacity(0.08), radius: 2, y: 1)
+        OnboardingCardBackground()
     }
 
     private var cardFill: Color {
-        colorScheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.92)
+        OnboardingCardBackground.fill(colorScheme)
     }
 }
 

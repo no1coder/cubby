@@ -15,14 +15,14 @@ Don't run Cubby from the disk image or the Downloads folder, or macOS may not ke
 
 ### The first-launch guide
 
-The first time you open Cubby, a **Welcome to Cubby** window shows four cards:
+The first time you open Cubby, a **Welcome to Cubby** window walks you through four short steps. Click **Continue** (or press `↩`) to go on and **Back** to return to a step.
 
-1. **Open from anywhere:** set the shortcut that opens the panel, `⇧⌘V` by default. The default `⇧⌘V` replaces "Paste and Match Style" in some apps; you can change it anytime.
-2. **Allow clipboard access:** starting with macOS 15.4, reading the clipboard needs your permission (see below).
-3. **Allow direct paste:** with Accessibility access, choosing an item pastes it into the current app.
-4. **Take and pin screenshots:** set the screenshot shortcut, `⇧⌘2` by default. This card only explains screenshots; it doesn't ask for Screen Recording.
+1. **Welcome:** turn on **Launch at login** if you like. **Remind me about new versions** ("Reads the latest version number from GitHub once a day") is ticked; untick it if you don't want Cubby to check.
+2. **Permissions:** **Allow clipboard access** (starting with macOS 15.4, reading the clipboard needs your permission, see below) and **Allow direct paste** (with Accessibility access, choosing an item pastes it into the current app). Their status updates live, and Cubby only asks when you click a button.
+3. **Choose a Style:** pick where the clipboard appears: a **Floating Panel** next to the pointer, **Docked to the Right Edge** as a full-height sidebar, or **Docked to the Bottom Edge** as a row of cards. Below, choose the **Appearance**: Match System, Light or Dark. Both apply right away; use `←` `→` to switch cards from the keyboard.
+4. **Shortcut:** set the shortcut that opens the panel, `⇧⌘V` by default (it replaces "Paste and Match Style" in some apps; you can change it anytime), and the screenshot shortcut, `⇧⌘2` by default. Screenshots are only explained here; Cubby doesn't ask for Screen Recording. If the **Only images** or clothesline shortcuts are on, they're listed too.
 
-The status of the two permission cards updates live. At the bottom, turn on **Launch at login** if you like. Below it, **Remind me about new versions** ("Reads the latest version number from GitHub once a day") is ticked; untick it if you don't want Cubby to check. Then click **Get Started**. Cubby doesn't check for updates until you close this window. To see the guide again, choose **Setup Guide…** from the menu bar icon's menu; reopening it shows your current setting and doesn't change it.
+Then click **Get Started**. Cubby doesn't check for updates until you close this window. To see the guide again, choose **Setup Guide…** from the menu bar icon's menu; reopening it shows your current settings and doesn't change them.
 
 ### Permissions
 

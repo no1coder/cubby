@@ -987,6 +987,17 @@
         }
       }
     },
+    "A full-height sidebar shows more at once." : {
+      "comment" : "Onboarding style card: right-edge sidebar description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "整屏高的侧栏，一次看到更多。"
+          }
+        }
+      }
+    },
     "API Key" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1198,6 +1209,17 @@
         }
       }
     },
+    "Allow access" : {
+      "comment" : "Onboarding: title of the permissions step",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允许访问"
+          }
+        }
+      }
+    },
     "Allow clipboard access" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1368,6 +1390,17 @@
         }
       }
     },
+    "Appears next to the pointer, gone once you're done." : {
+      "comment" : "Onboarding style card: floating panel description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出现在鼠标旁，用完即走。"
+          }
+        }
+      }
+    },
     "Applies to the panel, preview, clothesline and Settings. Match System switches with the macOS appearance." : {
       "localizations" : {
         "zh-Hans" : {
@@ -1482,6 +1515,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自动检查更新: %@"
+          }
+        }
+      }
+    },
+    "Back" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上一步"
           }
         }
       }
@@ -1660,6 +1703,17 @@
         }
       }
     },
+    "Cards side by side, great for images and large screens." : {
+      "comment" : "Onboarding style card: bottom-edge shelf description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "横向卡片，适合图片和大屏。"
+          }
+        }
+      }
+    },
     "Center of the screen" : {
       "comment" : "Panel position option",
       "localizations" : {
@@ -1667,6 +1721,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "屏幕中央"
+          }
+        }
+      }
+    },
+    "Change or turn them off in Settings › General." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可以在「设置 › 通用」里修改或关闭。"
           }
         }
       }
@@ -1796,6 +1860,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选择文件夹…"
+          }
+        }
+      }
+    },
+    "Choose a Style" : {
+      "comment" : "Onboarding step name in the step indicator",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择样子"
           }
         }
       }
@@ -2252,6 +2327,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "标记为机密或临时的内容（例如密码管理器复制的密码）始终不会被记录。"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "comment" : "Onboarding: go to the next step",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续"
           }
         }
       }
@@ -2873,6 +2959,17 @@
         }
       }
     },
+    "Cubby asks only when you click a button. You can change this anytime in System Settings." : {
+      "comment" : "Onboarding: subtitle of the permissions step",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只有点按按钮时 Cubby 才会请求授权，之后也可以随时在系统设置里更改。"
+          }
+        }
+      }
+    },
     "Cubby can only copy for now" : {
       "comment" : "Panel warning title",
       "localizations" : {
@@ -3146,6 +3243,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "直接粘贴已失效"
+          }
+        }
+      }
+    },
+    "Docked to the Bottom Edge" : {
+      "comment" : "Onboarding style card: panel layout name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "固定底部"
+          }
+        }
+      }
+    },
+    "Docked to the Right Edge" : {
+      "comment" : "Onboarding style card: panel layout name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "固定右侧"
           }
         }
       }
@@ -3679,6 +3798,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "修复…"
+          }
+        }
+      }
+    },
+    "Floating Panel" : {
+      "comment" : "Onboarding style card: panel layout name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "浮动面板"
           }
         }
       }
@@ -4560,6 +4690,16 @@
         }
       }
     },
+    "More shortcuts" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更多快捷键"
+          }
+        }
+      }
+    },
     "Mosaic" : {
       "comment" : "Screenshot tool name",
       "localizations" : {
@@ -5139,6 +5279,7 @@
       }
     },
     "Only images" : {
+      "comment" : "Onboarding: name of the images-only shortcut",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -5229,6 +5370,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开剪贴板"
+          }
+        }
+      }
+    },
+    "Open Cubby with a shortcut" : {
+      "comment" : "Onboarding: title of the shortcut step",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用快捷键打开 Cubby"
           }
         }
       }
@@ -5832,6 +5984,7 @@
       }
     },
     "Permissions" : {
+      "comment" : "Onboarding step name in the step indicator",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -6030,6 +6183,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在任何应用中按下它，就能打开 Cubby。默认的 %@ 会代替部分应用中的「粘贴并匹配样式」，可随时更改。"
+          }
+        }
+      }
+    },
+    "Press it in any app, or click the Cubby icon in the menu bar." : {
+      "comment" : "Onboarding: subtitle of the shortcut step",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在任意应用里按下快捷键，或点按菜单栏里的 Cubby 图标。"
           }
         }
       }
@@ -7323,6 +7487,7 @@
       }
     },
     "Shortcut" : {
+      "comment" : "Onboarding step name in the step indicator",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -7365,6 +7530,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示 / 收起"
+          }
+        }
+      }
+    },
+    "Show / hide the clothesline" : {
+      "comment" : "Onboarding: name of the clothesline shortcut",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示 / 收起晾衣绳"
           }
         }
       }
@@ -7610,6 +7786,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "启动与更新"
+          }
+        }
+      }
+    },
+    "Step %lld of %lld: %@" : {
+      "comment" : "VoiceOver label of the onboarding step indicator. %1$lld = step, %2$lld = total, %3$@ = step name",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Step %1$lld of %2$lld: %3$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第 %1$lld 步，共 %2$lld 步：%3$@"
           }
         }
       }
@@ -9197,6 +9390,17 @@
         }
       }
     },
+    "Welcome" : {
+      "comment" : "Onboarding step name in the step indicator",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "欢迎"
+          }
+        }
+      }
+    },
     "Welcome to Cubby" : {
       "comment" : "Onboarding window title",
       "localizations" : {
@@ -9246,6 +9450,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "选中条目后"
+          }
+        }
+      }
+    },
+    "Where do you want your clipboard to appear?" : {
+      "comment" : "Onboarding: title of the style step",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你希望剪贴板出现在哪里？"
           }
         }
       }
@@ -9366,6 +9581,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "之后可在「隐私与安全性 › 粘贴」中修改"
+          }
+        }
+      }
+    },
+    "You can switch any time from the panel's top bar or Settings › General." : {
+      "comment" : "Onboarding: subtitle of the style step",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "随时可以在面板顶栏或「设置 › 通用」里切换。"
           }
         }
       }
