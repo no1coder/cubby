@@ -58,6 +58,7 @@ public final class AppSettings {
         static let clotheslineHotKeyDisabled = "clotheslineHotKeyDisabled"
         static let clotheslineItems = "clotheslineItems"
         static let floatingPanelPosition = "floatingPanelPosition"
+        static let appearance = "appearance"
     }
 
     public var hotKey: HotKey {
@@ -103,6 +104,11 @@ public final class AppSettings {
     /// 晾衣绳上挂着的条目（从左到右）；读写容错，损坏或重复的 id 被丢弃
     public var clothesline: Clothesline {
         didSet { defaults.set(clothesline.itemIDs.map(\.uuidString), forKey: Keys.clotheslineItems) }
+    }
+
+    /// 界面外观：跟随系统（默认）或固定浅色 / 深色
+    public var appearance: AppAppearance {
+        didSet { defaults.set(appearance.rawValue, forKey: Keys.appearance) }
     }
 
     /// 回车粘贴文本时的默认格式；⇧↩ 使用另一种
@@ -285,6 +291,7 @@ public final class AppSettings {
             in: defaults)
         clothesline = Clothesline(
             itemIDs: (defaults.stringArray(forKey: Keys.clotheslineItems) ?? []).compactMap(UUID.init(uuidString:)))
+        appearance = defaults.string(forKey: Keys.appearance).flatMap(AppAppearance.init(rawValue:)) ?? .system
         pasteFormat = defaults.string(forKey: Keys.pasteFormat).flatMap(PasteFormat.init(rawValue:)) ?? .original
         hasCompletedOnboarding = defaults.bool(forKey: Keys.hasCompletedOnboarding)
         ignoresSecrets = defaults.object(forKey: Keys.ignoresSecrets) as? Bool ?? true

@@ -156,8 +156,9 @@ final class SettingsWindowController {
 @MainActor
 final class SettingsHostingController: NSHostingController<AnyView> {
     static let contentWidth: CGFloat = 520
-    /// 留有余量：英文等较长语言的说明文字会多折行（隐私页最高）
-    static let maxContentHeight: CGFloat = 700
+    /// 留有余量：英文等较长语言的说明文字会多折行（通用页加了外观缩略图后最高）。
+    /// 与设计稿设置窗口 920 的高度一致；仍按屏幕可见区域收缩
+    static let maxContentHeight: CGFloat = 860
 
     let layout: SettingsPageLayout
 

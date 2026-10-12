@@ -32,6 +32,7 @@ final class StatusBarController: NSObject, NSMenuDelegate {
     ) {
         PasteboardAccess.openSettings()
     }
+    private let appearanceItem: AppearanceMenuItem
     /// 已知有新版本时显示在菜单顶部（U5）
     private let updateAvailableItem = ClosureMenuItem(title: "", handler: {})
 
@@ -41,6 +42,7 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         self.actions = actions
         self.openItem = ClosureMenuItem(title: Self.openTitle) { actions.togglePanel(nil) }
         self.screenshotItem = ClosureMenuItem(title: Self.screenshotTitle, handler: actions.takeScreenshot)
+        self.appearanceItem = AppearanceMenuItem(settings: settings)
         super.init()
 
         pauseItem.handler = { [weak self] in self?.settings.isPaused.toggle() }
@@ -99,11 +101,12 @@ final class StatusBarController: NSObject, NSMenuDelegate {
     // MARK: - NSMenuDelegate
 
     func menuNeedsUpdate(_ menu: NSMenu) {
-        openItem.attributedTitle = Self.titleWithShortcut(Self.openTitle, shortcut: settings.hotKey.displayName)
+        openItem.attributedTitle = Self.titleWithDetail(Self.openTitle, detail: settings.hotKey.displayName)
         // 截图快捷键已关闭时只显示标题
         screenshotItem.attributedTitle = settings.screenshotHotKey.map {
-            Self.titleWithShortcut(Self.screenshotTitle, shortcut: $0.displayName)
+            Self.titleWithDetail(Self.screenshotTitle, detail: $0.displayName)
         }
+        appearanceItem.refresh()
         pauseItem.state = settings.isPaused ? .on : .off
         accessWarningItem.isHidden = !PasteboardAccess.needsAttention
     }
@@ -150,6 +153,8 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         menu.addItem(openItem)
         menu.addItem(screenshotItem)
         menu.addItem(.separator())
+        menu.addItem(appearanceItem)
+        menu.addItem(.separator())
         menu.addItem(pauseItem)
         menu.addItem(
             ClosureMenuItem(
@@ -186,12 +191,12 @@ final class StatusBarController: NSObject, NSMenuDelegate {
             })
     }
 
-    /// 标题右侧以次要颜色显示全局快捷键（全局快捷键无法用 keyEquivalent 表达）
-    private static func titleWithShortcut(_ title: String, shortcut: String) -> NSAttributedString {
+    /// 标题右侧以次要颜色显示补充信息：全局快捷键（无法用 keyEquivalent 表达）或子菜单的当前值
+    static func titleWithDetail(_ title: String, detail: String) -> NSAttributedString {
         let result = NSMutableAttributedString(string: title + "    ")
         result.append(
             NSAttributedString(
-                string: shortcut,
+                string: detail,
                 attributes: [.foregroundColor: NSColor.secondaryLabelColor]
             ))
         return result

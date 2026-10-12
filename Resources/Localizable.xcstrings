@@ -1009,6 +1009,27 @@
         }
       }
     },
+    "Appearance" : {
+      "comment" : "Status menu item: submenu to choose light, dark or system appearance",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外观"
+          }
+        }
+      }
+    },
+    "Applies to the panel, preview, clothesline and Settings. Match System switches with the macOS appearance." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作用于面板、预览、晾衣绳与设置窗口；「跟随系统」时随 macOS 外观自动切换。"
+          }
+        }
+      }
+    },
     "Arrow" : {
       "comment" : "Screenshot tool name",
       "localizations" : {
@@ -2447,6 +2468,17 @@
         }
       }
     },
+    "Dark" : {
+      "comment" : "Appearance option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "深色"
+          }
+        }
+      }
+    },
     "Data folder" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3519,6 +3551,17 @@
         }
       }
     },
+    "Light" : {
+      "comment" : "Appearance option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "浅色"
+          }
+        }
+      }
+    },
     "Link" : {
       "comment" : "Kind of a single clipboard item",
       "localizations" : {
@@ -3591,6 +3634,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "管理语言…"
+          }
+        }
+      }
+    },
+    "Match System" : {
+      "comment" : "Appearance option: follow the macOS appearance",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跟随系统"
           }
         }
       }

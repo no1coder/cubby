@@ -16,6 +16,7 @@ The release script extracts the section that starts with "## [x.y.z]".
 
 - **Pick Words**: press `⌘B` (or press and hold a card, or choose **Pick Words** from its right-click menu) to split a text item, or the recognized text of an image, into word chips next to the panel. Click, drag or `⇧`-click to pick the words you need, then press `↩` to paste them or `⌘C` to copy them. Links, email addresses and phone numbers stay in one piece, and picked words aren't added to your history.
 - **Update reminders**: when a newer version is available, the menu bar icon shows a blue dot, **Version x.y.z Available…** appears at the top of its menu, and the panel shows a banner with **View & Download**. **Not Now** hides the banner for that version only; the next version brings it back. If you installed with Homebrew, the banner offers **Copy Upgrade Command** and **Release Notes** instead; the first copies `brew upgrade --cask cubby` without adding it to your history. New installs get **Remind me about new versions** on the welcome screen, ticked by default. If you're upgrading with the automatic check off, the panel asks once whether to remind you.
+- **Appearance**: choose **Match System**, **Light** or **Dark** in **Settings › General › Appearance** or from **Appearance** in the menu bar menu. It applies to every Cubby window; Match System, the default, follows macOS as before.
 
 ### Changed
 

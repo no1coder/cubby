@@ -108,7 +108,7 @@ Debug builds accept `--scenario <name>` to open the UI in a known state. In this
 | `translation:download` | The system translation language download window (macOS 26). Close it; don't confirm a download you don't want |
 | `screenshot:window-probe` | Captures Cubby's own demo pin with and without the window shadow and logs the size and corner transparency; with `CUBBY_DATA_DIR` set, both images are written there (needs Screen Recording) |
 
-Add `--light` to force the light appearance:
+Add `--light` or `--dark` to force an appearance (it overrides **Settings › General › Appearance**):
 
 ```sh
 CUBBY_DATA_DIR=/tmp/cubby-demo .build/debug/Cubby --scenario search:swift --light

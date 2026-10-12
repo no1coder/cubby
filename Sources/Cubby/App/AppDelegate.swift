@@ -38,11 +38,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         DebugInputLock.installIfRequested()
         #endif
         AppPaths.prepare()
+        AppearanceApplier.apply(settings.appearance)
         #if DEBUG
-        // 截图走查：强制浅色外观
-        if CommandLine.arguments.contains("--light") {
-            NSApp.appearance = NSAppearance(named: .aqua)
-        }
         // 剪贴板翻译演示：在创建存储之前写入演示历史（只写 CUBBY_DATA_DIR，没设置时不写、也不运行演示）
         if let demo = Self.debugScenario.flatMap(PanelTranslationDemo.init(scenario:)),
             !TranslationDemoHistory.seed(demo)
@@ -436,6 +433,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func observeSettings() {
         observe({ [settings] in settings.hotKey }) { [weak self] in self?.registerPanelHotKey() }
         observe({ [settings] in settings.screenshotHotKey }) { [weak self] in self?.registerScreenshotHotKey() }
+        observe({ [settings] in settings.appearance }) { [settings] in AppearanceApplier.apply(settings.appearance) }
         observe({ [settings] in settings.historyLimit }) { [weak self] in
             guard let self else { return }
             self.store?.setLimit(self.settings.historyLimit)

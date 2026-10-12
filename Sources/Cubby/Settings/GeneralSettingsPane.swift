@@ -10,6 +10,17 @@ struct GeneralSettingsPane: View {
 
     var body: some View {
         Form {
+            Section {
+                AppearancePicker(selection: $settings.appearance)
+            } header: {
+                Text("Appearance")
+            } footer: {
+                Text(
+                    "Applies to the panel, preview, clothesline and Settings. Match System switches with the macOS appearance."
+                )
+                .foregroundStyle(.secondary)
+            }
+
             AppLanguageSection()
 
             Section {
