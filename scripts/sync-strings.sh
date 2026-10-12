@@ -58,6 +58,12 @@ swift build \
 shopt -s nullglob
 STRINGSDATA=("$WORK_DIR"/strings/*.stringsdata)
 shopt -u nullglob
+# Swift 6.4 起 SwiftPM 的新构建系统忽略 -emit-localized-strings-path，把 .stringsdata 写在各目标的中间产物目录里
+if [[ ${#STRINGSDATA[@]} -eq 0 ]]; then
+    while IFS= read -r file; do
+        STRINGSDATA+=("$file")
+    done < <(find "$WORK_DIR/build" -name '*.stringsdata' -type f | sort)
+fi
 [[ ${#STRINGSDATA[@]} -gt 0 ]] || {
     echo "没有生成 .stringsdata，请确认 Swift 工具链支持 -emit-localized-strings" >&2
     exit 1

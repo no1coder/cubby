@@ -32,7 +32,9 @@ esac
 CODECOV_JSON="$(swift test --show-codecov-path)"
 PROFDATA="$(dirname "$CODECOV_JSON")/default.profdata"
 BIN_PATH="$(swift build --show-bin-path)"
+# 旧构建系统把所有测试目标合成 <包名>PackageTests.xctest；Swift 6.4 起的新构建系统按目标命名（CubbyCoreTests.xctest）
 TEST_BUNDLE="$(find "$BIN_PATH" -maxdepth 1 -name '*PackageTests.xctest' | head -n 1)"
+[[ -n "$TEST_BUNDLE" ]] || TEST_BUNDLE="$(find "$BIN_PATH" -maxdepth 1 -name '*Tests.xctest' | head -n 1)"
 TEST_BINARY="$TEST_BUNDLE/Contents/MacOS/$(basename "$TEST_BUNDLE" .xctest)"
 
 [[ -f "$PROFDATA" ]] || {
