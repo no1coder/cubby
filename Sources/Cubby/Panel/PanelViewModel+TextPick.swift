@@ -25,6 +25,7 @@ extension PanelViewModel {
     func openTextPick(for item: ClipItem) {
         if isShowingHelp { toggleHelp() }
         select(item)
+        guard !rejectIfBlocked(item.id) else { return }
         guard TextPickSource(item: item).text != nil else {
             rejectTextPick()
             return
@@ -86,6 +87,7 @@ extension PanelViewModel {
             NSSound.beep()
             return
         }
+        guard !rejectIfBlocked(request.itemID) else { return }
         guard onCopyPicked?(request) == true else {
             NSSound.beep()
             showToast(.error(TextPickCopy.copyFailed))

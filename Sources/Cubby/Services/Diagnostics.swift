@@ -108,6 +108,7 @@ enum Diagnostics {
         pasteboard.clearContents()
         pasteboard.setString(text, forType: .string)
         pasteboard.setData(Data(), forType: PasteboardReader.markerType)
+        OwnPasteboardWrites.record(pasteboard)
     }
 
     private static func describe(_ issue: ClipStore.LoadIssue?) -> String {

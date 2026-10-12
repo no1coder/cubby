@@ -15,13 +15,20 @@ struct ClipCardView: View {
     var isOnClothesline = false
     /// ⌥↩ 行内问题上的按钮
     var onInlineAction: () -> Void = {}
+    /// 地址守护的标记（敏感值、被替换进来的红色记录）
+    var security: CardSecurityMarker?
+    /// 红色记录上的「详情」
+    var onShowDetails: () -> Void = {}
 
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.colorSchemeContrast) private var contrast
 
     var body: some View {
         let style = CardStyle(item: item)
-        let palette = style.palette(colorScheme, increasedContrast: contrast == .increased)
+        let palette =
+            security?.isTampered == true
+            ? .tampered(colorScheme, increasedContrast: contrast == .increased)
+            : style.palette(colorScheme, increasedContrast: contrast == .increased)
         let shape = RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
 
         layout(style: style, palette: palette)
@@ -70,6 +77,10 @@ struct ClipCardView: View {
             CardHeader(item: item, palette: palette, accessories: accessories(palette))
             PeekContent(peek: peek, item: item, imageURL: imageURL)
                 .e2eAnchor("list.peek.\(item.id)")
+        } else if let security {
+            SecurityCardContent(
+                item: item, marker: security, palette: palette, accessories: accessories(palette),
+                onDetails: onShowDetails)
         } else {
             switch (item.payload, style) {
             case (.text(let text), .color(let rgba)):
@@ -144,9 +155,12 @@ struct ClipCardView: View {
     private var accessibilityLabel: String {
         let missingNote = item.kind == .file ? FileAvailability.missingDescription(item.filePaths) : nil
         let translated = translation?.cachedLanguages.isEmpty == false ? TranslationCopy.translatedAccessibility : nil
-        return [sourceName, item.title, missingNote, translated, TimeFormatting.relative(item.createdAt)]
-            .compactMap { $0 }
-            .joined(separator: " · ")
+        return [
+            security?.isTampered == true ? nil : sourceName, item.title, missingNote, security?.accessibilityNote,
+            translated, TimeFormatting.relative(item.createdAt),
+        ]
+        .compactMap { $0 }
+        .joined(separator: " · ")
     }
 }
 

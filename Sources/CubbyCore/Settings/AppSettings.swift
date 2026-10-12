@@ -61,6 +61,9 @@ public final class AppSettings {
         static let hangsScreenshotsOnClothesline = "hangsScreenshotsOnClothesline"
         static let floatingPanelPosition = "floatingPanelPosition"
         static let appearance = "appearance"
+        static let addressGuardEnabled = "addressGuardEnabled"
+        static let guardedKinds = "guardedKinds"
+        static let verifiesPastes = "verifiesPastes"
     }
 
     public var hotKey: HotKey {
@@ -87,6 +90,21 @@ public final class AppSettings {
         didSet {
             Self.store(imagesHotKey, key: Keys.imagesHotKey, disabledKey: Keys.imagesHotKeyDisabled, in: defaults)
         }
+    }
+
+    /// 地址守护（docs/UI-UPGRADE-PLAN.md §6）：默认开启；什么都没发生时用户感知不到
+    public var addressGuardEnabled: Bool {
+        didSet { defaults.set(addressGuardEnabled, forKey: Keys.addressGuardEnabled) }
+    }
+
+    /// 守护的内容（默认全部 6 类）
+    public var guardedKinds: Set<SensitiveKind> {
+        didSet { defaults.set(guardedKinds.map(\.rawValue).sorted(), forKey: Keys.guardedKinds) }
+    }
+
+    /// 从 Cubby 粘贴敏感值后显示核对结果（默认开启）
+    public var verifiesPastes: Bool {
+        didSet { defaults.set(verifiesPastes, forKey: Keys.verifiesPastes) }
     }
 
     /// 晾衣绳：把图片挂在屏幕顶部的一根绳子上，指针停在屏幕顶边时滑下（默认开启；绳上没有图片时不出现）
@@ -317,6 +335,11 @@ public final class AppSettings {
             itemIDs: (defaults.stringArray(forKey: Keys.clotheslineItems) ?? []).compactMap(UUID.init(uuidString:)))
         clotheslineDwell = Self.storedClotheslineDwell(defaults.object(forKey: Keys.clotheslineDwell))
         hangsScreenshotsOnClothesline = defaults.object(forKey: Keys.hangsScreenshotsOnClothesline) as? Bool ?? false
+        addressGuardEnabled = defaults.object(forKey: Keys.addressGuardEnabled) as? Bool ?? true
+        guardedKinds =
+            (defaults.stringArray(forKey: Keys.guardedKinds)).map { Set($0.compactMap(SensitiveKind.init(rawValue:))) }
+            ?? Set(SensitiveKind.allCases)
+        verifiesPastes = defaults.object(forKey: Keys.verifiesPastes) as? Bool ?? true
         appearance = defaults.string(forKey: Keys.appearance).flatMap(AppAppearance.init(rawValue:)) ?? .system
         pasteFormat = defaults.string(forKey: Keys.pasteFormat).flatMap(PasteFormat.init(rawValue:)) ?? .original
         hasCompletedOnboarding = defaults.bool(forKey: Keys.hasCompletedOnboarding)

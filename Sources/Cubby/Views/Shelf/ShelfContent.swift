@@ -78,11 +78,13 @@ private struct ShelfCardRow: View {
     var body: some View {
         let selectedID = viewModel.selectedItem?.id
         let keywords = viewModel.keywords
+        // ⌘1–⌘9 的编号跳过被替换进来的条目
+        let numbers = viewModel.quickPasteIndices(items)
         ScrollViewReader { proxy in
             ScrollView(.horizontal) {
                 LazyHStack(spacing: ShelfMetrics.cardSpacing) {
-                    ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                        card(item, index: index, isSelected: item.id == selectedID, keywords: keywords)
+                    ForEach(items) { item in
+                        card(item, number: numbers[item.id], isSelected: item.id == selectedID, keywords: keywords)
                     }
                 }
                 .padding(Self.padding)
@@ -103,13 +105,16 @@ private struct ShelfCardRow: View {
         }
     }
 
-    private func card(_ item: ClipItem, index: Int, isSelected: Bool, keywords: [String]) -> some View {
+    /// number 为 ⌘N 的序号（从 0 开始，跳过被替换进来的条目），没有键帽时为 nil
+    private func card(_ item: ClipItem, number: Int?, isSelected: Bool, keywords: [String]) -> some View {
         ShelfCard(
-            item: item, index: index, isSelected: isSelected, keywords: keywords,
+            item: item, index: number ?? Int.max, isSelected: isSelected, keywords: keywords,
             imageURL: viewModel.imageURL(for: item),
             translation: CardTranslationDecorations.make(for: item, keywords: keywords, viewModel: viewModel),
             isOnClothesline: viewModel.isOnClothesline(item),
-            onInlineAction: { viewModel.translation?.inline.performAction() }
+            onInlineAction: { viewModel.translation?.inline.performAction() },
+            security: viewModel.securityMarker(for: item),
+            onShowDetails: { viewModel.showTamperDetails(item) }
         )
         .background { if isSelected { SelectionAnchorReporter(viewModel: viewModel) } }
         .e2eAnchor("list.card.\(item.id)")

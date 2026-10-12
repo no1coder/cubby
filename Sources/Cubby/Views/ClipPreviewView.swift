@@ -61,6 +61,9 @@ struct ClipPreviewView: View {
             Rectangle().fill(Color.primary.opacity(0.08)).frame(height: 0.5)
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+            if let marker = viewModel.securityMarker(for: item) {
+                SecurityPreviewStrip(item: item, marker: marker) { viewModel.showTamperDetails(item) }
+            }
             Rectangle().fill(Color.primary.opacity(0.08)).frame(height: 0.5)
             footer
         }
@@ -97,7 +100,9 @@ struct ClipPreviewView: View {
             switch item.kind {
             case .link: LinkPreview(url: text.trimmingCharacters(in: .whitespacesAndNewlines))
             case .color: ColorPreview(hex: text.trimmingCharacters(in: .whitespacesAndNewlines))
-            default: TextPreview(text: text, keywords: viewModel.keywords)
+            // 被替换进来的条目不能选中文字（否则可以拷贝或拖出，绕过禁止）
+            default:
+                TextPreview(text: text, keywords: viewModel.keywords, allowsSelection: !viewModel.isBlocked(item))
             }
         case .image(let ref):
             ImagePreview(url: viewModel.imageURL(for: item), ref: ref)
@@ -133,6 +138,8 @@ struct ClipPreviewView: View {
             }
             Button("Paste") { viewModel.paste(item) }
                 .buttonStyle(CapsuleButtonStyle())
+                // 被替换进来的条目不能粘贴
+                .disabled(viewModel.isBlocked(item))
         }
         .padding(.horizontal, 14)
         .frame(height: PanelMetrics.footerHeight)
@@ -185,6 +192,7 @@ private struct TextPreview: View {
 
     let text: String
     let keywords: [String]
+    var allowsSelection = true
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -197,7 +205,7 @@ private struct TextPreview: View {
                 .font(isCode ? .system(size: FontSize.footnote, design: .monospaced) : .system(size: FontSize.body))
                 .foregroundStyle(isCode ? Color.white.opacity(0.9) : Color.primary)
                 .lineSpacing(isCode ? 2 : 4)
-                .textSelection(.enabled)
+                .modifier(PreviewTextSelection(isEnabled: allowsSelection))
                 .frame(maxWidth: .infinity, alignment: .topLeading)
                 .padding(isCode ? 14 : 16)
                 .background {
@@ -207,6 +215,19 @@ private struct TextPreview: View {
                     }
                 }
                 .padding(isCode ? 12 : 0)
+        }
+    }
+}
+
+/// 预览文字是否可选（textSelection 的参数类型不同，不能用三元表达式）
+private struct PreviewTextSelection: ViewModifier {
+    let isEnabled: Bool
+
+    func body(content: Content) -> some View {
+        if isEnabled {
+            content.textSelection(.enabled)
+        } else {
+            content.textSelection(.disabled)
         }
     }
 }

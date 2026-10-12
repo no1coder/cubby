@@ -64,6 +64,11 @@ final class PanelViewModel {
     @ObservationIgnored var onCopyPicked: ((TextPickRequest) -> Bool)?
     /// 拆词卡（docs/TEXT-PICK-DESIGN.md）；状态在控制器里，视图直接观察它
     @ObservationIgnored let textPick = TextPickController()
+    /// 地址守护（标记、禁止粘贴被替换进来的条目，见 PanelViewModel+Security）；nil 表示没有接线
+    var security: AddressGuardController?
+    /// 红色记录上的「详情」（PanelController 接到 AppDelegate）
+    @ObservationIgnored var onShowTamperDetails: ((UUID) -> Void)?
+    @ObservationIgnored let sensitiveValues = SensitiveValueCache()
     /// 更新提醒（顶部蓝色横幅，见 PanelViewModel+Update）；nil 表示没有接线
     @ObservationIgnored var updates: UpdateCoordinator?
     /// 横幅上「复制升级命令」的「已复制」反馈
@@ -234,7 +239,9 @@ final class PanelViewModel {
 
     // MARK: - 条目操作
 
+    /// 被替换进来的条目一律拦下（↩、⇧↩、⌘↩、⌘1–⌘9、双击、右键菜单、预览按钮、读屏操作都经过这里）
     func paste(_ item: ClipItem, mode: PasteMode = .standard) {
+        guard !rejectIfBlocked(item.id) else { return }
         onPaste?(item, mode)
     }
 
@@ -249,10 +256,10 @@ final class PanelViewModel {
         }
     }
 
+    /// ⌘N：编号跳过被替换进来的条目（与卡片上的键帽一致）
     private func paste(at index: Int) {
-        let visible = items
-        guard visible.indices.contains(index) else { return }
-        paste(visible[index])
+        guard let item = quickPasteItem(at: index) else { return }
+        paste(item)
     }
 
     func toggleFavorite(_ item: ClipItem) {

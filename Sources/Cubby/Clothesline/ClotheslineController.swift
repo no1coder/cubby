@@ -182,6 +182,7 @@ final class ClotheslineController {
     private func copy(_ item: ClipItem) {
         do {
             try PasteboardWriter.write(item, imageURL: store.imageURL(for: item), to: .general)
+            OwnPasteboardWrites.record(.general)
             store.promote(id: item.id)
             if let anchor = HUDToast.defaultAnchor() {
                 HUDToast.show(String(localized: "Copied to clipboard", comment: "HUD after copying"), at: anchor)

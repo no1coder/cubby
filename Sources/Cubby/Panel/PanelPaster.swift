@@ -40,6 +40,7 @@ final class PanelPaster {
         let formats = format == .original ? store.formats(for: item) : [:]
         do {
             try PasteboardWriter.write(item, imageURL: store.imageURL(for: item), formats: formats, to: pasteboard)
+            OwnPasteboardWrites.record(pasteboard)
             return nil
         } catch {
             logger.error("Failed to write to the pasteboard: \(String(describing: error), privacy: .public)")
@@ -58,6 +59,7 @@ final class PanelPaster {
             } else {
                 try PasteboardWriter.write(text: result.plainText, to: pasteboard)
             }
+            OwnPasteboardWrites.record(pasteboard)
             return true
         } catch {
             logger.error("Failed to write a translation: \(String(describing: error), privacy: .public)")
@@ -69,6 +71,7 @@ final class PanelPaster {
     func write(plainText: String) -> Bool {
         do {
             try PasteboardWriter.write(text: plainText, to: pasteboard)
+            OwnPasteboardWrites.record(pasteboard)
             return true
         } catch {
             logger.error("Failed to write picked words: \(String(describing: error), privacy: .public)")
@@ -88,15 +91,16 @@ final class PanelPaster {
     ///   - copyOnly: 只复制（⌘↩）
     ///   - copied: 没有粘贴（关闭了直接粘贴、没有目标应用）时的提示
     ///   - pasted: 已发送 ⌘V 之后的提示（条目粘贴不提示；译文粘贴注明引擎，A7）
+    ///   - check: 敏感值的核对（地址守护）：投递前再读一次剪贴板，不是写入的值时不粘贴、改为警告
     func deliver(
         promoting id: UUID, copyOnly: Bool, target: PasteTarget?, anchor: CGPoint,
-        copied: HUDMessage, pasted: HUDMessage?, hidePanel: () -> Void
+        copied: HUDMessage, pasted: HUDMessage?, check: PasteCheck? = nil, hidePanel: () -> Void
     ) {
         store.promote(id: id)
         hidePanel()
 
         guard !copyOnly, settings.pasteDirectly else {
-            show(copied, at: anchor)
+            reportCopied(copied, check: check, at: anchor)
             return
         }
         guard PasteService.isTrusted else {
@@ -110,7 +114,7 @@ final class PanelPaster {
             return
         }
         guard let target else {
-            show(copied, at: anchor)
+            reportCopied(copied, check: check, at: anchor)
             return
         }
         Task { @MainActor in
@@ -125,8 +129,34 @@ final class PanelPaster {
                 )
                 return
             }
+            // 地址守护：等待期间剪贴板被换掉时绝不发送 ⌘V（守护会照常弹出警示卡）
+            if let check, !check.matches(pasteboard) {
+                Self.show(PasteCheck.changedBeforePasting, at: anchor)
+                return
+            }
             PasteService.sendPasteShortcut()
-            if let pasted { Self.show(pasted, at: anchor) }
+            if let check, check.showsResult {
+                check.onMatch(true)
+            } else if let pasted {
+                Self.show(pasted, at: anchor)
+            }
+        }
+    }
+
+    /// 只复制（或不能直接粘贴）时的提示：敏感值先核对剪贴板，一致才说「一致」
+    private func reportCopied(_ copied: HUDMessage, check: PasteCheck?, at anchor: CGPoint) {
+        guard let check else {
+            show(copied, at: anchor)
+            return
+        }
+        guard check.matches(pasteboard) else {
+            show(PasteCheck.changedAfterCopying, at: anchor)
+            return
+        }
+        if check.showsResult {
+            check.onMatch(false)
+        } else {
+            show(copied, at: anchor)
         }
     }
 
@@ -162,5 +192,35 @@ final class PanelPaster {
         case .imageUnavailable: String(localized: "Image file is missing", comment: "Error when copying an image item")
         case .writeRejected, nil: String(localized: "Couldn't copy", comment: "Error when copying an item")
         }
+    }
+}
+
+/// 敏感值投递前的核对（地址守护）：剪贴板必须仍是 Cubby 写入的文本
+@MainActor
+struct PasteCheck {
+    let text: String
+    /// 开启了「粘贴后核对」：一致时显示核对 HUD（否则沿用普通提示）
+    let showsResult: Bool
+    /// 核对一致后调用，参数为是否已发送 ⌘V
+    let onMatch: (Bool) -> Void
+
+    func matches(_ pasteboard: NSPasteboard) -> Bool {
+        pasteboard.string(forType: .string) == text
+    }
+
+    static var changedBeforePasting: PanelPaster.HUDMessage {
+        PanelPaster.HUDMessage(
+            text: String(
+                localized: "The clipboard changed before pasting, so Cubby didn't paste it",
+                comment: "HUD when the clipboard was replaced between writing an address and pasting it"),
+            symbolName: "exclamationmark.shield.fill", tint: .red, duration: HUDToast.tipDuration)
+    }
+
+    static var changedAfterCopying: PanelPaster.HUDMessage {
+        PanelPaster.HUDMessage(
+            text: String(
+                localized: "The clipboard changed right after copying. Check it before you paste.",
+                comment: "HUD when the clipboard was replaced right after copying an address from Cubby"),
+            symbolName: "exclamationmark.shield.fill", tint: .red, duration: HUDToast.tipDuration)
     }
 }

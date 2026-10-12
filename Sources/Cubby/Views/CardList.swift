@@ -16,17 +16,19 @@ struct CardList: View {
     var body: some View {
         let selectedID = viewModel.selectedItem?.id
         let keywords = viewModel.keywords
+        // ⌘1–⌘9 的编号跳过被替换进来的条目
+        let numbers = viewModel.quickPasteIndices(items)
         ScrollViewReader { proxy in
             ScrollView {
                 // 每张卡片带 edgeFade 高度的上下留白作为滚动对齐区域，再用负间距抵消，
                 // 视觉间距仍为 cardSpacing；这样滚动到选中项时卡片边框永远不会落入渐隐区
                 LazyVStack(alignment: .leading, spacing: PanelMetrics.cardSpacing - Self.edgeFade * 2) {
                     if keywords.isEmpty {
-                        groupedCards(selectedID: selectedID)
+                        groupedCards(selectedID: selectedID, numbers: numbers)
                     } else {
                         // 搜索结果按相关度排序，不按日期分组
-                        ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                            card(item, index: index, isSelected: item.id == selectedID, keywords: keywords)
+                        ForEach(items) { item in
+                            card(item, number: numbers[item.id], isSelected: item.id == selectedID, keywords: keywords)
                         }
                     }
                 }
@@ -68,41 +70,31 @@ struct CardList: View {
 
     /// 按「今天 / 昨天 / 更早」分节；⌘N 的序号仍按整个列表计数
     @ViewBuilder
-    private func groupedCards(selectedID: UUID?) -> some View {
+    private func groupedCards(selectedID: UUID?, numbers: [UUID: Int]) -> some View {
         let sections = ClipDayGroup.sections(items, now: Date())
-        let starts = Self.startIndices(of: sections)
         ForEach(sections) { section in
             // 第一个标题避开顶部渐隐区；其后的标题与上一节最后一张卡片拉开距离
             DayGroupHeader(group: section.group, topPadding: section.index == 0 ? Self.edgeFade : 12)
                 .id(section.index == 0 ? Self.topAnchor : "list.section.\(section.index)")
-            ForEach(Array(section.items.enumerated()), id: \.element.id) { offset, item in
-                card(item, index: starts[section.index] + offset, isSelected: item.id == selectedID, keywords: [])
+            ForEach(section.items) { item in
+                card(item, number: numbers[item.id], isSelected: item.id == selectedID, keywords: [])
             }
         }
     }
 
-    /// 每一节第一张卡片在整个列表中的序号
-    private static func startIndices(of sections: [ClipDaySection]) -> [Int] {
-        var starts: [Int] = []
-        var total = 0
-        for section in sections {
-            starts.append(total)
-            total += section.items.count
-        }
-        return starts
-    }
-
-    /// 一张卡片及其交互（见 CardInteractions）
-    private func card(_ item: ClipItem, index: Int, isSelected: Bool, keywords: [String]) -> some View {
+    /// 一张卡片及其交互（见 CardInteractions）。number 为 ⌘N 的序号（从 0 开始），没有键帽时为 nil
+    private func card(_ item: ClipItem, number: Int?, isSelected: Bool, keywords: [String]) -> some View {
         ClipCardView(
             item: item,
-            index: index,
+            index: number ?? Int.max,
             isSelected: isSelected,
             keywords: keywords,
             imageURL: viewModel.imageURL(for: item),
             translation: CardTranslationDecorations.make(for: item, keywords: keywords, viewModel: viewModel),
             isOnClothesline: viewModel.isOnClothesline(item),
-            onInlineAction: { viewModel.translation?.inline.performAction() }
+            onInlineAction: { viewModel.translation?.inline.performAction() },
+            security: viewModel.securityMarker(for: item),
+            onShowDetails: { viewModel.showTamperDetails(item) }
         )
         .e2eAnchor("list.card.\(item.id)")
         .modifier(CardInteractions(item: item, isSelected: isSelected, viewModel: viewModel))
@@ -127,7 +119,8 @@ struct CardInteractions: ViewModifier {
             // 长按挂在单击 / 双击之外：内层手势优先，挂在里面会吞掉单击选中
             .modifier(CardLongPress { viewModel.openTextPick(for: item) })
             .contextMenu { CardContextMenu(item: item, viewModel: viewModel) }
-            .onDrag { DragProvider.provider(for: item, imageURL: viewModel.imageURL(for: item)) }
+            // 被替换进来的条目不能拖出（等同复制）
+            .modifier(CardDrag(item: item, viewModel: viewModel))
             // 悬停工具条叠在所有手势之上：按钮上的单击 / 双击 / 长按 / 拖动不会传给卡片（否则双击收藏会顺带粘贴）
             .overlay { CardHoverChrome(item: item, isSelected: isSelected, actions: quickActions) }
             .modifier(CardAccessibilityActions(item: item, viewModel: viewModel))
@@ -155,6 +148,20 @@ struct CardInteractions: ViewModifier {
             isOnClothesline: viewModel.isOnClothesline(item),
             isPreviewing: isPreviewing
         )
+    }
+}
+
+/// 拖出卡片：被替换进来的条目不提供拖出
+private struct CardDrag: ViewModifier {
+    let item: ClipItem
+    let viewModel: PanelViewModel
+
+    func body(content: Content) -> some View {
+        if viewModel.isBlocked(item) {
+            content
+        } else {
+            content.onDrag { DragProvider.provider(for: item, imageURL: viewModel.imageURL(for: item)) }
+        }
     }
 }
 
@@ -187,16 +194,21 @@ private struct CardContextMenu: View {
 
     var body: some View {
         let filesMissing = item.kind == .file && FileAvailability.allMissing(item.filePaths)
+        // 被替换进来的条目：粘贴、复制、拆词与翻译后粘贴置灰（按键与双击另由视图模型拦下）
+        let isBlocked = viewModel.isBlocked(item)
         Button("Paste") { viewModel.paste(item) }
             .keyboardShortcut(.return, modifiers: [])
+            .disabled(isBlocked)
         if item.formatsName != nil {
             Button(viewModel.settings.pasteFormat.alternate.pasteMenuTitle) {
                 viewModel.paste(item, mode: .alternate)
             }
             .keyboardShortcut(.return, modifiers: .shift)
+            .disabled(isBlocked)
         }
         Button("Copy Only") { viewModel.paste(item, mode: .copyOnly) }
             .keyboardShortcut(.return, modifiers: .command)
+            .disabled(isBlocked)
         Divider()
         Button("Preview") {
             viewModel.select(item)
@@ -215,7 +227,7 @@ private struct CardContextMenu: View {
         }
         Button(TextPickCopy.title) { viewModel.openTextPick(for: item) }
             .keyboardShortcut("b", modifiers: .command)
-            .disabled(TextPickSource(item: item).text == nil)
+            .disabled(isBlocked || TextPickSource(item: item).text == nil)
         if item.kind == .link || item.kind == .file || item.kind == .image {
             Button("Open") { viewModel.open(item) }
                 .keyboardShortcut("o", modifiers: .command)
@@ -306,7 +318,7 @@ private struct TranslationMenuItems: View {
 
     var body: some View {
         if let translation = viewModel.translation {
-            let supported = translation.translator.eligibility(of: item) == .eligible
+            let supported = translation.translator.eligibility(of: item) == .eligible && !viewModel.isBlocked(item)
             Divider()
             Button(Self.translateTitle) { viewModel.openTranslation(for: item) }
                 .keyboardShortcut("t", modifiers: .command)

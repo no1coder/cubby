@@ -96,6 +96,7 @@ final class PinnedImageController {
             do {
                 // 带自身写入标记：贴图入历史时已记录过，剪贴板监听不会重复记录
                 try ScreenshotPasteboard.write(png: png, to: pasteboard)
+                OwnPasteboardWrites.record(pasteboard)
             } catch {
                 logger.error("Failed to copy pinned screenshot")
                 NSSound.beep()

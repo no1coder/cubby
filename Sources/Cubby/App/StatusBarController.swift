@@ -14,6 +14,8 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         let showUserGuide: () -> Void
         let clearHistory: () -> Void
         let checkForUpdates: () -> Void
+        /// 菜单栏是红色「地址被替换」胶囊时左键点击：重新打开警示卡
+        var showTamperAlert: () -> Void = {}
     }
 
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -40,6 +42,8 @@ final class StatusBarController: NSObject, NSMenuDelegate {
     private let appearanceItem: AppearanceMenuItem
     /// 已知有新版本时显示在菜单顶部（U5）
     private let updateAvailableItem = ClosureMenuItem(title: "", handler: {})
+    /// 有还没处理的地址替换：图标换成红色「地址被替换」胶囊
+    private var showsTamperPill = false
 
     init(settings: AppSettings, updates: UpdateCoordinator, actions: Actions) {
         self.settings = settings
@@ -73,11 +77,30 @@ final class StatusBarController: NSObject, NSMenuDelegate {
     /// 暂停状态与更新状态变化时调用：图标、蓝点、提示文字与菜单顶部的新版本项
     func refreshAppearance() {
         let release = updates.reminder.availableRelease
-        if let button = statusItem.button {
+        if showsTamperPill, let button = statusItem.button {
+            applyTamperPill(to: button)
+        } else if let button = statusItem.button {
             Self.applyAppearance(to: button, badge: updateBadge, paused: settings.isPaused, release: release)
             applyClotheslineCount(to: button)
         }
         refreshUpdateItem(release)
+    }
+
+    /// 发现替换后到用户处理之前显示红色胶囊（AddressGuardController.pending）
+    func setTamperPill(_ visible: Bool) {
+        guard visible != showsTamperPill else { return }
+        showsTamperPill = visible
+        refreshAppearance()
+    }
+
+    private func applyTamperPill(to button: NSStatusBarButton) {
+        statusItem.length = NSStatusItem.variableLength
+        button.image = StatusItemTamperPill.image()
+        button.imagePosition = .imageOnly
+        button.attributedTitle = NSAttributedString()
+        button.toolTip = SecurityCopy.statusPill
+        button.setAccessibilityValue(SecurityCopy.statusPill)
+        updateBadge?.isVisible = false
     }
 
     /// 绳上挂着照片时，图标右侧显示张数（「⌗ 4」）；绳上为空或关闭了晾衣绳时只有图标
@@ -183,6 +206,8 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         let wantsMenu = event?.type == .rightMouseUp || event?.modifierFlags.contains(.control) == true
         if wantsMenu {
             showMenu()
+        } else if showsTamperPill {
+            actions.showTamperAlert()
         } else {
             actions.togglePanel(buttonFrame)
         }

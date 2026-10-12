@@ -201,6 +201,7 @@ struct ScreenshotOutputService {
         var copied = true
         do {
             try ScreenshotPasteboard.write(png: png, to: pasteboard)
+            OwnPasteboardWrites.record(pasteboard)
         } catch {
             Self.logger.error("Failed to write the screenshot to the pasteboard")
             copied = false
@@ -214,6 +215,7 @@ struct ScreenshotOutputService {
 
     private func deliverText(_ text: String, success: String, symbolName: String, anchor: CGPoint) {
         let copied = ScreenshotPasteboard.write(text: text, to: pasteboard)
+        if copied { OwnPasteboardWrites.record(pasteboard) }
         if !copied {
             Self.logger.error("Failed to write text to the pasteboard")
         }

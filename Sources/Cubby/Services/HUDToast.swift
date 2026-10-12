@@ -32,7 +32,12 @@ enum HUDToast {
         duration: Duration = defaultDuration,
         at anchor: CGPoint
     ) {
-        let hosting = NSHostingView(rootView: HUDToastView(message: message, symbolName: symbolName, tint: tint))
+        present(HUDToastView(message: message, symbolName: symbolName, tint: tint), duration: duration, at: anchor)
+    }
+
+    /// 显示自定义内容的提示（如粘贴核对 HUD）：与普通提示共用同一个窗口，新的替换旧的
+    static func present(_ content: some View, duration: Duration = defaultDuration, at anchor: CGPoint) {
+        let hosting = NSHostingView(rootView: AnyView(content))
         // 视图尚未进入窗口时按整点测量，实际需要的宽度可能多出半个点，文字会被截成省略号：向上取整并留 1 pt 余量
         let fitting = hosting.fittingSize
         let size = NSSize(width: ceil(fitting.width) + 1, height: ceil(fitting.height) + 1)

@@ -23,6 +23,11 @@ enum DesignDemoHistory {
                 try entry.item(id: id(index), now: now, blobs: blobs)
             }
             try JSONHistoryStorage(fileURL: AppPaths.historyFile).save(ClipHistory(items: items))
+            // 地址守护的演示记录：被替换进来的那一条关联到演示历史里的红色记录
+            if let tampered = items.first(where: { $0.text == SecurityDemo.replacement.value }) {
+                try SecurityLogStore(directory: AppPaths.root).save(
+                    SecurityDemo.log(tamperedItemID: tampered.id, now: now))
+            }
             return true
         } catch {
             FileHandle.standardError.write(Data("Seeding the design demo history failed: \(error)\n".utf8))
@@ -71,6 +76,11 @@ enum DesignDemoHistory {
             .image(.photo, app: ("com.apple.Photos", "Photos"), minutes: day + 120),
             .image(.terminal, app: ("com.apple.Terminal", "Terminal"), minutes: day + 180),
             .image(.design, app: ("com.figma.Desktop", "Figma"), minutes: 2 * day + 60),
+            // 地址守护（PanelSecurity 设计稿）：放在最后，不影响其他画板的前几条
+            .text(SecurityDemo.original.value, app: ("com.apple.Safari", "Safari"), minutes: 3 * day),
+            .text(SecurityDemo.replacement.value, app: nil, minutes: 3 * day + 1),
+            .text(SecurityDemo.tron.value, app: ("com.tencent.xinWeChat", "WeChat"), minutes: 3 * day + 12),
+            .text(SecurityDemo.bankCard, app: ("com.apple.Notes", "Notes"), minutes: 4 * day),
         ]
     }
 
@@ -83,14 +93,15 @@ enum DesignDemoHistory {
         }
 
         let content: Content
-        let app: (bundleID: String, name: String)
+        /// nil：来源未知（被替换进来的内容）
+        let app: (bundleID: String, name: String)?
         let minutes: Double
         var favorite = false
         /// 链接条目复制时浏览器带来的页面标题
         var linkTitle: String?
 
         static func text(
-            _ value: String, app: (String, String), minutes: Double, favorite: Bool = false, linkTitle: String? = nil
+            _ value: String, app: (String, String)?, minutes: Double, favorite: Bool = false, linkTitle: String? = nil
         ) -> Entry {
             Entry(content: .text(value), app: app, minutes: minutes, favorite: favorite, linkTitle: linkTitle)
         }
@@ -104,7 +115,7 @@ enum DesignDemoHistory {
         }
 
         func item(id: UUID, now: Date, blobs: BlobStore) throws -> ClipItem {
-            let source = SourceApp(bundleID: app.bundleID, name: app.name)
+            let source = app.map { SourceApp(bundleID: $0.bundleID, name: $0.name) }
             let date = now.addingTimeInterval(-minutes * 60)
             switch content {
             case .text(let value):

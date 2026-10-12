@@ -84,6 +84,23 @@
         }
       }
     },
+    "%@ after you copied this %@, the clipboard was replaced with another one." : {
+      "comment" : "Replacement warning. First %@ = elapsed time like “0.4 seconds”, second %@ = “Ethereum address”",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ after you copied this %2$@, the clipboard was replaced with another one."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你复制%2$@ %1$@后，剪贴板被换成了另一个%2$@。"
+          }
+        }
+      }
+    },
     "%@ and %lld more (%lld files)" : {
       "comment" : "Title of an item with several files. %1$@ = first file name, %2$lld = number of other files, %3$lld = total number of files. Translations may omit %2$lld or %3$lld.",
       "localizations" : {
@@ -190,6 +207,17 @@
         }
       }
     },
+    "%@ stayed in front the whole time, so a background program may have done it." : {
+      "comment" : "Replacement warning without Input Monitoring. %@ = frontmost app",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这期间前台一直是 %@，可能是后台程序干的。"
+          }
+        }
+      }
+    },
     "%@ translates on this Mac" : {
       "comment" : "Tooltip of the engine chip for an on-device engine. %@ = engine name",
       "localizations" : {
@@ -208,6 +236,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ · 未安装"
+          }
+        }
+      }
+    },
+    "%@ · checksum valid" : {
+      "comment" : "A guarded value passed its checksum. %@ = kind, e.g. “Ethereum address”",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 校验通过"
           }
         }
       }
@@ -236,6 +275,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ · 文字会发送到 %2$@"
+          }
+        }
+      }
+    },
+    "%@ · valid format" : {
+      "comment" : "A guarded value without a checksum (Solana) has the right format. %@ = kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ · 格式正确"
           }
         }
       }
@@ -285,6 +335,23 @@
         }
       }
     },
+    "%@; %@" : {
+      "comment" : "Settings › Security summary: joins the two counts",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@; %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@；%2$@"
+          }
+        }
+      }
+    },
     "%lld characters" : {
       "comment" : "Length of a text item",
       "localizations" : {
@@ -310,6 +377,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 个字符"
+          }
+        }
+      }
+    },
+    "%lld characters differ" : {
+      "comment" : "Replacement warning: number of different characters",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld character differs"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld characters differ"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 位不同"
           }
         }
       }
@@ -559,6 +655,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld / %2$lld 张"
+          }
+        }
+      }
+    },
+    "%lld pastes verified" : {
+      "comment" : "Settings › Security summary. %lld = pastes checked after pasting from Cubby",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld paste verified"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld pastes verified"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "核验了 %lld 次粘贴"
           }
         }
       }
@@ -935,6 +1060,61 @@
         }
       }
     },
+    "Address Replaced" : {
+      "comment" : "Status item pill while a replaced address is not handled",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地址被替换"
+          }
+        }
+      }
+    },
+    "Address guard" : {
+      "comment" : "Accessibility label of the address guard switch",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地址守护"
+          }
+        }
+      }
+    },
+    "Address guard is off" : {
+      "comment" : "Settings › Security header",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地址守护已关闭"
+          }
+        }
+      }
+    },
+    "Address guard is on" : {
+      "comment" : "Settings › Security header",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地址守护已开启"
+          }
+        }
+      }
+    },
+    "Address replaced · %@" : {
+      "comment" : "Security log event. %@ = abbreviated value",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地址被替换 · %@"
+          }
+        }
+      }
+    },
     "After Capturing" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1166,6 +1346,17 @@
         }
       }
     },
+    "App in Front" : {
+      "comment" : "Settings › Security log column: the frontmost app at the time",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当时的前台应用"
+          }
+        }
+      }
+    },
     "Appearance" : {
       "comment" : "Status menu item: submenu to choose light, dark or system appearance",
       "localizations" : {
@@ -1215,6 +1406,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "每次存储前询问位置"
+          }
+        }
+      }
+    },
+    "Attackers often create addresses that start and end like yours to fool a quick check, so Cubby compares every character." : {
+      "comment" : "Footnote of the replacement warning",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "攻击者常生成开头和结尾都相同的地址来骗过肉眼核对，所以 Cubby 会逐位比对整串地址。"
           }
         }
       }
@@ -1284,6 +1486,28 @@
         }
       }
     },
+    "Bank card" : {
+      "comment" : "Short name of a guarded kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "银行卡号"
+          }
+        }
+      }
+    },
+    "Bank card number" : {
+      "comment" : "Name of a guarded kind at the start of a line",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "银行卡号"
+          }
+        }
+      }
+    },
     "Base URL" : {
       "localizations" : {
         "zh-Hans" : {
@@ -1301,6 +1525,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "菜单栏图标下方"
+          }
+        }
+      }
+    },
+    "Bitcoin" : {
+      "comment" : "Short name of a guarded kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比特币"
+          }
+        }
+      }
+    },
+    "Bitcoin address" : {
+      "comment" : "Name of a guarded kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比特币地址"
           }
         }
       }
@@ -1421,6 +1667,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "屏幕中央"
+          }
+        }
+      }
+    },
+    "Changed by you · %@" : {
+      "comment" : "Security log event. %@ = abbreviated value",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "是我自己换的 · %@"
+          }
+        }
+      }
+    },
+    "Check before you paste." : {
+      "comment" : "Bold end of the replacement warning",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴前请先确认。"
           }
         }
       }
@@ -2083,6 +2351,17 @@
         }
       }
     },
+    "Copied, matches what you copied" : {
+      "comment" : "HUD after copying an address and checking it",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已复制，与你复制的一致"
+          }
+        }
+      }
+    },
     "Copies the version, system and permission status for bug reports. Never includes clipboard content." : {
       "localizations" : {
         "zh-Hans" : {
@@ -2635,6 +2914,17 @@
         }
       }
     },
+    "Cubby won't check the addresses you copy" : {
+      "comment" : "Settings › Security header, guard off",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cubby 不会检查你复制的地址"
+          }
+        }
+      }
+    },
     "Cubby · Recording paused" : {
       "comment" : "Status item tooltip",
       "localizations" : {
@@ -2779,6 +3069,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已删除"
+          }
+        }
+      }
+    },
+    "Details" : {
+      "comment" : "Button on a replaced item: show the replacement warning again",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "详情"
           }
         }
       }
@@ -3110,6 +3411,50 @@
         }
       }
     },
+    "Ethereum" : {
+      "comment" : "Short name of a guarded kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以太坊"
+          }
+        }
+      }
+    },
+    "Ethereum & EVM chains" : {
+      "comment" : "Settings › Security: guarded content chip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以太坊及 EVM 链"
+          }
+        }
+      }
+    },
+    "Ethereum address" : {
+      "comment" : "Name of a guarded kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以太坊地址"
+          }
+        }
+      }
+    },
+    "Event" : {
+      "comment" : "Settings › Security log column",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "事件"
+          }
+        }
+      }
+    },
     "Every keyword has to match. Try fewer words, or search in All." : {
       "comment" : "Empty panel message when a search with several keywords has no results",
       "localizations" : {
@@ -3335,6 +3680,35 @@
         }
       }
     },
+    "Found %lld replacements in the last 30 days and warned you" : {
+      "comment" : "Settings › Security summary. %lld = replacements",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Found %lld replacement in the last 30 days and warned you"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Found %lld replacements in the last 30 days and warned you"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "近 30 天发现 %lld 次替换，已提醒"
+          }
+        }
+      }
+    },
     "Full user guide…" : {
       "localizations" : {
         "zh-Hans" : {
@@ -3405,6 +3779,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "绿色"
+          }
+        }
+      }
+    },
+    "Guarded Content" : {
+      "comment" : "Settings › Security section header",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "守护的内容"
+          }
+        }
+      }
+    },
+    "Guarding" : {
+      "comment" : "Badge on the address Cubby is guarding (the one you copied last)",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "守护中"
           }
         }
       }
@@ -3491,6 +3887,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "荧光笔（H）"
+          }
+        }
+      }
+    },
+    "Hints" : {
+      "comment" : "Settings › Security section header",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提示"
           }
         }
       }
@@ -3596,6 +4003,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按住 ⌥"
+          }
+        }
+      }
+    },
+    "I Changed It Myself" : {
+      "comment" : "Button on the replacement warning",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "是我自己换的"
           }
         }
       }
@@ -3957,6 +4375,28 @@
         }
       }
     },
+    "Litecoin" : {
+      "comment" : "Short name of a guarded kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "莱特币"
+          }
+        }
+      }
+    },
+    "Litecoin address" : {
+      "comment" : "Name of a guarded kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "莱特币地址"
+          }
+        }
+      }
+    },
     "Looks like a secret, not sent to %@" : {
       "comment" : "Inline translation error on a card",
       "localizations" : {
@@ -4108,6 +4548,17 @@
         }
       }
     },
+    "Needs Input Monitoring. Cubby only notices ⌘C and ⌘X and never records what you type. Without it, very fast replacements may go unnoticed." : {
+      "comment" : "Settings › Security: Input Monitoring row description",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要「输入监控」权限，只识别 ⌘C / ⌘X，不记录任何按键内容。没有该权限时，极快的替换可能发现不了"
+          }
+        }
+      }
+    },
     "Next to the pointer" : {
       "comment" : "Panel position option",
       "localizations" : {
@@ -4148,6 +4599,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "没有颜色类型的记录"
+          }
+        }
+      }
+    },
+    "No events yet" : {
+      "comment" : "Settings › Security: empty security log",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "还没有记录"
           }
         }
       }
@@ -4223,6 +4685,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "授权已失效（应用更新后签名变化）"
+          }
+        }
+      }
+    },
+    "No replacements in the last 30 days" : {
+      "comment" : "Settings › Security summary",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "近 30 天没有发现替换"
           }
         }
       }
@@ -4315,6 +4788,17 @@
         }
       }
     },
+    "Not allowed" : {
+      "comment" : "Input Monitoring status, same wording as System Settings",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未授权"
+          }
+        }
+      }
+    },
     "Not allowed yet. Choose “Allow Paste” when asked." : {
       "comment" : "Clipboard permission status. “Allow Paste” is the button title in the macOS prompt.",
       "localizations" : {
@@ -4355,6 +4839,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未授权，仅截图时需要"
+          }
+        }
+      }
+    },
+    "Not in ⌘1–⌘9 · can't be pasted or copied" : {
+      "comment" : "Footnote on a history item that replaced the address you copied",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不会出现在 ⌘1–⌘9 里，不能粘贴或复制"
           }
         }
       }
@@ -4486,6 +4981,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "暂停期间复制的内容不会保存"
+          }
+        }
+      }
+    },
+    "Now in your clipboard" : {
+      "comment" : "Replacement warning: label of the replacing value",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "现在剪贴板里的"
           }
         }
       }
@@ -4978,6 +5484,17 @@
         }
       }
     },
+    "Paste matched · %@" : {
+      "comment" : "Security log event. %@ = abbreviated value",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴核对一致 · %@"
+          }
+        }
+      }
+    },
     "Paste selection to %@ %@" : {
       "comment" : "Footer hint for ↩ while the pick-words card is open. %1$@ = app icon, %2$@ = app name",
       "localizations" : {
@@ -5094,6 +5611,17 @@
         }
       }
     },
+    "Pasted to “%@”, matches what you copied" : {
+      "comment" : "HUD after pasting an address from Cubby and checking it. %@ = app name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已粘贴到「%@」，与你复制的一致"
+          }
+        }
+      }
+    },
     "Pasted translation · from cache (%@)" : {
       "comment" : "HUD after pasting a cached translation",
       "localizations" : {
@@ -5101,6 +5629,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已粘贴译文 · 来自缓存（%@）"
+          }
+        }
+      }
+    },
+    "Pasted, matches what you copied" : {
+      "comment" : "HUD after pasting an address and checking it",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已粘贴，与你复制的一致"
           }
         }
       }
@@ -5896,6 +6435,17 @@
         }
       }
     },
+    "Restore What I Copied" : {
+      "comment" : "Primary button on the replacement warning",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复我复制的地址"
+          }
+        }
+      }
+    },
     "Restore default (%@)" : {
       "localizations" : {
         "zh-Hans" : {
@@ -5912,6 +6462,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "恢复默认快捷键"
+          }
+        }
+      }
+    },
+    "Restored what you copied · %@" : {
+      "comment" : "Security log event. %@ = abbreviated value",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已恢复你复制的 · %@"
           }
         }
       }
@@ -5989,6 +6550,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "与系统截图相同"
+          }
+        }
+      }
+    },
+    "Same start and end, %lld characters in the middle differ" : {
+      "comment" : "Replacement warning: the new value only differs in the middle. %lld = characters",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Same start and end, %lld character in the middle differs"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Same start and end, %lld characters in the middle differ"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开头结尾相同，中间 %lld 位不同"
           }
         }
       }
@@ -6308,6 +6898,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "安全键盘输入: %@"
+          }
+        }
+      }
+    },
+    "Security" : {
+      "comment" : "Settings pane: clipboard security (address guard)",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪贴板安全"
+          }
+        }
+      }
+    },
+    "Security Log" : {
+      "comment" : "Settings › Security section header",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安全记录"
           }
         }
       }
@@ -6672,6 +7284,17 @@
         }
       }
     },
+    "Show the check result after pasting an address" : {
+      "comment" : "Settings › Security toggle: show the paste check HUD",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴地址后显示核对结果"
+          }
+        }
+      }
+    },
     "Show translations on cards" : {
       "localizations" : {
         "zh-Hans" : {
@@ -6710,6 +7333,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "小"
+          }
+        }
+      }
+    },
+    "Solana" : {
+      "comment" : "Short name of a guarded kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solana"
+          }
+        }
+      }
+    },
+    "Solana address" : {
+      "comment" : "Name of a guarded kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solana 地址"
           }
         }
       }
@@ -7004,6 +7649,28 @@
         }
       }
     },
+    "TRON" : {
+      "comment" : "Short name of a guarded kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "波场 TRON"
+          }
+        }
+      }
+    },
+    "TRON address" : {
+      "comment" : "Name of a guarded kind",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "波场 (TRON) 地址"
+          }
+        }
+      }
+    },
     "Tab" : {
       "comment" : "Key name read by VoiceOver",
       "localizations" : {
@@ -7144,6 +7811,17 @@
         }
       }
     },
+    "Tell more accurately whether you copied it" : {
+      "comment" : "Settings › Security: Input Monitoring row title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更准确地判断「是不是你复制的」"
+          }
+        }
+      }
+    },
     "Test Connection" : {
       "localizations" : {
         "zh-Hans" : {
@@ -7247,6 +7925,17 @@
         }
       }
     },
+    "The address in your clipboard was replaced" : {
+      "comment" : "Title of the replacement warning",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪贴板里的地址被替换了"
+          }
+        }
+      }
+    },
     "The app's signature changed after an update, so the old Accessibility entry no longer applies." : {
       "comment" : "Panel warning detail",
       "localizations" : {
@@ -7254,6 +7943,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "应用更新后签名变化，系统中的旧授权条目已不再生效"
+          }
+        }
+      }
+    },
+    "The clipboard changed before pasting, so Cubby didn't paste it" : {
+      "comment" : "HUD when the clipboard was replaced between writing an address and pasting it",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴前剪贴板被改动了，Cubby 没有粘贴"
+          }
+        }
+      }
+    },
+    "The clipboard changed right after copying. Check it before you paste." : {
+      "comment" : "HUD when the clipboard was replaced right after copying an address from Cubby",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制后剪贴板马上被改动了，粘贴前请先确认"
           }
         }
       }
@@ -7475,6 +8186,17 @@
         }
       }
     },
+    "This item replaced what you copied, so Cubby won't paste or copy it" : {
+      "comment" : "Panel footer after trying to paste a replaced item",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这一条替换了你复制的内容，Cubby 不会粘贴或复制它"
+          }
+        }
+      }
+    },
     "This language pair isn't supported" : {
       "comment" : "Screenshot translation failure\nTranslation failure title",
       "localizations" : {
@@ -7482,6 +8204,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "不支持该语言组合"
+          }
+        }
+      }
+    },
+    "Time" : {
+      "comment" : "Settings › Security log column",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时间"
           }
         }
       }
@@ -7504,6 +8237,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "今天"
+          }
+        }
+      }
+    },
+    "Today %@" : {
+      "comment" : "Security log time of an event today, e.g. “Today 16:52”",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天 %@"
           }
         }
       }
@@ -8092,6 +8836,28 @@
         }
       }
     },
+    "Unknown source (background program)" : {
+      "comment" : "Replacement warning: source of the new value",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来源未知（后台程序）"
+          }
+        }
+      }
+    },
+    "Unknown source · replaced the previous item" : {
+      "comment" : "Header of a history item that replaced the address you copied",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来源未知 · 替换了上一条"
+          }
+        }
+      }
+    },
     "Unreadable, read-only" : {
       "comment" : "Diagnostics: history load issue",
       "localizations" : {
@@ -8179,6 +8945,17 @@
         }
       }
     },
+    "Verified" : {
+      "comment" : "Badge on an address whose checksum is valid",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已核验"
+          }
+        }
+      }
+    },
     "Version %@" : {
       "comment" : "About: app version",
       "localizations" : {
@@ -8247,6 +9024,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "显示方式（← / → 切换）"
+          }
+        }
+      }
+    },
+    "View Security Log" : {
+      "comment" : "Link on the replacement warning: open Settings › Security",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看安全记录"
           }
         }
       }
@@ -8435,6 +9223,28 @@
         }
       }
     },
+    "You copied" : {
+      "comment" : "Replacement warning: label of the value you copied",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你复制的"
+          }
+        }
+      }
+    },
+    "You haven't copied anything since, and %@ stayed in front the whole time, so a background program most likely did it." : {
+      "comment" : "Replacement warning when Input Monitoring confirmed no ⌘C / ⌘X. %@ = frontmost app",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这期间你没有再复制，前台也一直是 %@，很可能是后台程序干的。"
+          }
+        }
+      }
+    },
     "You're running %@." : {
       "comment" : "Update banner detail. %@ = installed version",
       "localizations" : {
@@ -8463,6 +9273,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已是最新版本（%@）"
+          }
+        }
+      }
+    },
+    "Your clipboard has already changed, so nothing was restored" : {
+      "comment" : "HUD after Restore when the clipboard no longer holds the replacing value",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剪贴板已经变了，没有恢复"
           }
         }
       }
@@ -8507,6 +9328,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "标注后无法缩放"
+          }
+        }
+      }
+    },
+    "bank card number" : {
+      "comment" : "Name of a guarded kind in the middle of a sentence",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "银行卡号"
           }
         }
       }
@@ -8868,6 +9700,17 @@
         }
       }
     },
+    "macOS doesn't tell apps who reads the clipboard. To keep other apps from reading it, go to System Settings › Privacy & Security › Paste from Other Apps and set apps you don't recognize to Ask." : {
+      "comment" : "Settings › Security footer",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 不会告诉应用谁读取了剪贴板。要防止其他应用偷看剪贴板，请在系统设置 › 隐私与安全性 ›「从其他 App 粘贴」把不熟悉的应用设为「询问」。"
+          }
+        }
+      }
+    },
     "macOS may ask you to quit and reopen Cubby after granting access." : {
       "localizations" : {
         "zh-Hans" : {
@@ -8981,6 +9824,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "文字"
+          }
+        }
+      }
+    },
+    "the same app" : {
+      "comment" : "Replacement warning: unknown app name",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同一个应用"
           }
         }
       }

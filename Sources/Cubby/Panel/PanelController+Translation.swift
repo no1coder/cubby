@@ -41,6 +41,8 @@ extension PanelController {
 
     /// 粘贴译文：写入后提升原条目，投递段与条目粘贴相同；HUD 注明引擎（A7）
     func performTranslation(_ request: TranslationPasteRequest) {
+        // 卡片跟着选中项走到被替换进来的条目时同样拦下
+        guard !viewModel.rejectIfBlocked(request.item.id) else { return }
         guard paster.write(request) else {
             reportPasteFailure(request)
             return
@@ -69,6 +71,7 @@ extension PanelController {
 
     /// 复制译文（⌘C、右键「复制译文」）：写入剪贴板，面板留着
     func copyTranslation(_ request: TranslationPasteRequest) -> Bool {
-        paster.write(request)
+        guard !viewModel.rejectIfBlocked(request.item.id) else { return false }
+        return paster.write(request)
     }
 }

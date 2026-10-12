@@ -7,11 +7,15 @@ import CubbyCore
 extension PanelController {
     func configureTextPick() {
         viewModel.onPastePicked = { [weak self] request in self?.performPicked(request) }
-        viewModel.onCopyPicked = { [weak self] request in self?.paster.write(plainText: request.text) ?? false }
+        viewModel.onCopyPicked = { [weak self] request in
+            guard let self, !self.viewModel.rejectIfBlocked(request.itemID) else { return false }
+            return self.paster.write(plainText: request.text)
+        }
     }
 
     /// 粘贴所选：写入后与条目粘贴同一投递段——提升原条目 → 无动画隐藏面板 → ⌘V（没有直接粘贴时提示已复制）
     private func performPicked(_ request: TextPickRequest) {
+        guard !viewModel.rejectIfBlocked(request.itemID) else { return }
         guard paster.write(plainText: request.text) else {
             NSSound.beep()
             viewModel.showToast(.error(TextPickCopy.copyFailed))

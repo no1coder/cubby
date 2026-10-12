@@ -93,7 +93,10 @@ Debug builds accept `--scenario <name>` to open the UI in a known state. In this
 | `help` | The panel with the shortcut help overlay |
 | `search:<text>` | The panel with `<text>` typed into the search field |
 | `category:<name>` | The panel filtered to `all`, `text`, `link`, `image`, `file`, `color` or `favorite` |
-| `settings:<pane>` | The settings window on `general`, `history`, `privacy`, `translation` (macOS 26) or `about` |
+| `settings:<pane>` | The settings window on `general`, `history`, `security`, `privacy`, `translation` (macOS 26) or `about` (with `--demo-history`, `security` shows a few made-up security log entries) |
+| `security:alert` / `security:alert:no-monitoring` | The address replacement warning with made-up Ethereum addresses, with and without Input Monitoring (the menu bar icon turns into the red pill). Nothing is read from or written to your clipboard |
+| `security:hud` | The paste check HUD shown after pasting an address from Cubby (stays on screen for the capture) |
+| `security:panel` | The panel scrolled to the address guard items of `--demo-history`: an Ethereum address marked **Guarding**, the red replaced record, a TRON address and a bank card number. Needs `--demo-history` |
 | `onboarding` | The first-launch guide |
 | `guide` | The user guide window (the English or Simplified Chinese guide, following the app language) |
 | `guide:<text>` | The user guide with `<text>` in its search field |

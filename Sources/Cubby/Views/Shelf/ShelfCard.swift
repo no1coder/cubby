@@ -14,6 +14,9 @@ struct ShelfCard: View {
     var isOnClothesline = false
     /// ⌥↩ 行内问题上的按钮
     var onInlineAction: () -> Void = {}
+    /// 地址守护的标记（敏感值、被替换进来的红色记录）
+    var security: CardSecurityMarker?
+    var onShowDetails: () -> Void = {}
 
     static let width: CGFloat = 214
     /// 选中卡片上浮的距离
@@ -24,7 +27,10 @@ struct ShelfCard: View {
 
     var body: some View {
         let style = CardStyle(item: item)
-        let palette = style.palette(colorScheme, increasedContrast: contrast == .increased)
+        let palette =
+            security?.isTampered == true
+            ? .tampered(colorScheme, increasedContrast: contrast == .increased)
+            : style.palette(colorScheme, increasedContrast: contrast == .increased)
         let shape = RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
 
         VStack(spacing: 0) {
@@ -63,6 +69,8 @@ struct ShelfCard: View {
             PeekContent(peek: peek, item: item, imageURL: imageURL)
                 .padding(ShelfMetrics.contentPadding)
                 .e2eAnchor("list.peek.\(item.id)")
+        } else if let security {
+            ShelfSecurityBody(marker: security, item: item, palette: palette, onDetails: onShowDetails)
         } else {
             ShelfCardBody(item: item, style: style, palette: palette, keywords: keywords, imageURL: imageURL)
                 .overlay(alignment: .topTrailing) { if isOnClothesline { ClotheslineBadge() } }
@@ -99,8 +107,12 @@ struct ShelfCard: View {
     }
 
     private var accessibilityLabel: String {
-        [item.source?.name ?? TextStats.unknownSource, item.title, TimeFormatting.relative(item.createdAt)]
-            .joined(separator: " · ")
+        [
+            item.source?.name ?? TextStats.unknownSource, item.title, security?.accessibilityNote,
+            TimeFormatting.relative(item.createdAt),
+        ]
+        .compactMap { $0 }
+        .joined(separator: " · ")
     }
 }
 

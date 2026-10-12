@@ -12,10 +12,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "App")
 
     var store: ClipStore?
-    private var monitor: ClipboardMonitor?
+    var monitor: ClipboardMonitor?
     var panel: PanelController?
     var statusBar: StatusBarController?
-    private var settingsWindow: SettingsWindowController?
+    var settingsWindow: SettingsWindowController?
+    /// 地址守护（docs/UI-UPGRADE-PLAN.md §6，接线见 AppDelegate+Security）
+    var addressGuard: AddressGuardController?
+    var tamperAlert: TamperAlertController?
+    let inputMonitor = InputMonitor()
+    /// 被判定为替换的那次剪贴板变化（按 changeCount 配对），随后入历史时来源记为未知
+    var tamperAwaitingRecord: (incident: TamperIncident, changeCount: Int)?
+    /// 剪贴板监听已启动（调试走查不启动，守护也不启动）
+    var isGuardingClipboard = false
     private var onboardingWindow: OnboardingWindowController?
     /// 使用说明窗口：第一次打开时才创建并载入文档
     private lazy var userGuide = UserGuideWindowController()
@@ -64,14 +72,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // 设置页、翻译、使用说明与翻译演示用不到剪贴板：不启动监听，避免读取用户的剪贴板
         let skipsClipboard = [
             "settings:", "translation:", "guide", PanelTranslationDemo.prefix, "screenshot:translate-demo",
+            SecurityDemo.prefix,
         ]
         .contains {
             Self.debugScenario?.hasPrefix($0) == true
         }
         // 演示历史只用于截图：不记录剪贴板
-        if !skipsClipboard, !DesignDemoHistory.isRequested { monitor?.start() }
+        if !skipsClipboard, !DesignDemoHistory.isRequested {
+            monitor?.start()
+            startAddressGuard()
+        }
         #else
         monitor?.start()
+        startAddressGuard()
         #endif
         lastWorkingHotKeys[.togglePanel] = settings.hotKey
         lastWorkingHotKeys[.screenshot] = settings.screenshotHotKey
@@ -85,6 +98,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         registerHotKeys()
         #endif
         observeSettings()
+        observeAddressGuard()
         imageTextIndexer?.start()
         store?.backfillThumbnails()
         // 更新提醒：升级后清除记住的版本、到期就查，之后每小时与唤醒时再判断（docs/UPDATE-REMINDER-DESIGN.md U1）
@@ -111,6 +125,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             limit: settings.historyLimit
         )
         let panel = PanelController(store: store, settings: settings)
+        let addressGuard = makeAddressGuard()
+        self.addressGuard = addressGuard
         let screenshots = makeScreenshotCoordinator(store: store, panel: panel)
         let translationSettings = makeTranslationSettings()
         let settingsWindow = SettingsWindowController(
@@ -118,12 +134,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             store: store,
             updates: updates,
             translation: translationSettings,
+            addressGuard: addressGuard,
             onShortcutRecordingChange: { [weak self] in self?.setShortcutRecording($0) },
             openUserGuide: { [weak self] in self?.showUserGuide() }
         )
         configureTranslation(screenshots: screenshots, panel: panel, store: store, settingsWindow: settingsWindow)
         let statusBar = makeStatusBar(panel: panel, settingsWindow: settingsWindow, screenshots: screenshots)
         connectPanel(panel, settingsWindow: settingsWindow, statusBar: statusBar)
+        tamperAlert = makeTamperAlert(settingsWindow: settingsWindow)
+        connectAddressGuard(to: panel, settingsWindow: settingsWindow)
 
         self.store = store
         self.panel = panel
@@ -137,8 +156,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             settings: settings,
             recognizer: VisionImageTextRecognizer()
         )
-        self.monitor = ClipboardMonitor { [weak self] capture, source in
-            self?.capture(capture, from: source)
+        self.monitor = ClipboardMonitor { [weak self] capture, source, changeCount in
+            self?.capture(capture, from: source, changeCount: changeCount)
         }
         return panel
     }
@@ -227,7 +246,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 showOnboarding: { [weak self] in self?.showOnboarding() },
                 showUserGuide: { [weak self] in self?.showUserGuide() },
                 clearHistory: { [weak self] in self?.confirmClearHistory() },
-                checkForUpdates: { [weak self] in self?.updates.checkInteractively() }
+                checkForUpdates: { [weak self] in self?.updates.checkInteractively() },
+                showTamperAlert: { [weak self] in self?.showPendingTamperAlert() }
             )
         )
     }
@@ -305,6 +325,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             clothesline?.debugShow(hoveringSecond: scenario.hasSuffix(":hover"))
         } else if scenario == "clothesline:edit" {
             debugEditOnClothesline()
+        } else if scenario.hasPrefix(SecurityDemo.prefix) {
+            applySecurityScenario(scenario)
         } else if scenario.hasPrefix("screenshot:") {
             // screenshot:<名称>，见 ScreenshotCoordinator.startDebugScenario
             screenshots?.start(.debugScenario(scenario))
@@ -330,6 +352,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         monitor?.stop()
+        inputMonitor.stop()
         imageTextIndexer?.stop()
         store?.discardUndo()
         store?.flush()
@@ -338,13 +361,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - 剪贴板
 
     /// 摘要计算、TIFF 转码与图片落盘在后台完成（大图不卡主线程），按复制顺序入历史
-    private func capture(_ capture: PasteboardCapture, from source: SourceApp?) {
+    /// 被判定为替换的内容同样入历史，但来源记为未知（不是前台应用复制的），入库后关联安全记录
+    private func capture(_ capture: PasteboardCapture, from source: SourceApp?, changeCount: Int) {
+        let tamper = takeTamperAwaitingRecord(changeCount: changeCount)
         guard settings.shouldCapture(from: source), settings.shouldRecord(capture) else { return }
         switch capture {
         case .content(let content, let linkTitle):
             // 入历史后交给复制时自动翻译（只处理文本，图片不自动翻译）
-            if let recording = store?.recordInBackground(content, source: source, linkTitle: linkTitle) {
+            let recordedSource = tamper == nil ? source : nil
+            if let recording = store?.recordInBackground(content, source: recordedSource, linkTitle: linkTitle) {
                 clipAutoTranslator?.track(recording)
+                if let tamper { linkTamper(tamper, to: recording) }
             }
         case .rawImage(let image): store?.recordInBackground(image, source: source)
         }

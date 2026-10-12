@@ -340,9 +340,11 @@ final class PanelController {
             viewModel.showToast(.error(failure))
             return
         }
+        // 地址守护：告知 Cubby 自己的写入；敏感值写入后核对剪贴板（见 PanelController+Security）
+        let check = guardWrite(of: item)
         paster.deliver(
             promoting: item.id, copyOnly: mode == .copyOnly, target: viewModel.target, anchor: anchor,
-            copied: PanelPaster.copiedMessage, pasted: nil
+            copied: PanelPaster.copiedMessage, pasted: nil, check: check
         ) { hide(animated: false) }
     }
 

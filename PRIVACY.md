@@ -20,6 +20,7 @@ Everything lives in `~/Library/Application Support/Cubby`:
 | --- | --- |
 | `history.json` | Text, links and colors you copied; the RTF / HTML versions of rich text; for copied files, their paths (not the files themselves); the name and bundle ID of the app you copied from; the time of copying; whether an item is a favorite; and translations of items you translated |
 | `Images/` | Images you copied, and translated versions of images you translated |
+| `security-log.json` | The address guard's security log (Settings › Security): the time, the kind (for example Ethereum address), a shortened value like `0x5aAe…eAed`, the app in front, and which history item replaced your copy. Never the full value. Entries are kept for 90 days, except the ones that still keep a replaced item blocked |
 
 - The folder can only be opened by your macOS user (permissions 0700), and the files can only be read by you (0600).
 - The folder is excluded from Time Machine backups.
@@ -37,6 +38,8 @@ If you set up a large language model for screenshot translation, its API key is 
 - Anything copied in apps in your Ignored Apps list (Settings › Privacy). By default this list includes 1Password, Bitwarden, KeePassXC, Keychain Access and Passwords.
 - Text that looks like a secret, such as API keys, private keys and JWTs. This is on by default and can be turned off in Settings › Privacy. It is a best-effort check and cannot recognize every format.
 - Anything copied while recording is paused.
+
+While the address guard is on (Settings › Security, on by default), Cubby also looks at short text on the clipboard that it doesn't record, including text marked as concealed or transient, to tell whether an address or card number you copied was swapped. This check happens in memory only: that text is never stored, logged or sent anywhere, and Cubby forgets it as soon as you copy something else or turn the guard off.
 
 Text that looks like a secret is also never sent to a large language model for translation unless you confirm it, and text that looks like a secret in an image is never sent.
 
@@ -77,8 +80,9 @@ Cubby does not download or install updates by itself: **View & Download** opens 
 | Accessibility | Sending <kbd>⌘V</kbd> to the frontmost app when you choose to paste. Cubby does not use it to read other apps' windows or content. |
 | Screen Recording (only for screenshots) | Capturing your screen when you take a screenshot. See [Screenshots](#screenshots). |
 | Login item (optional) | Starting Cubby when you log in, if you enable it in Settings › General |
+| Input Monitoring (optional) | Only if you allow it in Settings › Security: noticing when you press <kbd>⌘C</kbd> or <kbd>⌘X</kbd>, so the address guard can tell a copy you made from a replacement. Cubby checks each key press for those two shortcuts and discards it right away; it never records, stores or logs what you type |
 
-The global shortcuts (open the panel, take a screenshot) are registered through the standard macOS hot key API. Cubby does not monitor your keystrokes.
+The global shortcuts (open the panel, take a screenshot) are registered through the standard macOS hot key API. Apart from the optional Input Monitoring check above, Cubby does not monitor your keystrokes.
 
 ### Screenshots
 
@@ -155,6 +159,7 @@ Cubby 不收集、不上传、不分享任何数据。没有账户、统计、�
 | --- | --- |
 | `history.json` | 复制的文本、链接和颜色；富文本的 RTF / HTML 版本；复制文件时记录其路径（不复制文件本身）；复制时所在应用的名称和 bundle ID；复制时间；是否收藏；你翻译过的条目的译文 |
 | `Images/` | 复制的图片，以及你翻译过的图片的译后版本 |
+| `security-log.json` | 地址守护的安全记录（设置 › 剪贴板安全）：时间、类型（如以太坊地址）、缩写的值（如 `0x5aAe…eAed`）、当时的前台应用，以及替换了你复制内容的那条历史。从不保存完整的值。记录保留 90 天，仍在禁止被替换条目的记录除外 |
 
 - 目录仅限你的 macOS 用户访问（权限 0700），文件仅限你读取（0600）。
 - 目录排除在 Time Machine 备份之外。
@@ -172,6 +177,8 @@ Cubby 不收集、不上传、不分享任何数据。没有账户、统计、�
 - 在排除列表（设置 › 隐私）中的应用里复制的内容。默认列表包含 1Password、Bitwarden、KeePassXC、钥匙串访问和「密码」。
 - 疑似密钥的文本，如 API Key、私钥、JWT。该选项默认开启，可在「设置 › 隐私」中关闭。这是尽力而为的检测，无法识别所有格式。
 - 暂停记录期间复制的内容。
+
+地址守护开启时（设置 › 剪贴板安全，默认开启），为了判断你复制的地址或卡号有没有被换掉，Cubby 也会查看剪贴板上不记录的短文本，包括标记为机密或临时的内容。这一检查只在内存里进行：这些文本不会被保存、写入日志或发送到任何地方，你复制别的内容或关闭守护后即被丢弃。
 
 疑似密钥的文本也不会在未经你确认的情况下发送到大模型翻译；图片中的疑似密钥从不发送。
 
@@ -212,8 +219,9 @@ Cubby 不会自行下载或安装更新：「查看并下载」只是在默认�
 | 辅助功能 | 在你选择粘贴时向当前应用发送 <kbd>⌘V</kbd>。Cubby 不会用它读取其他应用的窗口或内容。 |
 | 屏幕录制（仅截图时需要） | 在你截图时捕捉屏幕画面，详见[截图](#截图)。 |
 | 登录项（可选） | 在「设置 › 通用」中开启后，登录时自动启动 Cubby |
+| 输入监控（可选） | 仅在你于「设置 › 剪贴板安全」中授权后：识别你按下 <kbd>⌘C</kbd> 或 <kbd>⌘X</kbd>，让地址守护分辨是你自己复制的还是被替换的。每次按键只判断是不是这两个快捷键，随即丢弃，从不记录、保存或写入日志 |
 
-全局快捷键（打开面板、截图）通过 macOS 标准的热键接口注册，Cubby 不监听你的键盘输入。
+全局快捷键（打开面板、截图）通过 macOS 标准的热键接口注册。除上面可选的输入监控检查外，Cubby 不监听你的键盘输入。
 
 ### 截图
 

@@ -174,6 +174,7 @@ final class UpdateCoordinator {
     func copyUpgradeCommand() -> Bool {
         do {
             try PasteboardWriter.write(text: HomebrewInstall.upgradeCommand, to: environment.pasteboard)
+            OwnPasteboardWrites.record(environment.pasteboard)
             return true
         } catch {
             logger.error("Couldn't copy the upgrade command: \(String(describing: error), privacy: .public)")

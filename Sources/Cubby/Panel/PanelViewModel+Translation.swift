@@ -22,6 +22,7 @@ extension PanelViewModel {
 
     /// 对指定条目打开翻译卡（右键菜单、⌘T）
     func openTranslation(for item: ClipItem) {
+        guard !rejectIfBlocked(item.id) else { return }
         guard let translation else {
             NSSound.beep()
             return
@@ -65,6 +66,7 @@ extension PanelViewModel {
     /// 对指定条目行内翻译后粘贴（右键菜单、⌥↩）。翻译卡开着时交给卡片：卡片先跟到这一条，
     /// 再「完成后粘贴」（云端引擎停留中也立即发送）——只发一次，不另起行内任务
     func translateAndPaste(_ item: ClipItem) {
+        guard !rejectIfBlocked(item.id) else { return }
         guard let translation else {
             NSSound.beep()
             return
@@ -84,6 +86,7 @@ extension PanelViewModel {
 
     /// 右键「复制译文」：复制该条已缓存的译文，留在面板
     func copyCachedTranslation(_ item: ClipItem) {
+        guard !rejectIfBlocked(item.id) else { return }
         guard let translation, let result = translation.cachedResult(for: item) else {
             NSSound.beep()
             return

@@ -51,5 +51,6 @@ enum AccessibilityAuthorization {
         pasteboard.clearContents()
         pasteboard.setString(resetCommand, forType: .string)
         pasteboard.setData(Data(), forType: PasteboardReader.markerType)
+        OwnPasteboardWrites.record(pasteboard)
     }
 }

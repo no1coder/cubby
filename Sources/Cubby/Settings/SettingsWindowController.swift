@@ -9,6 +9,8 @@ enum SettingsPane: CaseIterable {
     case screenshots
     /// 截图翻译（仅 macOS 26 显示）
     case translation
+    /// 剪贴板安全：地址守护（docs/UI-UPGRADE-PLAN.md §6）
+    case security
     case privacy
     case about
 
@@ -18,6 +20,7 @@ enum SettingsPane: CaseIterable {
         case .history: String(localized: "History", comment: "Settings pane")
         case .screenshots: String(localized: "Screenshots", comment: "Settings pane")
         case .translation: String(localized: "Translation", comment: "Settings pane")
+        case .security: String(localized: "Security", comment: "Settings pane: clipboard security (address guard)")
         case .privacy: String(localized: "Privacy", comment: "Settings pane")
         case .about: String(localized: "About", comment: "Settings pane")
         }
@@ -29,6 +32,7 @@ enum SettingsPane: CaseIterable {
         case .history: "clock.arrow.circlepath"
         case .screenshots: "camera.viewfinder"
         case .translation: "translate"
+        case .security: "checkmark.shield"
         case .privacy: "hand.raised"
         case .about: "info.circle"
         }
@@ -46,6 +50,7 @@ final class SettingsWindowController {
     private let openUserGuide: () -> Void
     /// 「设置 › 翻译」的状态；nil 表示不提供翻译（macOS 26 以前），不显示该页
     private let translation: TranslationSettingsModel?
+    private let addressGuard: AddressGuardController
     private var window: NSWindow?
     private var tabController: SettingsTabViewController?
     private var closeObserver: (any NSObjectProtocol)?
@@ -57,6 +62,7 @@ final class SettingsWindowController {
         store: ClipStore,
         updates: UpdateCoordinator,
         translation: TranslationSettingsModel?,
+        addressGuard: AddressGuardController,
         onShortcutRecordingChange: @escaping (Bool) -> Void,
         openUserGuide: @escaping () -> Void
     ) {
@@ -65,6 +71,7 @@ final class SettingsWindowController {
         self.settings = settings
         self.store = store
         self.translation = translation
+        self.addressGuard = addressGuard
         self.onShortcutRecordingChange = onShortcutRecordingChange
     }
 
@@ -141,6 +148,8 @@ final class SettingsWindowController {
             AnyView(ScreenshotSettingsPane(settings: settings, onShortcutRecordingChange: onShortcutRecordingChange))
         case .translation:
             translation.map { AnyView(TranslationSettingsPane(model: $0, store: store)) }
+        case .security:
+            AnyView(SecuritySettingsPane(settings: settings, addressGuard: addressGuard))
         case .privacy:
             AnyView(PrivacySettingsPane(settings: settings))
         case .about:
