@@ -35,7 +35,7 @@ VERSION="$(read_version)"
 # 防呆：源 Info.plist 的版本号应与 VERSION 同步（产物以 VERSION 为准，这里只提醒）
 SOURCE_VERSION="$("$PLIST_BUDDY" -c "Print :CFBundleShortVersionString" "$CUBBY_ROOT/Resources/Info.plist" 2>/dev/null || true)"
 if [[ "$SOURCE_VERSION" != "${VERSION%%-*}" ]]; then
-    warn "Resources/Info.plist 的版本号（${SOURCE_VERSION:-缺失}）与 VERSION（$VERSION）不一致；产物以 VERSION 为准，请同步源文件"
+    warn "Resources/Info.plist 的版本号（${SOURCE_VERSION:-缺失}）与 VERSION（${VERSION}）不一致；产物以 VERSION 为准，请同步源文件"
 fi
 BUNDLE_ID="${BUNDLE_ID:-$CUBBY_DEFAULT_BUNDLE_ID}"
 [[ "$BUNDLE_ID" =~ ^[A-Za-z0-9.-]+$ ]] || die "BUNDLE_ID 只能包含字母、数字、点与连字符：'$BUNDLE_ID'"
@@ -51,7 +51,7 @@ BUILD_NUMBER="${BUILD_NUMBER:-$(default_build_number)}"
 [[ "$BUILD_NUMBER" =~ ^[0-9]+(\.[0-9]+){0,2}$ ]] || die "BUILD_NUMBER 必须是数字（可含最多两个点）：'$BUILD_NUMBER'"
 
 for guide in "${USER_GUIDES[@]}"; do
-    [[ -f "$CUBBY_ROOT/docs/$guide" ]] || die "缺少 docs/$guide（应用内使用说明）"
+    [[ -f "$CUBBY_ROOT/docs/$guide" ]] || die "缺少 docs/${guide}（应用内使用说明）"
 done
 
 # 签名身份与时间戳策略（先于编译确定，参数有误时尽早失败）
@@ -80,7 +80,7 @@ BIN_DIR="$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)"
 
 # ---------- 组装 .app ----------
 
-log "组装 $CUBBY_APP_NAME.app（版本 $VERSION，构建号 $BUILD_NUMBER，$BUNDLE_ID）"
+log "组装 $CUBBY_APP_NAME.app（版本 ${VERSION}，构建号 ${BUILD_NUMBER}，${BUNDLE_ID}）"
 rm -rf "$APP_DIR"
 mkdir -p "$APP_DIR/Contents/MacOS" "$APP_DIR/Contents/Resources"
 cp "$BIN_DIR/$CUBBY_APP_NAME" "$APP_DIR/Contents/MacOS/$CUBBY_APP_NAME"

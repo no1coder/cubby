@@ -70,7 +70,7 @@ if [[ "$MODE" == local ]]; then
     else
         mkdir -p "$(dirname "$OUTPUT")"
         render_cask >"$OUTPUT"
-        log "已生成 $OUTPUT（复制到 tap 仓库的 $CASK_PATH_IN_TAP 后提交即可）"
+        log "已生成 ${OUTPUT}（复制到 tap 仓库的 $CASK_PATH_IN_TAP 后提交即可）"
     fi
     exit 0
 fi
@@ -99,7 +99,7 @@ git_auth() {
         git "$@"
 }
 
-log "克隆 $TAP_REPO（$TAP_BRANCH）"
+log "克隆 ${TAP_REPO}（${TAP_BRANCH}）"
 git_auth clone --quiet --depth 1 --branch "$TAP_BRANCH" "https://github.com/$TAP_REPO.git" "$TAP_DIR"
 
 mkdir -p "$TAP_DIR/$(dirname "$CASK_PATH_IN_TAP")"
@@ -115,7 +115,7 @@ fi
 cd "$TAP_DIR"
 git add "$CASK_PATH_IN_TAP"
 if git diff --cached --quiet; then
-    log "$CASK_PATH_IN_TAP 已是 $VERSION，无需更新"
+    log "$CASK_PATH_IN_TAP 已是 ${VERSION}，无需更新"
     exit 0
 fi
 

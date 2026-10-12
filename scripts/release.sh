@@ -51,7 +51,7 @@ export SIGN_IDENTITY
 KIND="$(identity_kind "$SIGN_IDENTITY")"
 
 if [[ "$SKIP_NOTARIZE" -eq 0 && "$KIND" != developer-id ]]; then
-    die "公证要求 Developer ID Application 身份，当前为 $SIGN_IDENTITY（$KIND）"
+    die "公证要求 Developer ID Application 身份，当前为 ${SIGN_IDENTITY}（${KIND}）"
 fi
 
 if git -C "$CUBBY_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1 \
@@ -59,7 +59,7 @@ if git -C "$CUBBY_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1 \
     warn "工作区有未提交的改动，产物可能与 tag 不一致"
 fi
 
-log "发布 $CUBBY_APP_NAME $VERSION（签名：$SIGN_IDENTITY；公证：$([[ $SKIP_NOTARIZE -eq 1 ]] && echo 跳过 || echo 是)）"
+log "发布 $CUBBY_APP_NAME ${VERSION}（签名：${SIGN_IDENTITY}；公证：$([[ $SKIP_NOTARIZE -eq 1 ]] && echo 跳过 || echo 是)）"
 rm -rf "$DIST_DIR"
 mkdir -p "$DIST_DIR"
 

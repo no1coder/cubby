@@ -23,7 +23,7 @@ require_env() {
     local name
     for name in "$@"; do
         [[ -n "${!name:-}" ]] || {
-            echo "错误：缺少环境变量 $name（请在 GitHub Environment release 中配置同名 secret）" >&2
+            echo "错误：缺少环境变量 ${name}（请在 GitHub Environment release 中配置同名 secret）" >&2
             exit 1
         }
     done

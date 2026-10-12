@@ -34,7 +34,7 @@ ensure_dmgbuild() {
     fi
 
     local python="${DMGBUILD_PYTHON:-python3}"
-    command -v "$python" >/dev/null || die "找不到 $python；dmgbuild 需要 Python ≥ 3.10（brew install python，或设置 DMGBUILD_PYTHON）"
+    command -v "$python" >/dev/null || die "找不到 ${python}；dmgbuild 需要 Python ≥ 3.10（brew install python，或设置 DMGBUILD_PYTHON）"
     "$python" -c 'import sys; sys.exit(sys.version_info < (3, 10))' \
         || die "dmgbuild 需要 Python ≥ 3.10，当前 $python 为 $("$python" --version 2>&1)；可设置 DMGBUILD_PYTHON 指定解释器"
 
@@ -59,7 +59,7 @@ DIST_DIR="$CUBBY_ROOT/dist"
 DMG_PATH="$DIST_DIR/$CUBBY_APP_NAME-$VERSION.dmg"
 VOLUME_NAME="$CUBBY_APP_NAME"
 
-[[ -d "$APP_PATH" ]] || die "找不到 $APP_PATH，请先运行 ./scripts/build-app.sh"
+[[ -d "$APP_PATH" ]] || die "找不到 ${APP_PATH}，请先运行 ./scripts/build-app.sh"
 APP_PATH="$(cd "$APP_PATH" && pwd)"
 for tool in hdiutil iconutil; do
     command -v "$tool" >/dev/null || die "需要 macOS 自带的 $tool"
@@ -117,7 +117,7 @@ done
 
 SIGN_IDENTITY="${SIGN_IDENTITY:-}"
 if [[ -n "$SIGN_IDENTITY" && "$(identity_kind "$SIGN_IDENTITY")" == developer-id ]]; then
-    log "签名 DMG（$SIGN_IDENTITY）"
+    log "签名 DMG（${SIGN_IDENTITY}）"
     codesign --force --timestamp --sign "$SIGN_IDENTITY" "$DMG_PATH"
     codesign --verify --strict --verbose=2 "$DMG_PATH"
 else
@@ -133,7 +133,7 @@ hdiutil attach "$DMG_PATH" -readonly -nobrowse -noautoopen -mountpoint "$MOUNT_D
 [[ -d "$MOUNT_DIR/$CUBBY_APP_NAME.app" ]] || die "DMG 中缺少 $CUBBY_APP_NAME.app"
 [[ "$(readlink "$MOUNT_DIR/Applications")" == "/Applications" ]] || die "DMG 中缺少 Applications 快捷方式"
 for hidden in .DS_Store .background.tiff .VolumeIcon.icns; do
-    [[ -f "$MOUNT_DIR/$hidden" ]] || die "DMG 中缺少 $hidden（安装窗口外观）"
+    [[ -f "$MOUNT_DIR/$hidden" ]] || die "DMG 中缺少 ${hidden}（安装窗口外观）"
 done
 # 卷根目录须带「自定义图标」标记（FinderInfo 第 9–10 字节 finderFlags 的 kHasCustomIcon = 0x0400），
 # 否则 Finder 不显示卷图标；该标记由 dmgbuild 调用 SetFile（Xcode 命令行工具）设置
@@ -144,4 +144,4 @@ hdiutil detach "$MOUNT_DIR" -quiet
 rmdir "$MOUNT_DIR" 2>/dev/null || true
 MOUNT_DIR=""
 
-log "完成：$DMG_PATH（$(du -h "$DMG_PATH" | cut -f1)）"
+log "完成：${DMG_PATH}（$(du -h "$DMG_PATH" | cut -f1)）"

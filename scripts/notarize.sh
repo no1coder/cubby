@@ -34,7 +34,7 @@ if [[ -n "${NOTARY_KEY_PATH:-}" ]]; then
     if [[ -n "${NOTARY_ISSUER_ID:-}" ]]; then
         AUTH_ARGS+=(--issuer "$NOTARY_ISSUER_ID")
     fi
-    AUTH_DESC="App Store Connect API Key（$NOTARY_KEY_ID）"
+    AUTH_DESC="App Store Connect API Key（${NOTARY_KEY_ID}）"
 else
     NOTARY_PROFILE="${NOTARY_PROFILE:-cubby-notary}"
     AUTH_ARGS=(--keychain-profile "$NOTARY_PROFILE")
@@ -61,7 +61,7 @@ esac
 # ---------- 提交并等待结果 ----------
 
 RESULT_JSON="$WORK_DIR/submit.json"
-log "提交公证：$(basename "$TARGET")（$AUTH_DESC）"
+log "提交公证：$(basename "$TARGET")（${AUTH_DESC}）"
 set +e
 xcrun notarytool submit "$SUBMIT_FILE" "${AUTH_ARGS[@]}" \
     --wait --timeout "${NOTARY_TIMEOUT:-1h}" --output-format json >"$RESULT_JSON"
@@ -79,7 +79,7 @@ if [[ "$STATUS" != "Accepted" ]]; then
         log "公证日志（notarytool log）："
         xcrun notarytool log "$SUBMISSION_ID" "${AUTH_ARGS[@]}" >&2 || true
     fi
-    die "公证未通过（notarytool 退出码 $SUBMIT_EXIT），请根据上方日志修复后重试"
+    die "公证未通过（notarytool 退出码 ${SUBMIT_EXIT}），请根据上方日志修复后重试"
 fi
 
 # 公证通过时也保留日志中的警告，便于排查

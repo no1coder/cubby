@@ -38,7 +38,7 @@ TEST_BUNDLE="$(find "$BIN_PATH" -maxdepth 1 -name '*PackageTests.xctest' | head 
 TEST_BINARY="$TEST_BUNDLE/Contents/MacOS/$(basename "$TEST_BUNDLE" .xctest)"
 
 [[ -f "$PROFDATA" ]] || {
-    echo "错误：找不到 $PROFDATA，请先运行 swift test --enable-code-coverage" >&2
+    echo "错误：找不到 ${PROFDATA}，请先运行 swift test --enable-code-coverage" >&2
     exit 1
 }
 [[ -f "$TEST_BINARY" ]] || {

@@ -28,7 +28,7 @@ read_version() {
     [[ "$version" =~ $CUBBY_SEMVER_REGEX ]] || die "VERSION 内容不是合法的 SemVer：'$version'"
     # 环境变量 VERSION（如 make release VERSION=x.y.z 或 CI 从 tag 解析）只用于核对，不能覆盖文件
     if [[ -n "${VERSION:-}" && "${VERSION#v}" != "$version" ]]; then
-        die "环境变量 VERSION=$VERSION 与 VERSION 文件（$version）不一致；版本号以 VERSION 文件为准"
+        die "环境变量 VERSION=$VERSION 与 VERSION 文件（${version}）不一致；版本号以 VERSION 文件为准"
     fi
     printf '%s\n' "$version"
 }
