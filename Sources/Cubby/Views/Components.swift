@@ -119,6 +119,12 @@ enum TextHighlighter {
 
     static func attributed(_ text: String, keywords: [String], tint: Color) -> AttributedString {
         var attributed = AttributedString(text)
+        highlight(&attributed, text: text, keywords: keywords, tint: tint)
+        return attributed
+    }
+
+    /// 在已有的富文本上标出关键词（text 为 attributed 的原文）
+    static func highlight(_ attributed: inout AttributedString, text: String, keywords: [String], tint: Color) {
         for keyword in keywords where !keyword.isEmpty {
             var searchStart = text.startIndex
             for _ in 0..<maxMatchesPerKeyword {
@@ -130,7 +136,6 @@ enum TextHighlighter {
                 searchStart = range.upperBound
             }
         }
-        return attributed
     }
 
     /// 首个命中位置靠后时，从命中处前几个字符开始截取，保证卡片里能看到关键词
@@ -151,6 +156,8 @@ enum TextHighlighter {
 /// 卡片的配色方案：普通 / 代码 / 颜色
 struct CardPalette {
     let background: Color
+    /// 选中时的底色：普通卡略提亮，代码 / 颜色卡不变（靠外环与光晕区分）
+    var selectedBackground: Color?
     let primary: Color
     let secondary: Color
     let stroke: Color
@@ -165,24 +172,30 @@ struct CardPalette {
     private static let lightBackdropLuminance = 0.9
 
     static func standard(_ scheme: ColorScheme, increasedContrast: Bool = false) -> CardPalette {
-        CardPalette(
-            background: scheme == .dark ? Color.white.opacity(0.08) : Color.white.opacity(0.78),
+        let isDark = scheme == .dark
+        return CardPalette(
+            background: isDark ? Color.white.opacity(0.09) : Color.white.opacity(0.7),
+            selectedBackground: isDark ? Color.white.opacity(0.13) : Color.white.opacity(0.95),
             primary: .primary,
             secondary: increasedContrast ? Color.primary.opacity(0.8) : .secondary,
-            stroke: Color.primary.opacity(increasedContrast ? increasedContrastStroke : 0.06),
+            stroke: increasedContrast
+                ? Color.primary.opacity(increasedContrastStroke)
+                : (isDark ? Color.white.opacity(0.07) : Color.black.opacity(0.05)),
             isCustom: false
         )
     }
 
-    /// 代码卡：浅色模式为深色底；深色模式在玻璃上更深一级并加亮描边，与普通卡拉开层次
+    /// 代码卡：两种外观都是深底；深色模式在玻璃上更深一级并加亮描边，与普通卡拉开层次
     static func code(_ scheme: ColorScheme, increasedContrast: Bool = false) -> CardPalette {
         CardPalette(
-            background: scheme == .dark ? Color.black.opacity(0.38) : Color(red: 0.12, green: 0.12, blue: 0.14),
-            primary: Color.white.opacity(0.9),
+            background: scheme == .dark
+                ? Color(red: 0.03, green: 0.035, blue: 0.063).opacity(0.55)
+                : Color(red: 0.114, green: 0.122, blue: 0.169),
+            primary: Color.white.opacity(scheme == .dark ? 0.88 : 0.9),
             secondary: Color.white.opacity(increasedContrast ? 0.8 : 0.55),
             stroke: increasedContrast
                 ? Color.primary.opacity(increasedContrastStroke)
-                : Color.white.opacity(scheme == .dark ? 0.10 : 0.0),
+                : Color.white.opacity(scheme == .dark ? 0.09 : 0.0),
             isCustom: true
         )
     }

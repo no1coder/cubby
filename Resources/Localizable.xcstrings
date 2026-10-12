@@ -810,6 +810,17 @@
         }
       }
     },
+    "Add to Favorites" : {
+      "comment" : "Card hover button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收藏"
+          }
+        }
+      }
+    },
     "After an update, the old entry in System Settings may still look turned on, but it no longer applies to this version." : {
       "localizations" : {
         "zh-Hans" : {
@@ -1536,7 +1547,7 @@
       }
     },
     "Clear search" : {
-      "comment" : "Accessibility label of the search field's clear button",
+      "comment" : "Accessibility label of the search field's clear button\nFooter hint for esc while searching",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1658,6 +1669,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "逐层关闭"
+          }
+        }
+      }
+    },
+    "Code" : {
+      "comment" : "Badge on a code card whose language is not recognized",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代码"
           }
         }
       }
@@ -2529,7 +2551,7 @@
       }
     },
     "Delete" : {
-      "comment" : "Key name read by VoiceOver\nShortcut help",
+      "comment" : "Card hover button\nKey name read by VoiceOver\nShortcut help",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -2756,6 +2778,17 @@
         }
       }
     },
+    "Earlier" : {
+      "comment" : "Panel list group header: items older than yesterday",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更早"
+          }
+        }
+      }
+    },
     "Edit" : {
       "comment" : "Menu title",
       "localizations" : {
@@ -2818,6 +2851,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esc 取消翻译"
+          }
+        }
+      }
+    },
+    "Every keyword has to match. Try fewer words, or search in All." : {
+      "comment" : "Empty panel message when a search with several keywords has no results",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "多个关键词需要全部命中。试试少输入一个词，或在「全部」分类下搜索。"
           }
         }
       }
@@ -4803,7 +4847,7 @@
       }
     },
     "Pin to Screen" : {
-      "comment" : "Screenshot toolbar button accessibility label",
+      "comment" : "Card hover button\nScreenshot toolbar button accessibility label",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -4996,7 +5040,7 @@
       }
     },
     "Preview" : {
-      "comment" : "Shortcut help",
+      "comment" : "Card hover button\nShortcut help",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -5375,6 +5419,17 @@
         }
       }
     },
+    "Remove from Favorites" : {
+      "comment" : "Card hover button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取消收藏"
+          }
+        }
+      }
+    },
     "Remove the user name, password, query or fragment from the URL." : {
       "comment" : "Translation settings: base URL has extra components",
       "localizations" : {
@@ -5741,6 +5796,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "截图会直接存储到这里，不再询问。"
+          }
+        }
+      }
+    },
+    "Search Only “%@”" : {
+      "comment" : "Empty search: search for the first keyword only",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只搜「%@」"
           }
         }
       }
@@ -6163,7 +6229,7 @@
       }
     },
     "Space" : {
-      "comment" : "Key name as written in the user guide, shown in a key cap",
+      "comment" : "Key name as written in the user guide, shown in a key cap\nKey name in a tooltip",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -6832,6 +6898,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "为避免数据丢失，本次运行只读，新的复制不会保存。请升级到最新版本"
+          }
+        }
+      }
+    },
+    "Today" : {
+      "comment" : "Panel list group header",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今天"
           }
         }
       }
@@ -7705,6 +7782,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "黄色"
+          }
+        }
+      }
+    },
+    "Yesterday" : {
+      "comment" : "Panel list group header",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "昨天"
           }
         }
       }

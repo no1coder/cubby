@@ -54,7 +54,8 @@ enum DesignDemoHistory {
                     + "about the dock position.",
                 app: ("com.apple.Notes", "Notes"), minutes: 0),
             .text(
-                "https://github.com/no1coder/cubby/issues/42", app: ("com.apple.Safari", "Safari"), minutes: 2),
+                "https://github.com/no1coder/cubby/issues/42", app: ("com.apple.Safari", "Safari"), minutes: 2,
+                linkTitle: "Dock the panel to the right or bottom edge · Issue #42"),
             .text(
                 "Text(\"Ship it!\")\n    .font(.headline)\n    .foregroundStyle(.purple)",
                 app: ("com.apple.dt.Xcode", "Xcode"), minutes: 6),
@@ -85,11 +86,13 @@ enum DesignDemoHistory {
         let app: (bundleID: String, name: String)
         let minutes: Double
         var favorite = false
+        /// 链接条目复制时浏览器带来的页面标题
+        var linkTitle: String?
 
         static func text(
-            _ value: String, app: (String, String), minutes: Double, favorite: Bool = false
+            _ value: String, app: (String, String), minutes: Double, favorite: Bool = false, linkTitle: String? = nil
         ) -> Entry {
-            Entry(content: .text(value), app: app, minutes: minutes, favorite: favorite)
+            Entry(content: .text(value), app: app, minutes: minutes, favorite: favorite, linkTitle: linkTitle)
         }
 
         static func image(_ scene: DesignDemoImages.Scene, app: (String, String), minutes: Double) -> Entry {
@@ -107,7 +110,8 @@ enum DesignDemoHistory {
             case .text(let value):
                 return ClipItem(
                     id: id, kind: ContentClassifier.kind(forText: value), payload: .text(value), source: source,
-                    createdAt: date, isFavorite: favorite, contentHash: ContentHasher.hash(text: value))
+                    createdAt: date, isFavorite: favorite, contentHash: ContentHasher.hash(text: value),
+                    linkTitle: linkTitle)
             case .files(let paths):
                 return ClipItem(
                     id: id, kind: .file, payload: .files(paths), source: source, createdAt: date,

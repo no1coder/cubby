@@ -6,6 +6,13 @@ enum CodeLanguageSamples {
 
     static let swift: [CodeLanguageSample] = [
         CodeLanguageSample(
+            "SwiftUI 修饰符链（设计稿里的代码卡）", .swift,
+            """
+            Text("Ship it!")
+                .font(.headline)
+                .foregroundStyle(.purple)
+            """),
+        CodeLanguageSample(
             "SwiftUI 视图", .swift,
             """
             import SwiftUI

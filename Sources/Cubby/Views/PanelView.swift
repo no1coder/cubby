@@ -28,7 +28,11 @@ struct PanelView: View {
                             searchText: viewModel.searchText,
                             category: viewModel.category,
                             hotKey: viewModel.settings.hotKey,
-                            searchesTranslations: viewModel.translation != nil
+                            searchesTranslations: viewModel.translation != nil,
+                            fallbackKeyword: viewModel.firstKeywordFallback,
+                            onSearchFallback: {
+                                if let keyword = viewModel.firstKeywordFallback { viewModel.searchText = keyword }
+                            }
                         )
                     } else {
                         CardList(items: items, viewModel: viewModel)

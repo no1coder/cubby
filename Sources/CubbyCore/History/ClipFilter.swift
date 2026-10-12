@@ -51,6 +51,11 @@ public enum ClipCategory: String, CaseIterable, Sendable {
         }
     }
 
+    /// 搜索结果在各分类的命中数（每个分类都有，含 0）：分类栏据此显示数字并隐藏没有命中的分类
+    public static func hitCounts(in items: [ClipItem]) -> [ClipCategory: Int] {
+        Dictionary(uniqueKeysWithValues: allCases.map { category in (category, items.count(where: category.matches)) })
+    }
+
     /// 循环切换到相邻分类
     public func cycled(by offset: Int) -> ClipCategory {
         let all = Self.allCases
@@ -72,6 +77,12 @@ public struct ClipQuery: Equatable, Sendable {
     /// 以空白分隔的关键词
     public var keywords: [String] {
         text.split(whereSeparator: \.isWhitespace).map(String.init)
+    }
+
+    /// 多个关键词都要命中而没有结果时，可以退回只搜第一个；只有一个或没有关键词时为 nil
+    public var firstKeywordFallback: String? {
+        let words = keywords
+        return words.count > 1 ? words.first : nil
     }
 
     /// 整句：去掉首尾空白后的完整查询串（内部空白原样保留），用于相关度排序

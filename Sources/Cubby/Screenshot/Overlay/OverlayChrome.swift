@@ -3,7 +3,7 @@ import SwiftUI
 
 /// 覆盖层内的玻璃容器（工具栏、样式条）：SwiftUI 内容 + 材质 + 出现动效
 ///
-/// macOS 26：`PanelChrome.makeContainer(for:cornerRadius: Radius.card)`（Liquid Glass，已处理 key 窗口的直角投影）；
+/// macOS 26：`PanelChrome.makeContainer(for:cornerRadius: OverlayTokens.toolbarCornerRadius)`（Liquid Glass，已处理 key 窗口的直角投影）；
 /// 更早系统：`NSVisualEffectView(.hudWindow, withinWindow)`——覆盖层窗口不透明，behindWindow 会透出窗口背后的
 /// 实时桌面而不是冻结帧，因此只能在窗口内混合（§2.6）。
 @MainActor
@@ -61,14 +61,15 @@ final class OverlayGlassPanel<Content: View>: NSView {
 
     private static func makeContainer(for content: NSView) -> NSView {
         if #available(macOS 26, *) {
-            return PanelChrome.makeContainer(for: content, cornerRadius: Radius.card)
+            return PanelChrome.makeContainer(
+                for: content, cornerRadius: OverlayTokens.toolbarCornerRadius, glass: .standard)
         }
         let effect = NSVisualEffectView()
         effect.material = .hudWindow
         effect.blendingMode = .withinWindow
         effect.state = .active
         effect.wantsLayer = true
-        effect.layer?.cornerRadius = Radius.card
+        effect.layer?.cornerRadius = OverlayTokens.toolbarCornerRadius
         effect.layer?.cornerCurve = .continuous
         effect.layer?.masksToBounds = true
         content.frame = effect.bounds

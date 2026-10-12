@@ -53,6 +53,8 @@ enum CodeLanguageSignals {
         .contains(["some View", "@State", "@Published", "@MainActor", "@Binding", "@Observable", "@Environment"], 4),
         .contains(["@main", "@objc", "@escaping", "@ViewBuilder"], 3),
         .contains(["VStack", "HStack", "ZStack", "Spacer()", ".padding(", ".frame("], 3),
+        // SwiftUI 的修饰符链：Text("…") 换行接 .font(.headline)、.foregroundStyle(.purple)
+        .contains(["Text(\"", ".font(.", ".foregroundStyle(", ".foregroundColor(", ".background(."], 3),
         .prefix(["guard ", "extension ", "protocol "], 3),
         .contains(["(_ ", "if let ", "guard let ", "?? "], 2),
         .contains(["\\.", "\\("], 2),

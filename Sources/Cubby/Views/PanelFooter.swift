@@ -27,6 +27,8 @@ struct PanelFooter: View {
         /// 翻译：「按住 ⌥ 预览译文」「⌥↩ 翻译后粘贴」
         var showsHold = false
         var showsTranslatePaste = false
+        /// 搜索时：「esc 清除搜索」（最先让位）
+        var showsClearSearch = false
     }
 
     var body: some View {
@@ -50,19 +52,24 @@ struct PanelFooter: View {
         }
         // 数量文字与卡片左缘对齐；帮助按钮与顶栏齿轮按钮的中心在同一条竖线上
         .padding(.leading, PanelMetrics.inset)
-        .padding(.trailing, PanelMetrics.inset + (PanelMetrics.controlHeight - Self.helpButtonSize) / 2)
+        .padding(.trailing, PanelMetrics.inset + (PanelMetrics.iconButtonSize - Self.helpButtonSize) / 2)
         .frame(height: PanelMetrics.footerHeight)
-        .overlay(alignment: .top) {
-            Rectangle().fill(Color.primary.opacity(0.08)).frame(height: 0.5)
-        }
+        .background(FooterBackground())
         .animation(
             Motion.animation(.snappy(duration: Motion.layoutChange), reduceMotion: reduceMotion),
             value: viewModel.toast
         )
     }
 
-    /// 依次尝试的排布（从最完整到最紧凑）
+    /// 依次尝试的排布（从最完整到最紧凑）；搜索时先尝试带「esc 清除搜索」的完整排布
     private var layouts: [Layout] {
+        let base = baseLayouts
+        guard !viewModel.keywords.isEmpty, var first = base.first else { return base }
+        first.showsClearSearch = true
+        return [first] + base
+    }
+
+    private var baseLayouts: [Layout] {
         let wide = Self.pasteTargetMaxWidth
         let compact = Self.compactPasteTargetMaxWidth
         guard viewModel.translation != nil else {
@@ -143,6 +150,10 @@ struct PanelFooter: View {
                         KeyHint(keys: "⌥↩", label: TranslationFooterHints.translatePasteLabel)
                             .layoutPriority(1)
                     }
+                    if layout.showsClearSearch {
+                        KeyHint(keys: "esc", label: clearSearchLabel)
+                            .layoutPriority(1)
+                    }
                 }
                 .transition(.opacity)
             }
@@ -153,6 +164,10 @@ struct PanelFooter: View {
     /// ↩ 与 ⇧↩ 都只复制，⇧↩ 的标签随之改为「复制…」，不再与「↩ 复制」矛盾
     private var pastesIntoTarget: Bool {
         viewModel.canPasteDirectly && viewModel.target != nil
+    }
+
+    private var clearSearchLabel: String {
+        String(localized: "Clear search", comment: "Footer hint for esc while searching")
     }
 
     private var alternateLabel: String {
@@ -304,5 +319,21 @@ extension PasteFormat {
                 comment: "Footer hint for ⇧↩ when it only copies: copy as plain text. Keep it short."
             )
         }
+    }
+}
+
+/// 底栏底色：比面板略深（深色黑 0.12，浅色白 0.35），顶边一条细线
+private struct FooterBackground: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        let isDark = colorScheme == .dark
+        Rectangle()
+            .fill(isDark ? Color.black.opacity(0.12) : Color.white.opacity(0.35))
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(isDark ? Color.white.opacity(0.08) : Color.black.opacity(0.06))
+                    .frame(height: 0.5)
+            }
     }
 }

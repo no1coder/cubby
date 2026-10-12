@@ -1,15 +1,17 @@
 import SwiftUI
 import CubbyCore
 
-/// 顶部：搜索框 + 截图、设置按钮 + 分类标签
+/// 顶部：搜索框 + 截图、设置按钮 + 分类（平时为分段控件；搜索时为带命中数的分类胶囊）
 struct PanelHeader: View {
     @Bindable var viewModel: PanelViewModel
     var isSearchFocused: FocusState<Bool>.Binding
 
     var body: some View {
         VStack(spacing: 10) {
-            HStack(spacing: 8) {
+            // 搜索框可以收缩：长占位文字或大字号下不能把右侧按钮挤出面板
+            HStack(spacing: 4) {
                 SearchField(text: $viewModel.searchText, isFocused: isSearchFocused)
+                    .layoutPriority(-1)
                 HeaderIconButton(
                     systemName: "camera.viewfinder",
                     label: screenshotTitle,
@@ -25,7 +27,13 @@ struct PanelHeader: View {
                     viewModel.handle(.openSettings)
                 }
             }
-            CategoryTabs(selection: viewModel.category) { viewModel.selectCategory($0) }
+            if viewModel.keywords.isEmpty {
+                CategoryTabs(selection: viewModel.category) { viewModel.selectCategory($0) }
+            } else if let counts = viewModel.searchHitCounts, counts[.all, default: 0] > 0 {
+                SearchCategoryChips(selection: viewModel.category, counts: counts) {
+                    viewModel.selectCategory($0)
+                }
+            }
         }
         .padding(.horizontal, PanelMetrics.inset)
         .padding(.top, PanelMetrics.inset)
@@ -48,9 +56,9 @@ private struct SearchField: View {
     var isFocused: FocusState<Bool>.Binding
 
     var body: some View {
-        HStack(spacing: 7) {
+        HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: FontSize.body, weight: .medium))
+                .font(.system(size: FontSize.title, weight: .medium))
                 .foregroundStyle(.secondary)
             TextField("Search clipboard", text: $text)
                 .textFieldStyle(.plain)
@@ -72,12 +80,9 @@ private struct SearchField: View {
                 .transition(.opacity)
             }
         }
-        .padding(.horizontal, 10)
+        .padding(.horizontal, 12)
         .frame(height: PanelMetrics.controlHeight)
-        .background(
-            RoundedRectangle(cornerRadius: Radius.control, style: .continuous)
-                .fill(Color.primary.opacity(0.06))
-        )
+        .background(FieldBackground(cornerRadius: Radius.field))
         .animation(.easeOut(duration: 0.12), value: text.isEmpty)
     }
 }
@@ -94,11 +99,11 @@ private struct HeaderIconButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: systemName)
-                .font(.system(size: FontSize.callout))
+                .font(.system(size: FontSize.title))
                 .foregroundStyle(isHovered ? .primary : .secondary)
-                .frame(width: PanelMetrics.controlHeight, height: PanelMetrics.controlHeight)
+                .frame(width: PanelMetrics.iconButtonSize, height: PanelMetrics.iconButtonSize)
                 .background(
-                    RoundedRectangle(cornerRadius: Radius.control, style: .continuous)
+                    RoundedRectangle(cornerRadius: Radius.iconButton, style: .continuous)
                         .fill(Color.primary.opacity(isHovered ? 0.08 : 0))
                 )
                 .contentShape(Rectangle())
@@ -107,124 +112,5 @@ private struct HeaderIconButton: View {
         .onHover { isHovered = $0 }
         .help(help)
         .accessibilityLabel(label)
-    }
-}
-
-/// 分类标签，选中态以胶囊背景滑动过渡；字重固定，切换时文字不抖动。
-/// 英文等较长的语言在 380pt 面板中可能放不下：用 ViewThatFits 逐级降级（不横向滚动）
-private struct CategoryTabs: View {
-    let selection: ClipCategory
-    let onSelect: (ClipCategory) -> Void
-
-    @Namespace private var namespace
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    var body: some View {
-        ViewThatFits(in: .horizontal) {
-            ForEach(TabDensity.allCases, id: \.self) { density in
-                tabs(density)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        // 减弱动态效果时胶囊直接跳到新分类，不做滑动
-        .animation(Motion.animation(.snappy(duration: Motion.tabSlide), reduceMotion: reduceMotion), value: selection)
-    }
-
-    private func tabs(_ density: TabDensity) -> some View {
-        HStack(spacing: density.spacing) {
-            ForEach(ClipCategory.allCases, id: \.self) { category in
-                CategoryTab(
-                    title: category.displayName,
-                    iconName: density.showsIcon(for: category) ? CategoryTab.iconName(for: category) : nil,
-                    horizontalPadding: density.horizontalPadding,
-                    isSelected: category == selection,
-                    selectionID: density,
-                    namespace: namespace
-                ) {
-                    onSelect(category)
-                }
-            }
-        }
-    }
-}
-
-/// 分类栏的降级级别，按顺序尝试，放得下即停
-private enum TabDensity: CaseIterable {
-    /// 全部文字，标准内边距
-    case regular
-    /// 全部文字，收紧内边距与间距
-    case compact
-    /// 「收藏」改为星标图标
-    case favoriteIcon
-    /// 全部改为图标，悬停显示名称
-    case iconsOnly
-
-    var horizontalPadding: CGFloat {
-        self == .regular ? 9 : 6
-    }
-
-    var spacing: CGFloat {
-        self == .regular ? 2 : 0
-    }
-
-    func showsIcon(for category: ClipCategory) -> Bool {
-        switch self {
-        case .regular, .compact: false
-        case .favoriteIcon: category == .favorite
-        case .iconsOnly: true
-        }
-    }
-}
-
-private struct CategoryTab: View {
-    let title: String
-    /// 非 nil 时以图标代替文字（名称通过悬停提示与辅助功能标签提供）
-    let iconName: String?
-    let horizontalPadding: CGFloat
-    let isSelected: Bool
-    /// ViewThatFits 会同时构建各级候选视图：每级使用独立的 matchedGeometry 标识，避免冲突
-    let selectionID: TabDensity
-    let namespace: Namespace.ID
-    let action: () -> Void
-
-    @State private var isHovered = false
-
-    static func iconName(for category: ClipCategory) -> String {
-        category == .favorite ? "star.fill" : category.symbolName
-    }
-
-    var body: some View {
-        Button(action: action) {
-            label
-                .font(.system(size: FontSize.footnote, weight: .medium))
-                .foregroundStyle(isSelected ? .primary : .secondary)
-                .padding(.horizontal, horizontalPadding)
-                .padding(.vertical, 4)
-                .background {
-                    if isSelected {
-                        Capsule()
-                            .fill(Color.primary.opacity(0.1))
-                            .matchedGeometryEffect(id: selectionID, in: namespace)
-                    } else if isHovered {
-                        Capsule().fill(Color.primary.opacity(0.05))
-                    }
-                }
-                .contentShape(Capsule())
-        }
-        .buttonStyle(.plain)
-        .onHover { isHovered = $0 }
-        .help(iconName == nil ? "" : title)
-        .accessibilityLabel(title)
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
-    }
-
-    @ViewBuilder
-    private var label: some View {
-        if let iconName {
-            Image(systemName: iconName)
-                .frame(minWidth: 14)
-        } else {
-            Text(title)
-        }
     }
 }

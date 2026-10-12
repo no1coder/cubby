@@ -48,18 +48,20 @@ enum ColorFormats {
     }
 
     static func rows(for color: RGBAColor, hex: String) -> [Row] {
-        let rgb = [color.red, color.green, color.blue].map { String(Int(($0 * 255).rounded())) }
-        let hasAlpha = color.alpha < 1
-        let rgbValue =
-            hasAlpha
-            ? "rgba(\(rgb.joined(separator: ", ")), \(alphaText(color.alpha)))"
-            : "rgb(\(rgb.joined(separator: ", ")))"
         let hsl = hslComponents(color)
         return [
             Row(label: "HEX", value: hexValue(hex, color: color)),
-            Row(label: hasAlpha ? "RGBA" : "RGB", value: rgbValue),
+            Row(label: color.alpha < 1 ? "RGBA" : "RGB", value: rgbValue(color)),
             Row(label: "HSL", value: "hsl(\(hsl.h), \(hsl.s)%, \(hsl.l)%)"),
         ]
+    }
+
+    /// CSS 写法：不透明时为 rgb(r, g, b)，否则 rgba(r, g, b, a)
+    static func rgbValue(_ color: RGBAColor) -> String {
+        let rgb = [color.red, color.green, color.blue].map { String(Int(($0 * 255).rounded())) }
+        return color.alpha < 1
+            ? "rgba(\(rgb.joined(separator: ", ")), \(alphaText(color.alpha)))"
+            : "rgb(\(rgb.joined(separator: ", ")))"
     }
 
     /// 预览页脚：不透明度（「不透明」或「不透明度 50%」），比重复类型名更有用

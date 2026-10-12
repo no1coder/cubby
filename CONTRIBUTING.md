@@ -120,6 +120,8 @@ Add `--demo-history` to fill the panel with made-up items that mirror the design
 CUBBY_DATA_DIR=/tmp/cubby-demo .build/debug/Cubby --demo-history --scenario category:image --dark
 ```
 
+Add `--backdrop` to put a made-up wallpaper (similar to the design boards) behind the panel, above your other windows, so you can see the glass and capture the panel's area with `screencapture -R` without picking up anything else on your screen. The `hover` scenario shows the second card's hover toolbar without moving the mouse.
+
 Add `--lock-input` to ignore your mouse and keyboard while a scenario is on screen, so a stray click or <kbd>↩</kbd> can't change it (or copy a screenshot to your clipboard) while you capture it. Quit with `kill` or Activity Monitor.
 
 To see the Simplified Chinese interface, run a debug build from an app bundle with the compiled string catalog (the bare executable only shows English), for example with a separate bundle ID such as `io.github.no1coder.Cubby.devshots` so it doesn't share preferences or permissions with your installed copy. Capture only Cubby's own windows (`screencapture -o -l <window ID>`), never the whole screen.

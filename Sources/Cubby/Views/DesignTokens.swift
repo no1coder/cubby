@@ -3,13 +3,23 @@ import SwiftUI
 
 /// 圆角令牌：所有圆角只从这里取值，保证嵌套元素的层级关系一致（见 docs/DESIGN.md）
 enum Radius {
-    /// 面板：macOS 26 Liquid Glass 为 18，更早系统为 14
+    /// 面板：macOS 26 Liquid Glass 为 22，更早系统为 14
     static var panel: CGFloat {
-        if #available(macOS 26, *) { return 18 }
+        if #available(macOS 26, *) { return 22 }
         return 14
     }
     /// 卡片、面板内横幅、帮助浮层、引导步骤卡
-    static let card: CGFloat = 12
+    static let card: CGFloat = 15
+    /// 卡片内的图片缩略图（内缩 cardImageInset 后与卡片圆角同心）
+    static let cardImage: CGFloat = 11
+    /// 搜索框（36 高）与分类分段控件的底槽
+    static let field: CGFloat = 12
+    /// 顶栏图标按钮（34 见方）
+    static let iconButton: CGFloat = 11
+    /// 分段控件里浮起的选中胶囊、悬停工具条
+    static let segment: CGFloat = 9
+    /// 悬停工具条里的按钮（26 × 24）
+    static let toolbarButton: CGFloat = 7
     /// 设置页分组（与系统 Form 分组一致）
     static let group: CGFloat = 10
     /// 输入框、图标按钮、录制框、预览中的块
@@ -22,14 +32,22 @@ enum Radius {
     static let iconRatio: CGFloat = 0.225
 }
 
-/// 字号阶梯：10 / 11 / 12 / 13 / 14 / 15，禁止使用其他字号
+/// 字号阶梯：10 / 11 / 12 / 13 / 14 / 15 / 18，禁止使用其他字号
 enum FontSize {
+    /// 键帽
     static let caption2: CGFloat = 10
+    /// 元信息、卡片头部、底栏
     static let caption: CGFloat = 11
+    /// 分类、代码、次级按钮
     static let footnote: CGFloat = 12
+    /// 链接标题、预览与设置里的正文
     static let body: CGFloat = 13
+    /// 卡片正文（行高 1.5）、搜索
     static let callout: CGFloat = 14
+    /// 标题
     static let title: CGFloat = 15
+    /// 颜色卡的 HEX 值（等宽）
+    static let display: CGFloat = 18
 }
 
 /// 面板布局常量
@@ -38,15 +56,28 @@ enum PanelMetrics {
     static let inset: CGFloat = 12
     /// 卡片间距
     static let cardSpacing: CGFloat = 8
+    /// 卡片内边距：上下 12、左右 13
+    static let cardPadding = EdgeInsets(top: 12, leading: 13, bottom: 12, trailing: 13)
+    /// 颜色卡：左侧色块离边缘更近
+    static let colorCardPadding = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 13)
+    /// 图片卡缩略图下方说明行的上下留白
+    static let imageCaptionPadding = (top: CGFloat(9), bottom: CGFloat(10))
+    /// 卡片头部一行与正文之间、正文各行块之间的间距
+    static let cardRowSpacing: CGFloat = 7
+    /// 图片卡的缩略图：距卡片上、左、右边缘 6，高 128
+    static let cardImageInset: CGFloat = 6
+    static let cardImageHeight: CGFloat = 128
     /// 主面板与预览面板的底栏高度（并排时分割线对齐）
-    static let footerHeight: CGFloat = 36
-    /// 控件高度（搜索框、图标按钮）
-    static let controlHeight: CGFloat = 32
+    static let footerHeight: CGFloat = 38
+    /// 搜索框高度
+    static let controlHeight: CGFloat = 36
+    /// 顶栏图标按钮边长
+    static let iconButtonSize: CGFloat = 34
 }
 
 extension PanelMetrics {
-    /// 来源应用图标边长（卡片与预览头部一致）
-    static let sourceIconSize: CGFloat = 20
+    /// 来源应用图标边长（卡片头部一行）
+    static let sourceIconSize: CGFloat = 18
     /// 固定右侧侧栏的宽度（高度为可见区域高度减去上下留白）
     static let sidebarWidth: CGFloat = 400
     /// 固定底部横条的高度（宽度为可见区域宽度减去左右留白）

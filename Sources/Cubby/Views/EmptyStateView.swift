@@ -8,13 +8,25 @@ struct EmptyStateView: View {
     let hotKey: HotKey
     /// 翻译可用：搜索无结果时说明译文也会被搜索
     var searchesTranslations = false
+    /// 多个关键词没有结果时可以只搜第一个词：按钮标题里的词与点击后的动作
+    var fallbackKeyword: String?
+    var onSearchFallback: () -> Void = {}
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    private static let tileSize: CGFloat = 56
 
     var body: some View {
         VStack(spacing: 10) {
             Image(systemName: symbolName)
-                .font(.system(size: 34, weight: .light))
-                .foregroundStyle(.tertiary)
-                .padding(.bottom, 4)
+                .font(.system(size: FontSize.display * 1.4, weight: .regular))
+                .foregroundStyle(isFirstRun ? Color.accentColor : Color.primary.opacity(0.6))
+                .frame(width: Self.tileSize, height: Self.tileSize)
+                .background(
+                    RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
+                        .fill(isFirstRun ? Color.accentColor.opacity(0.16) : Color.primary.opacity(0.07))
+                )
+                .padding(.bottom, 6)
                 .accessibilityHidden(true)
             Text(title)
                 .font(.system(size: FontSize.callout, weight: .semibold))
@@ -22,6 +34,17 @@ struct EmptyStateView: View {
                 .font(.system(size: FontSize.footnote))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+            if let fallbackKeyword, !searchText.isEmpty {
+                Button(
+                    String(
+                        localized: "Search Only “\(fallbackKeyword)”",
+                        comment: "Empty search: search for the first keyword only")
+                ) {
+                    onSearchFallback()
+                }
+                .buttonStyle(CapsuleButtonStyle(isPrimary: false))
+                .padding(.top, 6)
+            }
             if isFirstRun {
                 HStack(spacing: 3) {
                     ForEach(hotKey.keySymbols, id: \.self) { KeyCap(text: $0, prominent: true) }
@@ -63,6 +86,11 @@ struct EmptyStateView: View {
     }
 
     private var message: String {
+        if fallbackKeyword != nil, !searchText.isEmpty {
+            return String(
+                localized: "Every keyword has to match. Try fewer words, or search in All.",
+                comment: "Empty panel message when a search with several keywords has no results")
+        }
         if !searchText.isEmpty {
             return searchesTranslations
                 ? String(

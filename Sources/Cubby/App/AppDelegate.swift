@@ -48,6 +48,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.terminate(nil)
             return
         }
+        DesignBackdrop.showIfRequested()
         // 设计稿走查：写入演示历史（同样只写 CUBBY_DATA_DIR）
         if DesignDemoHistory.isRequested, !DesignDemoHistory.seed() {
             logger.error("Could not write the design demo history (it needs CUBBY_DATA_DIR)")

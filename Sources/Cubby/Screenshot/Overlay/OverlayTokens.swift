@@ -15,6 +15,8 @@ enum OverlayTokens {
     /// 但传递函数不同的第三方显示器（如 DELL U2718QM，gamma≈2.2）上，black 0.4 换算回 sRGB 只相当于 0.35。
     /// 取 0.45：这类显示器上约为规格的 0.4，Apple 显示屏上介于 CleanShot（0.4）与微信（0.5）之间，选区更「跳」
     static let dimAlpha: CGFloat = 0.45
+    /// 工具栏与提示条的圆角（截图覆盖层自成一套，不随面板卡片的圆角变化）
+    static let toolbarCornerRadius: CGFloat = 12
     /// 悬停窗口 / 整屏描边：2 pt 强调色，画在目标内侧
     static let hoverStrokeWidth: CGFloat = 2
     /// 选区描边：1 pt 强调色（紧贴选区外侧）

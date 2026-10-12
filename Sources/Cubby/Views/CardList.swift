@@ -5,6 +5,8 @@ import CubbyCore
 struct CardList: View {
     /// 列表上下边缘的渐隐高度
     private static let edgeFade: CGFloat = 8
+    /// 第一个分组标题的滚动标识：回到顶部时滚到它，而不是第一张卡片（否则标题被滚出视野）
+    private static let topAnchor = "list.top"
 
     let items: [ClipItem]
     let viewModel: PanelViewModel
@@ -18,14 +20,20 @@ struct CardList: View {
             ScrollView {
                 // 每张卡片带 edgeFade 高度的上下留白作为滚动对齐区域，再用负间距抵消，
                 // 视觉间距仍为 cardSpacing；这样滚动到选中项时卡片边框永远不会落入渐隐区
-                LazyVStack(spacing: PanelMetrics.cardSpacing - Self.edgeFade * 2) {
-                    ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                        card(item, index: index, isSelected: item.id == selectedID, keywords: keywords)
+                LazyVStack(alignment: .leading, spacing: PanelMetrics.cardSpacing - Self.edgeFade * 2) {
+                    if keywords.isEmpty {
+                        groupedCards(selectedID: selectedID)
+                    } else {
+                        // 搜索结果按相关度排序，不按日期分组
+                        ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                            card(item, index: index, isSelected: item.id == selectedID, keywords: keywords)
+                        }
                     }
                 }
                 .padding(.horizontal, PanelMetrics.inset)
                 .padding(.bottom, 4)
             }
+            .modifier(DebugHoverEnvironment(viewModel: viewModel))
             // 不显示滚动条：卡片列表一目了然，且「始终显示滚动条」时滚动条会挤占卡片宽度
             .scrollIndicators(.never)
             // 上下边缘渐隐：滚动中的圆角卡片柔和淡出，而不是被列表边缘生硬地横切
@@ -41,15 +49,47 @@ struct CardList: View {
             .onChange(of: selectedID) {
                 guard let selectedID else { return }
                 withAnimation(Motion.animation(.easeOut(duration: Motion.overlayFade), reduceMotion: reduceMotion)) {
-                    proxy.scrollTo(selectedID)
+                    if selectedID == items.first?.id, keywords.isEmpty {
+                        proxy.scrollTo(Self.topAnchor, anchor: .top)
+                    } else {
+                        proxy.scrollTo(selectedID)
+                    }
                 }
             }
             .onChange(of: viewModel.focusToken) {
-                if let first = items.first {
+                if keywords.isEmpty, !items.isEmpty {
+                    proxy.scrollTo(Self.topAnchor, anchor: .top)
+                } else if let first = items.first {
                     proxy.scrollTo(first.id, anchor: .top)
                 }
             }
         }
+    }
+
+    /// 按「今天 / 昨天 / 更早」分节；⌘N 的序号仍按整个列表计数
+    @ViewBuilder
+    private func groupedCards(selectedID: UUID?) -> some View {
+        let sections = ClipDayGroup.sections(items, now: Date())
+        let starts = Self.startIndices(of: sections)
+        ForEach(sections) { section in
+            // 第一个标题避开顶部渐隐区；其后的标题与上一节最后一张卡片拉开距离
+            DayGroupHeader(group: section.group, topPadding: section.index == 0 ? Self.edgeFade : 12)
+                .id(section.index == 0 ? Self.topAnchor : "list.section.\(section.index)")
+            ForEach(Array(section.items.enumerated()), id: \.element.id) { offset, item in
+                card(item, index: starts[section.index] + offset, isSelected: item.id == selectedID, keywords: [])
+            }
+        }
+    }
+
+    /// 每一节第一张卡片在整个列表中的序号
+    private static func startIndices(of sections: [ClipDaySection]) -> [Int] {
+        var starts: [Int] = []
+        var total = 0
+        for section in sections {
+            starts.append(total)
+            total += section.items.count
+        }
+        return starts
     }
 
     /// 一张卡片及其手势、右键菜单、拖拽与读屏操作。长按（0.45 秒、移动不超过 4pt）打开拆词卡，
@@ -71,9 +111,56 @@ struct CardList: View {
         .modifier(CardLongPress { viewModel.openTextPick(for: item) })
         .contextMenu { CardContextMenu(item: item, viewModel: viewModel) }
         .onDrag { DragProvider.provider(for: item, imageURL: viewModel.imageURL(for: item)) }
+        // 悬停工具条叠在所有手势之上：按钮上的单击 / 双击 / 长按 / 拖动不会传给卡片（否则双击收藏会顺带粘贴）
+        .overlay {
+            CardHoverChrome(
+                item: item, isSelected: isSelected, actions: quickActions(for: item, isSelected: isSelected))
+        }
         .modifier(CardAccessibilityActions(item: item, viewModel: viewModel))
         .padding(.vertical, Self.edgeFade)
         .id(item.id)
+    }
+}
+
+extension CardList {
+    /// 悬停工具条：预览按钮在这张卡片的预览已打开时再按一次关闭
+    fileprivate func quickActions(for item: ClipItem, isSelected: Bool) -> CardQuickActions {
+        let isPreviewing = isSelected && viewModel.isPreviewVisible
+        return CardQuickActions(
+            toggleFavorite: { viewModel.toggleFavorite(item) },
+            togglePreview: {
+                if isPreviewing {
+                    viewModel.setPreviewVisible(false)
+                } else {
+                    viewModel.select(item)
+                    viewModel.setPreviewVisible(true)
+                }
+            },
+            delete: { viewModel.delete(item) },
+            pinToScreen: item.kind == .image ? { viewModel.pin(item) } : nil,
+            isPreviewing: isPreviewing
+        )
+    }
+}
+
+/// 分组标题「今天 / 昨天 / 更早」：11pt semibold。玻璃上的 11pt 文字不用 .secondary（对比度不足），
+/// 用 primary 0.75（增强对比度时 0.9）
+private struct DayGroupHeader: View {
+    let group: ClipDayGroup
+    /// 列表间距为负（见 CardList.body），上下留白就是与相邻卡片的可见间距
+    let topPadding: CGFloat
+
+    @Environment(\.colorSchemeContrast) private var contrast
+
+    var body: some View {
+        Text(group.displayName)
+            .font(.system(size: FontSize.caption, weight: .semibold))
+            .tracking(0.3)
+            .foregroundStyle(Color.primary.opacity(contrast == .increased ? 0.9 : 0.75))
+            .padding(.horizontal, 4)
+            .padding(.top, topPadding)
+            .padding(.bottom, 6)
+            .accessibilityAddTraits(.isHeader)
     }
 }
 
@@ -101,6 +188,10 @@ private struct CardContextMenu: View {
             viewModel.setPreviewVisible(true)
         }
         .keyboardShortcut(.space, modifiers: [])
+        if item.kind == .image {
+            Button("Pin to Screen") { viewModel.pin(item) }
+                .keyboardShortcut("p", modifiers: [.command, .shift])
+        }
         Button(TextPickCopy.title) { viewModel.openTextPick(for: item) }
             .keyboardShortcut("b", modifiers: .command)
             .disabled(TextPickSource(item: item).text == nil)
@@ -109,18 +200,14 @@ private struct CardContextMenu: View {
                 .keyboardShortcut("o", modifiers: .command)
                 .disabled(filesMissing)
         }
-        if item.kind == .image {
-            Button("Pin to Screen") { viewModel.pin(item) }
-                .keyboardShortcut("p", modifiers: [.command, .shift])
-        }
         if item.kind == .file {
             Button("Show in Finder") { ItemOpener.revealInFinder(item.filePaths) }
                 .disabled(filesMissing)
         }
         TranslationMenuItems(item: item, viewModel: viewModel)
+        Divider()
         favoriteButton
             .keyboardShortcut("p", modifiers: .command)
-        Divider()
         Button("Delete", role: .destructive) { viewModel.delete(item) }
             .keyboardShortcut(.delete, modifiers: .command)
     }
@@ -204,7 +291,19 @@ private struct TranslationMenuItems: View {
             if item.translations?.entries.isEmpty == false {
                 Button(TranslationCopy.copyMenuItem) { viewModel.copyCachedTranslation(item) }
             }
-            Divider()
         }
+    }
+}
+
+/// 调试构建把「保持悬停」的卡片传给各张卡片；正式构建不做任何事
+private struct DebugHoverEnvironment: ViewModifier {
+    let viewModel: PanelViewModel
+
+    func body(content: Content) -> some View {
+        #if DEBUG
+        content.environment(\.forcedHoverItemID, viewModel.debugHoveredItemID)
+        #else
+        content
+        #endif
     }
 }

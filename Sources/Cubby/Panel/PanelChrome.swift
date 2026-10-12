@@ -7,15 +7,26 @@ enum PanelChrome {
         Radius.panel
     }
 
-    /// 将 SwiftUI 宿主视图包进带圆角的玻璃 / 毛玻璃容器；圆角默认为面板圆角（截图工具栏等传 Radius.card）
-    static func makeContainer(for content: NSView, cornerRadius: CGFloat = PanelChrome.cornerRadius) -> NSView {
+    /// 玻璃的通透程度
+    enum Glass {
+        /// 面板与预览：更通透的玻璃，按外观略微着色（深色约 rgba(24,25,33,0.58) 的观感）
+        case panel
+        /// 截图工具栏等浮在任意画面上的小控件：系统标准玻璃，保证可读
+        case standard
+    }
+
+    /// 将 SwiftUI 宿主视图包进带圆角的玻璃 / 毛玻璃容器；圆角默认为面板圆角（截图工具栏传 OverlayTokens.toolbarCornerRadius）
+    static func makeContainer(
+        for content: NSView, cornerRadius: CGFloat = PanelChrome.cornerRadius, glass style: Glass = .panel
+    ) -> NSView {
         content.translatesAutoresizingMaskIntoConstraints = true
         content.autoresizingMask = [.width, .height]
 
         if #available(macOS 26, *) {
             let glass = NSGlassEffectView()
             glass.cornerRadius = cornerRadius
-            glass.style = .regular
+            glass.style = style == .panel ? .clear : .regular
+            glass.tintColor = style == .panel ? panelTint : nil
             glass.contentView = content
             return roundedClip(glass, cornerRadius: cornerRadius)
         }
@@ -29,6 +40,13 @@ enum PanelChrome {
         content.frame = effect.bounds
         effect.addSubview(content)
         return effect
+    }
+
+    /// 面板玻璃的着色：随外观切换
+    private static let panelTint = NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor(srgbRed: 24 / 255, green: 25 / 255, blue: 33 / 255, alpha: 0.58)
+            : NSColor(white: 1, alpha: 0.3)
     }
 
     /// 圆角裁剪容器：玻璃所在窗口成为 key 时，玻璃会在圆角外再画一层投影，

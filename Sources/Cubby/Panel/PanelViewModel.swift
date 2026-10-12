@@ -35,6 +35,10 @@ final class PanelViewModel {
     private(set) var warnings: [PanelWarning] = []
     /// 用户点了「稍后」的提醒及当时的状态签名：本次运行期间状态不变就不再显示
     private(set) var dismissedWarnings: [PanelWarning: String] = [:]
+    #if DEBUG
+    /// 截图走查（`--scenario hover`）：让这张卡片显示悬停状态，不必真的移动鼠标
+    var debugHoveredItemID: UUID?
+    #endif
 
     @ObservationIgnored let store: ClipStore
     @ObservationIgnored let settings: AppSettings
@@ -74,9 +78,31 @@ final class PanelViewModel {
 
     // MARK: - 派生数据
 
-    /// 过滤并按相关度排序的结果（ClipSearchSession 内部按历史版本与查询缓存）
+    /// 过滤并按相关度排序的结果（ClipSearchSession 内部按历史版本与查询缓存）。
+    /// 搜索时总在「全部」里搜一次再按分类过滤：排序是逐条打分的，先排后滤与先滤后排结果相同，
+    /// 分类栏的命中数也由同一份结果得出，切换分类不必重新搜索
     var items: [ClipItem] {
-        search.results(for: ClipQuery(text: searchText, category: category), in: store)
+        guard !keywords.isEmpty else {
+            return search.results(for: ClipQuery(text: searchText, category: category), in: store)
+        }
+        let all = resultsInAllCategories
+        return category == .all ? all : all.filter(category.matches)
+    }
+
+    /// 搜索时各分类的命中数；没有关键词时为 nil
+    var searchHitCounts: [ClipCategory: Int]? {
+        keywords.isEmpty ? nil : ClipCategory.hitCounts(in: resultsInAllCategories)
+    }
+
+    /// 多个关键词在所有分类里都没有结果时，「只搜第一个词」按钮要换成的搜索词。
+    /// 只是当前分类没有结果（其他分类有命中、分类胶囊上有数字）时不提示，免得误导
+    var firstKeywordFallback: String? {
+        guard searchHitCounts?[.all] == 0 else { return nil }
+        return ClipQuery(text: searchText).firstKeywordFallback
+    }
+
+    private var resultsInAllCategories: [ClipItem] {
+        search.results(for: ClipQuery(text: searchText, category: .all), in: store)
     }
 
     /// 显式选中的条目不在结果中时回落到第一条

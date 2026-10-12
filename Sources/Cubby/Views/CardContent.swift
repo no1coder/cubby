@@ -1,68 +1,46 @@
 import SwiftUI
 import CubbyCore
 
-/// 按类型渲染的卡片主体
+/// 文本、代码与文件卡的主体（链接、颜色与图片卡见 Cards/TypedCardContent.swift）
 struct CardContent: View {
     let item: ClipItem
     let style: CardStyle
     let palette: CardPalette
     let keywords: [String]
-    let imageURL: URL?
 
     private static let snippetLength = 400
     private static let maxCodeLines = 4
-    /// 图片卡固定高度：加载前后不跳动，列表节奏稳定
-    private static let imageHeight: CGFloat = 96
     private static let fileIconSize: CGFloat = 30
+    /// 14pt 正文的行高约 1.5（21pt）：在系统默认行高之上再加的间距
+    private static let bodyLineSpacing: CGFloat = 4
+    /// 12pt 代码的行高约 1.6
+    private static let codeLineSpacing: CGFloat = 4
 
     var body: some View {
         switch item.payload {
         case .text(let text):
             textContent(text)
-        case .image(let ref):
-            imageContent(ref)
         case .files(let paths):
             fileContent(paths)
+        case .image:
+            EmptyView()
         }
-    }
-
-    /// 先用透明占位确定尺寸，再把图片放进 overlay：fill 模式下宽幅图片的理想宽度
-    /// 会超过内容列，若直接参与布局会把整张卡片撑宽、越过面板内边距
-    private func imageContent(_ ref: ImageRef) -> some View {
-        // 竖长图（如长网页截图）顶部对齐，看得到开头而不是中段。
-        // 请求尺寸与记录时预生成的缩略图同一规则（ImageThumbnail），命中小文件解码不到 1ms
-        let isTall = ImageThumbnail.isTall(width: ref.width, height: ref.height)
-        let pixelSize = ImageThumbnail.pixelSize(width: ref.width, height: ref.height)
-        return Color.clear
-            .frame(maxWidth: .infinity)
-            .frame(height: Self.imageHeight)
-            .overlay(alignment: isTall ? .top : .center) {
-                AsyncThumbnail(url: imageURL, maxPixelSize: pixelSize, contentMode: .fill)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous))
     }
 
     @ViewBuilder
     private func textContent(_ text: String) -> some View {
-        switch (item.kind, style) {
-        case (.link, _):
-            linkContent(text.trimmingCharacters(in: .whitespacesAndNewlines))
-        case (.color, _):
-            Text(text.trimmingCharacters(in: .whitespacesAndNewlines).uppercased())
-                .font(.system(size: FontSize.title, weight: .semibold, design: .monospaced))
-                .foregroundStyle(palette.primary)
-        case (_, .code):
-            // 代码逐行截断而不折行，保留原有缩进结构
-            VStack(alignment: .leading, spacing: 2) {
+        if case .code(let language) = style {
+            // 代码逐行截断而不折行，保留原有缩进结构；关键字 / 字符串 / 类型三色，搜索命中再叠黄色底
+            VStack(alignment: .leading, spacing: Self.codeLineSpacing) {
                 ForEach(Array(codeLines(text).enumerated()), id: \.offset) { _, line in
-                    Text(TextHighlighter.attributed(line, keywords: keywords, tint: .yellow))
+                    Text(CodeColoring.attributed(line, language: language, keywords: keywords))
                         .lineLimit(1)
                         .truncationMode(.tail)
                 }
             }
             .font(.system(size: FontSize.footnote, design: .monospaced))
             .foregroundStyle(palette.primary)
-        default:
+        } else {
             Text(
                 TextHighlighter.attributed(
                     TextHighlighter.snippet(
@@ -76,32 +54,19 @@ struct CardContent: View {
                     tint: .accentColor
                 )
             )
-            .font(.system(size: FontSize.body))
+            .font(.system(size: FontSize.callout))
             .foregroundStyle(palette.primary)
             .lineLimit(3)
-            .lineSpacing(1.5)
-        }
-    }
-
-    /// 链接：域名 + 完整地址（来源浏览器图标已表明是网页，不再重复链接图标）
-    private func linkContent(_ url: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(URL(string: url)?.host ?? url)
-                .font(.system(size: FontSize.body, weight: .semibold))
-                .foregroundStyle(palette.primary)
-                .lineLimit(1)
-            Text(TextHighlighter.attributed(url, keywords: keywords, tint: .accentColor))
-                .font(.system(size: FontSize.caption))
-                .foregroundStyle(palette.secondary)
-                .lineLimit(1)
-                .truncationMode(.middle)
+            .lineSpacing(Self.bodyLineSpacing)
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 
     /// 文件名中间截断（与访达一致，保留扩展名）；文件已不存在时名称加删除线、路径换成说明
     private func fileContent(_ paths: [String]) -> some View {
         let missingNote = FileAvailability.missingDescription(paths)
-        let folder = ((paths.first ?? "") as NSString).deletingLastPathComponent.abbreviatingWithTildeInPath
+        let parent = ((paths.first ?? "") as NSString).deletingLastPathComponent.abbreviatingWithTildeInPath
+        let folder = paths.count > 1 ? "\(TextStats.fileCount(paths.count)) · \(parent)" : parent
         return HStack(spacing: 8) {
             Image(nsImage: ImageCache.shared.fileIcon(path: paths.first ?? ""))
                 .resizable()
