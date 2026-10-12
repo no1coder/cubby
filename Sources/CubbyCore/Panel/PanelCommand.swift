@@ -32,6 +32,8 @@ public enum PanelCommand: Equatable, Sendable {
     case toggleFavorite
     /// ⇧⌘P 把选中的图片贴到屏幕上（与 ⌘P 收藏成对，便于记忆）
     case pinToScreen
+    /// ⌘L 把选中的图片挂到晾衣绳 / 已挂的取下（docs/UI-UPGRADE-PLAN.md 第 5 节）；不是图片时由视图模型给出提示音
+    case toggleClothesline
     case togglePreview
     case open
     case openSettings
@@ -195,6 +197,7 @@ public enum PanelCommand: Equatable, Sendable {
         case (.command, "y"): .togglePreview
         case (.command, "t"), ([.command, .shift], "t"): .translate
         case (.command, "b"): .pickWords
+        case (.command, "l"): .toggleClothesline
         case (.command, ","): .openSettings
         case (.control, "n"): .moveDown
         case (.control, "p"): .moveUp

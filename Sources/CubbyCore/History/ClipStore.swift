@@ -22,6 +22,9 @@ public final class ClipStore {
     public let canPersist: Bool
     /// 启动加载时遇到的问题（nil 表示正常），界面据此提示原因
     public private(set) var loadIssue: LoadIssue?
+    /// 自动裁剪（记录新内容、setLimit）时与收藏一样保留、且不占上限名额的条目，例如晾衣绳上的条目；由应用层同步。
+    /// 设置它本身不裁剪也不保存，下次裁剪时生效。remove(id:) 与 clearHistory() 不看它：清空只保留收藏
+    @ObservationIgnored public var protectedIDs: Set<UUID> = []
 
     @ObservationIgnored let blobs: BlobStore
     @ObservationIgnored private let saver: CoalescingSaver
@@ -139,7 +142,7 @@ public final class ClipStore {
                 try blobs.write(blob.data, name: blob.name)
             }
             let item = item(from: prepared, source: source, date: now(), linkTitle: linkTitle)
-            apply(history.inserting(item, limit: limit))
+            apply(history.inserting(item, limit: limit, keeping: protectedIDs))
             return history.items.first
         } catch {
             logger.error("Failed to record clipboard content: \(error.localizedDescription, privacy: .public)")
@@ -185,7 +188,7 @@ public final class ClipStore {
         removeUnreferencedBlobs(removal.item.storedBlobNames)
     }
 
-    /// 清空历史（保留收藏）
+    /// 清空历史（只保留收藏；protectedIDs 中未收藏的条目也会被清掉）
     public func clearHistory() {
         discardUndo()
         apply(history.removingNonFavorites())
@@ -217,7 +220,7 @@ public final class ClipStore {
 
     public func setLimit(_ newLimit: Int) {
         limit = max(newLimit, 1)
-        apply(history.trimmed(to: limit))
+        apply(history.trimmed(to: limit, keeping: protectedIDs))
     }
 
     // MARK: - 查询

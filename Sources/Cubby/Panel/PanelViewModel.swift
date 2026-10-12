@@ -192,6 +192,7 @@ final class PanelViewModel {
         case .undo: return undoDelete()
         case .toggleFavorite: if let item = selectedItem { toggleFavorite(item) }
         case .pinToScreen: pinSelected()
+        case .toggleClothesline: break  // 第 6 步接线
         case .togglePreview: setPreviewVisible(!isPreviewVisible)
         case .translate: toggleTranslationCard()
         case .translateAndPaste: translateAndPasteSelected()

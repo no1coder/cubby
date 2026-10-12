@@ -57,6 +57,8 @@ public final class AppSettings {
         static let clotheslineHotKey = "clotheslineHotKey"
         static let clotheslineHotKeyDisabled = "clotheslineHotKeyDisabled"
         static let clotheslineItems = "clotheslineItems"
+        static let clotheslineDwell = "clotheslineDwell"
+        static let hangsScreenshotsOnClothesline = "hangsScreenshotsOnClothesline"
         static let floatingPanelPosition = "floatingPanelPosition"
         static let appearance = "appearance"
     }
@@ -104,6 +106,23 @@ public final class AppSettings {
     /// 晾衣绳上挂着的条目（从左到右）；读写容错，损坏或重复的 id 被丢弃
     public var clothesline: Clothesline {
         didSet { defaults.set(clothesline.itemIDs.map(\.uuidString), forKey: Keys.clotheslineItems) }
+    }
+
+    /// 指针停在屏幕最顶边多久后晾衣绳滑下（秒）；可选值见 clotheslineDwellChoices。
+    /// 写入或读到 clotheslineDwellRange 以外的值（含非有限数）时回到默认的 0.5 秒
+    public var clotheslineDwell: TimeInterval {
+        didSet {
+            // 在自身的 didSet 中赋值不会再次触发观察器
+            if !Self.clotheslineDwellRange.contains(clotheslineDwell) {
+                clotheslineDwell = Self.defaultClotheslineDwell
+            }
+            defaults.set(clotheslineDwell, forKey: Keys.clotheslineDwell)
+        }
+    }
+
+    /// 设置 › 截图与标注「自动挂到晾衣绳」：新截图记入历史后自动挂上（默认关）
+    public var hangsScreenshotsOnClothesline: Bool {
+        didSet { defaults.set(hangsScreenshotsOnClothesline, forKey: Keys.hangsScreenshotsOnClothesline) }
     }
 
     /// 界面外观：跟随系统（默认）或固定浅色 / 深色
@@ -296,6 +315,8 @@ public final class AppSettings {
             unlessTakenBy: [panelHotKey, screenshot, images], in: defaults)
         clothesline = Clothesline(
             itemIDs: (defaults.stringArray(forKey: Keys.clotheslineItems) ?? []).compactMap(UUID.init(uuidString:)))
+        clotheslineDwell = Self.storedClotheslineDwell(defaults.object(forKey: Keys.clotheslineDwell))
+        hangsScreenshotsOnClothesline = defaults.object(forKey: Keys.hangsScreenshotsOnClothesline) as? Bool ?? false
         appearance = defaults.string(forKey: Keys.appearance).flatMap(AppAppearance.init(rawValue:)) ?? .system
         pasteFormat = defaults.string(forKey: Keys.pasteFormat).flatMap(PasteFormat.init(rawValue:)) ?? .original
         hasCompletedOnboarding = defaults.bool(forKey: Keys.hasCompletedOnboarding)

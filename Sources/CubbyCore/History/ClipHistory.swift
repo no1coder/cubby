@@ -11,12 +11,12 @@ public struct ClipHistory: Codable, Equatable, Sendable {
     }
 
     /// 插入条目。相同内容会合并为一条并移到最前（保留原 id 与收藏状态，
-    /// 富文本格式等取最新一次复制的值），然后按上限裁剪非收藏条目。
-    public func inserting(_ item: ClipItem, limit: Int) -> ClipHistory {
+    /// 富文本格式等取最新一次复制的值），然后按上限裁剪非收藏条目（受保护的条目同样跳过，见 trimmed(to:keeping:)）。
+    public func inserting(_ item: ClipItem, limit: Int, keeping protected: Set<UUID> = []) -> ClipHistory {
         let existing = items.first { $0.contentHash == item.contentHash }
         let head = existing.map(item.replacing) ?? item
         let rest = items.filter { $0.contentHash != item.contentHash }
-        return ClipHistory(items: [head] + rest).trimmed(to: limit)
+        return ClipHistory(items: [head] + rest).trimmed(to: limit, keeping: protected)
     }
 
     /// 将条目移到最前并刷新时间（例如被粘贴后）
@@ -79,15 +79,17 @@ public struct ClipHistory: Codable, Equatable, Sendable {
         return ClipHistory(items: items.map { $0.translations == nil ? $0 : $0.withTranslations(nil) })
     }
 
-    /// 清空历史，收藏的条目保留
+    /// 清空历史，只保留收藏的条目（晾衣绳上但未收藏的条目同样被清掉：清空是用户的明确操作）
     public func removingNonFavorites() -> ClipHistory {
         ClipHistory(items: items.filter(\.isFavorite))
     }
 
-    /// 非收藏条目最多保留 limit 条（取最新的），收藏条目不受限制
-    public func trimmed(to limit: Int) -> ClipHistory {
-        let keepIDs = Set(items.lazy.filter { !$0.isFavorite }.prefix(max(limit, 1)).map(\.id))
-        let kept = items.filter { $0.isFavorite || keepIDs.contains($0.id) }
+    /// 自动裁剪：非收藏条目最多保留 limit 条（取最新的）。收藏条目与 protected 中的条目（例如晾衣绳上的）
+    /// 不受限制，也不占 limit 的名额。不存在的 id 忽略
+    public func trimmed(to limit: Int, keeping protected: Set<UUID> = []) -> ClipHistory {
+        let isExempt = { (item: ClipItem) in item.isFavorite || protected.contains(item.id) }
+        let keepIDs = Set(items.lazy.filter { !isExempt($0) }.prefix(max(limit, 1)).map(\.id))
+        let kept = items.filter { isExempt($0) || keepIDs.contains($0.id) }
         return kept.count == items.count ? self : ClipHistory(items: kept)
     }
 
