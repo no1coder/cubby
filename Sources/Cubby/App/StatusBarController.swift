@@ -3,7 +3,7 @@ import CubbyCore
 
 /// 菜单栏图标：左键打开面板，右键（或 ⌃ 点击）显示菜单
 @MainActor
-final class StatusBarController: NSObject, NSMenuDelegate {
+final class StatusBarController: NSObject {
     struct Actions {
         let togglePanel: (CGRect?) -> Void
         let showOnlyImages: () -> Void
@@ -16,6 +16,8 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         let checkForUpdates: () -> Void
         /// 菜单栏是红色「地址被替换」胶囊时左键点击：重新打开警示卡
         var showTamperAlert: () -> Void = {}
+        /// 历史条数（菜单头部的状态行）
+        var itemCount: () -> Int = { 0 }
     }
 
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -24,24 +26,8 @@ final class StatusBarController: NSObject, NSMenuDelegate {
     private let actions: Actions
     /// 有新版本时图标右上角的蓝点（U5）
     private var updateBadge: StatusItemUpdateBadge?
-    private let menu = NSMenu()
-    private let openItem: ClosureMenuItem
-    private let screenshotItem: ClosureMenuItem
-    private let imagesItem: ClosureMenuItem
-    private let clotheslineItem: ClosureMenuItem
-    private let pauseItem = ClosureMenuItem(
-        title: String(localized: "Pause Recording", comment: "Status menu item"),
-        handler: {}
-    )
-    private let accessWarningItem = ClosureMenuItem(
-        title: String(localized: "Allow Clipboard Access…", comment: "Status menu item")
-    ) {
-        PasteboardAccess.openSettings()
-    }
-    private let panelPositionItem: PanelPositionMenuItem
-    private let appearanceItem: AppearanceMenuItem
-    /// 已知有新版本时显示在菜单顶部（U5）
-    private let updateAvailableItem = ClosureMenuItem(title: "", handler: {})
+    /// 右键菜单（StatusBarMenu）
+    private let statusMenu: StatusBarMenu
     /// 有还没处理的地址替换：图标换成红色「地址被替换」胶囊
     private var showsTamperPill = false
 
@@ -49,24 +35,16 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         self.settings = settings
         self.updates = updates
         self.actions = actions
-        self.openItem = ClosureMenuItem(title: Self.openTitle) { actions.togglePanel(nil) }
-        self.screenshotItem = ClosureMenuItem(title: Self.screenshotTitle, handler: actions.takeScreenshot)
-        self.imagesItem = ClosureMenuItem(title: Self.imagesTitle, handler: actions.showOnlyImages)
-        self.clotheslineItem = ClosureMenuItem(title: "", handler: actions.toggleClothesline)
-        self.panelPositionItem = PanelPositionMenuItem(settings: settings)
-        self.appearanceItem = AppearanceMenuItem(settings: settings)
+        statusMenu = StatusBarMenu(settings: settings, actions: actions)
         super.init()
-
-        pauseItem.handler = { [weak self] in self?.settings.isPaused.toggle() }
-        accessWarningItem.image = NSImage(
-            systemSymbolName: "exclamationmark.triangle.fill", accessibilityDescription: nil)
-        updateAvailableItem.image = NSImage(systemSymbolName: "arrow.down.circle.fill", accessibilityDescription: nil)?
-            .withSymbolConfiguration(NSImage.SymbolConfiguration(hierarchicalColor: .controlAccentColor))
-        updateAvailableItem.isHidden = true
+        statusMenu.tamperPending = { [weak self] in self?.showsTamperPill ?? false }
         configureButton()
-        buildMenu()
         refreshAppearance()
     }
+
+    #if DEBUG
+    var debugStatusMenu: StatusBarMenu { statusMenu }
+    #endif
 
     /// 图标在屏幕上的位置（用于在其下方弹出面板）
     var buttonFrame: CGRect? {
@@ -83,7 +61,7 @@ final class StatusBarController: NSObject, NSMenuDelegate {
             Self.applyAppearance(to: button, badge: updateBadge, paused: settings.isPaused, release: release)
             applyClotheslineCount(to: button)
         }
-        refreshUpdateItem(release)
+        statusMenu.refreshUpdateItem(release, updates: updates)
     }
 
     /// 发现替换后到用户处理之前显示红色胶囊（AddressGuardController.pending）
@@ -134,64 +112,7 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         return release.map { UpdateCopy.statusItemToolTip($0.version.description) } ?? "Cubby"
     }
 
-    /// 已知有新版本：菜单顶部显示醒目的「新版本 x 可用…」，点击打开发布页；升级后隐藏
-    private func refreshUpdateItem(_ release: KnownRelease?) {
-        guard let release else {
-            updateAvailableItem.isHidden = true
-            return
-        }
-        let font = NSFontManager.shared.convert(.menuFont(ofSize: 0), toHaveTrait: .boldFontMask)
-        updateAvailableItem.attributedTitle = NSAttributedString(
-            string: UpdateCopy.menuItem(release.version.description), attributes: [.font: font])
-        updateAvailableItem.handler = { [weak updates] in updates?.openRelease(release) }
-        updateAvailableItem.isHidden = false
-    }
-
-    // MARK: - NSMenuDelegate
-
-    func menuNeedsUpdate(_ menu: NSMenu) {
-        openItem.attributedTitle = Self.titleWithDetail(Self.openTitle, detail: settings.hotKey.displayName)
-        // 截图快捷键已关闭时只显示标题
-        screenshotItem.attributedTitle = settings.screenshotHotKey.map {
-            Self.titleWithDetail(Self.screenshotTitle, detail: $0.displayName)
-        }
-        panelPositionItem.refresh()
-        appearanceItem.refresh()
-        imagesItem.attributedTitle = settings.imagesHotKey.map {
-            Self.titleWithDetail(Self.imagesTitle, detail: $0.displayName)
-        }
-        refreshClotheslineItem()
-        pauseItem.state = settings.isPaused ? .on : .off
-        accessWarningItem.isHidden = !PasteboardAccess.needsAttention
-    }
-
     // MARK: - 私有
-
-    private static var openTitle: String {
-        String(localized: "Open Clipboard", comment: "Status menu item: open the panel")
-    }
-
-    private static var imagesTitle: String {
-        String(localized: "Only Images", comment: "Status menu item: open the panel on the image grid")
-    }
-
-    /// 「显示晾衣绳 · 4 张」+ 快捷键；关闭了晾衣绳时隐藏，绳上为空时置灰
-    private func refreshClotheslineItem() {
-        clotheslineItem.isHidden = !settings.clotheslineEnabled
-        let count = settings.clothesline.count
-        let title = String(
-            localized: "Show Clothesline · \(count) photos",
-            comment: "Status menu item that slides the clothesline down. %lld = number of photos on it")
-        clotheslineItem.attributedTitle =
-            settings.clotheslineHotKey.map {
-                Self.titleWithDetail(title, detail: $0.displayName)
-            } ?? NSAttributedString(string: title)
-        clotheslineItem.isEnabled = count > 0
-    }
-
-    private static var screenshotTitle: String {
-        String(localized: "Take Screenshot", comment: "Status menu item and panel button tooltip")
-    }
 
     private func configureButton() {
         guard let button = statusItem.button else { return }
@@ -214,60 +135,10 @@ final class StatusBarController: NSObject, NSMenuDelegate {
     }
 
     private func showMenu() {
-        statusItem.menu = menu
+        statusItem.menu = statusMenu.menu
         statusItem.button?.performClick(nil)
         // 用完即移除，保证左键点击仍走自定义动作
         statusItem.menu = nil
-    }
-
-    private func buildMenu() {
-        menu.delegate = self
-        // 菜单项的可用状态由我们在 menuNeedsUpdate 里设置（例如绳上为空时「显示晾衣绳」置灰）
-        menu.autoenablesItems = false
-        menu.addItem(updateAvailableItem)
-        menu.addItem(accessWarningItem)
-        menu.addItem(openItem)
-        menu.addItem(imagesItem)
-        menu.addItem(screenshotItem)
-        menu.addItem(clotheslineItem)
-        menu.addItem(.separator())
-        menu.addItem(panelPositionItem)
-        menu.addItem(appearanceItem)
-        menu.addItem(.separator())
-        menu.addItem(pauseItem)
-        menu.addItem(
-            ClosureMenuItem(
-                title: String(localized: "Clear History…", comment: "Status menu item"),
-                handler: actions.clearHistory
-            ))
-        menu.addItem(.separator())
-        menu.addItem(
-            ClosureMenuItem(
-                title: String(localized: "Setup Guide…", comment: "Status menu item: reopen the first-launch guide"),
-                handler: actions.showOnboarding
-            ))
-        menu.addItem(
-            ClosureMenuItem(
-                title: String(localized: "User Guide…", comment: "Status menu item: open the user guide window"),
-                handler: actions.showUserGuide
-            ))
-        menu.addItem(
-            ClosureMenuItem(
-                title: String(localized: "Check for Updates…", comment: "Status menu item"),
-                handler: actions.checkForUpdates
-            ))
-        menu.addItem(
-            ClosureMenuItem(
-                title: String(localized: "Settings…", comment: "Status menu item"),
-                keyEquivalent: ",",
-                handler: actions.openSettings
-            ))
-        menu.addItem(.separator())
-        let quitTitle = String(localized: "Quit Cubby", comment: "Menu item")
-        menu.addItem(
-            ClosureMenuItem(title: quitTitle, keyEquivalent: "q") {
-                NSApp.terminate(nil)
-            })
     }
 
     /// 标题右侧以次要颜色显示补充信息：全局快捷键（无法用 keyEquivalent 表达）或子菜单的当前值

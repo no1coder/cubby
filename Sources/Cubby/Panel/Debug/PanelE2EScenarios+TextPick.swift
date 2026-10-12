@@ -322,13 +322,12 @@ extension PanelE2EScenarios {
             context.check("with the card open help lists ⌘A", context.hasAnchor("help.⌘A"))
             context.check("… and ⌘C", context.hasAnchor("help.⌘C"))
             let panel = ScreenTopologyProvider.toGlobal(context.panelWindow.frame)
-            let rightClick = String(
-                localized: "Right-click", comment: "Shortcut help: mouse gesture, shown in a key cap")
-            let lastRow = try? context.frame(of: "help.\(rightClick)", in: context.panelWindow)
+            // 底栏「按 esc 关闭」完整落在面板内（分组放不下时中间一段滚动，底栏不动）
+            let footer = try? context.frame(of: "help.footer", in: context.panelWindow)
             context.check(
                 "the help overlay fits in the panel",
-                lastRow.map { $0.minY >= panel.minY && $0.maxY <= panel.maxY - 8 } == true,
-                detail: "last row \(lastRow.map { "\($0)" } ?? "missing"), panel \(panel)")
+                footer.map { $0.minY >= panel.minY && $0.maxY <= panel.maxY - 4 } == true,
+                detail: "footer \(footer.map { "\($0)" } ?? "missing"), panel \(panel)")
         }
     }
 }

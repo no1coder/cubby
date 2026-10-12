@@ -47,8 +47,9 @@ Press `⇧⌘V` in any app to open the panel and press it again to close it, or 
 
 Click the menu bar icon to open the panel. Right-click it (or Control-click) to open its menu:
 
-- **Open Clipboard** and **Take Screenshot:** their shortcuts are shown in gray on the right.
-- **Pause Recording:** while it's checked, nothing new is recorded, and the menu bar icon changes.
+- The top of the menu shows Cubby's status: **Recording · N items**, **Paused · N items**, or a red **Address Replaced** while a replaced address is waiting for you.
+- **Open Clipboard**, **Only Images**, **Take Screenshot** and **Show Clothesline:** their shortcuts are shown in gray on the right.
+- **Pause Recording:** nothing new is recorded, and the menu bar icon changes. While paused, the item reads **Resume Recording**.
 - **Clear History…:** after you confirm, deletes every item that isn't a favorite. This can't be undone.
 - **Setup Guide…:** reopens the first-launch guide.
 - **Check for Updates…**, **Settings…** (`⌘,`) and **Quit Cubby** (`⌘Q`).
@@ -134,7 +135,7 @@ Click the keyboard icon (**Keyboard Shortcuts**) at the right of the footer to s
 
 ### Pause recording
 
-When you're about to copy something sensitive, pause recording: check **Pause Recording** in the menu bar icon's menu, or turn on **Pause recording** in `Settings › Privacy`. While paused:
+When you're about to copy something sensitive, pause recording: choose **Pause Recording** in the menu bar icon's menu, or turn on **Pause recording** in `Settings › Privacy`. While paused:
 
 - Nothing you copy is saved, and the menu bar icon changes.
 - A "Recording paused" banner stays at the top of the panel; click **Resume** on it to start recording again.

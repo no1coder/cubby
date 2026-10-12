@@ -2086,6 +2086,17 @@
         }
       }
     },
+    "Close (esc)" : {
+      "comment" : "Shortcut help: tooltip of the close button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭（esc）"
+          }
+        }
+      }
+    },
     "Close Window" : {
       "comment" : "Menu item",
       "localizations" : {
@@ -2093,6 +2104,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关闭窗口"
+          }
+        }
+      }
+    },
+    "Close help" : {
+      "comment" : "Shortcut help: close button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭帮助"
           }
         }
       }
@@ -3052,12 +3074,23 @@
       }
     },
     "Delete" : {
-      "comment" : "Card hover button\nKey name read by VoiceOver\nShortcut help",
+      "comment" : "Card hover button\nKey name read by VoiceOver",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "删除"
+          }
+        }
+      }
+    },
+    "Delete / undo" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除 / 撤销"
           }
         }
       }
@@ -3826,6 +3859,17 @@
         }
       }
     },
+    "Hang on / take down from the clothesline" : {
+      "comment" : "Shortcut help: ⌘L on an image",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "挂到 / 取下晾衣绳"
+          }
+        }
+      }
+    },
     "Hang on Clothesline" : {
       "comment" : "Context menu item and hover button for images",
       "localizations" : {
@@ -3996,6 +4040,17 @@
         }
       }
     },
+    "Hold to preview translation" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按住预览译文"
+          }
+        }
+      }
+    },
     "Hold ⌥" : {
       "comment" : "Shortcut help: key names",
       "localizations" : {
@@ -4090,7 +4145,7 @@
       }
     },
     "Images" : {
-      "comment" : "Category tab: image items",
+      "comment" : "Category tab: image items\nShortcut help section title",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -4219,6 +4274,7 @@
       }
     },
     "Keyboard Shortcuts" : {
+      "comment" : "Shortcut help title",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -4526,17 +4582,6 @@
         }
       }
     },
-    "Mouse" : {
-      "comment" : "Shortcut help section title",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "鼠标"
-          }
-        }
-      }
-    },
     "Move Cubby to the Applications folder" : {
       "comment" : "Panel warning title",
       "localizations" : {
@@ -4555,6 +4600,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "需要「输入监控」权限，只识别 ⌘C / ⌘X，不记录任何按键内容。没有该权限时，极快的替换可能发现不了"
+          }
+        }
+      }
+    },
+    "New" : {
+      "comment" : "Badge next to a shortcut help section with new features",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新"
           }
         }
       }
@@ -5092,6 +5148,17 @@
         }
       }
     },
+    "Only images (global)" : {
+      "comment" : "Shortcut help: global shortcut",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只看图片（全局）"
+          }
+        }
+      }
+    },
     "Only uses system translation on this Mac. Requires the language to be downloaded." : {
       "localizations" : {
         "zh-Hans" : {
@@ -5237,6 +5304,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开链接或文件"
+          }
+        }
+      }
+    },
+    "Open translation card" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开翻译卡"
           }
         }
       }
@@ -5414,17 +5492,6 @@
         }
       }
     },
-    "Paste (or double-click a card)" : {
-      "comment" : "Shortcut help",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "粘贴（双击卡片同效）"
-          }
-        }
-      }
-    },
     "Paste API key" : {
       "localizations" : {
         "zh-Hans" : {
@@ -5572,6 +5639,17 @@
         }
       }
     },
+    "Paste to the current app (or double-click)" : {
+      "comment" : "Shortcut help: ↩ or double-clicking a card pastes into the app in front",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "粘贴到当前应用（或双击卡片）"
+          }
+        }
+      }
+    },
     "Paste translation to %@ %@" : {
       "comment" : "Footer hint for ↩ while the translation card is open. %1$@ = app icon, %2$@ = app name",
       "localizations" : {
@@ -5702,6 +5780,35 @@
         }
       }
     },
+    "Paused · %lld items" : {
+      "comment" : "Status menu header while recording is paused. %lld = number of items in history",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Paused · %lld item"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Paused · %lld items"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已暂停 · %lld 条"
+          }
+        }
+      }
+    },
     "Pen" : {
       "comment" : "Screenshot tool name",
       "localizations" : {
@@ -5766,17 +5873,6 @@
         }
       }
     },
-    "Pin image to screen" : {
-      "comment" : "Shortcut help",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "贴图"
-          }
-        }
-      }
-    },
     "Pin to Screen" : {
       "comment" : "Card hover button\nScreenshot toolbar button accessibility label",
       "localizations" : {
@@ -5795,6 +5891,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "贴图（⌘P）"
+          }
+        }
+      }
+    },
+    "Pin to screen" : {
+      "comment" : "Shortcut help: ⇧⌘P on an image",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "贴到屏幕"
           }
         }
       }
@@ -5892,6 +5999,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按下新的快捷键，esc 取消"
+          }
+        }
+      }
+    },
+    "Press esc to close" : {
+      "comment" : "Shortcut help footer",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按 esc 关闭"
           }
         }
       }
@@ -6067,24 +6185,24 @@
         }
       }
     },
-    "Quick copy" : {
-      "comment" : "Shortcut help when direct pasting is unavailable",
+    "Quick copy the first nine" : {
+      "comment" : "Shortcut help: ⌘1 – ⌘9 when direct pasting is unavailable",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快速复制"
+            "value" : "快速复制前九条"
           }
         }
       }
     },
-    "Quick paste" : {
-      "comment" : "Shortcut help",
+    "Quick paste the first nine" : {
+      "comment" : "Shortcut help: ⌘1 – ⌘9",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快速粘贴"
+            "value" : "快速粘贴前九条"
           }
         }
       }
@@ -6240,6 +6358,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在录制快捷键"
+          }
+        }
+      }
+    },
+    "Recording · %lld items" : {
+      "comment" : "Status menu header while recording. %lld = number of items in history",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Recording · %lld item"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Recording · %lld items"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在记录 · %lld 条"
           }
         }
       }
@@ -6479,6 +6626,17 @@
     },
     "Resume" : {
       "comment" : "Panel warning button: resume clipboard recording",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复记录"
+          }
+        }
+      }
+    },
+    "Resume Recording" : {
+      "comment" : "Status menu item while recording is paused",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -6935,6 +7093,17 @@
         }
       }
     },
+    "Select & Paste" : {
+      "comment" : "Shortcut help section title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择与粘贴"
+          }
+        }
+      }
+    },
     "Select (or ⌃P ⌃N)" : {
       "comment" : "Shortcut help",
       "localizations" : {
@@ -7295,6 +7464,17 @@
         }
       }
     },
+    "Show the clothesline (global)" : {
+      "comment" : "Shortcut help: global shortcut",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示晾衣绳（全局）"
+          }
+        }
+      }
+    },
     "Show translations on cards" : {
       "localizations" : {
         "zh-Hans" : {
@@ -7393,23 +7573,12 @@
       }
     },
     "Space" : {
-      "comment" : "Key name as written in the user guide, shown in a key cap\nKey name in a tooltip",
+      "comment" : "Key name as written in the user guide, shown in a key cap\nKey name in a tooltip\nShortcut help: key name, shown in a key cap",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "空格"
-          }
-        }
-      }
-    },
-    "Space / ⌘Y" : {
-      "comment" : "Shortcut help: key names",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "空格 / ⌘Y"
           }
         }
       }
@@ -8296,17 +8465,6 @@
         }
       }
     },
-    "Translate (press again to close)" : {
-      "comment" : "Shortcut help",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "翻译（再按一次关闭）"
-          }
-        }
-      }
-    },
     "Translate (⇧⌘T)" : {
       "comment" : "Screenshot toolbar tooltip",
       "localizations" : {
@@ -8351,6 +8509,17 @@
         }
       }
     },
+    "Translate and paste" : {
+      "comment" : "Shortcut help",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译后粘贴"
+          }
+        }
+      }
+    },
     "Translate into" : {
       "localizations" : {
         "zh-Hans" : {
@@ -8367,17 +8536,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "复制外文时自动翻译"
-          }
-        }
-      }
-    },
-    "Translate, then paste" : {
-      "comment" : "Shortcut help",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "翻译后粘贴"
           }
         }
       }
@@ -8533,7 +8691,7 @@
       }
     },
     "Translation" : {
-      "comment" : "Settings pane",
+      "comment" : "Settings pane\nShortcut help section title",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -8782,17 +8940,6 @@
         }
       }
     },
-    "Undo delete" : {
-      "comment" : "Shortcut help",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "撤销删除"
-          }
-        }
-      }
-    },
     "Unfavorite" : {
       "localizations" : {
         "zh-Hans" : {
@@ -8924,23 +9071,12 @@
       }
     },
     "User Guide" : {
-      "comment" : "User guide window title",
+      "comment" : "Status menu item: open the user guide window\nUser guide window title",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "使用说明"
-          }
-        }
-      }
-    },
-    "User Guide…" : {
-      "comment" : "Status menu item: open the user guide window",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用说明…"
           }
         }
       }
@@ -9013,6 +9149,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查看并下载"
+          }
+        }
+      }
+    },
+    "View & Organize" : {
+      "comment" : "Shortcut help section title",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "查看与整理"
           }
         }
       }

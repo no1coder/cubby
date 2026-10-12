@@ -141,6 +141,7 @@ Translation walkthroughs can add `--fake-translation-key <preset id>` (an obviou
 | `make e2e` (`--e2e <names\|all>`) | Screenshot end-to-end scripts driven by synthetic input on a generated desktop, with a private pasteboard |
 | `make e2e-panel` (`--panel-e2e <names\|all>`) | Panel and clipboard-translation end-to-end scripts with demo items, a private pasteboard and a stub translation service |
 | `--translate-qa <corpus.json> <outdir>` | Runs the real recognition and layout pipeline on synthetic screenshots from `Tests/TranslationQA/corpus.json` and writes before/after images and an `index.html` |
+| `--dump-status-menu` (`--dump-status-menu tamper`) | Prints the menu bar menu (titles, shortcuts, hidden / disabled / checked items, submenus) and quits, optionally as if a replaced address were waiting. It registers no shortcuts and doesn't read your clipboard; combine it with `CUBBY_DATA_DIR` and `--demo-history` |
 | `--clip-translation-selftest` | Exercises the clipboard translation service with stub engines in a temporary data directory |
 
 The end-to-end suites need an unlocked screen, and take over the screen while they run: don't use the mouse or keyboard until they finish.

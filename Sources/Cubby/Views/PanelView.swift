@@ -70,21 +70,34 @@ struct PanelView: View {
     }
 
     /// 与底栏「↩」提示同一判断：没有可粘贴的目标时 ↩ / ⇧↩ 都只复制。
-    /// 翻译卡或拆词卡打开时帮助多出两行，不再显示「完整使用说明…」链接，免得超出面板高度
+    /// 翻译卡或拆词卡打开时帮助多出两行，不再显示「完整使用说明…」链接
     private var helpOverlay: some View {
         let translation = helpTranslation
         let cardOpen = translation == .cardOpen || viewModel.isTextPickOpen
         return HelpOverlay(
-            alternateFormat: viewModel.settings.pasteFormat.alternate,
-            pastesDirectly: viewModel.canPasteDirectly && viewModel.target != nil,
-            translation: translation,
-            textPickOpen: viewModel.isTextPickOpen,
+            content: ShortcutHelpContent(
+                alternateFormat: viewModel.settings.pasteFormat.alternate,
+                pastesDirectly: viewModel.canPasteDirectly && viewModel.target != nil,
+                translation: translation,
+                textPickOpen: viewModel.isTextPickOpen,
+                images: helpImages
+            ),
             onOpenUserGuide: cardOpen ? nil : { viewModel.openUserGuide() }
         ) { viewModel.toggleHelp() }
         .transition(.opacity)
     }
 
-    private var helpTranslation: ShortcutHelpView.Translation {
+    /// 图片分组：全局快捷键关闭时不显示对应行，晾衣绳关闭时不显示晾衣绳两行
+    private var helpImages: ShortcutHelpContent.Images {
+        let settings = viewModel.settings
+        return ShortcutHelpContent.Images(
+            onlyImagesHotKey: settings.imagesHotKey?.displayName,
+            clotheslineEnabled: settings.clotheslineEnabled,
+            clotheslineHotKey: settings.clotheslineHotKey?.displayName
+        )
+    }
+
+    private var helpTranslation: ShortcutHelpContent.Translation {
         guard viewModel.translation != nil else { return .unavailable }
         return viewModel.isTranslationCardOpen ? .cardOpen : .available
     }

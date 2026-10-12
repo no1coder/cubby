@@ -67,6 +67,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         #endif
         let panel = makeComponents()
+        #if DEBUG
+        // 菜单自检：打印菜单结构后直接退出（不启动剪贴板监听、不注册热键）
+        if let tamper = StatusBarMenu.dumpRequest, let statusBar {
+            print(statusBar.debugDumpMenu(tamper: tamper))
+            exit(0)
+        }
+        #endif
 
         #if DEBUG
         // 设置页、翻译、使用说明与翻译演示用不到剪贴板：不启动监听，避免读取用户的剪贴板
@@ -247,7 +254,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 showUserGuide: { [weak self] in self?.showUserGuide() },
                 clearHistory: { [weak self] in self?.confirmClearHistory() },
                 checkForUpdates: { [weak self] in self?.updates.checkInteractively() },
-                showTamperAlert: { [weak self] in self?.showPendingTamperAlert() }
+                showTamperAlert: { [weak self] in self?.showPendingTamperAlert() },
+                itemCount: { [weak self] in self?.store?.history.items.count ?? 0 }
             )
         )
     }

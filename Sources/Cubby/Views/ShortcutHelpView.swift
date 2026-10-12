@@ -1,220 +1,140 @@
 import SwiftUI
 import CubbyCore
 
-/// 快捷键帮助浮层：点击空白处或按 esc 关闭
+/// 快捷键帮助浮层：盖住整个面板，顶部标题与关闭按钮、中间分组、底部「完整使用说明…」与「按 esc 关闭」；
+/// 点击空白处、关闭按钮或按 esc 关闭
 struct HelpOverlay: View {
-    let alternateFormat: PasteFormat
-    /// ↩ / ⇧↩ 是否直接粘贴到目标应用；为 false 时两者都只复制，帮助里对应的动作随之改为「复制」
-    let pastesDirectly: Bool
-    /// 翻译可用时加 ⌘T、⌥↩、按住 ⌥ 三行；翻译卡打开时再加 ⌘C、⌘S
-    var translation: ShortcutHelpView.Translation = .unavailable
-    /// 拆词卡打开时加 ⌘A、⌘C 两行（docs/TEXT-PICK-DESIGN.md §2）
-    var textPickOpen = false
-    /// 底部「完整使用说明…」链接
+    let content: ShortcutHelpContent
+    /// 底部「完整使用说明…」链接；nil 时不显示
     var onOpenUserGuide: (() -> Void)?
     let onClose: () -> Void
 
     var body: some View {
         ZStack {
-            Color.black.opacity(0.25)
-                .clipShape(RoundedRectangle(cornerRadius: PanelChrome.cornerRadius, style: .continuous))
+            RoundedRectangle(cornerRadius: PanelChrome.cornerRadius, style: .continuous)
+                .fill(.thickMaterial)
                 .contentShape(Rectangle())
                 .onTapGesture(perform: onClose)
                 .accessibilityHidden(true)
-            // 放得下时居中显示；放不下（底部横条只有 304 高）时可以滚动，不被裁掉
-            ViewThatFits(in: .vertical) {
-                card
-                ScrollView { card.padding(.vertical, PanelMetrics.inset) }
-                    .scrollIndicators(.automatic)
+            VStack(spacing: 0) {
+                header
+                sectionsArea
+                Divider().opacity(0.6)
+                footer
             }
         }
     }
 
-    private var card: some View {
-        ShortcutHelpView(
-            alternateFormat: alternateFormat,
-            pastesDirectly: pastesDirectly,
-            translation: translation,
-            textPickOpen: textPickOpen,
-            onOpenUserGuide: onOpenUserGuide
-        )
-        .background(
-            RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
-                .fill(.regularMaterial)
-                .shadow(color: .black.opacity(0.25), radius: 16, y: 6)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
-                .strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5)
-        )
+    private var header: some View {
+        HStack {
+            Text("Keyboard Shortcuts", comment: "Shortcut help title")
+                .font(.system(size: FontSize.title, weight: .bold))
+                .accessibilityAddTraits(.isHeader)
+            Spacer()
+            Button(action: onClose) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 9, weight: .bold))
+                    .frame(width: 26, height: 26)
+                    .background(Circle().fill(Color.primary.opacity(0.12)))
+                    .contentShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .help(Text("Close (esc)", comment: "Shortcut help: tooltip of the close button"))
+            .accessibilityLabel(Text("Close help", comment: "Shortcut help: close button"))
+        }
+        .padding(EdgeInsets(top: 14, leading: 18, bottom: 6, trailing: 14))
+    }
+
+    /// 放得下时直接显示；放不下（浮动面板行数多、底部横条只有 304 高）时中间这段可以滚动，标题与底栏不动
+    private var sectionsArea: some View {
+        ViewThatFits(in: .vertical) {
+            sections
+            ScrollView { sections }
+                .scrollIndicators(.automatic)
+        }
+        .frame(maxHeight: .infinity, alignment: .top)
+    }
+
+    /// 宽的面板（底部横条）各组并排成列，窄的面板上下排成一列
+    private var sections: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .top, spacing: 32) {
+                ForEach(content.sections) { section in
+                    HelpSectionView(section: section).frame(width: 340)
+                }
+            }
+            VStack(alignment: .leading, spacing: 14) {
+                ForEach(content.sections) { section in
+                    HelpSectionView(section: section)
+                }
+            }
+            .frame(maxWidth: 440)
+        }
+        .padding(EdgeInsets(top: 2, leading: 18, bottom: 10, trailing: 18))
+        .frame(maxWidth: .infinity)
+    }
+
+    private var footer: some View {
+        HStack {
+            if let onOpenUserGuide {
+                Button("Full user guide…", action: onOpenUserGuide)
+                    .buttonStyle(.link)
+                    .font(.system(size: FontSize.footnote))
+            }
+            Spacer(minLength: 12)
+            Text("Press esc to close", comment: "Shortcut help footer")
+                .font(.system(size: FontSize.footnote))
+                .foregroundStyle(Color.primary.opacity(0.6))
+                .e2eAnchor("help.footer")
+        }
+        .padding(.horizontal, 18)
+        .padding(.vertical, 10)
     }
 }
 
-/// 全部快捷键与鼠标操作说明（以面板内浮层展示）
-struct ShortcutHelpView: View {
-    /// 翻译相关的行
-    enum Translation {
-        case unavailable
-        case available
-        /// 翻译卡打开：另有 ⌘C、⌘S
-        case cardOpen
-    }
-
-    let alternateFormat: PasteFormat
-    let pastesDirectly: Bool
-    var translation: Translation = .unavailable
-    var textPickOpen = false
-    /// 底部「完整使用说明…」链接；nil 时不显示
-    var onOpenUserGuide: (() -> Void)?
-
-    private struct Row {
-        let keys: String
-        let label: String
-
-        init(_ keys: String, _ label: String) {
-            self.keys = keys
-            self.label = label
-        }
-    }
-
-    private var keyboardRows: [Row] {
-        [
-            Row("↑ ↓", String(localized: "Select (or ⌃P ⌃N)", comment: "Shortcut help")),
-            Row("⌥↑ ⌥↓", String(localized: "First / last item (or Home, End)", comment: "Shortcut help")),
-            // ⇞ ⇟ 在 10pt 键帽里难以辨认；笔记本上翻页就是 fn↑ fn↓
-            Row(
-                "fn↑ fn↓",
-                String(
-                    localized: "Up / down 5 items (or Page Up, Page Down)",
-                    comment: "Shortcut help: move the selection by a page"
-                )
-            ),
-            Row("↩", primaryActionLabel),
-            Row("⇧↩", pastesDirectly ? alternateFormat.pasteActionLabel : alternateFormat.copyActionLabel),
-            Row("⌘↩", String(localized: "Copy only", comment: "Shortcut help")),
-            Row(
-                "⌘1–9",
-                pastesDirectly
-                    ? String(localized: "Quick paste", comment: "Shortcut help")
-                    : String(localized: "Quick copy", comment: "Shortcut help when direct pasting is unavailable")
-            ),
-            Row(
-                String(localized: "Space / ⌘Y", comment: "Shortcut help: key names"),
-                String(localized: "Preview", comment: "Shortcut help")
-            ),
-        ] + textPickRows + translationRows + [
-            Row("⇥ / ⇧⇥", String(localized: "Switch category", comment: "Shortcut help")),
-            Row("⌘P", String(localized: "Favorite / unfavorite", comment: "Shortcut help")),
-            Row("⇧⌘P", String(localized: "Pin image to screen", comment: "Shortcut help")),
-            Row("⌘⌫", String(localized: "Delete", comment: "Shortcut help")),
-            Row("⌘Z", String(localized: "Undo delete", comment: "Shortcut help")),
-            Row("⌘O", String(localized: "Open link or file", comment: "Shortcut help")),
-            Row("⌘,", String(localized: "Settings", comment: "Shortcut help")),
-            Row(
-                "esc",
-                String(
-                    localized: "Close, one step at a time",
-                    comment: "Shortcut help: esc closes help or preview, then clears the search, then closes the panel"
-                )
-            ),
-        ]
-    }
-
-    /// ⌘B（长按卡片写在同一行，像「双击卡片」写在 ↩ 一行：帮助浮层要放进 620pt 的面板）；
-    /// 拆词卡打开时另有 ⌘A、⌘C
-    private var textPickRows: [Row] {
-        let open = Row(
-            "⌘B", String(localized: "Pick words (or long-press a card)", comment: "Shortcut help"))
-        guard textPickOpen else { return [open] }
-        return [
-            open,
-            Row("⌘A", String(localized: "Select all words (again to clear)", comment: "Shortcut help")),
-            Row("⌘C", String(localized: "Copy the picked words", comment: "Shortcut help")),
-        ]
-    }
-
-    /// ⌘T、⌥↩、按住 ⌥（翻译卡打开时另有 ⌘C、⌘S）
-    private var translationRows: [Row] {
-        guard translation != .unavailable else { return [] }
-        let rows = [
-            Row("⌘T", String(localized: "Translate (press again to close)", comment: "Shortcut help")),
-            Row("⌥↩", String(localized: "Translate, then paste", comment: "Shortcut help")),
-            Row(
-                String(localized: "Hold ⌥", comment: "Shortcut help: key names"),
-                String(localized: "Preview the translation (in the card: the original)", comment: "Shortcut help")
-            ),
-        ]
-        guard translation == .cardOpen else { return rows }
-        return rows + [
-            Row("⌘C", String(localized: "Copy the translation", comment: "Shortcut help")),
-            Row("⌘S", String(localized: "Save the translation as a new item", comment: "Shortcut help")),
-        ]
-    }
-
-    /// ↩（与双击卡片）的动作：仅复制时写「复制」，与底栏「↩ 复制」一致
-    private var primaryActionLabel: String {
-        pastesDirectly
-            ? String(localized: "Paste (or double-click a card)", comment: "Shortcut help")
-            : String(
-                localized: "Copy (or double-click a card)",
-                comment: "Shortcut help: ↩ when choosing an item only copies it"
-            )
-    }
-
-    /// 鼠标操作：双击粘贴已写在 ↩ 一行
-    private var mouseRows: [Row] {
-        [
-            Row(
-                String(localized: "Drag", comment: "Shortcut help: mouse gesture, shown in a key cap"),
-                String(localized: "Drop a card into another app", comment: "Shortcut help")
-            ),
-            Row(
-                String(localized: "Right-click", comment: "Shortcut help: mouse gesture, shown in a key cap"),
-                translation == .unavailable
-                    ? String(localized: "More actions, like Pin to Screen", comment: "Shortcut help")
-                    : String(localized: "More actions, like Pin to Screen or Translate", comment: "Shortcut help")
-            ),
-        ]
-    }
+/// 帮助浮层的一组：小标题（图片组带「新」徽标）+ 各行「说明 … 键帽」
+private struct HelpSectionView: View {
+    let section: ShortcutHelpContent.Section
 
     var body: some View {
-        Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 6) {
-            sectionTitle(Text("Keyboard Shortcuts"))
-            ForEach(keyboardRows, id: \.keys, content: row)
-            sectionTitle(Text("Mouse", comment: "Shortcut help section title"))
-                .padding(.top, 6)
-            ForEach(mouseRows, id: \.keys, content: row)
-            if let onOpenUserGuide {
-                GridRow {
-                    Button("Full user guide…", action: onOpenUserGuide)
-                        .buttonStyle(.link)
-                        .font(.system(size: FontSize.footnote))
-                        .padding(.top, 6)
-                        .gridCellColumns(2)
+        VStack(alignment: .leading, spacing: 5) {
+            HStack(spacing: 6) {
+                Text(section.title)
+                    .font(.system(size: FontSize.caption, weight: .semibold))
+                    .foregroundStyle(Color.primary.opacity(0.6))
+                    .accessibilityAddTraits(.isHeader)
+                if section.isNew {
+                    Text("New", comment: "Badge next to a shortcut help section with new features")
+                        .font(.system(size: FontSize.caption2, weight: .semibold))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 1)
+                        .background(Capsule().fill(Color.accentColor.opacity(0.25)))
+                        .foregroundStyle(Color.accentColor)
                 }
             }
-        }
-        .padding(16)
-    }
-
-    private func sectionTitle(_ title: Text) -> some View {
-        GridRow {
-            title
-                .font(.system(size: FontSize.footnote, weight: .semibold))
-                .padding(.bottom, 4)
-                .gridCellColumns(2)
-                .accessibilityAddTraits(.isHeader)
+            ForEach(section.rows) { row in
+                HelpRowView(row: row)
+            }
         }
     }
+}
 
-    private func row(_ row: Row) -> some View {
-        GridRow {
-            KeyCap(text: row.keys)
-                .gridColumnAlignment(.trailing)
+private struct HelpRowView: View {
+    let row: ShortcutHelpContent.Row
+
+    var body: some View {
+        HStack(spacing: 10) {
             Text(row.label)
                 .font(.system(size: FontSize.footnote))
-                .foregroundStyle(.secondary)
-                .e2eAnchor("help.\(row.keys)")
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+            HStack(spacing: 4) {
+                ForEach(row.keys, id: \.self) { KeyCap(text: $0, prominent: true) }
+            }
+            .fixedSize()
         }
+        .accessibilityElement(children: .combine)
+        .e2eAnchor("help.\(row.id)")
     }
 }
