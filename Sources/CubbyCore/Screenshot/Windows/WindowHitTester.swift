@@ -38,13 +38,14 @@ public enum WindowHitTester {
     /// 窗口宽高下限（小于它的窗口多为不可见的辅助窗口）
     private static let minimumWindowSide: CGFloat = 2
 
-    /// 第一个满足 layer == 0、alpha > 0、宽高 ≥ 2、ownerPID != excludingPID 且包含 point 的窗口
+    /// 第一个满足 layer == 0、alpha > 0、宽高 ≥ 2、ownerPID != excludingPID（allowing 中的窗口除外）且包含 point 的窗口
     public static func topmost(
         at point: CGPoint,
         in windows: [WindowCandidate],
-        excludingPID: pid_t
+        excludingPID: pid_t,
+        allowing allowedIDs: Set<UInt32> = []
     ) -> WindowCandidate? {
-        windows.first { isCandidate($0, at: point, excludingPID: excludingPID) }
+        windows.first { isCandidate($0, at: point, excludingPID: excludingPID, allowing: allowedIDs) }
     }
 
     /// 光标所在屏幕上的悬停目标；光标不在任何屏幕内（屏幕间空隙）时为 nil
@@ -59,26 +60,35 @@ public enum WindowHitTester {
     public static func candidates(at point: CGPoint, in topology: ScreenTopology) -> [HoverTarget] {
         guard let screen = topology.screen(containing: point) else { return [] }
         let windows = topology.windows
-            .filter { isCandidate($0, at: point, excludingPID: topology.ownPID) }
+            .filter {
+                isCandidate($0, at: point, excludingPID: topology.ownPID, allowing: topology.selectableOwnWindowIDs)
+            }
             .map { HoverTarget.window($0, screen: screen) }
         return windows + [.screen(screen)]
     }
 
     /// 可以被悬停识别 / 选区磁吸的普通窗口（不看位置），按 z 序
     static func eligibleWindows(in topology: ScreenTopology) -> [WindowCandidate] {
-        topology.windows.filter { isEligible($0, excludingPID: topology.ownPID) }
+        topology.windows.filter {
+            isEligible($0, excludingPID: topology.ownPID, allowing: topology.selectableOwnWindowIDs)
+        }
     }
 
-    private static func isCandidate(_ window: WindowCandidate, at point: CGPoint, excludingPID: pid_t) -> Bool {
-        isEligible(window, excludingPID: excludingPID) && window.frame.standardized.contains(point)
+    private static func isCandidate(
+        _ window: WindowCandidate, at point: CGPoint, excludingPID: pid_t, allowing allowedIDs: Set<UInt32>
+    ) -> Bool {
+        isEligible(window, excludingPID: excludingPID, allowing: allowedIDs)
+            && window.frame.standardized.contains(point)
     }
 
-    private static func isEligible(_ window: WindowCandidate, excludingPID: pid_t) -> Bool {
+    private static func isEligible(_ window: WindowCandidate, excludingPID: pid_t, allowing allowedIDs: Set<UInt32>)
+        -> Bool
+    {
         let frame = window.frame.standardized
         return window.layer == 0
             && window.alpha > 0
             && frame.width >= minimumWindowSide
             && frame.height >= minimumWindowSide
-            && window.ownerPID != excludingPID
+            && (window.ownerPID != excludingPID || allowedIDs.contains(window.id))
     }
 }

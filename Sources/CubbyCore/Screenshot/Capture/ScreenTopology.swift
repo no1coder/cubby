@@ -9,11 +9,16 @@ public struct ScreenTopology: Equatable, Sendable {
     public let windows: [WindowCandidate]
     /// Cubby 自身的进程号，悬停识别时排除
     public let ownPID: pid_t
+    /// 例外：Cubby 自己可以被悬停选中的窗口（设置、使用说明等普通窗口），其余自有窗口照常排除
+    public let selectableOwnWindowIDs: Set<UInt32>
 
-    public init(screens: [CaptureScreen], windows: [WindowCandidate], ownPID: pid_t) {
+    public init(
+        screens: [CaptureScreen], windows: [WindowCandidate], ownPID: pid_t, selectableOwnWindowIDs: Set<UInt32> = []
+    ) {
         self.screens = screens
         self.windows = windows
         self.ownPID = ownPID
+        self.selectableOwnWindowIDs = selectableOwnWindowIDs
     }
 
     /// 包含该全局点的第一块屏幕；落在屏幕之间的空隙时为 nil

@@ -86,8 +86,6 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
     /// 仅调试构建：覆盖层上屏后执行（调试场景用它自动触发存储等动作）
     var debugAfterPresent: (@MainActor (any ScreenshotOverlayPresenting) -> Void)?
     #endif
-    /// 采集前的准备（隐藏面板等），保证 Cubby 自己的界面不出现在冻结帧里
-    private let beforeCapture: @MainActor () -> Void
     /// 会话状态（+Translation 的暂停 / 恢复也读写它）
     var state = State.idle
     /// 每次开始采集递增：丢弃已取消会话迟到的回调
@@ -108,15 +106,13 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
         pins: PinnedImageController,
         pasteboard: NSPasteboard = .general,
         savePrompt: any SaveDestinationPrompting = ScreenshotSavePrompt.shared,
-        onImageRecorded: @escaping @MainActor (ClipItem) -> Void = { _ in },
-        beforeCapture: @escaping @MainActor () -> Void
+        onImageRecorded: @escaping @MainActor (ClipItem) -> Void = { _ in }
     ) {
         self.settings = settings
         self.pins = pins
         self.frameSource = frameSource
         self.windowSource = windowSource
         self.overlayFactory = overlayFactory
-        self.beforeCapture = beforeCapture
         self.savePrompt = savePrompt
         self.output = ScreenshotOutputService(
             settings: settings, store: store, recognizer: TextRecognizer(), pins: pins, pasteboard: pasteboard,
@@ -225,12 +221,12 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
         windowSource: any WindowImageSource,
         makeSession: @escaping @MainActor (CaptureSession) -> ScreenshotSession?
     ) {
-        beforeCapture()
         generation += 1
         let current = generation
         let clock = ContinuousClock()
         let started = clock.now
-        let keptWindows = pins.windowIDs
+        // Cubby 自己此刻在屏幕上的所有窗口（面板、晾衣绳、贴图、设置、提示、菜单栏图标等）都留在画面里，方便截取 Cubby 本身
+        let keptWindows = pins.windowIDs.union(Self.ownOnScreenWindowIDs())
         let ownPID = ProcessInfo.processInfo.processIdentifier
         let screens = ScreenTopologyProvider.screens()
         let task = Task { [weak self] in
@@ -249,6 +245,19 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
             }
         }
         state = .capturing(task, screens: screens)
+    }
+
+    /// Cubby 自己此刻显示在屏幕上的所有窗口（CGWindowList，只读 id 与进程号）
+    private static func ownOnScreenWindowIDs() -> Set<UInt32> {
+        let ownPID = ProcessInfo.processInfo.processIdentifier
+        let list =
+            CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID)
+            as? [[String: Any]] ?? []
+        let ids = list.compactMap { info -> UInt32? in
+            guard (info[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value == ownPID else { return nil }
+            return (info[kCGWindowNumber as String] as? NSNumber)?.uint32Value
+        }
+        return Set(ids)
     }
 
     private func present(

@@ -12,6 +12,10 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+### Fixed
+
+- **Screenshots include Cubby itself**: the panel, the clothesline, pinned images, Settings and the menu bar icon now appear in screenshots instead of being left out, so you can capture Cubby too. Pressing the screenshot shortcut no longer hides the open panel; Cubby's windows like Settings can be picked by hovering, like any other window.
+
 ## [0.3.0] - 2026-10-12
 
 ### Added

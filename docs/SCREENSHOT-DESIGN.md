@@ -366,7 +366,7 @@ HUD 位置：选区中心（转换到 AppKit 坐标后交给 `HUDToast.show(_:at
 | Space / 全屏应用 | `.canJoinAllSpaces + .fullScreenAuxiliary`，`orderFrontRegardless()`；全屏应用之上也能显示；冻结帧就是当前 Space 的内容 | 与 `ClipPanel` 一致。 |
 | 菜单栏、Dock、桌面 | 被覆盖层盖住；悬停时它们不算「普通窗口」（layer ≠ 0），落在其上等于选整屏 | 用户要截 Dock 时框选即可。 |
 | 光标在桌面（无窗口） | 整屏高亮 | §2.3。 |
-| 截图时面板 / HUD / 设置窗口打开 | 面板先隐藏；采集时 `SCContentFilter` 排除 Cubby 全部窗口但**保留贴图窗口** | 贴图是用户内容；其他是 Cubby 的 UI。 |
+| 截图时面板 / HUD / 设置窗口打开 | 都**保留**在冻结帧里：开始截图那一刻 Cubby 在屏幕上的全部窗口（面板、晾衣绳、贴图、设置、提示、菜单栏图标）都作为 `exceptingWindows` 留下；之后才出现的覆盖层不在帧里。普通层级的窗口（设置等）可以悬停选中。面板上的截图按钮会先收起面板 | 2026-10-13 用户决定：方便用户截取 Cubby 本身做推广；与系统截图行为一致。 |
 | 会话中再按快捷键 | §2.1 | — |
 | 会话中显示器插拔 / 分辨率变化（`didChangeScreenParametersNotification`） | 立即取消会话，橙色 HUD「Screen layout changed」 | 冻结帧与新布局对不上，任何补救都不可靠。 |
 | 会话中系统弹窗 / 其他应用抢 key | 覆盖层 `resignKey` 时**不**关闭（与面板不同），键盘暂时失效，点击覆盖层重新成为 key | 截图会话不能因为一个通知就消失；`ClipPanel.onResignKey` 的行为不沿用。 |
@@ -1049,10 +1049,9 @@ final class ScreenshotCoordinator {
         -> any ScreenshotOverlayPresenting
 
     init(settings: AppSettings, store: ClipStore, frameSource: any FrameSource,
-         overlayFactory: @escaping OverlayFactory, pins: PinnedImageController,
-         beforeCapture: @escaping @MainActor () -> Void)      // 隐藏面板等
+         overlayFactory: @escaping OverlayFactory, pins: PinnedImageController)
     var isActive: Bool
-    /// 入口：权限检查 → beforeCapture → 采集（2 s 超时）→ 覆盖层
+    /// 入口：权限检查 → 采集（2 s 超时）→ 覆盖层
     func start(_ trigger: ScreenshotTrigger)
     /// 快捷键再按：按 §2.1 规则决定取消或忽略
     func hotKeyPressedWhileActive()
@@ -1135,8 +1134,7 @@ case takeScreenshot                            // 面板内 ⇧⌘2 不会到这
 ```
 ⇧⌘2 ─▶ AppDelegate ─▶ coordinator.start(.hotKey)
    ├─ ScreenRecordingAuthorization.status == denied ─▶ 引导窗口，结束
-   ├─ beforeCapture()：panel.hide(animated: false)
-   ├─ await frameSource.capture(excludingPID: own, exceptWindowIDs: pins.windowIDs, timeout: 2s)
+   ├─ await frameSource.capture(excludingPID: own, exceptWindowIDs: Cubby 此刻在屏幕上的全部窗口, timeout: 2s)
    │      ScreenCaptureKit ─▶ CaptureSession { topology, frames }
    ├─ overlay = overlayFactory(capture, .initial(styles: settings.annotationStyles, cursor: 当前光标全局点), self)
    └─ overlay.present()
@@ -1284,7 +1282,7 @@ CUBBY_DATA_DIR=/tmp/cubby-c .build-c/debug/Cubby --scenario screenshot:annotatin
 | R11 | **Swift 6 并发**：`CGImage`、`SCShareableContent` 回调非隔离；`@unchecked Sendable` 滥用 | 编译失败或数据竞争 | 只有 `FrozenFrame` / `CaptureSession` / `ScreenshotExport` / `RenderEnvironment` 允许 `@unchecked`（都只含不可变引用）；`FrameSource` 用 `async throws`，内部 `withCheckedThrowingContinuation` 包 SCK |
 | R12 | **API 可用性**：`NSCursor.frameResize` 15+；Vision Swift 化 API 15+；`NSGlassEffectView` 26+ | macOS 14 编译 / 运行差异 | 全部 `#available` 分支 + 回退（§2.5、§2.6、§2.8）；CI 用 macOS 26 SDK 构建、QA 在 macOS 14 跑清单 |
 | R13 | **历史体积**：全屏 PNG 10–40 MB，多次截图迅速占满 `historyLimit` 与磁盘 | 用户抱怨 | 超 `maxImageBytes` 不入历史并提示；ROADMAP 自动清理（v0.3）覆盖；阶段 2 评估截图缩略 / 上限设置 |
-| R14 | **贴图被再次截取 / 排除逻辑错** | 帧里出现 Cubby 面板残影 | `excludingApplications:[self] exceptingWindows: pins`；面板先隐藏再采集，采集前 `await Task.yield()` 等窗口服务器生效；`screenshot:*` 场景断言帧中无面板（人工） |
+| R14 | **排除逻辑错** | 帧里缺了用户能看到的 Cubby 窗口，或出现截图覆盖层自身 | `excludingApplications:[self] exceptingWindows: 开始时 Cubby 在屏幕上的全部窗口`；覆盖层在采集之后才创建 |
 | R15 | **三人并行的契约漂移** | 集成时对不上 | §3.3 / §3.4 签名冻结；变更走文档 PR；A 的 public API 先合入再由 C 使用 |
 
 ## 7. 分阶段交付

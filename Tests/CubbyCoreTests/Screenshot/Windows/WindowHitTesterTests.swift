@@ -25,6 +25,31 @@ struct WindowHitTesterTests {
         #expect(topmost(CGPoint(x: 400, y: 400)) == Fixture.editor)
     }
 
+    @Test("自身进程中列为可选的窗口（设置等普通窗口）可以命中，其余自有窗口照常跳过")
+    func allowsSelectableOwnWindows() {
+        let point = CGPoint(x: 400, y: 400)
+        let allowed = WindowHitTester.topmost(
+            at: point, in: Fixture.windows, excludingPID: Fixture.ownPID, allowing: [Fixture.ownWindow.id])
+        #expect(allowed == Fixture.ownWindow)
+        let otherAllowed = WindowHitTester.topmost(
+            at: point, in: Fixture.windows, excludingPID: Fixture.ownPID, allowing: [12345])
+        #expect(otherAllowed == Fixture.editor)
+    }
+
+    @Test("拓扑里的可选自有窗口参与悬停与磁吸")
+    func topologySelectableOwnWindows() {
+        let topology = ScreenTopology(
+            screens: [Fixture.primary], windows: Fixture.windows, ownPID: Fixture.ownPID,
+            selectableOwnWindowIDs: [Fixture.ownWindow.id])
+        let point = CGPoint(x: 400, y: 400)
+        #expect(
+            WindowHitTester.hoverTarget(at: point, topology: topology)
+                == .window(Fixture.ownWindow, screen: Fixture.primary))
+        #expect(WindowHitTester.eligibleWindows(in: topology).contains(Fixture.ownWindow))
+        #expect(!WindowHitTester.eligibleWindows(in: Fixture.twoScreens).contains(Fixture.ownWindow))
+        #expect(Fixture.twoScreens.selectableOwnWindowIDs.isEmpty)
+    }
+
     @Test("过滤 layer ≠ 0、全透明与小于 2×2 的窗口")
     func filtersNonNormalWindows() {
         #expect(topmost(CGPoint(x: 1000, y: 10)) == nil)

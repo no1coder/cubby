@@ -184,15 +184,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.updates = updates
     }
 
-    /// 截图协调器：面板顶栏按钮与快捷键共用；采集前先无动画隐藏面板（面板不能出现在冻结帧里）。
+    /// 截图协调器：面板顶栏按钮与快捷键共用。快捷键 / 菜单截图时面板保持原样，可以截到面板本身
+    /// （面板上的截图按钮会先自行收起面板）。
     private func makeScreenshotCoordinator(store: ClipStore, panel: PanelController) -> ScreenshotCoordinator {
         let coordinator = ScreenshotCoordinator(
             settings: settings,
             store: store,
             overlayFactory: ScreenshotCoordinator.overlayFactory(ScreenshotOverlayController.self),
             pins: PinnedImageController(settings: settings),
-            onImageRecorded: { [weak self] item in self?.hangScreenshotIfEnabled(item) },
-            beforeCapture: { [weak panel] in panel?.hide(animated: false) }
+            onImageRecorded: { [weak self] item in self?.hangScreenshotIfEnabled(item) }
         )
         panel.takeScreenshot = { [weak coordinator] in coordinator?.start(.panelButton) }
         // 历史图片「贴到屏幕」与截图贴图共用同一组贴图窗口

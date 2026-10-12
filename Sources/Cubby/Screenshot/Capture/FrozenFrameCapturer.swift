@@ -5,7 +5,8 @@ import Foundation
 import ScreenCaptureKit
 import os
 
-/// ScreenCaptureKit 实现：每块屏幕按原生像素各采一帧（并行），排除 Cubby 自己的窗口（贴图除外，Q12）。
+/// ScreenCaptureKit 实现：每块屏幕按原生像素各采一帧（并行），只排除 Cubby 自己的窗口中未列入 keeping 的；
+/// 实际截图时 keeping 是开始那一刻 Cubby 在屏幕上的全部窗口（方便截取 Cubby 本身），之后才出现的覆盖层等不在画面里。
 /// 窗口列表另用 CGWindowList 读取：它按 z 序从前到后返回，且只取几何信息，不读标题
 struct FrozenFrameCapturer: FrameSource {
     private static let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Screenshot")
@@ -42,10 +43,14 @@ struct FrozenFrameCapturer: FrameSource {
             frames \(milliseconds(clock.now - contentReady), privacy: .public) ms
             """
         )
+        // 保留下来的自有窗口中，普通层级的（设置、使用说明等）可以像其他应用的窗口一样被悬停选中；
+        // 面板、晾衣绳等浮层与其他应用的浮层一样不参与悬停，可以拖选
+        let selectableOwn = windows.filter { $0.ownerPID == ownPID && $0.layer == 0 }.map(\.id)
         let topology = ScreenTopology(
             screens: screens.filter { capturedIDs.contains($0.id) },
             windows: windows,
-            ownPID: ownPID
+            ownPID: ownPID,
+            selectableOwnWindowIDs: Set(selectableOwn)
         )
         return CaptureSession(topology: topology, frames: frames)
     }
@@ -58,7 +63,7 @@ struct FrozenFrameCapturer: FrameSource {
         }
     }
 
-    /// 每块屏幕一个过滤器：排除 Cubby 进程，但保留贴图窗口
+    /// 每块屏幕一个过滤器：排除 Cubby 进程，但保留 keeping 中的窗口
     private static func makeJobs(
         screens: [CaptureScreen],
         content: SCShareableContent,
@@ -144,7 +149,7 @@ private struct DisplayCaptureJob: @unchecked Sendable {
 
 /// 屏幕上的窗口几何（CGWindowList：前 → 后）；只读 id、边界、层级、进程与透明度，不读标题
 enum WindowListReader {
-    /// Cubby 自己的窗口只保留 keeping 中的（贴图），其余（HUD 等）不在冻结帧里，也不参与悬停
+    /// Cubby 自己的窗口只保留 keeping 中的，其余（开始截图之后才出现的窗口）不在冻结帧里，也不参与悬停
     static func candidates(ownPID: pid_t, keeping keptIDs: Set<UInt32>) -> [WindowCandidate] {
         let options: CGWindowListOption = [.optionOnScreenOnly, .excludeDesktopElements]
         guard let list = CGWindowListCopyWindowInfo(options, kCGNullWindowID) as? [[String: Any]] else { return [] }

@@ -126,8 +126,7 @@ final class E2EWorld {
             },
             pins: pins,
             pasteboard: pasteboard,
-            savePrompt: savePrompt,
-            beforeCapture: {}
+            savePrompt: savePrompt
         )
     }
 
