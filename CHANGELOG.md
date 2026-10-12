@@ -12,6 +12,8 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+## [0.3.2] - 2026-10-13
+
 ### Fixed
 
 - **Clicking cards works again**: since 0.3.0 the hover toolbar layer swallowed clicks on the cards, so double-clicking a card didn't paste it, clicking didn't select it, and pressing and holding or right-clicking a card did nothing. The toolbar buttons still never pass a double-click through to the card.
@@ -138,7 +140,8 @@ Internal preview under the working name Zhantie. Not publicly released.
 
 - Menu bar clipboard history with a global shortcut to open it.
 
-[Unreleased]: https://github.com/no1coder/cubby/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/no1coder/cubby/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/no1coder/cubby/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/no1coder/cubby/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/no1coder/cubby/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/no1coder/cubby/compare/v0.2.0...v0.2.1
