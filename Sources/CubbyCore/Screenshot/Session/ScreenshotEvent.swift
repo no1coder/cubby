@@ -12,6 +12,9 @@ public enum ScreenshotOutcome: Equatable, Sendable {
     /// 纯净窗口截图（契约扩展）：由 App 层按窗口 id 单独采集；includeShadow = 是否带系统窗口阴影
     case captureWindow(windowID: UInt32, includeShadow: Bool)
     case cancel
+    /// 契约扩展：晾衣绳放大编辑的「完成并晾回」（↩）：标注后的图存为新历史条目并替换绳上原位置。
+    /// 只在选区锁定的会话里有效
+    case hangBack
 }
 
 /// 覆盖层翻译后交给 reducer 的输入事件；坐标一律为全局点（§3.2）

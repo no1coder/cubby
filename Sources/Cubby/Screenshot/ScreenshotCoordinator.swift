@@ -73,8 +73,8 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
     let guide = ScreenRecordingGuideWindowController()
     let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Screenshot")
     private let frameSource: any FrameSource
-    private let windowSource: any WindowImageSource
-    private let overlayFactory: OverlayFactory
+    let windowSource: any WindowImageSource
+    let overlayFactory: OverlayFactory
     let output: ScreenshotOutputService
     /// 截图「存储」的位置选择（§9.4）
     let savePrompt: any SaveDestinationPrompting
@@ -96,6 +96,8 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
     var layoutChangedWhileSuspended = false
     /// 存储对话框、翻译设置激活了 Cubby：会话结束时把前台还给截图前的应用
     var focusToRestore: FocusRestorer?
+    /// 进行中的晾衣绳放大编辑（见 +HistoryImage）；结束时把结果交给调用方
+    var historyEdit: HistoryImageEditSession?
 
     init(
         settings: AppSettings,
@@ -304,6 +306,11 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
     func overlay(_ overlay: any ScreenshotOverlayPresenting, didFinishWith result: ScreenshotResult) {
         guard let presentation = session(of: overlay) else { return }
         state = .idle
+        if let edit = takeHistoryEdit(for: overlay) {
+            handleHistoryEdit(result, edit: edit, presentation: presentation)
+            restoreFocus()
+            return
+        }
         handle(result, presentation: presentation)
         restoreFocus()
     }
@@ -319,6 +326,7 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
             overlay.dismiss()
             output.save(export)
             restoreFocus()
+            finishHistoryEdit(of: overlay, with: .other)
             return
         }
         state = .suspended(presentation, .saving)
@@ -351,10 +359,12 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
             overlay.dismiss()
             output.save(export, to: url)
             restoreFocus()
+            finishHistoryEdit(of: overlay, with: .other)
         } else if layoutChangedWhileSuspended {
             state = .idle
             overlay.dismiss()
             restoreFocus()
+            finishHistoryEdit(of: overlay, with: .cancelled)
             warn(
                 String(
                     localized: "Screen layout changed",
@@ -388,9 +398,12 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
 
     // MARK: - 输出
 
-    private func handle(_ result: ScreenshotResult, presentation: Presentation) {
+    func handle(_ result: ScreenshotResult, presentation: Presentation) {
         switch result {
         case .copy(let export): output.copy(export)
+        case .hangBack:
+            // 只有放大编辑会产生，已由 handleHistoryEdit 处理
+            logger.error("Hang back result outside of a history image edit")
         case .pin(let export): output.pin(export)
         case .extractText(let export, let clean):
             output.extractText(from: clean, anchor: ScreenshotOutputService.anchor(for: export.selection))

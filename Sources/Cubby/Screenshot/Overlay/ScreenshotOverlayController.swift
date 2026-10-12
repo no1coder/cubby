@@ -25,6 +25,8 @@ final class ScreenshotOverlayController: ScreenshotOverlayPresenting {
     private(set) var editor: TextAnnotationEditor?
     /// 截图翻译（macOS 26+ 且协调器提供了服务时才有）
     private(set) var translation: OverlayTranslationController?
+    /// 晾衣绳放大编辑（协调器上屏前设置）：标题行、提示与按原图导出
+    private(set) var historyEdit: HistoryEditContext?
     // 以下四个状态由结束 / 暂停流程（+Finish）读写
     /// 覆盖层已隐藏、不再接收事件
     var isFinished = false
@@ -118,6 +120,10 @@ final class ScreenshotOverlayController: ScreenshotOverlayPresenting {
         )
     }
 
+    func attachHistoryEdit(_ context: HistoryEditContext) {
+        historyEdit = context
+    }
+
     /// 存储流程结束：释放暂停中的覆盖层，不再回调委托
     func dismiss() {
         guard !didDeliver else { return }
@@ -165,6 +171,7 @@ final class ScreenshotOverlayController: ScreenshotOverlayPresenting {
         translation?.track(session)
         let magnifier = OverlayRenderModel.magnifier(for: session, capture: capture)
         let hover = hoverInfo.model(for: session, topology: capture.topology)
+        let historyEditRender = historyEdit.map(historyEditRender(for:))
         let toolbar = OverlayRenderModel.toolbarModel(for: session)
         let styleBar = OverlayRenderModel.styleBarModel(for: session)
         let translationBar = translation?.barModel(for: session)
@@ -188,7 +195,8 @@ final class ScreenshotOverlayController: ScreenshotOverlayPresenting {
                     toolbar: toolbar,
                     styleBar: styleBar,
                     translationBar: translationBar,
-                    translation: translationChrome
+                    translation: translationChrome,
+                    historyEdit: historyEditRender
                 )
             )
         }
@@ -252,6 +260,7 @@ final class ScreenshotOverlayController: ScreenshotOverlayPresenting {
         case .redo: send(.command(.redo))
         case .outcome(let outcome): send(.toolbarAction(outcome))
         case .translate: send(.command(.translate))
+        case .selectColor(let color): send(.command(.selectColor(color)))
         }
     }
 
@@ -263,7 +272,8 @@ final class ScreenshotOverlayController: ScreenshotOverlayPresenting {
         keyboard.context = { [weak self] in
             OverlayKeyboard.Context(
                 phase: self?.session.phase ?? .hovering,
-                isComposingText: self?.editor?.hasMarkedText ?? false
+                isComposingText: self?.editor?.hasMarkedText ?? false,
+                isSelectionLocked: self?.session.isSelectionLocked ?? false
             )
         }
         keyboard.onOutput = { [weak self] output in
@@ -386,5 +396,28 @@ final class ScreenshotOverlayController: ScreenshotOverlayPresenting {
 
     private func selectionScreen() -> Screen? {
         screens.first { $0.view.space.screen.id == session.screenID }
+    }
+
+    // MARK: - 放大编辑
+
+    /// 标题行：有标注或译文、正在编辑文字时不能缩放（缩放会以新的尺寸重建覆盖层）
+    private func historyEditRender(for context: HistoryEditContext) -> HistoryEditRender {
+        let canZoom = !session.hasDiscardableContent && session.phase != .editingText && session.drag == .none
+        let header = HistoryEditHeaderModel(
+            title: context.title,
+            detail: context.detail,
+            zoomPercent: context.layout.zoomPercent,
+            canZoomIn: canZoom && context.layout.canZoomIn,
+            canZoomOut: canZoom && context.layout.canZoomOut
+        )
+        return HistoryEditRender(
+            header: header,
+            icon: context.icon,
+            onZoom: { [weak self] direction in
+                guard let self, !self.isFinished, !self.session.hasDiscardableContent else { return }
+                context.onZoom(direction)
+            },
+            onClose: { [weak self] in self?.send(.toolbarAction(.cancel)) }
+        )
     }
 }

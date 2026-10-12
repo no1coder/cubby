@@ -162,6 +162,28 @@ struct ScreenshotOutputService {
             symbolName: "eyedropper", anchor: anchor)
     }
 
+    /// 晾衣绳「完成并晾回」的入历史结果
+    enum HistoryImageRecord: Equatable {
+        /// 新条目的 id（与已有图片完全相同时是那个已有条目的 id）
+        case recorded(UUID)
+        /// 暂停记录中
+        case paused
+        /// 超出历史大小限制
+        case tooLarge
+        /// 写入失败
+        case failed
+    }
+
+    /// 晾衣绳「完成并晾回」：只入历史、不写剪贴板，等写入完成拿到条目 id。来源沿用原图的来源应用
+    func recordHistoryImage(_ export: ScreenshotExport, source: SourceApp?) async -> HistoryImageRecord {
+        guard !settings.isPaused else { return .paused }
+        guard export.png.count <= CaptureLimits.maxImageBytes else { return .tooLarge }
+        let content = ClipContent.image(
+            png: export.png, width: Int(export.pixelSize.width), height: Int(export.pixelSize.height))
+        guard let item = await store.recordInBackground(content, source: source).value else { return .failed }
+        return .recorded(item.id)
+    }
+
     // MARK: - 剪贴板与历史
 
     private func copyImage(png: Data, pixelSize: CGSize, anchor: CGPoint) {

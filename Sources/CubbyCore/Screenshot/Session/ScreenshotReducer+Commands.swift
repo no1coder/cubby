@@ -9,7 +9,11 @@ extension ScreenshotReducer {
         case .escape:
             return escape(session, topology: topology)
         case .confirm:
-            return confirm(session)
+            // 选区锁定（晾衣绳放大编辑）：↩ = 完成并晾回
+            return session.isSelectionLocked ? finishingWithSelection(session, .hangBack) : confirm(session)
+        case .copy:
+            // 选区锁定时 ⌘C 复制标注后的图；否则与 ↩ / ⌘C 的「完成」相同
+            return session.isSelectionLocked ? finishingWithSelection(session, .copy) : confirm(session)
         case .save:
             return finishingWithSelection(session, .save)
         case .pin:
@@ -58,8 +62,9 @@ extension ScreenshotReducer {
     }
 
     /// 取消会话；但有标注或译文且尚未待确认时，只进入待确认并提示（PM Q1，Esc 与 hovering 的右键共用）
+    /// 选区锁定时直接取消：放大编辑的 Esc 是「放回绳上」，原图还在，不需要二次确认
     static func cancellingOrArmingDiscard(_ session: ScreenshotSession) -> Result {
-        if session.hasDiscardableContent && !session.isDiscardArmed {
+        if session.hasDiscardableContent && !session.isDiscardArmed && !session.isSelectionLocked {
             return (session.updating { $0.isDiscardArmed = true }, [.showHint(.pressEscapeAgainToDiscard)])
         }
         return (session, [.finish(.cancel)])
@@ -84,7 +89,7 @@ extension ScreenshotReducer {
 
     /// ⌘A：hovering 选光标所在整屏；有选区时扩为所在整屏；鼠标按下期间忽略
     private static func selectAll(_ session: ScreenshotSession, topology: ScreenTopology) -> ScreenshotSession {
-        guard !session.isPointerBusy else { return session }
+        guard !session.isPointerBusy, !session.isSelectionLocked else { return session }
         switch session.phase {
         case .hovering:
             guard let screen = session.hover?.screen ?? topology.screen(containing: session.cursor) else {
@@ -150,7 +155,9 @@ extension ScreenshotReducer {
             let vector = CGVector(dx: direction.vector.dx * step, dy: direction.vector.dy * step)
             return session.updating { $0.document = session.document.replacing(annotation.translated(by: vector)) }
         }
-        guard let selection = session.selection, let bounds = selectionBounds(session, topology: topology) else {
+        guard !session.isSelectionLocked, let selection = session.selection,
+            let bounds = selectionBounds(session, topology: topology)
+        else {
             return session
         }
         return session.updating {
@@ -207,6 +214,9 @@ extension ScreenshotReducer {
             return (session, [.finish(.cancel)])
         case .copy, .save, .pin, .extractText:
             return finishingWithSelection(session, outcome)
+        case .hangBack:
+            // 「完成并晾回」只属于选区锁定的放大编辑
+            return session.isSelectionLocked ? finishingWithSelection(session, outcome) : (session, [])
         }
     }
 }

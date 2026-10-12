@@ -26,6 +26,9 @@ extension ReducerInvariantChecks {
             case .selecting:
                 return abandonedSelection(step)
             case .adjusting, .annotating, .editingText:
+                if previous.isSelectionLocked {
+                    return lockedRightClick(step)
+                }
                 // 清选区回 hovering，标注保留（拖动标注途中则回到按下前的文档）
                 guard !step.finished, session.phase == .hovering, session.selection == nil else {
                     return "right click with a selection must return to hovering"
@@ -39,6 +42,20 @@ extension ReducerInvariantChecks {
         default:
             return nil
         }
+    }
+
+    /// 选区锁定：右键不清选区（编辑文字时先提交），只放弃进行中的拖拽，标注保留（拖动途中回到按下前的文档）
+    private static func lockedRightClick(_ step: FuzzStep) -> String? {
+        let previous = step.previous
+        let session = step.session
+        guard !step.finished, session.selection == previous.selection, session.phase != .hovering,
+            session.drag == .none
+        else { return "right click with a locked selection must keep it" }
+        let kept = previous.phase == .editingText ? nil : (previous.press?.document ?? previous.document)
+        if let kept, session.document.annotations != kept.annotations {
+            return "right click did not keep the annotations"
+        }
+        return nil
     }
 
     /// selecting 中 Esc / 右键：放弃本次拖拽，有原选区则恢复，不结束会话
@@ -72,7 +89,8 @@ extension ReducerInvariantChecks {
     /// 有标注或译文且未待确认：只进入待确认并提示；否则直接取消（PM Q1）
     private static func armOrCancel(_ step: FuzzStep) -> String? {
         let previous = step.previous
-        if previous.hasDiscardableContent && !previous.isDiscardArmed {
+        // 选区锁定（放大编辑）的 Esc 直接放回，不需要二次确认
+        if previous.hasDiscardableContent && !previous.isDiscardArmed && !previous.isSelectionLocked {
             let armed = step.effects == [hint] && step.session.isDiscardArmed
             return armed && step.session.document == previous.document ? nil : "first press must only arm discard"
         }

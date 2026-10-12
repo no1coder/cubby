@@ -10,7 +10,7 @@ public enum ScreenshotDebugScenario {
     /// 全部会话场景名（"pin" / "permission" 不是会话预置，由 ScreenshotCoordinator 直接处理）
     public static let names = [
         "hovering", "selecting", "adjusting", "annotating", "text", "tiny", "edge", "fullscreen",
-        "hover-cycle", "window-mode", "arrow-guide", "magnet", "shift-line",
+        "hover-cycle", "window-mode", "arrow-guide", "magnet", "shift-line", "locked",
     ]
 
     private static let annotatingPrefix = "annotating:"
@@ -25,7 +25,8 @@ public enum ScreenshotDebugScenario {
     private static let sampleText = "Hello \u{4F60}\u{597D}"
 
     /// "hovering" / "selecting" / "adjusting" / "annotating" / "annotating:<tool>" / "text" / "tiny" / "edge" /
-    /// "fullscreen" / "hover-cycle" / "window-mode" / "arrow-guide" / "magnet" / "shift-line"；未知名称或没有屏幕时为 nil
+    /// "fullscreen" / "hover-cycle" / "window-mode" / "arrow-guide" / "magnet" / "shift-line" / "locked"；
+    /// 未知名称或没有屏幕时为 nil
     public static func session(named name: String, topology: ScreenTopology, styles: ToolStyles) -> ScreenshotSession? {
         guard let screen = topology.screens.first else { return nil }
         let context = Context(screen: screen, topology: topology, styles: styles)
@@ -46,6 +47,7 @@ public enum ScreenshotDebugScenario {
         case "arrow-guide": return context.drawing(.arrow, shift: false, to: CGSize(width: 240, height: 4))
         case "magnet": return context.magnet()
         case "shift-line": return context.drawing(.pen, shift: true, to: CGSize(width: 240, height: -60))
+        case "locked": return context.locked()
         default: return nil
         }
     }
@@ -172,6 +174,14 @@ public enum ScreenshotDebugScenario {
             let cursor = CGPoint(x: anchor.x + 170, y: min(anchor.y + 140, screen.frame.maxY - 10))
             let pressed = ScreenshotReducer.pressing(initial(cursor: anchor), at: anchor, intent: .selectHover)
             return ScreenshotReducer.mouseDragged(pressed, to: cursor, topology: topology)
+        }
+
+        /// 选区锁定（晾衣绳放大编辑）：标准选区、矩形工具、空文档
+        func locked() -> ScreenshotSession {
+            let selection = ScreenshotReducer.snappedToPixelGrid(rect(standardSelection), screen: screen)
+            return ScreenshotSession.locked(
+                selection: selection, screenID: screen.id, styles: styles,
+                cursor: CGPoint(x: selection.midX, y: selection.midY))
         }
 
         func editingText() -> ScreenshotSession {

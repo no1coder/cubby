@@ -114,6 +114,14 @@ struct PointerPress: Equatable, Sendable {
         case draw
         /// 无后续动作（序号已放置、拖拽已作废等）
         case none
+
+        /// 拖拽会新建、移动或缩放选区（选区锁定时不允许）
+        var changesSelection: Bool {
+            switch self {
+            case .selectHover, .newSelection, .moveSelection, .resize: true
+            case .captureWindow, .moveAnnotation, .moveArrowEnd, .draw, .none: false
+            }
+        }
     }
 
     let location: CGPoint

@@ -39,6 +39,7 @@ extension ScreenshotCoordinator {
             state = .idle
             overlay.dismiss()
             restoreFocus()
+            finishHistoryEdit(of: overlay, with: .cancelled)
             warn(
                 String(
                     localized: "Screen layout changed",

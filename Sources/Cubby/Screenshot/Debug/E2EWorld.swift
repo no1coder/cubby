@@ -254,6 +254,7 @@ final class E2EResultRecorder: ScreenshotOverlayDelegate {
     static func describe(_ result: ScreenshotResult) -> String {
         switch result {
         case .copy: "copy"
+        case .hangBack: "hangBack"
         case .pin: "pin"
         case .extractText: "extractText"
         case .copyColor(let text): "copyColor(\(text))"

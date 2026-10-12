@@ -58,6 +58,8 @@ struct OverlayExportJob: Sendable {
     let pixelated: OverlayImage?
     /// 提取文字还需要不带标注的裁剪
     let needsCleanCrop: Bool
+    /// PNG 的 DPI 倍率；nil = 屏幕倍率（放大编辑历史图片时沿用原图的 DPI）
+    var pngScale: CGFloat?
 
     /// 导出结果；失败时 export 为 nil
     struct Output: @unchecked Sendable {
@@ -77,7 +79,8 @@ struct OverlayExportJob: Sendable {
                 selection: selection,
                 document: document,
                 translation: translation,
-                pixelatedFrame: pixelatedFrame
+                pixelatedFrame: pixelatedFrame,
+                pngScale: pngScale
             )
             let clean = needsCleanCrop ? try ScreenshotExporter.crop(frame: frame, selection: selection) : nil
             return Output(export: export, clean: clean)

@@ -52,7 +52,7 @@ extension ScreenshotSession {
         if case .resizing(let handle) = drag {
             return handle
         }
-        guard drag == .none, let selection, phase == .adjusting || phase == .annotating,
+        guard drag == .none, !isSelectionLocked, let selection, phase == .adjusting || phase == .annotating,
             ScreenshotReducer.arrowEndHit(self, at: cursor) == nil,
             case .handle(let handle) = SelectionGeometry.hitRegion(at: cursor, in: selection)
         else { return nil }
@@ -87,6 +87,9 @@ extension ScreenshotSession {
             return .move
         }
         let region = SelectionGeometry.hitRegion(at: cursor, in: selection)
+        if isSelectionLocked {
+            return lockedCursorKind(in: selection)
+        }
         if case .handle(let handle) = region {
             return .resize(handle)
         }
@@ -95,5 +98,15 @@ extension ScreenshotSession {
         }
         let onAnnotation = document.topmost(at: cursor, tolerance: ScreenshotReducer.annotationHitTolerance) != nil
         return region == .inside || onAnnotation ? .move : .crosshair
+    }
+
+    /// 选区锁定：没有手柄，也不能移动选区；选区外按下什么都不做（箭头）
+    private func lockedCursorKind(in selection: CGRect) -> ScreenshotCursorKind {
+        if phase == .annotating {
+            guard selection.contains(cursor) else { return .arrow }
+            return tool == .text ? .iBeam : .crosshair
+        }
+        let onAnnotation = document.topmost(at: cursor, tolerance: ScreenshotReducer.annotationHitTolerance) != nil
+        return onAnnotation ? .move : .arrow
     }
 }

@@ -14,6 +14,9 @@ extension ReducerInvariantChecks {
             return toolSwitch(step, tool: tool)
         case .nudge(let direction, let large):
             guard editable else { return unchangedEdits(step) }
+            if previous.isSelectionLocked && previous.selectedAnnotationValue == nil {
+                return unchangedEdits(step)
+            }
             if ScreenshotReducer.nudgingWipe(previous, direction, large: large) != nil {
                 // 分隔线有焦点：← / → 只移动分隔线
                 return unchangedEdits(step)
@@ -93,7 +96,9 @@ extension ReducerInvariantChecks {
     private static func selectAll(_ step: FuzzStep, idle: Bool) -> String? {
         let previous = step.previous
         let session = step.session
-        guard idle else { return session.selection == previous.selection ? nil : "⌘A applied while the mouse was busy" }
+        guard idle, !previous.isSelectionLocked else {
+            return session.selection == previous.selection ? nil : "⌘A applied while busy or locked"
+        }
         let screen: CaptureScreen?
         switch previous.phase {
         case .hovering:
@@ -127,11 +132,17 @@ extension ReducerInvariantChecks {
         else { return nil }
         let previous = step.previous
         let session = step.session
-        if count >= 2 && selection.contains(point) {
+        if count >= 2 && selection.contains(point) && !previous.isSelectionLocked {
             return step.effects == [.finish(.copy)] ? nil : "double click inside the selection did not copy"
         }
         guard previous.phase == .annotating else { return nil }
-        if case .handle = SelectionGeometry.hitRegion(at: point, in: selection) {
+        if previous.isSelectionLocked && !selection.contains(point) {
+            // 选区锁定：选区外按下什么都不画（端点手柄除外，见下）
+            let isArrowEnd = ScreenshotReducer.arrowEndHit(previous, at: point) != nil
+            return isArrowEnd || (session.document == previous.document && session.phase == previous.phase)
+                ? nil : "pressing outside a locked selection ran the \(previous.tool) tool"
+        }
+        if case .handle = SelectionGeometry.hitRegion(at: point, in: selection), !previous.isSelectionLocked {
             return nil
         }
         // 选中箭头的端点手柄优先于工具（与选区手柄优先于绘制一致）：按下只开始重新指向

@@ -40,6 +40,9 @@ public struct ScreenshotSession: Equatable, Sendable {
     public let wipePosition: CGFloat?
     /// 分隔线有键盘焦点（拖过之后）：← / → 微调分隔线而不是移动选区
     public let isWipeFocused: Bool
+    /// 契约扩展：选区固定（晾衣绳放大编辑一张历史图片）。不能移动、缩放、重选或回到 hovering；
+    /// ↩ 为「完成并晾回」（`.hangBack`），⌘C 为复制，Esc 直接放回（不要求按两次）
+    public let isSelectionLocked: Bool
 
     // MARK: - 内部状态（不属于公开契约）
 
@@ -70,6 +73,24 @@ public struct ScreenshotSession: Equatable, Sendable {
         ScreenshotReducer.refreshingHover(initial(styles: styles, cursor: cursor), at: cursor, topology: topology)
     }
 
+    /// 选区固定的会话（契约扩展，晾衣绳放大编辑）：直接以 tool 开始标注（指针 = adjusting）。
+    /// selection 应已对齐到 screenID 那块屏幕的像素网格（锁定后 reducer 不再吸附它）
+    public static func locked(
+        selection: CGRect,
+        screenID: UInt32,
+        styles: ToolStyles,
+        cursor: CGPoint,
+        tool: ScreenshotTool = .rectangle
+    ) -> ScreenshotSession {
+        initial(styles: styles, cursor: cursor).updating {
+            $0.phase = tool == .pointer ? .adjusting : .annotating
+            $0.tool = tool
+            $0.selection = selection.standardized
+            $0.screenID = screenID
+            $0.isSelectionLocked = true
+        }
+    }
+
     // MARK: - 不可变更新
 
     /// 可变镜像：只在构造新会话的闭包内使用，会话本身始终不可变
@@ -95,6 +116,7 @@ public struct ScreenshotSession: Equatable, Sendable {
         var isWipeEnabled = false
         var wipePosition: CGFloat?
         var isWipeFocused = false
+        var isSelectionLocked = false
         var press: PointerPress?
         var hoverCandidates: [HoverTarget] = []
         var scrollAccumulator: CGFloat = 0
@@ -131,6 +153,7 @@ public struct ScreenshotSession: Equatable, Sendable {
             isWipeEnabled = session.isWipeEnabled
             wipePosition = session.wipePosition
             isWipeFocused = session.isWipeFocused
+            isSelectionLocked = session.isSelectionLocked
             press = session.press
             hoverCandidates = session.hoverCandidates
             scrollAccumulator = session.scrollAccumulator
@@ -164,6 +187,7 @@ public struct ScreenshotSession: Equatable, Sendable {
         isWipeEnabled = draft.isWipeEnabled
         wipePosition = draft.wipePosition
         isWipeFocused = draft.isWipeFocused
+        isSelectionLocked = draft.isSelectionLocked
         press = draft.press
         hoverCandidates = draft.hoverCandidates
         scrollAccumulator = draft.scrollAccumulator

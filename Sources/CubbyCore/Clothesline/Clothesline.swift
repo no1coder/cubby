@@ -34,6 +34,17 @@ public struct Clothesline: Equatable, Sendable {
         return (Clothesline(itemIDs: Array(appended.dropFirst(overflow))), Array(appended.prefix(overflow)))
     }
 
+    /// 「完成并晾回」：新条目接替旧条目在绳上的位置（原图仍留在历史里）。
+    /// new 已在绳上别处时先取下那一份；old 不在绳上时与 `hanging(_:)` 一样挂到最右端（超出容量取下最左端）
+    public func replacing(_ old: UUID, with new: UUID) -> Clothesline {
+        guard let index = itemIDs.firstIndex(of: old) else { return hanging(new).line }
+        let replaced = itemIDs.enumerated().compactMap { offset, id -> UUID? in
+            if offset == index { return new }
+            return id == new ? nil : id
+        }
+        return Clothesline(itemIDs: replaced)
+    }
+
     public func removing(_ id: UUID) -> Clothesline {
         Clothesline(itemIDs: itemIDs.filter { $0 != id })
     }

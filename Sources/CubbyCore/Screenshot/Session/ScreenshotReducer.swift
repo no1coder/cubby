@@ -47,7 +47,8 @@ public enum ScreenshotReducer {
     private static func snappingSelection(_ session: ScreenshotSession, topology: ScreenTopology)
         -> ScreenshotSession
     {
-        guard let selection = session.selection,
+        // 锁定的选区由调用方对齐，这里不再改动它（锁定即「选区永远不变」）
+        guard !session.isSelectionLocked, let selection = session.selection,
             let screen = session.screenID.flatMap({ topology.screen(id: $0) })
         else { return session }
         let snapped = snappedToPixelGrid(selection, screen: screen)

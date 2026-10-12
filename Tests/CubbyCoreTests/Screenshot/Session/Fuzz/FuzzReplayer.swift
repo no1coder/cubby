@@ -7,8 +7,10 @@ enum FuzzStart: Equatable, Sendable {
     case scenario(String)
 
     /// 可作为起点的调试场景（覆盖 selecting、annotating、editingText、窗口模式等深层状态）
+    /// 「locked」（选区锁定）不在其中：由 ReducerFuzzRunner 按种子单独安排
     static let scenarioNames: [String] =
-        ScreenshotDebugScenario.names + ScreenshotTool.allCases.map { "annotating:\($0.rawValue)" }
+        ScreenshotDebugScenario.names.filter { $0 != "locked" }
+        + ScreenshotTool.allCases.map { "annotating:\($0.rawValue)" }
 
     /// 截图翻译一律可用（不可用时翻译事件全是空操作，由单元测试覆盖）
     func session(in topology: ScreenTopology) -> ScreenshotSession {

@@ -49,12 +49,15 @@ public enum ScreenshotExporter {
 
     /// 裁剪 + 译文 + 标注 → 原生像素 PNG；PNG 写入 DPI = 72 × scale
     /// - Parameter translation: 译文块（契约扩展，默认空 = 原文版本）；画在冻结帧之上、标注之下
+    /// - Parameter pngScale: 契约扩展：PNG 的 DPI 倍率（默认为屏幕倍率）。放大编辑历史图片时帧的倍率只是
+    ///   「原图像素 / 显示点数」，PNG 应沿用原图的 DPI
     public static func export(
         frame: FrozenFrame,
         selection: CGRect,
         document: AnnotationDocument,
         translation: [TranslatedBlock] = [],
-        pixelatedFrame: CGImage?
+        pixelatedFrame: CGImage?,
+        pngScale: CGFloat? = nil
     ) throws(ScreenshotExportError) -> ScreenshotExport {
         let pixelRect = try pixelRect(frame: frame, selection: selection)
         let context = try makeContext(size: pixelRect.size, like: frame.image)
@@ -77,7 +80,7 @@ public enum ScreenshotExporter {
         AnnotationRenderer.draw(document, in: context, environment: environment)
 
         guard let image = context.makeImage() else { throw .contextUnavailable }
-        guard let png = pngData(image, scale: screen.scale) else { throw .encodingFailed }
+        guard let png = pngData(image, scale: pngScale ?? screen.scale) else { throw .encodingFailed }
         return ScreenshotExport(image: image, png: png, pixelSize: pixelRect.size, selection: selection, screen: screen)
     }
 

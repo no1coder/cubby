@@ -11,6 +11,8 @@ final class OverlayKeyboard {
     struct Context {
         let phase: ScreenshotPhase
         let isComposingText: Bool
+        /// 晾衣绳放大编辑：⌘C 为复制、↩ 为完成并晾回
+        var isSelectionLocked = false
     }
 
     var context: () -> Context = { Context(phase: .hovering, isComposingText: false) }
@@ -60,7 +62,9 @@ final class OverlayKeyboard {
                 isRepeat: event.isARepeat,
                 isOverlayWindow: owns(event.window)
             )
-            decision = state.keyDown(input, phase: context.phase, isComposingText: context.isComposingText)
+            decision = state.keyDown(
+                input, phase: context.phase, isComposingText: context.isComposingText,
+                isSelectionLocked: context.isSelectionLocked)
         case .keyUp:
             decision = state.keyUp(keyCode: event.keyCode, phase: context.phase)
         default:

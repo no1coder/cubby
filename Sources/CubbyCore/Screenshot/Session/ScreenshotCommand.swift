@@ -5,6 +5,9 @@ import Carbon.HIToolbox
 public enum ScreenshotCommand: Equatable, Sendable {
     case escape
     case confirm
+    /// 契约扩展：选区锁定（晾衣绳放大编辑）时的 ⌘C：复制标注后的图（此时 ↩ 的 `.confirm` 是「完成并晾回」）。
+    /// 普通截图里 ⌘C 仍映射为 `.confirm`；reducer 在未锁定时把它当作 `.confirm`
+    case copy
     case save
     case pin
     case extractText
@@ -31,12 +34,14 @@ public enum ScreenshotCommand: Equatable, Sendable {
     /// 有选区的两个阶段
     private static let selectionPhases: Set<ScreenshotPhase> = [.adjusting, .annotating]
 
-    /// 按阶段解释按键（editingText 只识别 escape / commitText）；字母按字符匹配
+    /// 按阶段解释按键（editingText 只识别 escape / commitText）；字母按字符匹配。
+    /// isSelectionLocked：选区锁定的放大编辑，⌘C 映射为 `.copy`（↩ 仍为 `.confirm`，由 reducer 解释为晾回）
     public static func from(
         keyCode: UInt16,
         modifiers: NSEvent.ModifierFlags,
         characters: String?,
-        phase: ScreenshotPhase
+        phase: ScreenshotPhase,
+        isSelectionLocked: Bool = false
     ) -> ScreenshotCommand? {
         let flags = modifiers.intersection([.command, .option, .control, .shift])
         let code = Int(keyCode)
@@ -52,6 +57,9 @@ public enum ScreenshotCommand: Equatable, Sendable {
             return command
         }
         guard let character = characters?.lowercased().first else { return nil }
+        if isSelectionLocked, flags == .command, character == "c", selectionPhases.contains(phase) {
+            return .copy
+        }
         return characterCommand(character, flags: flags, phase: phase)
     }
 

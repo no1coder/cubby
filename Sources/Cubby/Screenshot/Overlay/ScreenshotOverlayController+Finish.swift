@@ -37,7 +37,7 @@ extension ScreenshotOverlayController {
         case .captureWindow(let id, let shadow):
             deliverImmediately(.captureWindow(windowID: id, includeShadow: shadow))
         case .save: requestSave()
-        case .copy, .pin, .extractText: export(outcome)
+        case .copy, .pin, .extractText, .hangBack: export(outcome)
         }
     }
 
@@ -105,6 +105,18 @@ extension ScreenshotOverlayController {
     }
 
     private func exportJob(for outcome: ScreenshotOutcome) -> OverlayExportJob? {
+        // 放大编辑：在原图上导出（原生像素尺寸，马赛克按原图重新像素化）
+        if let historyEdit, session.selection != nil {
+            return OverlayExportJob(
+                frame: historyEdit.nativeFrame,
+                selection: historyEdit.nativeFrame.screen.frame,
+                document: session.document,
+                translation: session.exportedTranslation,
+                pixelated: nil,
+                needsCleanCrop: outcome == .extractText,
+                pngScale: historyEdit.pngScale
+            )
+        }
         guard let selection = session.selection,
             let screenID = session.screenID ?? capture.topology.screen(containing: selection.center)?.id,
             let frame = capture.frame(for: screenID)
@@ -123,6 +135,7 @@ extension ScreenshotOverlayController {
         guard let export = output.export else { return .failed(.exportFailed) }
         switch outcome {
         case .pin: return .pin(export)
+        case .hangBack: return .hangBack(export)
         case .extractText:
             guard let clean = output.clean else { return .failed(.exportFailed) }
             return .extractText(export, clean: clean)

@@ -30,7 +30,9 @@ extension ScreenshotReducer {
         topology: ScreenTopology
     ) -> Result {
         guard let selection = session.selection else { return (session, []) }
-        if clickCount >= 2 && selection.contains(point) {
+        let locked = session.isSelectionLocked
+        // 选区锁定时双击不完成（放大编辑的出口只有 ↩ / ⌘C / 工具栏），当作普通单击
+        if clickCount >= 2 && selection.contains(point) && !locked {
             return (session, [.finish(.copy)])
         }
         // 选中箭头的端点手柄优先（annotating 时也是重新指向而不是新画一支）
@@ -38,7 +40,7 @@ extension ScreenshotReducer {
             return (pressing(session, at: point, intent: .moveArrowEnd(id, end)), [])
         }
         let region = SelectionGeometry.hitRegion(at: point, in: selection)
-        if case .handle(let handle) = region {
+        if case .handle(let handle) = region, !locked {
             return (pressing(session, at: point, intent: .resize(handle)), [])
         }
         if session.phase == .annotating {
@@ -49,7 +51,7 @@ extension ScreenshotReducer {
             return (pressing(selected, at: point, intent: .moveAnnotation(hit.id)), [])
         }
         let deselected = session.updating { $0.selectedAnnotation = nil }
-        let intent: PointerPress.Intent = region == .inside ? .moveSelection : .newSelection
+        let intent: PointerPress.Intent = locked ? .none : region == .inside ? .moveSelection : .newSelection
         return (pressing(deselected, at: point, intent: intent), [])
     }
 
@@ -59,6 +61,11 @@ extension ScreenshotReducer {
         at point: CGPoint,
         topology: ScreenTopology
     ) -> Result {
+        // 选区锁定时只在图片上画：选区外的按下什么都不做（导出只有图片本身，画在外面的看不到）
+        if session.isSelectionLocked, let selection = session.selection, !selection.contains(point) {
+            let deselected = session.updating { $0.selectedAnnotation = nil }
+            return (pressing(deselected, at: point, intent: .none), [])
+        }
         switch session.tool {
         case .text:
             return beginningTextEditing(session, at: point, topology: topology)
@@ -103,7 +110,17 @@ extension ScreenshotReducer {
         case .adjusting, .annotating, .editingText:
             // 拖动标注途中右键：回到按下前的文档
             let reverted = session.updating { $0.document = session.press?.document ?? session.document }
-            return (returningToHover(reverted, at: point, topology: topology), [])
+            guard session.isSelectionLocked else {
+                return (returningToHover(reverted, at: point, topology: topology), [])
+            }
+            // 选区锁定：不清选区，只放弃进行中的拖拽
+            return (
+                reverted.updating {
+                    $0.cursor = point
+                    $0.drag = .none
+                    $0.press = nil
+                }, []
+            )
         }
     }
 

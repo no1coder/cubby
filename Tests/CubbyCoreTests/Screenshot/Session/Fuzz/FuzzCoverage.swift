@@ -35,6 +35,7 @@ struct FuzzCoverage {
             "translation.translating", "translation.ready", "translation.partial", "translation.failed",
             "translation.noText", "translation.needsTargetLanguage", "translation.split", "translation.peek",
             "translation.hidden", "translation.retranslated",
+            "state.selectionLocked", "command.copy", "toolbar.hangBack", "finish.hangBack",
         ]
         for tool in ScreenshotTool.allCases where tool != .pointer {
             names.insert("annotation.\(tool.rawValue)")
@@ -77,6 +78,7 @@ struct FuzzCoverage {
             (session.selectedAnnotation != nil, "state.selectedAnnotation"),
             (session.document.canRedo, "state.canRedo"),
             (session.isSpaceTapPending, "state.spaceTapPending"),
+            (session.isSelectionLocked, "state.selectionLocked"),
             (session.screenID == 2 && session.phase != .selecting, "state.selectionOnExternal"),
             (session.screenID == 3 && session.phase != .selecting, "state.selectionOnLower"),
             (session.arrowSnapGuide != nil, "state.arrowSnapGuide"),
@@ -140,6 +142,7 @@ struct FuzzCoverage {
         switch command {
         case .escape: "escape"
         case .confirm: "confirm"
+        case .copy: "copy"
         case .save: "save"
         case .pin: "pin"
         case .extractText: "extractText"
@@ -167,6 +170,7 @@ struct FuzzCoverage {
         case .copyColor: "copyColor"
         case .captureWindow: "captureWindow"
         case .cancel: "cancel"
+        case .hangBack: "hangBack"
         }
     }
 

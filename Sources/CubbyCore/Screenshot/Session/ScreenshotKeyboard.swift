@@ -72,9 +72,13 @@ public struct ScreenshotKeyboard: Equatable, Sendable {
 
     public init() {}
 
-    public mutating func keyDown(_ key: ScreenshotKeyInput, phase: ScreenshotPhase, isComposingText: Bool)
-        -> ScreenshotKeyDecision
-    {
+    /// isSelectionLocked：选区锁定的放大编辑（⌘C 映射为 `.copy`，见 `ScreenshotCommand.from`）
+    public mutating func keyDown(
+        _ key: ScreenshotKeyInput,
+        phase: ScreenshotPhase,
+        isComposingText: Bool,
+        isSelectionLocked: Bool = false
+    ) -> ScreenshotKeyDecision {
         guard key.isOverlayWindow else { return .pass }
         let isEditing = phase == .editingText
         if isEditing && isComposingText {
@@ -89,7 +93,8 @@ public struct ScreenshotKeyboard: Equatable, Sendable {
             keyCode: key.keyCode,
             modifiers: key.modifiers,
             characters: key.shortcutCharacters,
-            phase: phase
+            phase: phase,
+            isSelectionLocked: isSelectionLocked
         )
         guard let command else {
             return isEditing && !blocksInEditor(key) ? .pass : .swallow

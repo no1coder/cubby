@@ -25,6 +25,9 @@ extension ScreenshotReducer {
     ) -> ScreenshotSession {
         let started: ScreenshotSession?
         switch press.intent {
+        case _ where session.isSelectionLocked && press.intent.changesSelection:
+            // 选区锁定：这些意图本不会产生（见 +Pointer），保险起见也不开始改动选区的拖拽
+            started = nil
         case .selectHover, .newSelection:
             started = startingSelection(session, press: press, topology: topology)
         case .moveSelection:

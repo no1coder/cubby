@@ -5,6 +5,8 @@ import SwiftUI
 struct ScreenshotStyleBarModel: Equatable {
     var tool: ScreenshotTool
     var style: AnnotationStyle
+    /// 放大编辑时为 false：颜色已在工具栏里，样式条只留粗细
+    var showsColors = true
 }
 
 /// 样式条（§2.6）：粗细 / 字号三档｜8 色（马赛克无颜色）
@@ -26,7 +28,7 @@ struct ScreenshotStyleBar: View {
                     namespace: selectedWeight
                 ) { onChange(model.style.withWeight(weight)) }
             }
-            if model.tool.usesColor {
+            if model.tool.usesColor && model.showsColors {
                 ToolbarSeparator()
                 ForEach(Array(AnnotationColor.allCases.enumerated()), id: \.element) { index, color in
                     ColorSwatchButton(color: color, digit: index + 1, isSelected: model.style.color == color) {
@@ -107,7 +109,7 @@ private struct WeightButton: View {
 /// 16 pt 色块：1 pt `white 0.6` 描边（白色另加 `black 0.2`）；选中时外加 2 pt 环
 ///
 /// 选中环用前景色（深色下白、浅色下近黑）而不是强调色：蓝色色块配强调色环时两者同色，环就看不见了
-private struct ColorSwatchButton: View {
+struct ColorSwatchButton: View {
     let color: AnnotationColor
     /// 选这个颜色的数字键（1–8）
     let digit: Int

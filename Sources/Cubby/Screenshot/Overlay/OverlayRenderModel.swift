@@ -22,8 +22,10 @@ enum OverlayRenderModel {
             state.hoverStyle = session.isWindowCaptureMode ? .windowCapture : .target
             state.hoverIsWindow = session.hover?.windowID != nil
         } else if let selection = session.selection {
-            state.selection = selection
-            let showsHandles = session.phase == .adjusting || session.phase == .annotating
+            // 选区锁定（放大编辑）：图片本身就是选区，不画描边与手柄
+            state.selection = session.isSelectionLocked ? nil : selection
+            let showsHandles =
+                (session.phase == .adjusting || session.phase == .annotating) && !session.isSelectionLocked
             state.handles = showsHandles ? SelectionGeometry.visibleHandles(for: selection) : []
             state.activeHandle = session.activeHandle
         }
@@ -96,8 +98,16 @@ enum OverlayRenderModel {
             tool: session.tool,
             canUndo: session.canUndo,
             canRedo: session.canRedo,
-            translate: translateButton(for: session)
+            translate: translateButton(for: session),
+            historyEdit: session.isSelectionLocked
+                ? ScreenshotToolbarModel.HistoryEdit(color: swatchColor(session)) : nil
         )
+    }
+
+    /// 放大编辑工具栏的选中色：选中标注的工具优先，其次当前工具；不用颜色的工具没有选中色
+    private static func swatchColor(_ session: ScreenshotSession) -> AnnotationColor? {
+        let tool = session.selectedAnnotationValue?.tool ?? session.tool
+        return tool.usesColor ? session.activeStyle.color : nil
     }
 
     /// 翻译按钮：不可用时不显示；已有结果时 tooltip 说明再按切换原文 / 译文
@@ -108,7 +118,9 @@ enum OverlayRenderModel {
     }
 
     static func styleBarModel(for session: ScreenshotSession) -> ScreenshotStyleBarModel? {
-        session.styleBarTool.map { ScreenshotStyleBarModel(tool: $0, style: session.activeStyle) }
+        session.styleBarTool.map {
+            ScreenshotStyleBarModel(tool: $0, style: session.activeStyle, showsColors: !session.isSelectionLocked)
+        }
     }
 }
 

@@ -6,6 +6,8 @@ import os
 /// 「存储」不在这里：它先请求位置、可能取消并回到覆盖层，走 `ScreenshotOverlayDelegate.overlay(_:didRequestSave:)`
 enum ScreenshotResult {
     case copy(ScreenshotExport)
+    /// 晾衣绳放大编辑的「完成并晾回」（ScreenshotOutcome.hangBack）：导出为原图的像素尺寸，由协调器存为新历史条目
+    case hangBack(ScreenshotExport)
     case pin(ScreenshotExport)
     /// clean = 无标注的裁剪图，供 OCR
     case extractText(ScreenshotExport, clean: CGImage)
@@ -64,6 +66,9 @@ protocol ScreenshotOverlayPresenting: AnyObject {
     func attachTranslation(_ services: ScreenshotTranslationServices)
     /// 「去设置」「下载语言」处理完：覆盖层带着原来的会话重新上屏；retry 为 true 时自动重试翻译
     func resumeAfterResolving(retry: Bool)
+    /// 晾衣绳放大编辑（上屏前由协调器调用）：标题行、快捷键提示、工具栏的「复制」「完成并晾回」，
+    /// 以及按原图像素尺寸导出（会话须为选区锁定的 `ScreenshotSession.locked`）
+    func attachHistoryEdit(_ context: HistoryEditContext)
 }
 
 /// 占位实现：在覆盖层交付前让协调器可编译、调试场景可跑通数据链路。
@@ -112,4 +117,5 @@ final class NoOverlay: ScreenshotOverlayPresenting {
     /// 占位实现不提供翻译
     func attachTranslation(_ services: ScreenshotTranslationServices) {}
     func resumeAfterResolving(retry: Bool) {}
+    func attachHistoryEdit(_ context: HistoryEditContext) {}
 }

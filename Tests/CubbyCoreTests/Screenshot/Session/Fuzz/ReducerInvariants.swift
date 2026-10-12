@@ -99,6 +99,8 @@ enum ReducerInvariant: String, CaseIterable, Sendable {
     case pointerSemantics
     /// 截图翻译：进行中的运行就是文档当前引用的那次；引用的运行存在；块与译文的 id 自洽；分隔线在选区内
     case translation
+    /// 选区锁定（放大编辑）：锁定不会出现也不会解除；选区与屏幕永远不变；不回 hovering / selecting；不进入待确认
+    case selectionLock
 
     func violation(in step: FuzzStep) -> String? {
         switch self {
@@ -128,6 +130,7 @@ enum ReducerInvariant: String, CaseIterable, Sendable {
         case .commandSemantics: ReducerInvariantChecks.commandSemantics(step)
         case .pointerSemantics: ReducerInvariantChecks.pointerSemantics(step)
         case .translation: ReducerInvariantChecks.translation(step)
+        case .selectionLock: ReducerInvariantChecks.selectionLock(step)
         }
     }
 
@@ -229,7 +232,10 @@ enum ReducerInvariantChecks {
     private static func finishProblem(_ outcome: ScreenshotOutcome, step: FuzzStep) -> String? {
         let session = step.session
         switch outcome {
-        case .copy, .save, .pin, .extractText:
+        case .copy, .save, .pin, .extractText, .hangBack:
+            if outcome == .hangBack && !session.isSelectionLocked {
+                return "hang back outside a locked session"
+            }
             guard session.selection != nil, session.screenID != nil else { return "no selection to export" }
             guard isSelectionPhase(session.phase) else { return "phase \(session.phase)" }
             guard session.textEditing == nil else { return "text editor still open (text not committed)" }
@@ -251,5 +257,21 @@ enum ReducerInvariantChecks {
             default: return "cancel from unexpected event"
             }
         }
+    }
+
+    static func selectionLock(_ step: FuzzStep) -> String? {
+        let previous = step.previous
+        let session = step.session
+        guard previous.isSelectionLocked else {
+            return session.isSelectionLocked ? "\(step.event) locked the selection" : nil
+        }
+        guard session.isSelectionLocked else { return "\(step.event) unlocked the selection" }
+        guard session.selection == previous.selection, session.screenID == previous.screenID else {
+            return "\(step.event) changed a locked selection to \(String(describing: session.selection))"
+        }
+        if session.phase == .hovering || session.phase == .selecting {
+            return "\(step.event) left a locked session in \(session.phase)"
+        }
+        return session.isDiscardArmed ? "a locked session armed the discard" : nil
     }
 }

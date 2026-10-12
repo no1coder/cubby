@@ -19,6 +19,8 @@ final class OverlayScreenView: NSView {
         /// 截图翻译的翻译条；nil = 不显示
         let translationBar: TranslationBarModel?
         let translation: OverlayTranslationChrome
+        /// 晾衣绳放大编辑的标题行与提示；nil = 普通截图
+        var historyEdit: HistoryEditRender?
     }
 
     let canvas: OverlayCanvasView
@@ -41,6 +43,10 @@ final class OverlayScreenView: NSView {
     private var styleBarModel: ScreenshotStyleBarModel?
     private let onToolbarAction: (ScreenshotToolbarAction) -> Void
     private let onStyleChange: (AnnotationStyle) -> Void
+    /// 放大编辑的标题行与快捷键提示（第一次需要时创建，见 +HistoryEdit）
+    var historyHeader: FirstMouseHostingView<HistoryEditHeader>?
+    var historyHint: NSHostingView<HistoryEditHint>?
+    var historyHeaderModel: HistoryEditHeaderModel?
 
     var space: OverlaySpace { canvas.space }
 
@@ -92,7 +98,7 @@ final class OverlayScreenView: NSView {
     /// 鼠标是否落在工具栏 / 样式条 / 翻译条上（此时光标用箭头）
     func isOverChrome(_ global: CGPoint) -> Bool {
         let point = space.viewPoint(global)
-        let panels: [NSView] = [toolbar, styleBar, translationBar]
+        let panels: [NSView] = [toolbar, styleBar, translationBar] + [historyHeader].compactMap { $0 }
         return panels.contains { !$0.isHidden && $0.frame.contains(point) }
     }
 
@@ -101,6 +107,7 @@ final class OverlayScreenView: NSView {
     func render(_ input: Input) {
         canvas.apply(input.canvas)
         renderToolbar(input)
+        renderHistoryEdit(input.historyEdit, selection: input.session.selection)
         renderTranslationChrome(input.translation)
         renderSizeLabel(input.session)
         renderHoverInfo(input.hoverInfo, anchor: input.canvas.hover)
@@ -114,7 +121,9 @@ final class OverlayScreenView: NSView {
 
     /// 上方外侧 → 下方外侧 → 内侧左上（`SizeLabelPlacement`）；与工具栏 / 样式条重叠时改放内侧左上
     private func renderSizeLabel(_ session: ScreenshotSession) {
-        guard session.phase != .hovering, let selection = session.selection, space.intersects(selection) else {
+        guard session.phase != .hovering, !session.isSelectionLocked, let selection = session.selection,
+            space.intersects(selection)
+        else {
             sizeLabel.isHidden = true
             return
         }
@@ -138,8 +147,13 @@ final class OverlayScreenView: NSView {
         sizeLabel.show(text: text, frame: frame)
     }
 
+    /// 工具栏内容的理想宽度（放大编辑时据此把工具栏居中于图片下方）
+    var toolbarFittingWidth: CGFloat {
+        toolbar.fittingContentSize.width
+    }
+
     /// 当前显示中的工具栏与样式条（视图坐标）
-    private var chromeFrames: [CGRect] {
+    var chromeFrames: [CGRect] {
         [
             toolbar.isShown ? toolbar.frame : nil, styleBar.isShown ? styleBar.frame : nil,
             translationBar.isShown ? translationBar.frame : nil,
@@ -202,7 +216,7 @@ final class OverlayScreenView: NSView {
             toolbarSize: toolbar.fittingContentSize,
             translationBarSize: input.translationBar == nil ? nil : translationBar.fittingContentSize,
             styleBarSize: input.styleBar == nil ? nil : styleBar.fittingContentSize,
-            selection: space.pixelAligned(selection),
+            selection: toolbarAnchor(for: space.pixelAligned(selection), locked: session.isSelectionLocked),
             screen: layoutBounds,
             gap: OverlayTokens.toolbarGap,
             inset: OverlayTokens.toolbarGap

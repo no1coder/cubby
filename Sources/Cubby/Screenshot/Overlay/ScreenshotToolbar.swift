@@ -9,6 +9,8 @@ enum ScreenshotToolbarAction: Equatable {
     case outcome(ScreenshotOutcome)
     /// 截图翻译（⇧⌘T）
     case translate
+    /// 放大编辑工具栏里的色块（同数字键选色：作用于选中标注，否则当前工具）
+    case selectColor(AnnotationColor)
 }
 
 /// 工具栏的显示状态（值类型，变化时才刷新 SwiftUI）
@@ -23,10 +25,18 @@ struct ScreenshotToolbarModel: Equatable {
         case showing(translation: Bool)
     }
 
+    /// 晾衣绳放大编辑的工具栏（见 ScreenshotToolbar+HistoryEdit）
+    struct HistoryEdit: Equatable {
+        /// 色块的选中色：选中标注或当前工具的颜色；不用颜色的工具（指针、马赛克）为 nil
+        var color: AnnotationColor?
+    }
+
     var tool: ScreenshotTool
     var canUndo: Bool
     var canRedo: Bool
     var translate: Translate?
+    /// 非 nil = 放大编辑：没有指针按钮，工具后是六个色块，末尾是「复制」「完成并晾回」
+    var historyEdit: HistoryEdit?
 }
 
 /// 截图工具栏（§2.6）：指针 + 8 工具｜撤销 重做｜提取文字（翻译）贴图 保存｜取消 完成
@@ -35,9 +45,22 @@ struct ScreenshotToolbar: View {
     let onAction: (ScreenshotToolbarAction) -> Void
 
     /// 激活底块在工具按钮之间滑动（matchedGeometryEffect）
-    @Namespace private var activeTool
+    @Namespace var activeTool
 
     var body: some View {
+        Group {
+            if let edit = model.historyEdit {
+                historyEditContent(edit)
+            } else {
+                screenshotContent
+            }
+        }
+        .padding(OverlayTokens.toolbarPadding)
+        .fixedSize()
+        .animation(OverlayMotion.slideAnimation, value: model.tool)
+    }
+
+    private var screenshotContent: some View {
         HStack(spacing: OverlayTokens.toolbarSpacing) {
             ForEach(ScreenshotTool.allCases, id: \.self) { tool in
                 ToolbarIconButton(
@@ -66,12 +89,9 @@ struct ScreenshotToolbar: View {
             ToolbarSeparator()
             endButtons
         }
-        .padding(OverlayTokens.toolbarPadding)
-        .fixedSize()
-        .animation(OverlayMotion.slideAnimation, value: model.tool)
     }
 
-    @ViewBuilder private var outputButtons: some View {
+    @ViewBuilder var outputButtons: some View {
         ToolbarIconButton(
             symbol: "text.viewfinder",
             tooltip: String(localized: "Extract Text (⌘T)", comment: "Screenshot toolbar tooltip"),

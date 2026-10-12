@@ -87,4 +87,35 @@ struct ClotheslineTests {
         #expect(line.retaining([c, a, UUID()]).itemIDs == [a, c])
         #expect(line.retaining([]).isEmpty)
     }
+
+    @Test("替换：新条目接替旧条目的位置")
+    func replacingKeepsPosition() {
+        let (a, b, c, d) = (UUID(), UUID(), UUID(), UUID())
+        #expect(Clothesline(itemIDs: [a, b, c]).replacing(b, with: d).itemIDs == [a, d, c])
+        #expect(Clothesline(itemIDs: [a, b, c]).replacing(a, with: d).itemIDs == [d, b, c])
+        #expect(Clothesline(itemIDs: [a, b, c]).replacing(c, with: d).itemIDs == [a, b, d])
+    }
+
+    @Test("替换：新条目已在绳上别处时先取下那一份")
+    func replacingRemovesOtherCopy() {
+        let (a, b, c) = (UUID(), UUID(), UUID())
+        #expect(Clothesline(itemIDs: [a, b, c]).replacing(c, with: a).itemIDs == [b, a])
+        #expect(Clothesline(itemIDs: [a, b, c]).replacing(a, with: c).itemIDs == [c, b])
+    }
+
+    @Test("替换：旧条目不在绳上时像挂上一样追加到最右端")
+    func replacingMissingAppends() {
+        let (a, b, c) = (UUID(), UUID(), UUID())
+        #expect(Clothesline(itemIDs: [a, b]).replacing(UUID(), with: c).itemIDs == [a, b, c])
+        #expect(Clothesline(itemIDs: [a, b]).replacing(UUID(), with: a).itemIDs == [b, a])
+        let full = ids(12)
+        let replaced = Clothesline(itemIDs: full).replacing(UUID(), with: c)
+        #expect(replaced.itemIDs == Array(full.dropFirst()) + [c])
+    }
+
+    @Test("替换：新旧相同时位置不变")
+    func replacingSameID() {
+        let (a, b, c) = (UUID(), UUID(), UUID())
+        #expect(Clothesline(itemIDs: [a, b, c]).replacing(b, with: b).itemIDs == [a, b, c])
+    }
 }

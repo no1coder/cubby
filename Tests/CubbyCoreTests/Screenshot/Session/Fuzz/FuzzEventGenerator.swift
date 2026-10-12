@@ -149,7 +149,8 @@ enum FuzzEventGenerator {
         case .modifiers:
             return .modifiersChanged(toggledModifiers(&rng, input.modifiers))
         case .command:
-            return .command(command(&rng, phase: session.phase, topology: topology))
+            return .command(
+                command(&rng, phase: session.phase, topology: topology, locked: session.isSelectionLocked))
         case .scroll:
             return .scrolled(deltaY: scrollDelta(&rng))
         case .rightClick:
@@ -161,7 +162,7 @@ enum FuzzEventGenerator {
         case .textCommitted:
             return .textCommitted(rng.chance(0.2) ? nil : rng.pick(texts))
         case .toolbar:
-            return .toolbarAction(outcome(&rng, topology: topology))
+            return .toolbarAction(outcome(&rng, topology: topology, locked: session.isSelectionLocked))
         case .arrowEndDrag:
             return arrowEndDrag(&rng, session: session, input: &input, topology: topology)
         case .translation:
@@ -226,12 +227,16 @@ enum FuzzEventGenerator {
 
     // MARK: - 命令、样式、出口
 
+    /// locked：选区锁定的会话另外会出现 ⌘C（`.copy`）；其余会话的抽取与加入锁定之前完全相同
     private static func command(
         _ rng: inout FuzzRandom,
         phase: ScreenshotPhase,
-        topology: ScreenTopology
+        topology: ScreenTopology,
+        locked: Bool = false
     ) -> ScreenshotCommand {
-        let finishing: ScreenshotCommand = rng.pick([.confirm, .save, .pin, .extractText])
+        let finishing: ScreenshotCommand =
+            locked
+            ? rng.pick([.confirm, .copy, .save, .pin, .extractText]) : rng.pick([.confirm, .save, .pin, .extractText])
         let nudge = ScreenshotCommand.nudge(rng.pick([.up, .down, .left, .right]), large: rng.chance(0.3))
         let rows: [(ScreenshotCommand, [Int])] = [
             // 依次为 hovering / selecting / adjusting / annotating / editingText
@@ -272,10 +277,11 @@ enum FuzzEventGenerator {
         AnnotationStyle(color: rng.pick(AnnotationColor.allCases), weight: rng.pick(StrokeWeight.allCases))
     }
 
-    static func outcome(_ rng: inout FuzzRandom, topology: ScreenTopology) -> ScreenshotOutcome {
+    /// locked：选区锁定的会话另外会出现「完成并晾回」；其余会话的抽取与加入锁定之前完全相同
+    static func outcome(_ rng: inout FuzzRandom, topology: ScreenTopology, locked: Bool = false) -> ScreenshotOutcome {
         let windowID = topology.windows.isEmpty ? 999 : rng.pick(topology.windows).id
         return rng.weighted([
-            (2, .copy), (1, .save), (1, .pin), (1, .extractText),
+            (2, .copy), (1, .save), (1, .pin), (1, .extractText), (locked ? 2 : 0, .hangBack),
             (3, .copyColor(rng.pick(["#FF8800", "255, 136, 0", ""]))),
             (3, .captureWindow(windowID: windowID, includeShadow: rng.chance(0.5))),
             (1, .cancel),

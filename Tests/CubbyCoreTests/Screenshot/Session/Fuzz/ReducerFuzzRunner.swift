@@ -9,6 +9,9 @@ enum ReducerFuzzRunner {
     static let seedBase: UInt64 = 0xC0BB_5EED_0000_0000
     /// 以调试场景为起点的比例（直接从深层状态开始）
     private static let scenarioStartRate: CGFloat = 0.35
+    /// 每这么多个种子有一个以选区锁定（晾衣绳放大编辑）为起点：只有预置会话能进入锁定。
+    /// 按种子取模而不是再抽一次随机数，其余种子的序列与加入锁定之前完全相同
+    private static let lockedStartPeriod: UInt64 = 8
 
     /// 一个失败：已缩减的最小序列
     struct Failure: Sendable {
@@ -56,7 +59,7 @@ enum ReducerFuzzRunner {
         var rng = FuzzRandom(seed: seed)
         let topologyIndex = rng.weighted(Array(zip(FuzzTopologies.weights, FuzzTopologies.all.indices)))
         let topology = FuzzTopologies.isolated(topologyIndex)
-        let start = randomStart(&rng, topology: topology)
+        let start = seed % lockedStartPeriod == 7 ? .scenario("locked") : randomStart(&rng, topology: topology)
         var replayer = FuzzReplayer(topology: topology, start: start, invariants: invariants)
         var input = FuzzInputState(session: replayer.session)
         var events: [ScreenshotEvent] = []
