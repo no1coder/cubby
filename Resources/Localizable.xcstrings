@@ -1317,6 +1317,16 @@
         }
       }
     },
+    "Also slide down when the pointer rests at the top edge" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "指针停在顶边时也滑下"
+          }
+        }
+      }
+    },
     "Always translate to this when pasting into %@" : {
       "comment" : "Language menu checkbox. %@ = the app the panel pastes into",
       "localizations" : {
@@ -6252,12 +6262,12 @@
         }
       }
     },
-    "Press ⌘L on an image in the panel to hang it; rest the pointer at the top edge to slide the line down" : {
+    "Press ⌘L on an image in the panel to hang it; drag down from an empty spot in the menu bar to show the line" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在面板里对图片按 ⌘L 晾上；指针停在屏幕顶边时晾衣绳会滑下"
+            "value" : "在面板中选中图片按 ⌘L 晾上；从菜单栏空白处往下拖即可显示晾衣绳"
           }
         }
       }

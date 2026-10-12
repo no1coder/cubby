@@ -1,7 +1,7 @@
 import CubbyCore
 import SwiftUI
 
-/// 设置 › 通用 › 晾衣绳（docs/UI-UPGRADE-PLAN.md 第 5 节）：开关、显示 / 收起的快捷键、指针停在顶边多久后滑下、
+/// 设置 › 通用 › 晾衣绳（docs/UI-UPGRADE-PLAN.md 第 5 节）：开关、显示 / 收起的快捷键、指针停在顶边是否滑下及停多久、
 /// 绳上的张数与「全部取下」
 struct ClotheslineSettingsSection: View {
     @Bindable var settings: AppSettings
@@ -12,7 +12,7 @@ struct ClotheslineSettingsSection: View {
             Toggle(isOn: $settings.clotheslineEnabled) {
                 Text("Hang images at the top of the screen")
                 Text(
-                    "Press ⌘L on an image in the panel to hang it; rest the pointer at the top edge to slide the line down"
+                    "Press ⌘L on an image in the panel to hang it; drag down from an empty spot in the menu bar to show the line"
                 )
             }
             if settings.clotheslineEnabled {
@@ -24,10 +24,15 @@ struct ClotheslineSettingsSection: View {
                         onRecordingChange: onShortcutRecordingChange
                     )
                 }
-                Picker("Slide down after the pointer rests at the top edge for", selection: $settings.clotheslineDwell)
-                {
-                    ForEach(AppSettings.clotheslineDwellChoices, id: \.self) { seconds in
-                        Text(Self.secondsText(seconds)).tag(seconds)
+                Toggle(
+                    "Also slide down when the pointer rests at the top edge", isOn: $settings.clotheslineRevealsOnDwell)
+                if settings.clotheslineRevealsOnDwell {
+                    Picker(
+                        "Slide down after the pointer rests at the top edge for", selection: $settings.clotheslineDwell
+                    ) {
+                        ForEach(AppSettings.clotheslineDwellChoices, id: \.self) { seconds in
+                            Text(Self.secondsText(seconds)).tag(seconds)
+                        }
                     }
                 }
                 LabeledContent("Photos on the line") {

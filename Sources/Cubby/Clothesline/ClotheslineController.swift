@@ -4,8 +4,8 @@ import SwiftUI
 import os
 
 /// 晾衣绳（docs/UI-UPGRADE-PLAN.md 第 5 节）：屏幕顶部的透明非激活窗口。
-/// 显示 / 收起由 ClotheslineReveal 决定（快捷键与菜单切换、指针停在屏幕顶边、挂上新照片后短暂滑下），
-/// 控制器每 1/20 秒轮询一次指针：喂给状态机，并算出悬停的照片（窗口不是 key，不能依赖 onHover）
+/// 显示 / 收起由 ClotheslineReveal 决定（快捷键与菜单切换、指针停在屏幕顶边、从菜单栏往下拉、挂上新照片后短暂滑下），
+/// 控制器每 1/20 秒轮询一次指针与左键状态：喂给状态机，并算出悬停的照片（窗口不是 key，不能依赖 onHover）
 @MainActor
 final class ClotheslineController {
     private static let pollInterval: TimeInterval = 1.0 / 20
@@ -20,7 +20,7 @@ final class ClotheslineController {
     private var timer: Timer?
     /// 开着晾衣绳（start 之后、stop 之前）；绳上为空且没显示时暂停轮询
     private var isRunning = false
-    /// 指针进入顶边时算一次的「全屏空间」结果，离开顶边时清掉（避免停在顶边时每帧枚举窗口）
+    /// 指针进入顶边（或开始往下拉）时算一次的「全屏空间」结果，离开后清掉（避免每帧枚举窗口）
     private var fullScreenAtEdge: Bool?
     private var screen: NSScreen?
     private let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Clothesline")
@@ -155,17 +155,27 @@ final class ClotheslineController {
         tick()
     }
 
-    /// 轮询用的条件：绳上为空或已显示时不判断全屏；进入顶边时判断一次并缓存到离开顶边
-    private func edgeConditions(atTopEdge: Bool) -> ClotheslineReveal.Conditions {
-        guard atTopEdge, !model.isShown, !model.entries.isEmpty else {
-            if !atTopEdge { fullScreenAtEdge = nil }
-            return conditions(checkingFullScreen: false)
+    /// 轮询用的条件：绳上为空或已显示时不判断全屏；进入顶边或往下拉（含刚按下的这一帧）时判断一次并缓存到离开。
+    /// 往下拉期间还要看这次按下是否打开了菜单 / 弹出框，或是 ⌘ 拖动状态图标（这两种拖动都不算）
+    private func edgeConditions(
+        atTopEdge: Bool, sample: ClotheslineReveal.PointerSample, on screen: NSScreen
+    ) -> ClotheslineReveal.Conditions {
+        let pulling = reveal.tracksPull(sample)
+        let watching = atTopEdge || pulling
+        let base = conditions(checkingFullScreen: false)
+        guard watching, !model.isShown, !model.entries.isEmpty else {
+            if !watching { fullScreenAtEdge = nil }
+            return base
         }
         let fullScreen = fullScreenAtEdge ?? conditions(checkingFullScreen: true).isFullScreenSpace
         fullScreenAtEdge = fullScreen
-        let base = conditions(checkingFullScreen: false)
+        let pressedOnItem =
+            pulling
+            && (NSEvent.modifierFlags.contains(.command)
+                || MenuBarPopUp.isOpen(below: sample.location.x, on: screen, menuBarHeight: sample.menuBarHeight))
         return ClotheslineReveal.Conditions(
-            isEnabled: base.isEnabled, isEmpty: base.isEmpty, isFullScreenSpace: fullScreen, dwell: base.dwell)
+            isEnabled: base.isEnabled, isEmpty: base.isEmpty, isFullScreenSpace: fullScreen, dwell: base.dwell,
+            revealsOnDwell: base.revealsOnDwell, isMenuOpen: pressedOnItem)
     }
 
     /// 外部条件。全屏空间的判断要列出所有窗口，只在需要时做（指针到了顶边、切换或挂上新照片时）
@@ -174,7 +184,7 @@ final class ClotheslineController {
         return ClotheslineReveal.Conditions(
             isEnabled: settings.clotheslineEnabled, isEmpty: model.entries.isEmpty,
             isFullScreenSpace: checkingFullScreen && screen.map(FullScreenSpace.isActive(on:)) == true,
-            dwell: settings.clotheslineDwell)
+            dwell: settings.clotheslineDwell, revealsOnDwell: settings.clotheslineRevealsOnDwell)
     }
 
     // MARK: - 双击复制
@@ -208,15 +218,18 @@ final class ClotheslineController {
         // 绳子区域向上延伸到屏幕顶边：从顶边滑下后指针还停在菜单栏上时不算离开
         let bottom = frame.maxY - model.layout.occupiedHeight
         let area = CGRect(x: frame.minX, y: bottom, width: frame.width, height: current.frame.maxY - bottom)
+        let isPressed = NSEvent.pressedMouseButtons & 1 != 0
         let sample = ClotheslineReveal.PointerSample(
             location: pointer, screenTopY: current.frame.maxY, lineArea: area,
-            now: ProcessInfo.processInfo.systemUptime)
+            now: ProcessInfo.processInfo.systemUptime, isPressed: isPressed,
+            menuBarHeight: Self.menuBarHeight(on: current))
         let atTopEdge =
             NSMouseInRect(pointer, current.frame, false)
             && pointer.y >= current.frame.maxY - ClotheslineReveal.edgeBand
         // 放大编辑期间绳子一直显示，不受指针离开影响
         guard model.editingID == nil else { return }
-        reveal = reveal.updated(with: sample, conditions: edgeConditions(atTopEdge: atTopEdge))
+        reveal = reveal.updated(
+            with: sample, conditions: edgeConditions(atTopEdge: atTopEdge, sample: sample, on: current))
         apply(shown: reveal.isShown)
         updateHover(pointer: pointer, frame: frame)
     }
@@ -233,6 +246,11 @@ final class ClotheslineController {
         let local = CGPoint(x: pointer.x - frame.minX, y: frame.maxY - pointer.y)
         let hovered = model.layout.photo(at: local)?.id
         if hovered != model.hoveredID { model.hoveredID = hovered }
+    }
+
+    /// 常驻菜单栏占的高度；自动隐藏或这块屏没有菜单栏时为 0（状态机只认最顶边，免得把窗口标题栏当成菜单栏）
+    private static func menuBarHeight(on screen: NSScreen) -> CGFloat {
+        max(screen.frame.maxY - screen.visibleFrame.maxY, 0)
     }
 
     private func screen(containing point: CGPoint) -> NSScreen? {
@@ -290,6 +308,32 @@ enum FullScreenSpace {
                 let bounds = info[kCGWindowBounds as String] as? [String: CGFloat]
             else { return false }
             return bounds["Width"] == size.width && bounds["Height"] == size.height
+        }
+    }
+}
+
+/// 菜单栏下方是否挂着一个菜单 / 弹出框（按在菜单标题、状态图标、控制中心等模块上时会弹出）：
+/// 高于普通窗口层级、顶边贴着菜单栏下沿、横向覆盖指针位置。只看这一小块，常驻的悬浮窗不会误判
+enum MenuBarPopUp {
+    /// 顶边离菜单栏下沿多远以内算「挂在菜单栏下」（pt）
+    private static let attachSlop: CGFloat = 12
+
+    static func isOpen(below x: CGFloat, on screen: NSScreen, menuBarHeight: CGFloat) -> Bool {
+        // CGWindow 坐标原点在主屏左上角、y 向下
+        guard let primaryTop = NSScreen.screens.first?.frame.maxY else { return false }
+        let barBottom = primaryTop - screen.frame.maxY + max(menuBarHeight, ClotheslineReveal.edgeBand)
+        let ownPID = ProcessInfo.processInfo.processIdentifier
+        let windows =
+            CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID)
+            as? [[String: Any]] ?? []
+        return windows.contains { info in
+            guard (info[kCGWindowLayer as String] as? Int ?? 0) > 0,
+                (info[kCGWindowOwnerPID as String] as? pid_t) != ownPID,
+                let dict = info[kCGWindowBounds as String] as? NSDictionary,
+                let bounds = CGRect(dictionaryRepresentation: dict)
+            else { return false }
+            return abs(bounds.minY - barBottom) <= attachSlop && bounds.height > attachSlop
+                && bounds.minX <= x && x <= bounds.maxX
         }
     }
 }

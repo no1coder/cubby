@@ -67,7 +67,7 @@ Cubby sits in your menu bar and remembers what you copy: text, links, colors, im
 - Windows are detected as you hover. Where windows overlap, <kbd>⇥</kbd> or the scroll wheel steps through them one layer at a time, so even a mostly hidden window is one click away. Press <kbd>Space</kbd> for a clean capture of just that window, unobstructed, with its rounded corners and shadow.
 - Annotate with rectangles, ellipses, arrows, a pen, a highlighter, mosaic, text and numbered steps. Annotations stay editable until you finish: select one to move it, change its color or delete it.
 - Pin a screenshot to the screen as a floating window, save it as a PNG, or extract its text with on-device Vision OCR. Nothing goes online.
-- Pin any image from your history to the screen the same way with <kbd>⇧⌘P</kbd>, or hang up to 12 on a clothesline at the top of the screen with <kbd>⌘L</kbd>. Rest the pointer at the top edge to slide it down, then double-click a photo to copy it, drag it into an app, or click it to annotate.
+- Pin any image from your history to the screen the same way with <kbd>⇧⌘P</kbd>, or hang up to 12 on a clothesline at the top of the screen with <kbd>⌘L</kbd>. Drag down from the menu bar (or rest the pointer at the top edge) to slide it down, then double-click a photo to copy it, drag it into an app, or click it to annotate.
 - On macOS 26, translate the text in a screenshot in place with <kbd>⇧⌘T</kbd>, using Apple's on-device translation (the default) or an OpenAI-compatible model such as DeepSeek, Qwen, Kimi or a local Ollama. See [Screenshot translation](#screenshot-translation).
 - A pixel magnifier shows the color under the pointer; press <kbd>C</kbd> to copy it.
 

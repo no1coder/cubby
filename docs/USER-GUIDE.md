@@ -201,7 +201,9 @@ The clothesline is on by default; turn it off with **Hang images at the top of t
 
 ### Show the line
 
-- Rest the pointer at the very top edge of the screen. After the delay set in **Slide down after the pointer rests at the top edge for** (0.3 to 1.2 seconds, 0.5 by default), the line slides down from under the menu bar, and it slides back up shortly after the pointer leaves it.
+- Press on an empty spot in the menu bar and drag down: once you've dragged about 30 points, the line slides down from under the menu bar. Pressing on a menu title or a menu bar icon opens that menu instead, so start from an empty spot.
+- Or rest the pointer at the very top edge of the screen. After the delay set in **Slide down after the pointer rests at the top edge for** (0.3 to 1.2 seconds, 0.5 by default), the line slides down. Turn off **Also slide down when the pointer rests at the top edge** if it slides down when you don't want it; dragging down still works.
+- Either way, the line slides back up shortly after the pointer leaves it.
 - Press `⌃⌥T` or choose **Show Clothesline** from the menu bar icon's menu; press it again to hide the line. Change or turn off the shortcut under **Show / Hide** in `Settings › General › Clothesline`.
 - The line stays hidden while nothing hangs on it and in full-screen apps. The menu bar icon shows how many photos are hanging.
 
@@ -559,7 +561,7 @@ Open Settings with **Settings…** in the menu bar icon's menu, the gear button 
 - **Appearance:** **Match System** (the default), **Light** or **Dark**, shown as thumbnails. It applies to the panel, the preview, the clothesline and Settings.
 - **Language:** **Interface language** can be **System Default** (the default), **English** or **简体中文**. After you switch, click **Restart Now**; Cubby reopens and comes back to Settings. This only changes Cubby's own menus and text; automatic translation still translates into your system language. It's the same setting as Cubby's entry in `System Settings › General › Language & Region › Applications`, so you can change it in either place.
 - **Shortcut & Panel:** **Keyboard shortcut** (click it, then press a new combination that includes `⌘`, `⌥` or `⌃`; `F1` – `F12` also work on their own), **Only images** (`⌃⇧V` by default, can be turned off) and **Panel position**, five thumbnails: **Next to the pointer**, **Below the menu bar icon**, **Center of the screen**, **Docked to the right edge** and **Docked to the bottom edge**.
-- **Clothesline:** **Hang images at the top of the screen** (on by default), **Show / Hide** (`⌃⌥T` by default, can be turned off), **Slide down after the pointer rests at the top edge for** (0.3 to 1.2 seconds), and **Photos on the line** with **Take All Down**. See "Clothesline".
+- **Clothesline:** **Hang images at the top of the screen** (on by default), **Show / Hide** (`⌃⌥T` by default, can be turned off), **Also slide down when the pointer rests at the top edge** (on by default) with **Slide down after the pointer rests at the top edge for** (0.3 to 1.2 seconds), and **Photos on the line** with **Take All Down**. See "Clothesline".
 - **Pasting:** **When you choose an item** (**Paste into the current app** or **Copy to the clipboard only**) and **Paste text as** (**Original formatting** or **Plain text**; `⇧↩` uses the other one).
 - **Startup & Updates:** **Launch at login**, and **Check for updates automatically**, which reads the latest version number from GitHub once a day and never uploads any data. It's on if you left **Remind me about new versions** ticked on the welcome screen or chose **Remind Me** when Cubby asked; otherwise it's off. If you turned on the weekly check in an earlier version, it stays on and now checks daily.
 
@@ -754,7 +756,7 @@ All shortcuts, grouped by where you use them; the ones marked macOS 26 need macO
 ### Clothesline
 
 - `⌃⌥T` — show / hide the clothesline (global, can be changed or turned off)
-- Rest the pointer at the top edge — show the clothesline
+- Drag down from an empty spot in the menu bar, or rest the pointer at the top edge — show the clothesline
 - Double-click a photo — copy
 - Drag a photo — drop it into another app
 - Click a photo — enlarge and annotate

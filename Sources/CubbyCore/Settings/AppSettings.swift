@@ -58,6 +58,7 @@ public final class AppSettings {
         static let clotheslineHotKeyDisabled = "clotheslineHotKeyDisabled"
         static let clotheslineItems = "clotheslineItems"
         static let clotheslineDwell = "clotheslineDwell"
+        static let clotheslineRevealsOnDwell = "clotheslineRevealsOnDwell"
         static let hangsScreenshotsOnClothesline = "hangsScreenshotsOnClothesline"
         static let floatingPanelPosition = "floatingPanelPosition"
         static let appearance = "appearance"
@@ -107,7 +108,7 @@ public final class AppSettings {
         didSet { defaults.set(verifiesPastes, forKey: Keys.verifiesPastes) }
     }
 
-    /// 晾衣绳：把图片挂在屏幕顶部的一根绳子上，指针停在屏幕顶边时滑下（默认开启；绳上没有图片时不出现）
+    /// 晾衣绳：把图片挂在屏幕顶部的一根绳子上，指针停在屏幕顶边或从菜单栏往下拉时滑下（默认开启；绳上没有图片时不出现）
     public var clotheslineEnabled: Bool {
         didSet { defaults.set(clotheslineEnabled, forKey: Keys.clotheslineEnabled) }
     }
@@ -136,6 +137,11 @@ public final class AppSettings {
             }
             defaults.set(clotheslineDwell, forKey: Keys.clotheslineDwell)
         }
+    }
+
+    /// 指针停在屏幕最顶边时晾衣绳是否滑下（默认开）；关掉后只能从菜单栏往下拉、快捷键或菜单显示
+    public var clotheslineRevealsOnDwell: Bool {
+        didSet { defaults.set(clotheslineRevealsOnDwell, forKey: Keys.clotheslineRevealsOnDwell) }
     }
 
     /// 设置 › 截图与标注「自动挂到晾衣绳」：新截图记入历史后自动挂上（默认关）
@@ -334,6 +340,7 @@ public final class AppSettings {
         clothesline = Clothesline(
             itemIDs: (defaults.stringArray(forKey: Keys.clotheslineItems) ?? []).compactMap(UUID.init(uuidString:)))
         clotheslineDwell = Self.storedClotheslineDwell(defaults.object(forKey: Keys.clotheslineDwell))
+        clotheslineRevealsOnDwell = defaults.object(forKey: Keys.clotheslineRevealsOnDwell) as? Bool ?? true
         hangsScreenshotsOnClothesline = defaults.object(forKey: Keys.hangsScreenshotsOnClothesline) as? Bool ?? false
         addressGuardEnabled = defaults.object(forKey: Keys.addressGuardEnabled) as? Bool ?? true
         guardedKinds =

@@ -30,6 +30,17 @@ struct AppSettingsClotheslineTests {
         }
     }
 
+    @Test("顶边停留滑下默认开，关闭后可被新实例读回，类型不对时回退为开")
+    func revealsOnDwellPersists() {
+        withIsolatedDefaults { defaults in
+            #expect(AppSettings(defaults: defaults).clotheslineRevealsOnDwell)
+            AppSettings(defaults: defaults).clotheslineRevealsOnDwell = false
+            #expect(!AppSettings(defaults: defaults).clotheslineRevealsOnDwell)
+            defaults.set("off", forKey: "clotheslineRevealsOnDwell")
+            #expect(AppSettings(defaults: defaults).clotheslineRevealsOnDwell)
+        }
+    }
+
     @Test("开关存储值类型不对时回退为开启")
     func enabledInvalidFallsBack() {
         withIsolatedDefaults { defaults in
