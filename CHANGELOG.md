@@ -12,6 +12,10 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+### Fixed
+
+- **Clicking cards works again**: since 0.3.0 the hover toolbar layer swallowed clicks on the cards, so double-clicking a card didn't paste it, clicking didn't select it, and pressing and holding or right-clicking a card did nothing. The toolbar buttons still never pass a double-click through to the card.
+
 ## [0.3.1] - 2026-10-13
 
 ### Fixed

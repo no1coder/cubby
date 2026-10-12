@@ -122,7 +122,7 @@ struct CardInteractions: ViewModifier {
             // 被替换进来的条目不能拖出（等同复制）
             .modifier(CardDrag(item: item, viewModel: viewModel))
             // 悬停工具条叠在所有手势之上：按钮上的单击 / 双击 / 长按 / 拖动不会传给卡片（否则双击收藏会顺带粘贴）
-            .overlay { CardHoverChrome(item: item, isSelected: isSelected, actions: quickActions) }
+            .modifier(CardHoverChrome(item: item, isSelected: isSelected, actions: quickActions))
             .modifier(CardAccessibilityActions(item: item, viewModel: viewModel))
     }
 

@@ -2,7 +2,7 @@ import SwiftUI
 import CubbyCore
 
 /// 单条剪贴板记录的卡片（docs/UI-UPGRADE-PLAN.md 第 1 节）：文本与代码卡为「头部一行 + 正文」，
-/// 链接、颜色、文件与图片卡各有自己的排布（悬停工具条由 CardList 叠在手势之上，见 CardHoverChrome）
+/// 链接、颜色、文件与图片卡各有自己的排布（悬停工具条由 CardInteractions 叠在手势之上，见 CardHoverChrome）
 struct ClipCardView: View {
     let item: ClipItem
     let index: Int

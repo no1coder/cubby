@@ -16,9 +16,10 @@ struct CardQuickActions {
     let isPreviewing: Bool
 }
 
-/// 悬停叠层：自带悬停状态，鼠标进出只重绘这一层。未选中时叠一层淡淡的高亮；
-/// 右上角浮出快捷操作工具条（面板是 key window，可以用 onHover）
-struct CardHoverChrome: View {
+/// 悬停叠层：未选中时叠一层淡淡的高亮，右上角浮出快捷操作工具条（面板是 key window，可以用 onHover）。
+/// 悬停检测挂在卡片本身；叠层里只有不接收点击的高亮与工具条——整张卡片大小的叠层若带 onHover，
+/// 会接走卡片上的单击 / 双击 / 长按 / 右键（0.3.1 双击不能粘贴即由此引起）
+struct CardHoverChrome: ViewModifier {
     let item: ClipItem
     let isSelected: Bool
     let actions: CardQuickActions
@@ -33,10 +34,15 @@ struct CardHoverChrome: View {
         hoverState || forcedHoverItemID == item.id
     }
 
-    var body: some View {
-        RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
-            .fill(Color.primary.opacity(highlightOpacity))
-            .allowsHitTesting(false)
+    func body(content: Content) -> some View {
+        content
+            .onHover { hoverState = $0 }
+            .overlay {
+                RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
+                    .fill(Color.primary.opacity(highlightOpacity))
+                    .allowsHitTesting(false)
+            }
+            // 工具条只占右上角自己的大小：按钮上的点击不会传给卡片，其余位置的点击照常落到卡片上
             .overlay(alignment: .topTrailing) {
                 if isHovered {
                     CardHoverToolbar(item: item, actions: actions)
@@ -44,7 +50,6 @@ struct CardHoverChrome: View {
                         .transition(.opacity)
                 }
             }
-            .onHover { hoverState = $0 }
             .animation(Motion.animation(.easeOut(duration: Motion.fade), reduceMotion: reduceMotion), value: isHovered)
     }
 
