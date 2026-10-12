@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<title>设置 · 截图与标注</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#7cb8ff}a:hover{color:#a6cfff}
+</style>
+</helmet>
+<div style="width: 900px; height: 920px; box-sizing: border-box; padding: 30px; position: relative; overflow: hidden; background: #0d1222; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', system-ui, sans-serif; color: rgba(255,255,255,0.94); -webkit-font-smoothing: antialiased">
+  <div aria-hidden="true" style="position: absolute; left: -160px; top: -140px; width: 620px; height: 560px; border-radius: 50%; background: #3d4fe0; opacity: 0.7; filter: blur(120px)"></div>
+  <div aria-hidden="true" style="position: absolute; right: -180px; bottom: -160px; width: 600px; height: 520px; border-radius: 50%; background: #f07a45; opacity: 0.5; filter: blur(130px)"></div>
+  <div style="position: relative; width: 840px; height: 860px; display: flex; border-radius: 18px; overflow: hidden; background: rgba(26,27,35,0.82); backdrop-filter: blur(40px) saturate(1.8); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 40px 90px rgba(4,6,20,0.6), inset 0 1px 0 rgba(255,255,255,0.16)">
+    <aside style="width: 200px; flex: none; padding: 44px 10px 10px; background: rgba(255,255,255,0.04); border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; gap: 2px; font-size: 13px">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 7px; color: rgba(255,255,255,0.85)"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 18 18" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.4"><circle cx="9" cy="9" r="2.4"></circle><path d="M9 1.8v2M9 14.2v2M1.8 9h2M14.2 9h2M3.9 3.9l1.4 1.4M12.7 12.7l1.4 1.4M3.9 14.1l1.4-1.4M12.7 5.3l1.4-1.4"></path></svg>通用</div>
+      <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 7px; color: rgba(255,255,255,0.85)"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="6"></circle><path d="M8 4.5V8l2.5 1.5"></path></svg>历史</div>
+      <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 7px; background: #0A84FF; color: #fff"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round"><path d="M2 6V3.5A1.5 1.5 0 0 1 3.5 2H6M12 2h2.5A1.5 1.5 0 0 1 16 3.5V6M16 12v2.5a1.5 1.5 0 0 1-1.5 1.5H12M6 16H3.5A1.5 1.5 0 0 1 2 14.5V12"></path><circle cx="9" cy="9" r="2.6"></circle></svg>截图与标注</div>
+      <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 7px; color: rgba(255,255,255,0.85)"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h6M5 2v1.5M3.2 3.5c.4 2.5 2 4.3 4.3 5M6.8 3.5C6.4 6 4.6 7.9 2.2 8.8M8.5 14l2.8-6.5L14 14M9.4 12h3.8"></path></svg>翻译</div>
+      <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 7px; color: rgba(255,255,255,0.85)"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.4" stroke-linejoin="round"><path d="M8 1.5l5.5 2v4c0 3.4-2.3 6-5.5 7-3.2-1-5.5-3.6-5.5-7v-4z"></path><path d="M5.6 8l1.7 1.7 3.2-3.2" stroke-linecap="round"></path></svg>剪贴板安全</div>
+      <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 7px; color: rgba(255,255,255,0.85)"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.4" stroke-linejoin="round"><rect x="3" y="7" width="10" height="7.5" rx="1.6"></rect><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"></path></svg>隐私</div>
+      <div style="display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 7px; color: rgba(255,255,255,0.85)"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.4" stroke-linecap="round"><circle cx="8" cy="8" r="6"></circle><path d="M8 7.2v4M8 4.8v.1"></path></svg>关于</div>
+    </aside>
+    <main style="flex: 1; min-width: 0; padding: 22px 28px; display: flex; flex-direction: column; gap: 8px">
+      <h1 style="margin: 0 0 6px; font-size: 15px; font-weight: 600">截图与标注</h1>
+
+      <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px; background: rgba(255,159,10,0.12); box-shadow: inset 0 0 0 1px rgba(255,159,10,0.3); font-size: 12px">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#ffb340" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2l6.5 11.5h-13z"></path><path d="M8 6.5v3M8 11.6v.1"></path></svg>
+        <div style="display: flex; flex-direction: column; gap: 2px"><b style="font-weight: 600">截图需要「屏幕录制」权限</b><span style="color: rgba(255,255,255,0.65)">授权后可能需要重新打开 Cubby。</span></div>
+        <button style="margin-left: auto; height: 26px; padding: 0 12px; border: 0; border-radius: 7px; background: #0A84FF; color: #fff; font: 600 12px -apple-system, 'PingFang SC', sans-serif">去授权</button>
+      </div>
+
+      <h2 style="margin: 8px 4px 0; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6)">截图</h2>
+      <div style="border-radius: 10px; background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.07)">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 9px 14px; font-size: 13px; border-bottom: 0.5px solid rgba(255,255,255,0.07)">截图快捷键<span style="margin-left: auto; padding: 3px 10px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.12); font-size: 12px; letter-spacing: 1px">⇧⌘2</span><button style="height: 22px; padding: 0 10px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); font: 12px -apple-system, 'PingFang SC', sans-serif">关闭</button></div>
+        <div style="display: flex; align-items: center; gap: 8px; padding: 9px 14px; font-size: 13px; border-bottom: 0.5px solid rgba(255,255,255,0.07)">存储位置<span style="margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.75)"><span aria-hidden="true" style="width: 16px; height: 13px; border-radius: 3px; background: #5aa0e8"></span>桌面 › 截图</span><button style="height: 22px; padding: 0 10px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); font: 12px -apple-system, 'PingFang SC', sans-serif">更改…</button></div>
+        <div style="display: flex; align-items: center; padding: 10px 14px; font-size: 13px">存储前询问位置与文件名
+          <label style="margin-left: auto; position: relative; width: 38px; height: 22px"><input type="checkbox" checked aria-label="存储前询问" style="position: absolute; inset: 0; opacity: 0; margin: 0"><span aria-hidden="true" style="position: absolute; inset: 0; border-radius: 11px; background: #0A84FF"></span><span aria-hidden="true" style="position: absolute; right: 2px; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff"></span></label></div>
+      </div>
+
+      <h2 style="margin: 8px 4px 0; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6)">截完以后</h2>
+      <div style="border-radius: 10px; background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.07)">
+        <div style="display: flex; align-items: center; padding: 10px 14px; font-size: 13px; border-bottom: 0.5px solid rgba(255,255,255,0.07)">复制到剪贴板并存入历史<span style="margin-left: auto; font-size: 12px; color: rgba(255,255,255,0.5)">始终</span></div>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 10px 14px; font-size: 13px">
+          <div style="display: flex; flex-direction: column; gap: 2px"><span style="display: flex; align-items: center; gap: 6px">自动挂到晾衣绳<span style="padding: 1px 6px; border-radius: 999px; background: rgba(10,132,255,0.3); color: #a6cfff; font-size: 10px; font-weight: 600">新</span></span><span style="font-size: 11px; color: rgba(255,255,255,0.55)">每张截图都先挂到屏幕顶部，方便随手取用</span></div>
+          <label style="margin-left: auto; position: relative; width: 38px; height: 22px; flex: none"><input type="checkbox" aria-label="自动挂到晾衣绳" style="position: absolute; inset: 0; opacity: 0; margin: 0"><span aria-hidden="true" style="position: absolute; inset: 0; border-radius: 11px; background: rgba(255,255,255,0.18)"></span><span aria-hidden="true" style="position: absolute; left: 2px; top: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff"></span></label>
+        </div>
+      </div>
+
+      <h2 style="margin: 8px 4px 0; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6)">标注默认样式</h2>
+      <div style="border-radius: 10px; background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.07)">
+        <div style="display: flex; align-items: center; padding: 10px 14px; font-size: 13px; border-bottom: 0.5px solid rgba(255,255,255,0.07)">颜色
+          <div role="radiogroup" aria-label="默认颜色" style="margin-left: auto; display: flex; gap: 8px">
+            <button role="radio" aria-checked="true" aria-label="红" style="width: 18px; height: 18px; border-radius: 50%; border: 0; background: #ff453a; box-shadow: 0 0 0 2px #1a1b23, 0 0 0 4px #fff"></button>
+            <button role="radio" aria-checked="false" aria-label="橙" style="width: 18px; height: 18px; border-radius: 50%; border: 0; background: #ff9f0a"></button>
+            <button role="radio" aria-checked="false" aria-label="黄" style="width: 18px; height: 18px; border-radius: 50%; border: 0; background: #ffd60a"></button>
+            <button role="radio" aria-checked="false" aria-label="绿" style="width: 18px; height: 18px; border-radius: 50%; border: 0; background: #30d158"></button>
+            <button role="radio" aria-checked="false" aria-label="蓝" style="width: 18px; height: 18px; border-radius: 50%; border: 0; background: #0A84FF"></button>
+          </div></div>
+        <div style="display: flex; align-items: center; padding: 10px 14px; font-size: 13px">线条粗细
+          <div role="radiogroup" aria-label="线条粗细" style="margin-left: auto; display: flex; gap: 2px; padding: 2px; border-radius: 8px; background: rgba(0,0,0,0.25)">
+            <button role="radio" aria-checked="false" style="width: 40px; height: 24px; border: 0; border-radius: 6px; background: transparent; display: grid; place-items: center"><span style="width: 20px; height: 2px; border-radius: 1px; background: #fff"></span></button>
+            <button role="radio" aria-checked="true" style="width: 40px; height: 24px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.16); display: grid; place-items: center"><span style="width: 20px; height: 4px; border-radius: 2px; background: #fff"></span></button>
+            <button role="radio" aria-checked="false" style="width: 40px; height: 24px; border: 0; border-radius: 6px; background: transparent; display: grid; place-items: center"><span style="width: 20px; height: 6px; border-radius: 3px; background: #fff"></span></button>
+          </div></div>
+      </div>
+      <p style="margin: 0 4px; font-size: 11px; color: rgba(255,255,255,0.55)">截图标注和晾衣绳上的放大编辑共用这套样式，会记住每个工具上次用的颜色。</p>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":900,"height":920}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

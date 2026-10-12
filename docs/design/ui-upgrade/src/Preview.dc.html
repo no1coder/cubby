@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<title>空格预览</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#7cb8ff}a:hover{color:#a6cfff}
+</style>
+</helmet>
+<div style="width: 1000px; height: 780px; position: relative; overflow: hidden; background: #0d1222; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', system-ui, sans-serif; color: rgba(255,255,255,0.94); -webkit-font-smoothing: antialiased">
+  <div aria-hidden="true" style="position: absolute; left: -160px; top: -140px; width: 700px; height: 600px; border-radius: 50%; background: #3d4fe0; opacity: 0.75; filter: blur(120px)"></div>
+  <div aria-hidden="true" style="position: absolute; right: -160px; top: 120px; width: 560px; height: 500px; border-radius: 50%; background: #f07a45; opacity: 0.5; filter: blur(130px)"></div>
+  <div aria-hidden="true" style="position: absolute; left: 200px; bottom: -240px; width: 700px; height: 500px; border-radius: 50%; background: #11a7a0; opacity: 0.5; filter: blur(130px)"></div>
+
+  <section aria-label="预览" style="position: absolute; left: 44px; top: 56px; width: 440px; height: 424px; box-sizing: border-box; display: flex; flex-direction: column; border-radius: 22px; background: rgba(24,25,33,0.62); backdrop-filter: blur(40px) saturate(1.8); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 40px 90px rgba(4,6,20,0.55), inset 0 1px 0 rgba(255,255,255,0.18); overflow: hidden">
+    <header style="height: 56px; flex: none; display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.08)">
+      <span aria-hidden="true" style="width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(#ffd965, #f2ac21)"></span>
+      <div style="display: flex; flex-direction: column; gap: 1px"><b style="font-size: 13px; font-weight: 600">备忘录</b><span style="font-size: 11px; color: rgba(255,255,255,0.55)">2026年10月12日 16:38</span></div>
+      <span style="margin-left: auto; display: flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px; background: rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.75)"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2 3h8M2 6h8M2 9h5"></path></svg>富文本</span>
+    </header>
+    <div style="flex: 1; min-height: 0; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 1.65; overflow: hidden">
+      <h2 style="margin: 0; font-size: 17px; font-weight: 700">周四发布前</h2>
+      <p style="margin: 0">1. 录好演示动图：呼出 → ↓↓ → ↩ 粘贴，控制在 8 秒以内。</p>
+      <p style="margin: 0">2. 更新 Homebrew cask 的版本号与 <code style="font: 12.5px 'SF Mono', ui-monospace, Menlo, monospace; padding: 1px 5px; border-radius: 5px; background: rgba(255,255,255,0.1)">sha256</code>。</p>
+      <p style="margin: 0">3. 回复 issue #42：停靠到右侧 / 底部会在 v0.3 提供，<b>晾衣绳</b>默认开启，可在设置里关闭。</p>
+      <p style="margin: 0; color: rgba(255,255,255,0.6)">— 发版前最后过一遍 QA 清单。</p>
+    </div>
+    <footer style="height: 44px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.12); font-size: 11px; color: rgba(255,255,255,0.58)">
+      186 个字符 · 6 行 · 富文本
+      <button style="margin-left: auto; height: 26px; padding: 0 12px; border: 0; border-radius: 999px; background: rgba(255,255,255,0.12); color: #fff; font: 600 12px -apple-system, 'PingFang SC', sans-serif">翻译</button>
+      <button style="height: 26px; padding: 0 12px; border: 0; border-radius: 999px; background: rgba(255,255,255,0.12); color: #fff; font: 600 12px -apple-system, 'PingFang SC', sans-serif">纯文本粘贴</button>
+      <button style="height: 26px; padding: 0 14px; border: 0; border-radius: 999px; background: #0A84FF; color: #fff; font: 600 12px -apple-system, 'PingFang SC', sans-serif">粘贴</button>
+    </footer>
+  </section>
+
+  <section aria-label="Cubby 面板" style="position: absolute; left: 492px; top: 56px; width: 380px; height: 668px; box-sizing: border-box; display: flex; flex-direction: column; border-radius: 22px; background: rgba(24,25,33,0.58); backdrop-filter: blur(40px) saturate(1.8); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 40px 90px rgba(4,6,20,0.6), inset 0 1px 0 rgba(255,255,255,0.18); overflow: hidden">
+    <header style="display: flex; flex-direction: column; gap: 10px; padding: 14px 14px 10px">
+      <label style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 12px; background: rgba(255,255,255,0.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08)">
+        <svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.7" stroke-linecap="round"><circle cx="7" cy="7" r="5"></circle><path d="M11 11l3.5 3.5"></path></svg>
+        <input type="text" placeholder="搜索剪贴板" aria-label="搜索剪贴板" style="flex: 1; min-width: 0; border: 0; outline: none; background: transparent; color: #fff; font: 15px -apple-system, 'PingFang SC', sans-serif">
+      </label>
+      <nav aria-label="分类" style="display: flex; gap: 2px; padding: 3px; border-radius: 12px; background: rgba(0,0,0,0.22)">
+        <button style="flex: 1; height: 28px; border: 0; border-radius: 9px; background: rgba(255,255,255,0.18); color: #fff; font: 600 12px -apple-system, 'PingFang SC', sans-serif">全部</button>
+        <button style="flex: 1; height: 28px; border: 0; border-radius: 9px; background: transparent; color: rgba(255,255,255,0.66); font: 500 12px -apple-system, 'PingFang SC', sans-serif">文本</button>
+        <button style="flex: 1; height: 28px; border: 0; border-radius: 9px; background: transparent; color: rgba(255,255,255,0.66); font: 500 12px -apple-system, 'PingFang SC', sans-serif">链接</button>
+        <button style="flex: 1; height: 28px; border: 0; border-radius: 9px; background: transparent; color: rgba(255,255,255,0.66); font: 500 12px -apple-system, 'PingFang SC', sans-serif">图片</button>
+        <button style="flex: 1; height: 28px; border: 0; border-radius: 9px; background: transparent; color: rgba(255,255,255,0.66); font: 500 12px -apple-system, 'PingFang SC', sans-serif">文件</button>
+      </nav>
+    </header>
+    <div style="flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; padding: 2px 14px 14px">
+      <article style="display: flex; flex-direction: column; gap: 7px; padding: 12px 13px; border-radius: 15px; background: rgba(255,255,255,0.13); box-shadow: 0 0 0 2px #0A84FF, 0 0 0 6px rgba(10,132,255,0.22)">
+        <div style="display: flex; align-items: center; gap: 7px; font-size: 11px; color: rgba(255,255,255,0.62)"><span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: linear-gradient(#ffd965, #f2ac21)"></span><b style="color: rgba(255,255,255,0.86); font-weight: 600">备忘录</b>刚刚<span style="margin-left: auto; font: 600 10px -apple-system, sans-serif; padding: 2px 6px; border-radius: 6px; background: #0A84FF">⌘1</span></div>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5">周四发布前：录好演示动图，更新 Homebrew cask…</p>
+      </article>
+      <article style="display: flex; flex-direction: column; gap: 4px; padding: 12px 13px; border-radius: 15px; background: rgba(255,255,255,0.09); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07)">
+        <div style="display: flex; align-items: center; gap: 7px; font-size: 11px; color: rgba(255,255,255,0.6)"><span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: linear-gradient(#5aa2ff, #2f62e6)"></span><b style="color: rgba(255,255,255,0.86); font-weight: 600">github.com</b>2 分钟前</div>
+        <div style="font-size: 13px; font-weight: 500">支持固定到屏幕右侧 / 底部 · Issue #42</div>
+      </article>
+      <article style="display: flex; flex-direction: column; gap: 4px; padding: 12px 13px; border-radius: 15px; background: rgba(255,255,255,0.09); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07)">
+        <div style="display: flex; align-items: center; gap: 7px; font-size: 11px; color: rgba(255,255,255,0.6)"><span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: linear-gradient(#5fd57f, #2aa04c)"></span><b style="color: rgba(255,255,255,0.86); font-weight: 600">微信</b>5 分钟前</div>
+        <div style="font-size: 14px; line-height: 1.5">晚上八点视频会议，链接稍后发群里。</div>
+      </article>
+      <article style="display: flex; flex-direction: column; gap: 4px; padding: 12px 13px; border-radius: 15px; background: rgba(255,255,255,0.09); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07)">
+        <div style="display: flex; align-items: center; gap: 7px; font-size: 11px; color: rgba(255,255,255,0.6)"><span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: linear-gradient(#6cc0ff, #2a7de0)"></span><b style="color: rgba(255,255,255,0.86); font-weight: 600">访达</b>20 分钟前</div>
+        <div style="font-size: 13px; font-weight: 500">季度汇报.key</div>
+      </article>
+    </div>
+    <footer style="height: 38px; flex: none; display: flex; align-items: center; gap: 12px; padding: 0 14px; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.12); font-size: 11px; color: rgba(255,255,255,0.6)">
+      <span>13 条</span>
+      <span style="margin-left: auto; display: flex; align-items: center; gap: 5px"><span style="font-weight: 600; padding: 2px 6px; border-radius: 6px; background: rgba(255,255,255,0.09)">空格</span>关闭预览</span>
+      <span style="display: flex; align-items: center; gap: 5px"><span style="font-weight: 600; padding: 2px 6px; border-radius: 6px; background: rgba(255,255,255,0.18); color: #fff">↩</span>粘贴</span>
+    </footer>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1000,"height":780}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

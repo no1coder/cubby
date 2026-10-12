@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<title>面板里的地址卡</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#7cb8ff}a:hover{color:#a6cfff}
+</style>
+</helmet>
+<div style="width: 760px; height: 780px; position: relative; overflow: hidden; background: #0d1222; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', system-ui, sans-serif; color: rgba(255,255,255,0.94); -webkit-font-smoothing: antialiased">
+  <div aria-hidden="true" style="position: absolute; left: -160px; top: -140px; width: 620px; height: 560px; border-radius: 50%; background: #3d4fe0; opacity: 0.75; filter: blur(110px)"></div>
+  <div aria-hidden="true" style="position: absolute; left: 80px; bottom: -220px; width: 640px; height: 480px; border-radius: 50%; background: #11a7a0; opacity: 0.55; filter: blur(120px)"></div>
+
+  <section aria-label="Cubby 面板" style="position: absolute; left: 36px; top: 40px; width: 380px; height: 668px; box-sizing: border-box; display: flex; flex-direction: column; border-radius: 22px; background: rgba(24,25,33,0.58); backdrop-filter: blur(40px) saturate(1.8); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 40px 90px rgba(4,6,20,0.6), inset 0 1px 0 rgba(255,255,255,0.18); overflow: hidden">
+    <header style="display: flex; flex-direction: column; gap: 10px; padding: 14px 14px 10px">
+      <label style="display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 12px; background: rgba(255,255,255,0.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08)">
+        <svg aria-hidden="true" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.7" stroke-linecap="round"><circle cx="7" cy="7" r="5"></circle><path d="M11 11l3.5 3.5"></path></svg>
+        <input type="text" placeholder="搜索剪贴板" aria-label="搜索剪贴板" style="flex: 1; min-width: 0; border: 0; outline: none; background: transparent; color: #fff; font: 15px -apple-system, 'PingFang SC', sans-serif">
+      </label>
+    </header>
+
+    <div style="flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 8px; padding: 2px 14px 14px">
+      <article style="display: flex; flex-direction: column; gap: 8px; padding: 12px 13px; border-radius: 15px; background: rgba(255,255,255,0.13); box-shadow: 0 0 0 2px #0A84FF, 0 0 0 6px rgba(10,132,255,0.22)">
+        <div style="display: flex; align-items: center; gap: 7px; font-size: 11px; color: rgba(255,255,255,0.62)">
+          <span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: linear-gradient(#5aa2ff, #2f62e6)"></span>
+          <b style="color: rgba(255,255,255,0.86); font-weight: 600">Safari 浏览器</b>16:52
+          <span style="margin-left: auto; display: flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 999px; background: rgba(48,209,88,0.2); color: #5fe07c; font-weight: 600"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M8 1.5l5.5 2v4c0 3.4-2.3 6-5.5 7-3.2-1-5.5-3.6-5.5-7v-4z"></path></svg>守护中</span>
+          <span style="font: 600 10px -apple-system, sans-serif; padding: 2px 6px; border-radius: 6px; background: #0A84FF; color: #fff">⌘1</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px">
+          <span aria-hidden="true" style="flex: none; width: 26px; height: 26px; border-radius: 50%; background: #627eea; display: grid; place-items: center"><svg width="12" height="16" viewBox="0 0 12 18" fill="#fff"><path d="M6 0l6 9-6 3.5L0 9z" opacity="0.9"></path><path d="M6 13.5L12 10 6 18 0 10z"></path></svg></span>
+          <div style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 11px; color: rgba(255,255,255,0.6)">以太坊地址 · 校验通过</span>
+          <span style="font: 500 13px/1.4 'SF Mono', ui-monospace, Menlo, monospace; word-spacing: 3px"><b>0x7a3F</b> 9c21 B8e4 0d55 61Af 2C9e 47bD 1e08 3F6a <b>92E1</b></span></div>
+        </div>
+      </article>
+
+      <article style="display: flex; flex-direction: column; gap: 8px; padding: 12px 13px; border-radius: 15px; background: rgba(255,69,58,0.1); box-shadow: inset 0 0 0 1px rgba(255,69,58,0.4)">
+        <div style="display: flex; align-items: center; gap: 7px; font-size: 11px; color: rgba(255,255,255,0.62)">
+          <span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: rgba(255,69,58,0.25); display: grid; place-items: center"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="#ff8a80" stroke-width="1.8" stroke-linecap="round"><path d="M8 3v6M8 12.5v.1"></path></svg></span>
+          <b style="color: #ff8a80; font-weight: 600">来源未知 · 替换了上一条</b>16:52
+        </div>
+        <span style="font: 500 13px/1.4 'SF Mono', ui-monospace, Menlo, monospace; word-spacing: 3px; color: rgba(255,255,255,0.6); text-decoration: line-through; text-decoration-color: rgba(255,69,58,0.8)">0x7a3F 1b8D e027 C4f9 A3b0 7E62 d59C 0a41 8B2d 92E1</span>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: rgba(255,255,255,0.6)">不会出现在 ⌘1–⌘9 里，↩ 粘贴前会再次确认
+          <button style="margin-left: auto; height: 22px; padding: 0 10px; border: 0; border-radius: 6px; background: rgba(255,255,255,0.1); color: #fff; font: 11px -apple-system, 'PingFang SC', sans-serif">详情</button></div>
+      </article>
+
+      <article style="display: flex; flex-direction: column; gap: 8px; padding: 12px 13px; border-radius: 15px; background: rgba(255,255,255,0.09); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07)">
+        <div style="display: flex; align-items: center; gap: 7px; font-size: 11px; color: rgba(255,255,255,0.62)">
+          <span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: linear-gradient(#5fd57f, #2aa04c)"></span>
+          <b style="color: rgba(255,255,255,0.86); font-weight: 600">微信</b>16:40
+          <span style="margin-left: auto; display: flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 999px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.75); font-weight: 600"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M8 1.5l5.5 2v4c0 3.4-2.3 6-5.5 7-3.2-1-5.5-3.6-5.5-7v-4z"></path></svg>已核验</span>
+          <span style="font: 600 10px -apple-system, sans-serif; padding: 2px 6px; border-radius: 6px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.75)">⌘2</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px">
+          <span aria-hidden="true" style="flex: none; width: 26px; height: 26px; border-radius: 50%; background: #e50914; display: grid; place-items: center; font: 700 13px -apple-system, sans-serif; color: #fff">T</span>
+          <div style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 11px; color: rgba(255,255,255,0.6)">波场 (TRON) 地址 · 校验通过</span>
+          <span style="font: 500 13px/1.4 'SF Mono', ui-monospace, Menlo, monospace; word-spacing: 3px"><b>TQ4n</b>Fv8s dK2m 9Hxe Lp3w Ra7c Ub6Y <b>tZ1K</b></span></div>
+        </div>
+      </article>
+
+      <article style="display: flex; flex-direction: column; gap: 6px; padding: 12px 13px; border-radius: 15px; background: rgba(255,255,255,0.09); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07)">
+        <div style="display: flex; align-items: center; gap: 7px; font-size: 11px; color: rgba(255,255,255,0.62)">
+          <span aria-hidden="true" style="width: 18px; height: 18px; border-radius: 5px; background: linear-gradient(#ffd965, #f2ac21)"></span>
+          <b style="color: rgba(255,255,255,0.86); font-weight: 600">备忘录</b>昨天
+          <span style="margin-left: auto; padding: 2px 7px; border-radius: 999px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.75); font-weight: 600">银行卡号</span>
+        </div>
+        <span style="font: 500 14px 'SF Mono', ui-monospace, Menlo, monospace; letter-spacing: 1px">6222 •••• •••• 4821</span>
+        <span style="font-size: 11px; color: rgba(255,255,255,0.5)">已遮挡显示，预览或粘贴时还原完整卡号</span>
+      </article>
+    </div>
+  </section>
+
+  <div role="status" style="position: absolute; left: 400px; top: 470px; width: 330px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-radius: 16px; background: rgba(24,25,33,0.78); backdrop-filter: blur(30px) saturate(1.8); border: 1px solid rgba(48,209,88,0.45); box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12)">
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#30d158" stroke-width="1.9" stroke-linecap="round"><path d="M3 8.5l3 3 7-7"></path></svg>已粘贴到「钱包」，与你复制的一致</div>
+    <span style="font: 500 12px 'SF Mono', ui-monospace, Menlo, monospace; color: rgba(255,255,255,0.75); word-spacing: 3px"><b style="color: #fff">0x7a3F</b> 9c21 B8e4 … 3F6a <b style="color: #fff">92E1</b></span>
+    <span style="font-size: 11px; color: rgba(255,255,255,0.5)">2 秒后自动消失</span>
+  </div>
+
+  <div role="alertdialog" aria-label="粘贴前确认" style="position: absolute; left: 400px; top: 160px; width: 330px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; background: rgba(30,20,26,0.85); backdrop-filter: blur(30px) saturate(1.8); border: 1px solid rgba(255,69,58,0.5); box-shadow: 0 20px 50px rgba(0,0,0,0.5)">
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#ff8a80" stroke-width="1.6" stroke-linejoin="round"><path d="M8 2l6.5 11.5h-13z"></path><path d="M8 6.5v3M8 11.6v.1" stroke-linecap="round"></path></svg>要粘贴的是被替换进来的地址</div>
+    <span style="font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.7)">它不是你复制的。仍要粘贴吗？</span>
+    <div style="display: flex; gap: 8px">
+      <button style="flex: 1; height: 30px; border: 0; border-radius: 9px; background: rgba(255,255,255,0.1); color: #fff; font: 12px -apple-system, 'PingFang SC', sans-serif">仍然粘贴</button>
+      <button style="flex: 1; height: 30px; border: 0; border-radius: 9px; background: #0A84FF; color: #fff; font: 600 12px -apple-system, 'PingFang SC', sans-serif">改粘贴我复制的</button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":760,"height":780}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

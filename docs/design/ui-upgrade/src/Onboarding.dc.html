@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<title>首次引导</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#7cb8ff}a:hover{color:#a6cfff}
+</style>
+</helmet>
+<div style="width: 960px; height: 720px; box-sizing: border-box; padding: 40px 60px; position: relative; overflow: hidden; background: #0d1222; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', system-ui, sans-serif; color: rgba(255,255,255,0.94); -webkit-font-smoothing: antialiased">
+  <div aria-hidden="true" style="position: absolute; left: -160px; top: -160px; width: 700px; height: 600px; border-radius: 50%; background: #3d4fe0; opacity: 0.75; filter: blur(130px)"></div>
+  <div aria-hidden="true" style="position: absolute; right: -200px; bottom: -200px; width: 700px; height: 600px; border-radius: 50%; background: #f07a45; opacity: 0.5; filter: blur(140px)"></div>
+
+  <section aria-label="欢迎使用 Cubby" style="position: relative; width: 840px; height: 640px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; padding: 36px 48px 28px; border-radius: 22px; background: rgba(26,27,35,0.78); backdrop-filter: blur(40px) saturate(1.8); border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 40px 90px rgba(4,6,20,0.6), inset 0 1px 0 rgba(255,255,255,0.16)">
+    <ol aria-label="引导步骤" style="list-style: none; margin: 0 0 26px; padding: 0; display: flex; align-items: center; gap: 10px; font-size: 12px; color: rgba(255,255,255,0.5)">
+      <li style="display: flex; align-items: center; gap: 6px"><span style="width: 18px; height: 18px; border-radius: 50%; background: rgba(48,209,88,0.25); color: #30d158; display: grid; place-items: center; font-size: 11px">✓</span>欢迎</li>
+      <li aria-hidden="true" style="width: 28px; height: 1px; background: rgba(255,255,255,0.2)"></li>
+      <li style="display: flex; align-items: center; gap: 6px"><span style="width: 18px; height: 18px; border-radius: 50%; background: rgba(48,209,88,0.25); color: #30d158; display: grid; place-items: center; font-size: 11px">✓</span>授权</li>
+      <li aria-hidden="true" style="width: 28px; height: 1px; background: rgba(255,255,255,0.2)"></li>
+      <li aria-current="step" style="display: flex; align-items: center; gap: 6px; color: #fff; font-weight: 600"><span style="width: 18px; height: 18px; border-radius: 50%; background: #0A84FF; display: grid; place-items: center; font-size: 11px">3</span>选择样子</li>
+      <li aria-hidden="true" style="width: 28px; height: 1px; background: rgba(255,255,255,0.2)"></li>
+      <li style="display: flex; align-items: center; gap: 6px"><span style="width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.1); display: grid; place-items: center; font-size: 11px">4</span>快捷键</li>
+    </ol>
+
+    <h1 style="margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.2px">你希望剪贴板出现在哪里？</h1>
+    <p style="margin: 8px 0 26px; font-size: 13px; color: rgba(255,255,255,0.62)">随时可以在面板顶栏或「设置 › 通用」里切换。</p>
+
+    <div role="radiogroup" aria-label="面板位置" style="width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+      <button role="radio" aria-checked="true" style="display: flex; flex-direction: column; gap: 12px; padding: 12px; border: 0; border-radius: 16px; background: rgba(10,132,255,0.14); box-shadow: 0 0 0 2px #0A84FF, 0 0 0 6px rgba(10,132,255,0.2); color: #fff; text-align: left; font-family: inherit">
+        <span aria-hidden="true" style="position: relative; height: 210px; border-radius: 10px; background: #26315a; overflow: hidden"><span style="position: absolute; left: 50%; top: 36px; width: 84px; height: 136px; margin-left: -30px; border-radius: 9px; background: rgba(255,255,255,0.85); box-shadow: 0 6px 16px rgba(0,0,0,0.35)"></span><span style="position: absolute; left: 30%; top: 30px; width: 10px; height: 10px; background: #fff; clip-path: polygon(0 0, 100% 60%, 40% 60%, 20% 100%)"></span></span>
+        <b style="font-size: 14px; font-weight: 600">浮动面板</b>
+        <span style="font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.65)">出现在鼠标旁，用完即走。</span>
+      </button>
+      <button role="radio" aria-checked="false" style="display: flex; flex-direction: column; gap: 12px; padding: 12px; border: 0; border-radius: 16px; background: rgba(255,255,255,0.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); color: #fff; text-align: left; font-family: inherit">
+        <span aria-hidden="true" style="position: relative; height: 210px; border-radius: 10px; background: #26315a; overflow: hidden"><span style="position: absolute; right: 6px; top: 6px; bottom: 6px; width: 48px; border-radius: 8px; background: rgba(255,255,255,0.85)"></span></span>
+        <b style="font-size: 14px; font-weight: 600">固定右侧</b>
+        <span style="font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.65)">整屏高的侧栏，一次看到更多。</span>
+      </button>
+      <button role="radio" aria-checked="false" style="display: flex; flex-direction: column; gap: 12px; padding: 12px; border: 0; border-radius: 16px; background: rgba(255,255,255,0.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); color: #fff; text-align: left; font-family: inherit">
+        <span aria-hidden="true" style="position: relative; height: 210px; border-radius: 10px; background: #26315a; overflow: hidden"><span style="position: absolute; left: 6px; right: 6px; bottom: 6px; height: 40px; border-radius: 8px; background: rgba(255,255,255,0.85)"></span></span>
+        <b style="font-size: 14px; font-weight: 600">固定底部</b>
+        <span style="font-size: 12px; line-height: 1.5; color: rgba(255,255,255,0.65)">横向卡片，适合图片和大屏。</span>
+      </button>
+    </div>
+
+    <div style="margin-top: 22px; display: flex; align-items: center; gap: 12px; font-size: 13px">
+      外观
+      <div role="radiogroup" aria-label="外观" style="display: flex; gap: 2px; padding: 3px; border-radius: 10px; background: rgba(0,0,0,0.25)">
+        <button role="radio" aria-checked="true" style="height: 26px; padding: 0 14px; border: 0; border-radius: 7px; background: rgba(255,255,255,0.18); color: #fff; font: 600 12px -apple-system, 'PingFang SC', sans-serif">跟随系统</button>
+        <button role="radio" aria-checked="false" style="height: 26px; padding: 0 14px; border: 0; border-radius: 7px; background: transparent; color: rgba(255,255,255,0.7); font: 12px -apple-system, 'PingFang SC', sans-serif">浅色</button>
+        <button role="radio" aria-checked="false" style="height: 26px; padding: 0 14px; border: 0; border-radius: 7px; background: transparent; color: rgba(255,255,255,0.7); font: 12px -apple-system, 'PingFang SC', sans-serif">深色</button>
+      </div>
+    </div>
+
+    <div style="margin-top: auto; width: 100%; display: flex; align-items: center">
+      <button style="height: 32px; padding: 0 16px; border: 0; border-radius: 9px; background: transparent; color: rgba(255,255,255,0.7); font: 13px -apple-system, 'PingFang SC', sans-serif">上一步</button>
+      <button style="margin-left: auto; height: 32px; padding: 0 22px; border: 0; border-radius: 9px; background: #0A84FF; color: #fff; font: 600 13px -apple-system, 'PingFang SC', sans-serif; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25)">继续</button>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":960,"height":720}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

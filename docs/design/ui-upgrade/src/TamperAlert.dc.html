@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<title>地址被替换警示</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#7cb8ff}a:hover{color:#a6cfff}
+</style>
+</helmet>
+<div style="width: 1440px; height: 900px; position: relative; overflow: hidden; background: #0d1222; font-family: -apple-system, 'SF Pro Text', 'PingFang SC', system-ui, sans-serif; color: rgba(255,255,255,0.94); -webkit-font-smoothing: antialiased">
+  <div aria-hidden="true" style="position: absolute; left: -100px; top: -120px; width: 900px; height: 700px; border-radius: 50%; background: #3d4fe0; opacity: 0.6; filter: blur(140px)"></div>
+  <div aria-hidden="true" style="position: absolute; right: -160px; top: 120px; width: 760px; height: 620px; border-radius: 50%; background: #f07a45; opacity: 0.45; filter: blur(150px)"></div>
+
+  <div style="position: absolute; left: 0; right: 0; top: 0; height: 28px; display: flex; align-items: center; gap: 20px; padding: 0 18px; background: rgba(10,12,20,0.5); backdrop-filter: blur(20px); font-size: 13px">
+    <b style="font-weight: 600">Safari 浏览器</b><span>文件</span><span>编辑</span><span>显示</span><span>历史记录</span>
+    <span style="margin-left: auto; display: flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 6px; background: #ff453a; color: #fff; font-size: 12px; font-weight: 600"><svg role="img" aria-label="剪贴板安全：发现替换" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"><path d="M8 1.5l5.5 2v4c0 3.4-2.3 6-5.5 7-3.2-1-5.5-3.6-5.5-7v-4z"></path><path d="M8 5v3.5M8 10.8v.1" stroke-linecap="round"></path></svg>地址被替换</span>
+    <span>10月12日 周一 16:52</span>
+  </div>
+
+  <div aria-hidden="true" style="position: absolute; left: 240px; top: 110px; width: 960px; height: 620px; border-radius: 14px; background: rgba(30,31,40,0.6); border: 1px solid rgba(255,255,255,0.1); filter: blur(1.5px); opacity: 0.7">
+    <div style="height: 44px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid rgba(255,255,255,0.07)"><span style="width: 12px; height: 12px; border-radius: 50%; background: #ff5f57"></span><span style="width: 12px; height: 12px; border-radius: 50%; background: #febc2e"></span><span style="width: 12px; height: 12px; border-radius: 50%; background: #28c840"></span></div>
+    <div style="padding: 40px 80px; display: flex; flex-direction: column; gap: 14px">
+      <div style="font-size: 22px; font-weight: 700">转账</div>
+      <div style="font-size: 12px; color: rgba(255,255,255,0.55)">收款地址</div>
+      <div style="height: 40px; border-radius: 10px; background: rgba(255,255,255,0.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12)"></div>
+      <div style="font-size: 12px; color: rgba(255,255,255,0.55)">金额</div>
+      <div style="height: 40px; width: 300px; border-radius: 10px; background: rgba(255,255,255,0.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12)"></div>
+    </div>
+  </div>
+
+  <section role="alertdialog" aria-label="剪贴板里的地址被替换了" style="position: absolute; left: 50%; top: 150px; transform: translateX(-50%); width: 620px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; padding: 22px 24px 20px; border-radius: 22px; background: rgba(30,20,26,0.82); backdrop-filter: blur(40px) saturate(1.8); border: 1px solid rgba(255,69,58,0.55); box-shadow: 0 0 0 6px rgba(255,69,58,0.14), 0 40px 100px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.12)">
+    <header style="display: flex; gap: 14px; align-items: flex-start">
+      <span aria-hidden="true" style="flex: none; width: 44px; height: 44px; border-radius: 13px; background: #ff453a; display: grid; place-items: center; box-shadow: 0 6px 18px rgba(255,69,58,0.45)"><svg width="24" height="24" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"><path d="M8 1.5l5.5 2v4c0 3.4-2.3 6-5.5 7-3.2-1-5.5-3.6-5.5-7v-4z"></path><path d="M8 5v3.5M8 10.8v.1" stroke-linecap="round"></path></svg></span>
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <h1 style="margin: 0; font-size: 18px; font-weight: 700">剪贴板里的地址被替换了</h1>
+        <p style="margin: 0; font-size: 13px; line-height: 1.55; color: rgba(255,255,255,0.75)">你复制以太坊地址 0.4 秒后，剪贴板被换成了另一个地址。这期间你没有再复制，前台也一直是 Safari，很可能是后台程序干的。<b style="color: #fff">粘贴前请先确认。</b></p>
+      </div>
+    </header>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <div style="padding: 12px 14px; border-radius: 13px; background: rgba(48,209,88,0.1); box-shadow: inset 0 0 0 1px rgba(48,209,88,0.3)">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: rgba(255,255,255,0.65); margin-bottom: 6px"><span style="padding: 1px 7px; border-radius: 999px; background: rgba(48,209,88,0.25); color: #5fe07c; font-weight: 600">你复制的</span>Safari 浏览器 · 16:52:07<span style="margin-left: auto">以太坊 · 校验通过</span></div>
+        <div style="font: 500 16px/1.4 'SF Mono', ui-monospace, Menlo, monospace; letter-spacing: 0.3px; word-spacing: 4px"><b>0x7a3F</b> 9c21 B8e4 0d55 61Af 2C9e 47bD 1e08 3F6a <b>92E1</b></div>
+      </div>
+      <div style="padding: 12px 14px; border-radius: 13px; background: rgba(255,69,58,0.12); box-shadow: inset 0 0 0 1px rgba(255,69,58,0.4)">
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: rgba(255,255,255,0.65); margin-bottom: 6px"><span style="padding: 1px 7px; border-radius: 999px; background: rgba(255,69,58,0.3); color: #ff8a80; font-weight: 600">现在剪贴板里的</span>来源未知（后台程序） · 16:52:07.4<span style="margin-left: auto; color: #ff8a80">开头结尾相同，中间 32 位不同</span></div>
+        <div style="font: 500 16px/1.4 'SF Mono', ui-monospace, Menlo, monospace; letter-spacing: 0.3px; word-spacing: 4px"><b>0x7a3F</b> <mark style="background: rgba(255,69,58,0.35); color: #fff; border-radius: 3px">1b8D e027 C4f9 A3b0 7E62 d59C 0a41 8B2d</mark> <b>92E1</b></div>
+      </div>
+    </div>
+
+    <p style="margin: 0; font-size: 12px; line-height: 1.55; color: rgba(255,255,255,0.6)">攻击者常生成开头和结尾都相同的地址来骗过肉眼核对，所以 Cubby 会逐位比对整串地址。</p>
+
+    <div style="display: flex; align-items: center; gap: 10px">
+      <a href="#log" style="font-size: 12px; text-decoration: none">查看安全记录</a>
+      <button style="margin-left: auto; height: 34px; padding: 0 14px; border: 0; border-radius: 10px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.9); font: 13px -apple-system, 'PingFang SC', sans-serif">是我自己换的</button>
+      <button style="height: 34px; padding: 0 18px; border: 0; border-radius: 10px; background: #0A84FF; color: #fff; font: 600 13px -apple-system, 'PingFang SC', sans-serif; box-shadow: inset 0 1px 0 rgba(255,255,255,0.25)">恢复我复制的地址</button>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
