@@ -1,6 +1,6 @@
 # Cubby User Guide
 
-Cubby (小格子) is a native macOS clipboard manager: it remembers the text, links, colors, images and files you copy, and brings them back with one shortcut. It also takes WeChat-style screenshots that you can mark up and pin, and on macOS 26 it translates screenshots and clipboard items. Everything stays on your Mac: Cubby only goes online to check for a new version (once a day, and you can turn that off) or to translate with a language model you set up yourself.
+Cubby (小格子) is a native macOS clipboard manager: it remembers the text, links, colors, images and files you copy, and brings them back with one shortcut. It also takes WeChat-style screenshots that you can mark up and pin, hangs images on a clothesline at the top of the screen, warns you when an address you copied is replaced, and on macOS 26 translates screenshots and clipboard items. Everything stays on your Mac: Cubby only goes online to check for a new version (once a day, and you can turn that off) or to translate with a language model you set up yourself.
 
 ## Getting started
 
@@ -26,7 +26,7 @@ Then click **Get Started**. Cubby doesn't check for updates until you close this
 
 ### Permissions
 
-Cubby uses at most three permissions, each for a single job, and `Settings › Privacy` shows the status of all three.
+Cubby uses at most three permissions, each for a single job, and `Settings › Privacy` shows the status of all three. A fourth one, Input Monitoring, is optional and only helps the address guard; see "Address guard".
 
 **Clipboard access (macOS 15.4 and later):** lets Cubby record what you copy. On earlier versions this row reads "Not required on this version of macOS".
 
@@ -41,37 +41,80 @@ Cubby uses at most three permissions, each for a single job, and `Settings › P
 
 ### Open the panel
 
-Press `⇧⌘V` in any app to open the panel and press it again to close it, or click the menu bar icon. Clicking outside the panel or pressing `esc` also closes it. You can change the shortcut and where the panel appears (**Next to the pointer**, **Below the menu bar icon** or **Center of the screen**) in `Settings › General`.
+Press `⇧⌘V` in any app to open the panel and press it again to close it, or click the menu bar icon. Clicking outside the panel or pressing `esc` also closes it. You can change the shortcut in `Settings › General`. The panel can float next to the pointer, below the menu bar icon or in the center of the screen, or be docked to the right or bottom edge; see "Panel position" below.
 
 ### The menu bar icon
 
 Click the menu bar icon to open the panel. Right-click it (or Control-click) to open its menu:
 
 - The top of the menu shows Cubby's status: **Recording · N items**, **Paused · N items**, or a red **Address Replaced** while a replaced address is waiting for you.
-- **Open Clipboard**, **Only Images**, **Take Screenshot** and **Show Clothesline:** their shortcuts are shown in gray on the right.
+- **Open Clipboard**, **Only Images**, **Take Screenshot** and **Show Clothesline · N photos:** their shortcuts are shown in gray on the right. **Show Clothesline** is hidden while the clothesline is off and dimmed while nothing hangs on it.
+- **Panel Position** and **Appearance:** submenus that show the current choice on the right. **Panel Position** offers Next to the pointer, Below the menu bar icon, Center of the screen, Docked to the right edge and Docked to the bottom edge; **Appearance** offers Match System, Light and Dark.
 - **Pause Recording:** nothing new is recorded, and the menu bar icon changes. While paused, the item reads **Resume Recording**.
 - **Clear History…:** after you confirm, deletes every item that isn't a favorite. This can't be undone.
+- **User Guide:** opens this guide.
 - **Setup Guide…:** reopens the first-launch guide.
 - **Check for Updates…**, **Settings…** (`⌘,`) and **Quit Cubby** (`⌘Q`).
 
 When something needs your attention, **Allow Clipboard Access…** appears at the top of the menu. When a new version is available, the menu bar icon gets a blue dot at its top right and **Version x.y.z Available…** appears at the top of the menu; choose it to open the release page. See "Update reminders" under Settings.
 
+The icon itself also shows how many photos hang on the clothesline. When the address guard catches a replaced address, the icon turns into a red **Address Replaced** label until you respond; clicking it brings the warning back.
+
 ## The clipboard panel
 
 The panel is the heart of Cubby: find anything you copied and paste it back into the app you're using.
 
+### Panel position
+
+The panel can appear in five places:
+
+- **Floating:** **Next to the pointer** (the default), **Below the menu bar icon** or **Center of the screen**.
+- **Docked to the right edge:** a full-height sidebar along the right side of the screen.
+- **Docked to the bottom edge:** a full-width shelf of cards along the bottom of the screen. Press `←` `→` to move between cards (while the search field is empty); the preview, the translation card and the Pick Words card open right above the selected card.
+
+There are three ways to switch:
+
+- Click the layout button (**Switch Layout**) at the top of the panel, next to the camera button. It goes from floating to the right edge, to the bottom edge and back to the floating position you used last.
+- Pick one of the five thumbnails in `Settings › General › Panel position`.
+- Choose it from **Panel Position** in the menu bar icon's menu.
+
+### Appearance
+
+Choose **Match System** (the default, follows macOS), **Light** or **Dark** in `Settings › General › Appearance`, from **Appearance** in the menu bar icon's menu, or in the first-launch guide. It applies to the panel, the preview, the clothesline and Settings.
+
 ### Cards and categories
 
-Every item is a card that looks like its content: text shows its first lines, rich text keeps its RTF / HTML formatting, code is monospaced, HEX colors such as `#FF8800` appear as swatches, images show a thumbnail, and files show their name and path (struck through and marked "File no longer exists" if the file was deleted or moved). Each card also shows the source app's icon and when you copied it, and the first nine cards are labeled `⌘1` – `⌘9`. Copying the same content again moves the existing item to the top instead of adding a duplicate.
+Every item is a card that looks like its content. Each card shows the source app, when you copied it and, on the first nine cards, their `⌘1` – `⌘9` number. On text and code cards these sit in a header row at the top, so the content below uses the full width.
 
-The category tabs at the top are **All**, **Text**, **Links**, **Images**, **Files**, **Colors** and **Favorites**. Press `⇥` / `⇧⇥` to switch, or click a tab. If you reopen the panel within 30 seconds, it stays on the category you left it on; the search field always starts empty.
+- **Text** shows its first lines; rich text keeps its RTF / HTML formatting.
+- **Links** show a colored letter tile for the site, the page title when the browser copied one with the link, and the full address. Cubby doesn't go online to fetch site icons.
+- **Code** shows its language (Swift, JavaScript, Python, JSON, Shell, HTML, CSS, SQL, Go or Rust, otherwise "Code") with light syntax colors for keywords, strings and types.
+- **Colors** fill the card with the color and show its HEX and rgb() values.
+- **Images** show the whole picture, screenshots included: the frame follows the image's shape, and very tall or very wide images are fitted inside it instead of cropped. Images on the clothesline are marked **Hanging**.
+- **Files** show their name and path, struck through and marked "File no longer exists" if the file was deleted or moved.
+- Addresses and bank card numbers show what they are and whether they passed the checksum or format check; see "Address guard".
+
+Copying the same content again moves the existing item to the top instead of adding a duplicate. The list is grouped into **Today**, **Yesterday** and **Earlier** (search results are sorted by relevance instead).
+
+The categories at the top are **All**, **Text**, **Links**, **Images**, **Files**, **Colors** and **Favorites** (a star). Press `⇥` / `⇧⇥` to switch, or click one. If you reopen the panel within 30 seconds, it stays on the category you left it on; the search field always starts empty.
+
+### Hover actions
+
+Hover over a card to show a small toolbar at its top right, so you don't need the right-click menu: **Add to Favorites** (`⌘P`), **Preview** (`Space`) and **Delete** (`⌘⌫`). Images also have **Pin to Screen** (`⇧⌘P`) and, while the clothesline is on, **Hang on Clothesline** (`⌘L`). In the image grid (see below), the toolbar only has the image buttons and **Delete**.
+
+### Only images
+
+Press `⌃⇧V` in any app to open the panel straight on your images; press it again to close it. In the floating panel and the right-edge sidebar, the **Images** category is a two-column grid: `↑` `↓` move a row and `←` `→` move one image (while the search field is empty). When you open it with the shortcut, a short hint above the panel reminds you of the keys. Docked to the bottom edge, images stay in the shelf's single row. Typing searches images by the text in them, unless **Search text in images** is off.
+
+You can also choose **Only Images** from the menu bar icon's menu. Change or turn off the shortcut under **Only images** in `Settings › General`; if you already use `⌃⇧V` for another Cubby shortcut, it starts turned off.
 
 ### Search
 
 Just start typing when the panel is open. Matches are highlighted.
 
-- With several words, an item must contain all of them.
-- Besides the content itself, file paths and source app names are searched too.
+- With several words, an item must contain all of them. If that finds nothing, **Search Only "…"** searches for the first word alone.
+- Besides the content itself, file paths, source app names and the page titles of links are searched too.
+- While you search, the category bar shows how many items match in each category and hides the categories with no matches.
 - Images, screenshots included, can be found by the text in them. The text is recognized on your Mac and never uploaded; turn off **Search text in images** in `Settings › History` if you don't want this.
 - Items you translated can also be found by their translation.
 - Results are sorted by relevance: items containing your exact phrase come first; items that match only through text in an image come after text matches; items that match only through a translation come last.
@@ -116,6 +159,7 @@ Without Accessibility access, or with `Settings › General › When you choose 
 
 - `⌘O`: open a link (in your default browser), a file or an image.
 - `⇧⌘P`: pin the selected image in the middle of the screen as a floating window; see "Pinned images" under Screenshots. For other items it only beeps.
+- `⌘L`: hang the selected image on the clothesline, or take it down; see "Clothesline". It works while the clothesline is on; for other items it only beeps.
 - Drag a card into another app to drop its text, image or file there.
 
 ### The right-click menu
@@ -124,14 +168,14 @@ Right-click a card to see what you can do with it, with each shortcut shown on t
 
 - **Paste**, **Copy Only**, **Preview**, **Pick Words**, **Delete**, and **Favorite** or **Unfavorite**. **Pick Words** is dimmed for items without text to pick.
 - Rich text also offers **Paste as Plain Text** or **Paste with Original Formatting**.
-- Links, files and images have **Open**; images have **Pin to Screen**; files have **Show in Finder**.
+- Links, files and images have **Open**; images have **Pin to Screen** and, while the clothesline is on, **Hang on Clothesline** or **Take Down from Clothesline**; files have **Show in Finder**.
 - On macOS 26 there are also **Translate** and **Translate and Paste**, plus **Copy Translation** for items you've translated. Both are dimmed for items that can't be translated.
 
 ### esc and the shortcut help
 
 `esc` steps back one level at a time: close the shortcut help → cancel a translation in progress → close the translation card, the Pick Words card or the preview → clear the search → close the panel.
 
-Click the keyboard icon (**Keyboard Shortcuts**) at the right of the footer to see every shortcut and mouse action inside the panel; click an empty spot or press `esc` to close it. The list follows the current state: when Cubby can't paste directly, the `↩` row says **Copy**, and when translation is available, a few translation rows are added.
+Click the keyboard icon (**Keyboard Shortcuts**) at the right of the footer to see every shortcut and mouse action inside the panel; click its close button, click an empty spot or press `esc` to close it. The shortcuts are grouped into **Select & Paste**, **View & Organize**, **Images** (marked **New**: Only Images, the clothesline and Pin to Screen, with the shortcuts you set) and **Translation**. The list follows the current state: when Cubby can't paste directly, the `↩` row says **Copy**; global shortcuts you turned off, and the clothesline rows while the clothesline is off, are left out; and the **Translation** group only appears when translation is available. At the bottom, **Full user guide…** opens this guide.
 
 ### Pause recording
 
@@ -141,6 +185,77 @@ When you're about to copy something sensitive, pause recording: choose **Pause R
 - A "Recording paused" banner stays at the top of the panel; click **Resume** on it to start recording again.
 - Screenshots still work; they just aren't added to your history.
 - Text in new images isn't recognized, and **Save** on the translation card and **Translate text when you copy it** pause too.
+
+## Clothesline
+
+Hang images you'll need again on a line at the top of the screen, so they're always one move away.
+
+### Hang and take down
+
+The clothesline is on by default; turn it off with **Hang images at the top of the screen** in `Settings › General › Clothesline`.
+
+- In the panel, select an image and press `⌘L`, choose **Hang on Clothesline** from its right-click menu, or click the clothesline button in its hover toolbar. The line slides down for a moment to show the new photo.
+- Up to 12 photos hang at once; hanging another one takes down the leftmost.
+- To take a photo down, do the same again (**Take Down from Clothesline**), or hover over it on the line and click the **×** at its top left. **Take All Down** in Settings empties the line. Taking a photo down doesn't remove it from your history.
+- To hang every new screenshot automatically, turn on **Hang screenshots on the clothesline** in `Settings › Screenshots` (shown while the clothesline is on).
+
+### Show the line
+
+- Rest the pointer at the very top edge of the screen. After the delay set in **Slide down after the pointer rests at the top edge for** (0.3 to 1.2 seconds, 0.5 by default), the line slides down from under the menu bar, and it slides back up shortly after the pointer leaves it.
+- Press `⌃⌥T` or choose **Show Clothesline** from the menu bar icon's menu; press it again to hide the line. Change or turn off the shortcut under **Show / Hide** in `Settings › General › Clothesline`.
+- The line stays hidden while nothing hangs on it and in full-screen apps. The menu bar icon shows how many photos are hanging.
+
+### Use a photo
+
+Hover over a photo to see the hint "Click to edit | Double-click to copy | Drag to an app".
+
+- **Double-click** copies the image.
+- **Drag** it into another app to drop it there.
+- **Click** enlarges it and opens the screenshot tools on it, so you can annotate it as described in "Annotate"; Extract Text, Pin to Screen and Save work too. Enlarging doesn't need Screen Recording.
+  - `⌘C` or **Copy** copies the annotated image.
+  - `↩` or **Done & Hang Back** saves the result as a new history item that takes the photo's spot on the line. The original stays in your history. While recording is paused, nothing is saved.
+  - `esc` closes it without saving.
+
+Photos on the line aren't removed when your history is trimmed to its limit. Deleting an item or clearing the history also takes it off the line.
+
+## Address guard
+
+Some malware watches the clipboard and swaps an address you copied for its own. Cubby's address guard warns you when that happens. It's on by default; turn it off or choose what to guard in `Settings › Security`.
+
+### What's guarded
+
+Bitcoin, Ethereum and EVM chain, TRON, Solana and Litecoin addresses, and bank card numbers. Cubby recognizes them by their checksum or format, so ordinary text isn't mistaken for an address. In the panel these items show what they are and "checksum valid" or "valid format". The one you copied last is marked **Guarding**, other addresses with a valid checksum are marked **Verified**, and card numbers are marked **Bank card**. Bank card numbers are shown in full.
+
+### When an address is replaced
+
+Cubby steps in when the clipboard changes to a different value of the same kind shortly after you copied one (within 10 seconds with Input Monitoring, 1.5 seconds without it), while the same app stayed in front. With Input Monitoring, it also checks that you didn't press `⌘C` or `⌘X` yourself in between.
+
+A warning, "The address in your clipboard was replaced", then appears near the top of the screen. It compares **You copied** with **Now in your clipboard** character by character, with the differences in red, and doesn't take the focus away from the app you're using.
+
+- **Restore What I Copied:** puts your value back into the clipboard. If the clipboard has changed again since, nothing is restored.
+- **I Changed It Myself:** closes the warning, and the new value is treated as yours.
+- **View Security Log:** opens `Settings › Security`.
+
+Cubby never restores anything automatically. Until you choose, the menu bar icon shows a red **Address Replaced**; click it to see the warning again.
+
+### The replaced item in the panel
+
+The value that replaced yours stays in your history as a red record, "Unknown source · replaced the previous item", with the value struck through and the note "Not in ⌘1–⌘9 · can't be pasted or copied". It can't be pasted, copied or dragged in any way, not even through Pick Words, the translation card or Translate and Paste. You can still select it, preview it, favorite it and delete it. **Details** shows the warning again (after Cubby restarts, it opens `Settings › Security` instead). If you chose **I Changed It Myself**, it's a normal item.
+
+### Checks when you paste
+
+When you paste or copy an address or card number from Cubby, Cubby reads the clipboard again right before pasting. If it matches, a short note says "Pasted to “App”, matches what you copied" (or "Copied, matches what you copied"); turn this note off with **Show the check result after pasting an address** in `Settings › Security`. If the clipboard changed in between, Cubby doesn't paste and says "The clipboard changed before pasting, so Cubby didn't paste it".
+
+### Input Monitoring (optional)
+
+In `Settings › Security`, **Tell more accurately whether you copied it** has a **Grant Access** button for Input Monitoring (`System Settings › Privacy & Security › Input Monitoring`). With it, Cubby notices when you press `⌘C` or `⌘X`, so it can tell your own copies from replacements and watch for longer. It only notices those two shortcuts and never records what you type. Without it, very fast replacements may go unnoticed.
+
+### What the address guard never does
+
+- It never clears your clipboard, never intercepts `⌘V` and never changes how normal copy and paste work. If nothing is replaced, you won't notice it.
+- The security log stays on your Mac. It keeps 90 days of events (up to 500) with shortened values only.
+
+macOS doesn't tell apps who reads the clipboard. To keep other apps from reading it, set apps you don't recognize to **Ask** in `System Settings › Privacy & Security › Paste from Other Apps`; **Open System Settings** at the bottom of `Settings › Security` takes you there.
 
 ## Screenshots
 
@@ -437,12 +552,14 @@ System Translation and Ollama on your Mac are free. With a cloud language model,
 
 ## Settings
 
-Open Settings with **Settings…** in the menu bar icon's menu, the gear button in the panel, or `⌘,` while the panel is open.
+Open Settings with **Settings…** in the menu bar icon's menu, the gear button in the panel, or `⌘,` while the panel is open. Pick a page in the sidebar on the left: **General**, **History**, **Screenshots**, **Translation** (macOS 26), **Security**, **Privacy** and **About**. You can make the window taller or shorter, and long pages scroll.
 
 ### General
 
+- **Appearance:** **Match System** (the default), **Light** or **Dark**, shown as thumbnails. It applies to the panel, the preview, the clothesline and Settings.
 - **Language:** **Interface language** can be **System Default** (the default), **English** or **简体中文**. After you switch, click **Restart Now**; Cubby reopens and comes back to Settings. This only changes Cubby's own menus and text; automatic translation still translates into your system language. It's the same setting as Cubby's entry in `System Settings › General › Language & Region › Applications`, so you can change it in either place.
-- **Shortcut & Panel:** **Keyboard shortcut** (click it, then press a new combination that includes `⌘`, `⌥` or `⌃`; `F1` – `F12` also work on their own) and **Panel position** (**Next to the pointer**, **Below the menu bar icon** or **Center of the screen**).
+- **Shortcut & Panel:** **Keyboard shortcut** (click it, then press a new combination that includes `⌘`, `⌥` or `⌃`; `F1` – `F12` also work on their own), **Only images** (`⌃⇧V` by default, can be turned off) and **Panel position**, five thumbnails: **Next to the pointer**, **Below the menu bar icon**, **Center of the screen**, **Docked to the right edge** and **Docked to the bottom edge**.
+- **Clothesline:** **Hang images at the top of the screen** (on by default), **Show / Hide** (`⌃⌥T` by default, can be turned off), **Slide down after the pointer rests at the top edge for** (0.3 to 1.2 seconds), and **Photos on the line** with **Take All Down**. See "Clothesline".
 - **Pasting:** **When you choose an item** (**Paste into the current app** or **Copy to the clipboard only**) and **Paste text as** (**Original formatting** or **Plain text**; `⇧↩` uses the other one).
 - **Startup & Updates:** **Launch at login**, and **Check for updates automatically**, which reads the latest version number from GitHub once a day and never uploads any data. It's on if you left **Remind me about new versions** ticked on the welcome screen or chose **Remind Me** when Cubby asked; otherwise it's off. If you turned on the weekly check in an earlier version, it stays on and now checks daily.
 
@@ -457,10 +574,21 @@ Open Settings with **Settings…** in the menu bar icon's menu, the gear button 
 
 - **Shortcut:** **Screenshot shortcut**, which you can change or turn **Off** (then screenshots start only from the menu bar and the panel). The panel shortcut and the screenshot shortcut can't be the same.
 - **Saving:** **Save screenshots to**, **Same as macOS screenshots** by default, with **Choose Folder…** and **Reset**; and **Ask where to save each time**, on by default.
+- **After Capturing:** **Hang screenshots on the clothesline**, off by default. Only shown while the clothesline is on.
 
 ### Translation (macOS 26)
 
 This pane has **Translation Engine** (**System Translation** or **Large language model**), **Translate into**, the **Language packs** row for System Translation or **Provider**, **Base URL**, **API Key**, **Model** and **Test Connection** for a language model, and the **Clipboard** group at the bottom. See "Translation engines and settings".
+
+### Security
+
+- **Address guard:** the switch at the top, on by default, with a summary of the last 30 days: replacements found and pastes verified.
+- **Guarded Content:** Bitcoin, Ethereum & EVM chains, TRON, Solana, Litecoin and Bank card; click one to stop or start guarding it.
+- **Hints:** **Show the check result after pasting an address** (on by default), and **Tell more accurately whether you copied it** with the Input Monitoring status and **Grant Access**.
+- **Security Log:** the latest 20 events (replaced addresses, restores, "Changed by you" and matched pastes) with **Time**, **Event** and **App in Front**.
+- At the bottom, **Open System Settings** opens `Privacy & Security › Paste from Other Apps`.
+
+See "Address guard".
 
 ### Privacy
 
@@ -502,6 +630,7 @@ Your data stays on your Mac. Cubby only goes online to check for a new version, 
 
 - Your history lives in `~/Library/Application Support/Cubby`: `history.json` holds text, links, colors, rich-text formatting, file paths (not the files themselves), source apps, times, favorites, translations and text recognized in images; the `Images` folder holds images and translated images.
 - Only your macOS user can open this folder, and it's excluded from Time Machine backups. Cubby adds no encryption of its own; turn on FileVault to encrypt your disk.
+- The address guard's security log is `~/Library/Application Support/Cubby/security-log.json`. It holds shortened values only, for up to 90 days.
 - Settings are stored in `~/Library/Preferences/io.github.no1coder.Cubby.plist`, with no clipboard content and no API keys.
 - API keys are stored in your login Keychain under `io.github.no1coder.Cubby.translation`, never in settings, history or logs.
 - The frozen screen image of a screenshot exists only in memory, and canceling leaves no trace. Pinned images disappear when Cubby quits.
@@ -577,6 +706,10 @@ System Translation needs a language pack the first time you use a language. Clic
 
 When Cubby reads your saved API key, macOS may ask whether Cubby may use the Keychain item, typically after building from source or switching to a version with a different signature. Choose **Allow** or **Always Allow**. If you denied it, Settings shows "Couldn't access the Keychain, so the saved API key can't be used."; click **Try Again** to try once more.
 
+### Cubby says an address was replaced
+
+The clipboard changed to another address or card number of the same kind right after you copied one, while the same app stayed in front. Compare the two values in the warning. If you didn't make the change, click **Restore What I Copied** and check your Mac for software you don't recognize; if you did (for example, you copied a second address in the same app quickly), click **I Changed It Myself**. Allowing Input Monitoring in `Settings › Security` lets Cubby tell your own copies apart. See "Address guard".
+
 ### The panel doesn't appear
 
 - Check that the Cubby icon is in the menu bar; Cubby has no Dock icon. Clicking the icon opens the panel too.
@@ -594,7 +727,9 @@ All shortcuts, grouped by where you use them; the ones marked macOS 26 need macO
 ### Panel
 
 - `⇧⌘V` — open / close the panel (global, can be changed)
+- `⌃⇧V` — only images (global, can be changed or turned off)
 - `↑` `↓` or `⌃P` `⌃N` — choose an item
+- `←` `→` — choose an item in the image grid or the bottom shelf (while the search field is empty)
 - `⌥↑` `⌥↓` or `Home` `End` — first / last item
 - `Page Up` `Page Down` — up / down 5 items
 - `↩` or double-click — paste
@@ -605,6 +740,8 @@ All shortcuts, grouped by where you use them; the ones marked macOS 26 need macO
 - `⇥` / `⇧⇥` — next / previous category
 - `⌘P` — favorite / unfavorite
 - `⇧⌘P` — pin the image to the screen
+- `⌘L` — hang the image on the clothesline / take it down
+- `⌘B` — pick words
 - `⌘⌫` — delete
 - `⌘Z` — undo delete
 - `⌘O` — open a link or file
@@ -613,6 +750,17 @@ All shortcuts, grouped by where you use them; the ones marked macOS 26 need macO
 - `⌥↩` — translate and paste (macOS 26)
 - Hold `⌥` — preview the translation (macOS 26)
 - `esc` — close, one step at a time
+
+### Clothesline
+
+- `⌃⌥T` — show / hide the clothesline (global, can be changed or turned off)
+- Rest the pointer at the top edge — show the clothesline
+- Double-click a photo — copy
+- Drag a photo — drop it into another app
+- Click a photo — enlarge and annotate
+- `↩` — Done & Hang Back (while enlarged)
+- `⌘C` — copy the annotated image (while enlarged)
+- `esc` — close without saving (while enlarged)
 
 ### Translation card
 

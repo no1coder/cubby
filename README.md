@@ -45,12 +45,13 @@ Cubby sits in your menu bar and remembers what you copy: text, links, colors, im
 **Find**
 
 - A global shortcut (<kbd>⇧⌘V</kbd> by default, or record your own) opens a card panel, with Liquid Glass on macOS 26.
-- Cards look like their content: a color card shows the color, code is monospaced, images show a thumbnail.
-- Just start typing to search. Matches are highlighted, every word must match, and file paths and source app names are searchable too. The best matches come first, starting with items that contain your exact phrase.
+- Cards look like their content: links show the page title, code shows its language with syntax colors, a color card shows the color with its HEX and rgb() values, and images show the whole picture. The list is grouped into Today, Yesterday and Earlier.
+- Just start typing to search. Matches are highlighted, every word must match, and file paths and source app names are searchable too. The best matches come first, starting with items that contain your exact phrase, and each category shows how many items match.
 - Find images, screenshots included, by the text in them. The text is recognized on your Mac and never uploaded, and you can turn this off in Settings › History.
 - Filter by Text, Links, Images, Files, Colors or Favorites with <kbd>⇥</kbd>.
 - <kbd>Space</kbd> or <kbd>⌘Y</kbd> opens a side preview with the full content.
-- The panel opens next to the pointer, under the menu bar icon, or in the center of the screen.
+- <kbd>⌃⇧V</kbd> opens only your images, in a two-column grid.
+- The panel floats next to the pointer, under the menu bar icon or in the center of the screen, or docks to the right edge as a sidebar or to the bottom edge as a shelf of cards. Choose Light, Dark or Match System appearance.
 
 **Paste**
 
@@ -66,7 +67,7 @@ Cubby sits in your menu bar and remembers what you copy: text, links, colors, im
 - Windows are detected as you hover. Where windows overlap, <kbd>⇥</kbd> or the scroll wheel steps through them one layer at a time, so even a mostly hidden window is one click away. Press <kbd>Space</kbd> for a clean capture of just that window, unobstructed, with its rounded corners and shadow.
 - Annotate with rectangles, ellipses, arrows, a pen, a highlighter, mosaic, text and numbered steps. Annotations stay editable until you finish: select one to move it, change its color or delete it.
 - Pin a screenshot to the screen as a floating window, save it as a PNG, or extract its text with on-device Vision OCR. Nothing goes online.
-- Pin any image from your history to the screen the same way with <kbd>⇧⌘P</kbd>.
+- Pin any image from your history to the screen the same way with <kbd>⇧⌘P</kbd>, or hang up to 12 on a clothesline at the top of the screen with <kbd>⌘L</kbd>. Rest the pointer at the top edge to slide it down, then double-click a photo to copy it, drag it into an app, or click it to annotate.
 - On macOS 26, translate the text in a screenshot in place with <kbd>⇧⌘T</kbd>, using Apple's on-device translation (the default) or an OpenAI-compatible model such as DeepSeek, Qwen, Kimi or a local Ollama. See [Screenshot translation](#screenshot-translation).
 - A pixel magnifier shows the color under the pointer; press <kbd>C</kbd> to copy it.
 
@@ -75,6 +76,7 @@ Cubby sits in your menu bar and remembers what you copy: text, links, colors, im
 - History is stored only on your Mac and is excluded from Time Machine.
 - Skips content that password managers mark as concealed or transient, apps in your **Ignored Apps** list, and, by default, text that looks like an API key, private key or JWT.
 - Pause recording at any time from the menu bar; the panel shows a banner until you resume.
+- The address guard warns you when a crypto address or bank card number you copied is swapped for another one, shows the difference character by character, and won't paste the replaced value. It never clears your clipboard or intercepts <kbd>⌘V</kbd>.
 - No network access except a daily update check, which only reads the latest version number from GitHub (ticked by default on the welcome screen, and you can turn it off), and translating with a model you set up. No analytics, no telemetry. See [Privacy](#privacy).
 
 **Native**
@@ -127,11 +129,11 @@ Requires Xcode 26. See [CONTRIBUTING.md](CONTRIBUTING.md) for signing options: w
 
 ## User guide
 
-The [user guide](docs/USER-GUIDE.md) walks through every feature step by step. In the app, choose **User Guide…** from the menu bar icon's menu (it's also in Settings › About and at the bottom of the panel's shortcut help).
+The [user guide](docs/USER-GUIDE.md) walks through every feature step by step. In the app, choose **User Guide** from the menu bar icon's menu (it's also in Settings › About and at the bottom of the panel's shortcut help).
 
 ## First launch and permissions
 
-On first launch Cubby opens a short guide where you set the panel shortcut, allow two permissions (their status updates live) and see how screenshots work. You can reopen it any time with **Setup Guide…** in the menu bar icon's right-click menu. A third permission, Screen Recording, is only needed for screenshots, so the guide doesn't ask for it: Cubby asks the first time you take a screenshot.
+On first launch Cubby opens a four-step guide where you allow two permissions (their status updates live), choose where the panel appears and its appearance, and set the panel and screenshot shortcuts. You can reopen it any time with **Setup Guide…** in the menu bar icon's right-click menu. A third permission, Screen Recording, is only needed for screenshots, so the guide doesn't ask for it: Cubby asks the first time you take a screenshot.
 
 **Clipboard access on macOS 15.4 and later.** Click **Grant Access** in the guide (or in Settings › Privacy) and macOS asks right away; choose **Allow Paste**. If nothing happens, copy something first and click again. The prompt has no "always allow" choice, so macOS would keep asking every time you copy: set Cubby to **Allow** in System Settings › Privacy & Security › Paste from Other Apps (called Paste before macOS 26). Once macOS has asked, the button changes to **Open System Settings** and takes you there.
 
@@ -143,17 +145,20 @@ On first launch Cubby opens a short guide where you set the panel shortcut, allo
 
 After you turn on Screen Recording, macOS may ask you to quit and reopen Cubby before screenshots work; the **Quit & Reopen Cubby** button in Cubby's Screen Recording window does both. Settings › Privacy shows the status of all three permissions.
 
-Click the menu bar icon to open the panel; right-click (or Control-click) it for screenshots, pause, clear history, settings and quit.
+Click the menu bar icon to open the panel; right-click (or Control-click) it for Only Images, screenshots, the clothesline, panel position, appearance, pause, clear history, settings and quit.
 
 ## Keyboard shortcuts
 
 | Key | Action |
 | --- | --- |
 | <kbd>⇧⌘V</kbd> | Open or close the panel (global, customizable in Settings › General) |
+| <kbd>⌃⇧V</kbd> | Open the panel on your images only (global, customizable or off in Settings › General) |
+| <kbd>⌃⌥T</kbd> | Show or hide the clothesline (global, customizable or off in Settings › General) |
 | Type anything | Search |
 | <kbd>↑</kbd> <kbd>↓</kbd> or <kbd>⌃P</kbd> <kbd>⌃N</kbd> | Move the selection |
 | <kbd>⌥↑</kbd> <kbd>⌥↓</kbd> or <kbd>Home</kbd> <kbd>End</kbd> | Jump to the first / last item |
 | <kbd>Page Up</kbd> <kbd>Page Down</kbd> | Move up / down 5 items |
+| <kbd>←</kbd> <kbd>→</kbd> | Move the selection in the image grid or the bottom shelf |
 | <kbd>↩</kbd> or double-click | Paste into the current app |
 | <kbd>⇧↩</kbd> | Paste in the other format (original ↔ plain text) |
 | <kbd>⌘↩</kbd> | Copy only, don't paste |
@@ -164,6 +169,7 @@ Click the menu bar icon to open the panel; right-click (or Control-click) it for
 | <kbd>⇥</kbd> / <kbd>⇧⇥</kbd> | Next / previous category |
 | <kbd>⌘P</kbd> | Favorite / unfavorite |
 | <kbd>⇧⌘P</kbd> | Pin the selected image to the screen |
+| <kbd>⌘L</kbd> | Hang the selected image on the clothesline, or take it down |
 | <kbd>⌘⌫</kbd> | Delete |
 | <kbd>⌘Z</kbd> | Undo delete |
 | <kbd>⌘O</kbd> | Open the link or file |
@@ -242,7 +248,8 @@ Your API key is stored in the macOS login Keychain, one entry per provider. It n
 
 - **Local only.** History lives in `~/Library/Application Support/Cubby`: the folder is readable only by you (0700), files are 0600, and the folder is excluded from Time Machine.
 - **Skips sensitive content.** Items marked concealed or transient (as password managers do), apps in your Ignored Apps list (Settings › Privacy), and, unless you turn it off, text that looks like an API key, private key or JWT.
-- **Pastes where you expect.** Cubby checks that the target app is still frontmost before sending <kbd>⌘V</kbd>.
+- **Pastes where you expect.** Cubby checks that the target app is still frontmost before sending <kbd>⌘V</kbd>, and that an address it's about to paste is still the one in your clipboard.
+- **Address guard stays local.** It only notices <kbd>⌘C</kbd> and <kbd>⌘X</kbd> if you allow Input Monitoring, never what you type, and its security log stays on your Mac with shortened values only.
 - **Screenshots stay on your Mac.** The screen is captured only when you take a screenshot. While you select and annotate, the image stays in memory, and canceling leaves nothing behind. Text is recognized on your Mac with Apple's Vision framework.
 - **Image text stays local.** To make images searchable, text in them is recognized on your Mac and kept only in your history file. Turning off Settings › History › Search text in images deletes it.
 - **Online only for updates and the translation service you set up.** The automatic update check (once a day, ticked by default on the welcome screen, and you can turn it off in Settings › General) and **Check for Updates** only read the latest version number from `api.github.com/repos/no1coder/cubby/releases/latest` and upload nothing. Screenshot translation with a large language model sends the text recognized in the selection, and nothing else, to the service you set up; translating a clipboard item with it sends that item's text. System Translation, and translating when you copy, stay on your Mac.
