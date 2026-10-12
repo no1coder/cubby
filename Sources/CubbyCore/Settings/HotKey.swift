@@ -14,6 +14,20 @@ public struct HotKey: Codable, Equatable, Sendable {
         keyLabel: "V"
     )
 
+    /// 「只看图片」默认快捷键 ⌃⇧V：与面板 ⇧⌘V 同一个 V 键，换成 ⌃ 表示「另一种打开方式」，几乎不与应用冲突
+    public static let imagesDefault = HotKey(
+        keyCode: UInt32(kVK_ANSI_V),
+        modifiers: UInt32(controlKey | shiftKey),
+        keyLabel: "V"
+    )
+
+    /// 晾衣绳默认快捷键 ⌃⌥T（Tendedero 的习惯键位：T = line）
+    public static let clotheslineDefault = HotKey(
+        keyCode: UInt32(kVK_ANSI_T),
+        modifiers: UInt32(controlKey | optionKey),
+        keyLabel: "T"
+    )
+
     /// 截图默认快捷键 ⇧⌘2：与系统 ⇧⌘3/4/5 同族，且未被 macOS 保留
     public static let screenshotDefault = HotKey(
         keyCode: UInt32(kVK_ANSI_2),
@@ -88,18 +102,58 @@ public struct HotKey: Codable, Equatable, Sendable {
     }
 }
 
-/// 面板出现的位置
+/// 面板出现的位置：三种浮动位置 + 两种停靠（Paste 风格：右侧整高侧栏、底部整宽横条）
 public enum PanelPosition: String, CaseIterable, Sendable {
     case mouse
     case statusItem
     case center
+    case dockRight
+    case dockBottom
 
     public var displayName: String {
         switch self {
         case .mouse: String(localized: "Next to the pointer", comment: "Panel position option")
         case .statusItem: String(localized: "Below the menu bar icon", comment: "Panel position option")
         case .center: String(localized: "Center of the screen", comment: "Panel position option")
+        case .dockRight: String(localized: "Docked to the right edge", comment: "Panel position option")
+        case .dockBottom: String(localized: "Docked to the bottom edge", comment: "Panel position option")
         }
+    }
+
+    /// 面板的排布形态
+    public var layout: PanelLayout {
+        switch self {
+        case .mouse, .statusItem, .center: .floating
+        case .dockRight: .sidebar
+        case .dockBottom: .shelf
+        }
+    }
+
+    /// 面板顶栏「布局」按钮的循环顺序：浮动（保留用户选过的浮动位置）→ 右侧 → 底部 → 浮动
+    public func cycledLayout(floatingFallback: PanelPosition) -> PanelPosition {
+        switch layout {
+        case .floating: .dockRight
+        case .sidebar: .dockBottom
+        case .shelf: floatingFallback.layout == .floating ? floatingFallback : .mouse
+        }
+    }
+}
+
+/// 面板的排布形态：浮动卡片面板、右侧整高侧栏（竖向列表）、底部整宽横条（横向卡片）
+public enum PanelLayout: Sendable, CaseIterable {
+    case floating
+    case sidebar
+    case shelf
+
+    /// 卡片是否横向排列（底部横条）。图片网格里 ← / → 同样移动选中项：
+    /// 调用 PanelCommand.from 时传 `isHorizontal || 正在显示图片网格`
+    public var isHorizontal: Bool {
+        self == .shelf
+    }
+
+    /// 「图片」分类以网格显示时的列数（横条本身就是一排方卡，不分列）
+    public var imageGridColumns: Int {
+        self == .shelf ? 1 : 2
     }
 }
 

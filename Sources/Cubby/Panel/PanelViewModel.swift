@@ -148,7 +148,8 @@ final class PanelViewModel {
     @discardableResult
     func handle(_ command: PanelCommand) -> Bool {
         switch command {
-        case .moveUp, .moveDown, .moveToFirst, .moveToLast, .pageUp, .pageDown: moveSelection(command)
+        case .moveUp, .moveDown, .moveLeft, .moveRight, .moveToFirst, .moveToLast, .pageUp, .pageDown:
+            moveSelection(command)
         case .paste, .pasteAlternate, .copyOnly: pasteSelected(command)
         case .pasteAt(let index): paste(at: index)
         case .escape: escape()

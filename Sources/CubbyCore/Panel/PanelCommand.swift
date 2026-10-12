@@ -5,6 +5,9 @@ import Carbon.HIToolbox
 public enum PanelCommand: Equatable, Sendable {
     case moveUp
     case moveDown
+    /// 横条与图片网格里的 ← / →（搜索框为空时），始终只移动一格
+    case moveLeft
+    case moveRight
     /// Home / ⌥↑ 跳到首条
     case moveToFirst
     /// End / ⌥↓ 跳到末条
@@ -66,13 +69,15 @@ public enum PanelCommand: Equatable, Sendable {
     ///     （否则这些键用于输入、移动光标与搜索框的全选）
     ///   - translationCardOpen: 翻译卡打开时 ⌘C / ⌘S 归卡片，← / → 切换视图
     ///   - textPickOpen: 拆词卡打开时 ⌘C / ⌘A 归卡片
+    ///   - arrowsMoveHorizontally: 卡片横向排列（底部横条、图片网格）：搜索框为空时 ← / → 移动选中项
     public static func from(
         keyCode: UInt16,
         modifiers: NSEvent.ModifierFlags,
         characters: String?,
         allowsSpace: Bool = false,
         translationCardOpen: Bool = false,
-        textPickOpen: Bool = false
+        textPickOpen: Bool = false,
+        arrowsMoveHorizontally: Bool = false
     ) -> PanelCommand? {
         let flags = modifiers.intersection([.command, .option, .control, .shift])
         let code = Int(keyCode)
@@ -82,6 +87,10 @@ public enum PanelCommand: Equatable, Sendable {
         }
         if translationCardOpen, allowsSpace, let step = translationArrowStep(code: code, flags: flags) {
             return .stepTranslationView(step)
+        }
+        if arrowsMoveHorizontally, allowsSpace, flags.isEmpty {
+            if code == kVK_LeftArrow { return .moveLeft }
+            if code == kVK_RightArrow { return .moveRight }
         }
         if flags == .command, let index = digitKeyCodes.firstIndex(of: code) {
             return .pasteAt(index)
@@ -203,21 +212,26 @@ public extension PanelCommand {
     static let pageSize = 5
 
     /// 选择移动类指令从 current 出发的目标序号，结果夹在 0..<count 内；
-    /// 非移动类指令或列表为空时返回 nil
-    func selectionIndex(from current: Int, count: Int) -> Int? {
+    /// 非移动类指令或列表为空时返回 nil。
+    /// - Parameter columns: 网格的列数：↑ / ↓ 移动一整行，翻页移动 pageSize 行；← / → 总是移动一格
+    func selectionIndex(from current: Int, count: Int, columns: Int = 1) -> Int? {
         guard count > 0 else { return nil }
         let last = count - 1
         let start = min(max(current, 0), last)
+        let row = max(columns, 1)
         let target: Int
         switch self {
-        case .moveUp: target = start - 1
-        case .moveDown: target = start + 1
-        case .pageUp: target = start - Self.pageSize
-        case .pageDown: target = start + Self.pageSize
+        case .moveUp: target = start - row
+        case .moveDown: target = start + row
+        case .moveLeft: target = start - 1
+        case .moveRight: target = start + 1
+        case .pageUp: target = start - Self.pageSize * row
+        case .pageDown: target = start + Self.pageSize * row
         case .moveToFirst: target = 0
         case .moveToLast: target = last
         default: return nil
         }
+        // 网格里最后一行不满时，↓ 落到最后一格（与访达图标视图一致），而不是原地不动
         return min(max(target, 0), last)
     }
 }

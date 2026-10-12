@@ -395,6 +395,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         switch action {
         case .togglePanel: settings.hotKey = fallback
         case .screenshot: settings.screenshotHotKey = fallback
+        case .images: settings.imagesHotKey = fallback
+        case .clothesline: settings.clotheslineHotKey = fallback
         }
     }
 
@@ -424,6 +426,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         switch action {
         case .togglePanel: settings.hotKey
         case .screenshot: settings.screenshotHotKey
+        case .images: settings.imagesHotKey
+        case .clothesline: settings.clotheslineHotKey
         }
     }
 

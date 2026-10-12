@@ -47,6 +47,10 @@ enum PanelMetrics {
 extension PanelMetrics {
     /// 来源应用图标边长（卡片与预览头部一致）
     static let sourceIconSize: CGFloat = 20
+    /// 固定右侧侧栏的宽度（高度为可见区域高度减去上下留白）
+    static let sidebarWidth: CGFloat = 400
+    /// 固定底部横条的高度（宽度为可见区域宽度减去左右留白）
+    static let shelfHeight: CGFloat = 304
 }
 
 /// 预览面板布局常量

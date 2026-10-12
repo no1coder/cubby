@@ -4,6 +4,10 @@ import Foundation
 public enum HotKeyAction: UInt32, CaseIterable, Sendable {
     case togglePanel = 1
     case screenshot = 2
+    /// 直接打开面板的「图片」网格
+    case images = 3
+    /// 显示 / 收起屏幕顶部的晾衣绳
+    case clothesline = 4
 }
 
 /// 全局快捷键登记表（纯值，不调用 Carbon）：哪些动作登记了哪个快捷键、暂停了几层，

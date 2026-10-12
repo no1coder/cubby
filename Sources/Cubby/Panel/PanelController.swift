@@ -193,6 +193,9 @@ final class PanelController {
 
     private func targetFrame(for trigger: Trigger) -> CGRect? {
         let size = Self.panelSize
+        if let frame = dockedFrame(for: trigger) {
+            return frame
+        }
         switch (trigger, settings.panelPosition) {
         case (.statusItem(let anchor), _):
             return screen(containing: anchor.origin).map {
@@ -208,6 +211,27 @@ final class PanelController {
             return screen(containing: mouse).map { PanelPlacement.centered(size: size, in: $0.visibleFrame) }
         case (.hotKey, .mouse):
             return mouseFrame(size)
+        case (.hotKey, .dockRight), (.hotKey, .dockBottom):
+            return nil  // 已由 dockedFrame 处理
+        }
+    }
+
+    /// 停靠排布：快捷键呼出时停在指针所在屏幕，点击菜单栏图标时停在图标所在屏幕；浮动排布返回 nil
+    private func dockedFrame(for trigger: Trigger) -> CGRect? {
+        let edge: PanelPlacement.DockEdge
+        let size: CGSize
+        switch settings.panelPosition.layout {
+        case .floating: return nil
+        case .sidebar: (edge, size) = (.right, CGSize(width: PanelMetrics.sidebarWidth, height: Self.panelSize.height))
+        case .shelf: (edge, size) = (.bottom, CGSize(width: Self.panelSize.width, height: PanelMetrics.shelfHeight))
+        }
+        let point =
+            switch trigger {
+            case .hotKey: NSEvent.mouseLocation
+            case .statusItem(let anchor): anchor.origin
+            }
+        return screen(containing: point).map {
+            PanelPlacement.docked(edge, size: size, visibleFrame: $0.visibleFrame)
         }
     }
 

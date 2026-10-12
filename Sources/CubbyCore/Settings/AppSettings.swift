@@ -51,15 +51,58 @@ public final class AppSettings {
         static let translatesClipsOnCopy = "translatesClipsOnCopy"
         static let showsTranslationOnCards = "showsTranslationOnCards"
         static let clipTranslationTargets = "clipTranslationTargetsByApp"
+        static let imagesHotKey = "imagesHotKey"
+        static let imagesHotKeyDisabled = "imagesHotKeyDisabled"
+        static let clotheslineEnabled = "clotheslineEnabled"
+        static let clotheslineHotKey = "clotheslineHotKey"
+        static let clotheslineHotKeyDisabled = "clotheslineHotKeyDisabled"
+        static let clotheslineItems = "clotheslineItems"
+        static let floatingPanelPosition = "floatingPanelPosition"
     }
 
     public var hotKey: HotKey {
         didSet { defaults.set(try? JSONEncoder().encode(hotKey), forKey: Keys.hotKey) }
     }
 
-    /// 通过快捷键呼出时面板出现的位置
+    /// 通过快捷键呼出时面板出现的位置（含两种停靠排布）
     public var panelPosition: PanelPosition {
-        didSet { defaults.set(panelPosition.rawValue, forKey: Keys.panelPosition) }
+        didSet {
+            defaults.set(panelPosition.rawValue, forKey: Keys.panelPosition)
+            if panelPosition.layout == .floating, floatingPanelPosition != panelPosition {
+                floatingPanelPosition = panelPosition
+            }
+        }
+    }
+
+    /// 最近一次选择的浮动位置：从停靠排布切回浮动时回到它，而不是一律回到「鼠标旁」
+    public private(set) var floatingPanelPosition: PanelPosition {
+        didSet { defaults.set(floatingPanelPosition.rawValue, forKey: Keys.floatingPanelPosition) }
+    }
+
+    /// 「只看图片」全局快捷键：直接打开面板的图片网格；nil 表示已关闭。从未设置过时为 ⌃⇧V
+    public var imagesHotKey: HotKey? {
+        didSet {
+            Self.store(imagesHotKey, key: Keys.imagesHotKey, disabledKey: Keys.imagesHotKeyDisabled, in: defaults)
+        }
+    }
+
+    /// 晾衣绳：把图片挂在屏幕顶部的一根绳子上，指针停在屏幕顶边时滑下（默认开启；绳上没有图片时不出现）
+    public var clotheslineEnabled: Bool {
+        didSet { defaults.set(clotheslineEnabled, forKey: Keys.clotheslineEnabled) }
+    }
+
+    /// 显示 / 收起晾衣绳的全局快捷键；nil 表示已关闭。从未设置过时为 ⌃⌥T
+    public var clotheslineHotKey: HotKey? {
+        didSet {
+            Self.store(
+                clotheslineHotKey, key: Keys.clotheslineHotKey, disabledKey: Keys.clotheslineHotKeyDisabled,
+                in: defaults)
+        }
+    }
+
+    /// 晾衣绳上挂着的条目（从左到右）；读写容错，损坏或重复的 id 被丢弃
+    public var clothesline: Clothesline {
+        didSet { defaults.set(clothesline.itemIDs.map(\.uuidString), forKey: Keys.clotheslineItems) }
     }
 
     /// 回车粘贴文本时的默认格式；⇧↩ 使用另一种
@@ -228,7 +271,20 @@ public final class AppSettings {
         hotKey =
             defaults.data(forKey: Keys.hotKey)
             .flatMap { try? JSONDecoder().decode(HotKey.self, from: $0) } ?? .default
-        panelPosition = defaults.string(forKey: Keys.panelPosition).flatMap(PanelPosition.init(rawValue:)) ?? .mouse
+        let position = defaults.string(forKey: Keys.panelPosition).flatMap(PanelPosition.init(rawValue:)) ?? .mouse
+        panelPosition = position
+        let storedFloating = defaults.string(forKey: Keys.floatingPanelPosition).flatMap(PanelPosition.init(rawValue:))
+        // 当前就是浮动位置时以它为准（与 didSet 的规则一致）；旧版本改过位置而没写这个键时也不会读到过期值
+        floatingPanelPosition =
+            [position, storedFloating].compactMap { $0 }.first { $0.layout == .floating } ?? .mouse
+        imagesHotKey = Self.storedHotKey(
+            Keys.imagesHotKey, disabledKey: Keys.imagesHotKeyDisabled, default: .imagesDefault, in: defaults)
+        clotheslineEnabled = defaults.object(forKey: Keys.clotheslineEnabled) as? Bool ?? true
+        clotheslineHotKey = Self.storedHotKey(
+            Keys.clotheslineHotKey, disabledKey: Keys.clotheslineHotKeyDisabled, default: .clotheslineDefault,
+            in: defaults)
+        clothesline = Clothesline(
+            itemIDs: (defaults.stringArray(forKey: Keys.clotheslineItems) ?? []).compactMap(UUID.init(uuidString:)))
         pasteFormat = defaults.string(forKey: Keys.pasteFormat).flatMap(PasteFormat.init(rawValue:)) ?? .original
         hasCompletedOnboarding = defaults.bool(forKey: Keys.hasCompletedOnboarding)
         ignoresSecrets = defaults.object(forKey: Keys.ignoresSecrets) as? Bool ?? true
@@ -280,9 +336,28 @@ public final class AppSettings {
 
     /// 禁用标志优先；否则解码已存储的快捷键，缺失或损坏时回退默认值
     private static func storedScreenshotHotKey(in defaults: UserDefaults) -> HotKey? {
-        guard !defaults.bool(forKey: Keys.screenshotHotKeyDisabled) else { return nil }
-        return defaults.data(forKey: Keys.screenshotHotKey)
-            .flatMap { try? JSONDecoder().decode(HotKey.self, from: $0) } ?? .screenshotDefault
+        storedHotKey(
+            Keys.screenshotHotKey, disabledKey: Keys.screenshotHotKeyDisabled, default: .screenshotDefault,
+            in: defaults)
+    }
+
+    /// 可关闭的快捷键：禁用标志优先；否则解码已存储的快捷键，缺失或损坏时回退默认值
+    private static func storedHotKey(
+        _ key: String, disabledKey: String, default fallback: HotKey, in defaults: UserDefaults
+    ) -> HotKey? {
+        guard !defaults.bool(forKey: disabledKey) else { return nil }
+        return defaults.data(forKey: key).flatMap { try? JSONDecoder().decode(HotKey.self, from: $0) } ?? fallback
+    }
+
+    /// 写入可关闭的快捷键：nil 时移除快捷键并记下「用户主动关闭」，与「从未设置（用默认值）」区分
+    private static func store(_ hotKey: HotKey?, key: String, disabledKey: String, in defaults: UserDefaults) {
+        if let hotKey {
+            defaults.set(try? JSONEncoder().encode(hotKey), forKey: key)
+            defaults.removeObject(forKey: disabledKey)
+        } else {
+            defaults.removeObject(forKey: key)
+            defaults.set(true, forKey: disabledKey)
+        }
     }
 
     /// 只接受绝对路径；空串、相对路径（含未展开的 ~）或类型不对时视为未设置

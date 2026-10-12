@@ -84,6 +84,27 @@ struct HotKeyRegistryTests {
         #expect(!original.isSuspended)
     }
 
+    @Test("「只看图片」与晾衣绳的 id 固定为 3、4（已注册的热键 id 不能变）")
+    func newActionIDs() {
+        #expect(HotKeyAction.allCases == [.togglePanel, .screenshot, .images, .clothesline])
+        #expect(HotKeyAction.images.rawValue == 3)
+        #expect(HotKeyAction.clothesline.rawValue == 4)
+    }
+
+    @Test("四个动作各自登记，按 rawValue 顺序待注册；暂停期间都不注册")
+    func allActions() {
+        let registry = HotKeyRegistry()
+            .registering(.clotheslineDefault, for: .clothesline)
+            .registering(.imagesDefault, for: .images)
+            .registering(screenshot, for: .screenshot)
+            .registering(panel, for: .togglePanel)
+        #expect(registry.activeActions == [.togglePanel, .screenshot, .images, .clothesline])
+        #expect(registry.hotKey(for: .images) == .imagesDefault)
+        #expect(registry.hotKey(for: .clothesline) == .clotheslineDefault)
+        #expect(registry.suspended().activeActions.isEmpty)
+        #expect(registry.removing(.images).activeActions == [.togglePanel, .screenshot, .clothesline])
+    }
+
     @Test("热键 id 与动作互相映射；签名不符或未知 id 返回 nil")
     func idMapping() {
         for action in HotKeyAction.allCases {

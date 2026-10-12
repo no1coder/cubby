@@ -2551,6 +2551,28 @@
         }
       }
     },
+    "Docked to the bottom edge" : {
+      "comment" : "Panel position option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "固定底部"
+          }
+        }
+      }
+    },
+    "Docked to the right edge" : {
+      "comment" : "Panel position option",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "固定右侧"
+          }
+        }
+      }
+    },
     "Don't record likely secrets and tokens" : {
       "localizations" : {
         "zh-Hans" : {

@@ -21,7 +21,8 @@ struct GeneralSettingsPane: View {
                     )
                 }
                 Picker("Panel position", selection: $settings.panelPosition) {
-                    ForEach(PanelPosition.allCases, id: \.self) { position in
+                    // 停靠排布的视图（侧栏、横条）完成前只列浮动位置（docs/UI-UPGRADE-PLAN.md 第 3 节）
+                    ForEach(PanelPosition.allCases.filter { $0.layout == .floating }, id: \.self) { position in
                         Text(position.displayName).tag(position)
                     }
                 }

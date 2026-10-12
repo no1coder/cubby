@@ -148,8 +148,8 @@ struct HotKeyTests {
 struct SettingsOptionTests {
     @Test("PanelPosition 选项与显示名")
     func panelPositions() {
-        #expect(PanelPosition.allCases == [.mouse, .statusItem, .center])
-        #expect(Set(PanelPosition.allCases.map(\.displayName)).count == 3)
+        #expect(PanelPosition.allCases == [.mouse, .statusItem, .center, .dockRight, .dockBottom])
+        #expect(Set(PanelPosition.allCases.map(\.displayName)).count == 5)
         #expect(PanelPosition(rawValue: "statusItem") == .statusItem)
     }
 
