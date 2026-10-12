@@ -10,6 +10,8 @@ public struct ClipSearchIndex: Sendable {
         let contentHash: String
         let kind: ClipKind
         let sourceName: String?
+        /// 链接的网页标题：同一链接（contentHash 相同）再次复制时可能换了标题
+        let linkTitle: String?
         let recognizedText: String?
         /// 折叠时的译文缓存：与条目共享存储，比较通常只需比较引用
         let translations: ClipTranslations?
@@ -18,13 +20,14 @@ public struct ClipSearchIndex: Sendable {
         let content: FoldedText?
         let imageText: FoldedText?
         let translation: FoldedText?
-        /// 来源应用名、图片类型名
+        /// 来源应用名、网页标题、图片类型名
         let metadata: [FoldedText]
 
         init(_ item: ClipItem, locale: Locale) {
             contentHash = item.contentHash
             kind = item.kind
             sourceName = item.source?.name
+            linkTitle = item.linkTitle
             recognizedText = item.recognizedText
             translations = item.translations
             let rawContent = Self.rawContent(of: item)
@@ -32,7 +35,9 @@ public struct ClipSearchIndex: Sendable {
             let translation = item.translationSearchText
             requiresExactMatch =
                 (rawContent.map(SearchFolding.requiresExactMatch) ?? false)
-                || [sourceName, imageText, translation].contains { $0.map(SearchFolding.requiresExactMatch) ?? false }
+                || [sourceName, linkTitle, imageText, translation].contains {
+                    $0.map(SearchFolding.requiresExactMatch) ?? false
+                }
             guard !requiresExactMatch else {
                 content = nil
                 self.imageText = nil
@@ -44,13 +49,14 @@ public struct ClipSearchIndex: Sendable {
             self.imageText = imageText.map { FoldedText($0, locale: locale) }
             self.translation = translation.map { FoldedText($0, locale: locale) }
             let kindName = item.kind == .image ? item.kind.displayName : nil
-            metadata = [sourceName, kindName].compactMap { $0.map { FoldedText($0, locale: locale) } }
+            metadata = [sourceName, linkTitle, kindName].compactMap { $0.map { FoldedText($0, locale: locale) } }
         }
 
         /// 可搜索字段与条目一致（内容由 contentHash 唯一确定）
         func isCurrent(for item: ClipItem) -> Bool {
             contentHash == item.contentHash && kind == item.kind && sourceName == item.source?.name
-                && recognizedText == item.recognizedText && translations == item.translations
+                && linkTitle == item.linkTitle && recognizedText == item.recognizedText
+                && translations == item.translations
         }
 
         func metadataContains(_ needle: [UInt8]) -> Bool {

@@ -4,6 +4,10 @@ import AppKit
 public enum PasteboardReader {
     /// 本应用写入剪贴板时附带的标记，监听时据此跳过自身写入
     public static let markerType = NSPasteboard.PasteboardType("io.github.no1coder.Cubby.marker")
+    /// 浏览器随链接写入的网页标题
+    static let urlNameType = NSPasteboard.PasteboardType("public.url-name")
+    /// 部分应用写入的链接与标题列表（plist：[[链接], [标题]]）
+    static let webURLsWithTitlesType = NSPasteboard.PasteboardType("WebURLsWithTitlesPboardType")
 
     /// 密码管理器等应用标记的机密 / 临时 / 自动生成内容，一律不记录
     static let ignoredTypes: Set<String> = [
@@ -28,7 +32,7 @@ public enum PasteboardReader {
     /// 只提供 TIFF 的图片返回原始字节（.rawImage），转码为 PNG 留给后台（ClipStore.recordInBackground）
     public static func capture(from pasteboard: NSPasteboard) -> PasteboardCapture? {
         if let files = readFiles(pasteboard) { return .content(files) }
-        if let text = readText(pasteboard) { return .content(text) }
+        if let text = readText(pasteboard) { return text }
         if let png = pasteboard.data(forType: .png) {
             // PNG 超限时不再回退 TIFF：同一张图的 TIFF 更大，转码后必然同样超限，只会白白耗时
             guard png.count <= CaptureLimits.maxImageBytes else { return nil }
@@ -37,10 +41,11 @@ public enum PasteboardReader {
         return readRawTIFF(pasteboard).map(PasteboardCapture.rawImage)
     }
 
-    /// 同步读取并规范化（TIFF 当场转为 PNG，大图会耗时上百毫秒）：供不在主线程、或需要直接得到可入库内容的场景使用
+    /// 同步读取并规范化（TIFF 当场转为 PNG，大图会耗时上百毫秒）：供不在主线程、或需要直接得到可入库内容的场景使用。
+    /// 只返回内容，不含链接标题
     public static func read(from pasteboard: NSPasteboard) -> ClipContent? {
         switch capture(from: pasteboard) {
-        case .content(let content): content
+        case .content(let content, _): content
         case .rawImage(let raw): try? ImageNormalizer.normalize(raw).content
         case nil: nil
         }
@@ -54,14 +59,15 @@ public enum PasteboardReader {
         return .files(urls)
     }
 
-    private static func readText(_ pasteboard: NSPasteboard) -> ClipContent? {
+    private static func readText(_ pasteboard: NSPasteboard) -> PasteboardCapture? {
         guard let text = pasteboard.string(forType: .string),
             !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
             text.utf8.count <= CaptureLimits.maxTextBytes
         else { return nil }
 
         let formats = readRichFormats(pasteboard)
-        return formats.isEmpty ? .text(text) : .richText(text, formats: formats)
+        let content: ClipContent = formats.isEmpty ? .text(text) : .richText(text, formats: formats)
+        return .content(content, linkTitle: readLinkTitle(pasteboard, for: text))
     }
 
     /// 读取随文本一起提供的 RTF / HTML 等格式，粘贴时可保留原样式
@@ -75,6 +81,18 @@ public enum PasteboardReader {
             else { return }
             result[type] = data
         }
+    }
+
+    /// 文本是链接时读取浏览器一并写入的网页标题：优先 public.url-name（Safari、Chrome），其次 WebURLsWithTitlesPboardType。
+    /// public.url 指向别的链接时 url-name 属于那个链接，不采用。标题属于剪贴板内容，不得写入日志
+    private static func readLinkTitle(_ pasteboard: NSPasteboard, for text: String) -> String? {
+        guard ContentClassifier.kind(forText: text) == .link else { return nil }
+        let url = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let urlNameMatches = pasteboard.string(forType: .URL).map { LinkTitle.isSameURL($0, url) } ?? true
+        return LinkTitle.resolve(
+            urlName: urlNameMatches ? pasteboard.string(forType: urlNameType) : nil,
+            webURLsWithTitles: pasteboard.propertyList(forType: webURLsWithTitlesType),
+            url: url)
     }
 
     /// PNG 直接入库；尺寸取自文件头（NSBitmapImageRep 对 PNG 延迟解码，这里不会解码像素）。无法识别时返回 nil

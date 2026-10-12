@@ -49,6 +49,9 @@ public struct ClipItem: Codable, Identifiable, Equatable, Sendable {
     /// 各目标语言的译文缓存（docs/CLIP-TRANSLATION-DESIGN.md §2）：nil 表示没有译文；
     /// 旧版本写入的条目没有该字段，按 nil 解码；为 nil 时编码不写该字段；内部损坏按项容错（ClipTranslations）
     public let translations: ClipTranslations?
+    /// 链接条目的网页标题（见 LinkTitle）：只来自复制时浏览器一并放上剪贴板的标题，不联网获取；
+    /// 非链接条目始终为 nil。旧版本写入的条目没有该字段，按 nil 解码；为 nil 时编码不写该字段
+    public let linkTitle: String?
 
     public init(
         id: UUID = UUID(),
@@ -60,7 +63,8 @@ public struct ClipItem: Codable, Identifiable, Equatable, Sendable {
         contentHash: String,
         formatsName: String? = nil,
         recognizedText: String? = nil,
-        translations: ClipTranslations? = nil
+        translations: ClipTranslations? = nil,
+        linkTitle: String? = nil
     ) {
         self.id = id
         self.kind = kind
@@ -72,32 +76,34 @@ public struct ClipItem: Codable, Identifiable, Equatable, Sendable {
         self.formatsName = formatsName
         self.recognizedText = recognizedText
         self.translations = translations
+        self.linkTitle = kind == .link ? linkTitle : nil
     }
 
     public func withFavorite(_ favorite: Bool) -> ClipItem {
         ClipItem(
             id: id, kind: kind, payload: payload, source: source, createdAt: createdAt,
             isFavorite: favorite, contentHash: contentHash, formatsName: formatsName, recognizedText: recognizedText,
-            translations: translations)
+            translations: translations, linkTitle: linkTitle)
     }
 
     /// 以新内容替换旧条目：沿用旧条目的 id 与收藏状态（新来源为空时沿用旧来源），其余取新值。
     /// 内容相同（哈希相同）意味着同一张图片，新条目尚未识别时沿用旧条目的识别文字，无需重新识别；
-    /// 译文同理沿用，但富文本格式变了时不沿用（富文本译文按格式里的段落对齐，格式不同分段就可能不同）
+    /// 译文同理沿用，但富文本格式变了时不沿用（富文本译文按格式里的段落对齐，格式不同分段就可能不同）；
+    /// 网页标题：新复制带来的优先，没有时沿用旧条目的（同一链接）
     public func replacing(_ existing: ClipItem) -> ClipItem {
         let inherited = formatsName == existing.formatsName ? existing.translations : nil
         return ClipItem(
             id: existing.id, kind: kind, payload: payload, source: source ?? existing.source, createdAt: createdAt,
             isFavorite: existing.isFavorite, contentHash: contentHash, formatsName: formatsName,
             recognizedText: recognizedText ?? existing.recognizedText,
-            translations: translations ?? inherited)
+            translations: translations ?? inherited, linkTitle: linkTitle ?? existing.linkTitle)
     }
 
     public func withFormatsName(_ name: String?) -> ClipItem {
         ClipItem(
             id: id, kind: kind, payload: payload, source: source, createdAt: createdAt,
             isFavorite: isFavorite, contentHash: contentHash, formatsName: name, recognizedText: recognizedText,
-            translations: translations)
+            translations: translations, linkTitle: linkTitle)
     }
 
     /// 设置或清除识别文字，其余字段不变
@@ -105,7 +111,7 @@ public struct ClipItem: Codable, Identifiable, Equatable, Sendable {
         ClipItem(
             id: id, kind: kind, payload: payload, source: source, createdAt: createdAt,
             isFavorite: isFavorite, contentHash: contentHash, formatsName: formatsName, recognizedText: text,
-            translations: translations)
+            translations: translations, linkTitle: linkTitle)
     }
 
     /// 设置或清除译文缓存，其余字段不变
@@ -113,7 +119,7 @@ public struct ClipItem: Codable, Identifiable, Equatable, Sendable {
         ClipItem(
             id: id, kind: kind, payload: payload, source: source, createdAt: createdAt,
             isFavorite: isFavorite, contentHash: contentHash, formatsName: formatsName, recognizedText: recognizedText,
-            translations: translations)
+            translations: translations, linkTitle: linkTitle)
     }
 
     /// 再次被复制/粘贴时刷新时间；传入来源时一并更新，nil 表示保留原来源
@@ -121,7 +127,7 @@ public struct ClipItem: Codable, Identifiable, Equatable, Sendable {
         ClipItem(
             id: id, kind: kind, payload: payload, source: newSource ?? source, createdAt: date,
             isFavorite: isFavorite, contentHash: contentHash, formatsName: formatsName, recognizedText: recognizedText,
-            translations: translations)
+            translations: translations, linkTitle: linkTitle)
     }
 }
 

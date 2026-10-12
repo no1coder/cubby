@@ -70,11 +70,12 @@ public final class ClipStore {
 
     // MARK: - 变更操作
 
-    /// 记录新内容（同步：摘要与 blob 写入都在主线程）；失败时返回 nil
+    /// 记录新内容（同步：摘要与 blob 写入都在主线程）；失败时返回 nil。
+    /// linkTitle 是复制时随链接带来的网页标题，只有链接条目会保存（规则见 LinkTitle）
     @discardableResult
-    public func record(_ content: ClipContent, source: SourceApp?) -> ClipItem? {
+    public func record(_ content: ClipContent, source: SourceApp?, linkTitle: String? = nil) -> ClipItem? {
         do {
-            return record(try Self.prepare(content, blobs: blobs), source: source)
+            return record(try Self.prepare(content, blobs: blobs), source: source, linkTitle: linkTitle)
         } catch {
             logger.error("Failed to record clipboard content: \(error.localizedDescription, privacy: .public)")
             return nil
@@ -85,8 +86,12 @@ public final class ClipStore {
     /// 多次调用按调用顺序入历史；去重、上限、撤销与文件权限与同步 record 相同。
     /// 返回的任务完成时给出新条目（失败为 nil），不关心结果时可忽略
     @discardableResult
-    public func recordInBackground(_ content: ClipContent, source: SourceApp?) -> Task<ClipItem?, Never> {
-        recordInBackground(source: source) { blobs in try ClipStore.prepare(content, blobs: blobs) }
+    public func recordInBackground(
+        _ content: ClipContent, source: SourceApp?, linkTitle: String? = nil
+    ) -> Task<ClipItem?, Never> {
+        recordInBackground(source: source, linkTitle: linkTitle) { blobs in
+            try ClipStore.prepare(content, blobs: blobs)
+        }
     }
 
     /// 后台记录剪贴板上的原始图片（只有 TIFF）：转码为 PNG、解析尺寸、检查大小也在后台完成，规则同上
@@ -97,6 +102,7 @@ public final class ClipStore {
 
     private func recordInBackground(
         source: SourceApp?,
+        linkTitle: String? = nil,
         prepare: @escaping @Sendable (BlobStore) throws -> PreparedClip
     ) -> Task<ClipItem?, Never> {
         let blobs = self.blobs
@@ -110,7 +116,7 @@ public final class ClipStore {
             guard let self else { return nil }
             switch result {
             case .success(let prepared):
-                return self.record(prepared, source: source)
+                return self.record(prepared, source: source, linkTitle: linkTitle)
             case .failure(ImageCaptureError.tooLarge(let bytes)):
                 // 超过采集上限是预期内的忽略（与文本超限一致），不算错误
                 self.logger.notice("Skipped an image over the capture limit (\(bytes) bytes)")
@@ -127,12 +133,13 @@ public final class ClipStore {
 
     /// 插入已准备好的内容；blob 若在准备后被删除（例如期间清空了历史）则补写，条目不会指向缺失的文件
     @discardableResult
-    public func record(_ prepared: PreparedClip, source: SourceApp?) -> ClipItem? {
+    public func record(_ prepared: PreparedClip, source: SourceApp?, linkTitle: String? = nil) -> ClipItem? {
         do {
             for blob in [prepared.blob, prepared.thumbnail].compactMap(\.self) where !blobs.exists(blob.name) {
                 try blobs.write(blob.data, name: blob.name)
             }
-            apply(history.inserting(item(from: prepared, source: source, date: now()), limit: limit))
+            let item = item(from: prepared, source: source, date: now(), linkTitle: linkTitle)
+            apply(history.inserting(item, limit: limit))
             return history.items.first
         } catch {
             logger.error("Failed to record clipboard content: \(error.localizedDescription, privacy: .public)")
@@ -317,10 +324,10 @@ public final class ClipStore {
         )
     }
 
-    private func item(from prepared: PreparedClip, source: SourceApp?, date: Date) -> ClipItem {
+    private func item(from prepared: PreparedClip, source: SourceApp?, date: Date, linkTitle: String?) -> ClipItem {
         switch prepared.payload {
         case .text(let text, let formatsName):
-            return textItem(text, formatsName: formatsName, source: source, date: date)
+            return textItem(text, formatsName: formatsName, source: source, date: date, linkTitle: linkTitle)
         case .image(let ref, let digest):
             return ClipItem(
                 kind: .image,
@@ -340,14 +347,18 @@ public final class ClipStore {
         }
     }
 
-    private func textItem(_ text: String, formatsName: String?, source: SourceApp?, date: Date) -> ClipItem {
+    /// 标题再规范化一次（幂等），保证任何调用方传入的标题都满足 LinkTitle 的规则；非链接条目由 ClipItem 丢弃标题
+    private func textItem(
+        _ text: String, formatsName: String?, source: SourceApp?, date: Date, linkTitle: String?
+    ) -> ClipItem {
         ClipItem(
             kind: ContentClassifier.kind(forText: text),
             payload: .text(text),
             source: source,
             createdAt: date,
             contentHash: ContentHasher.hash(text: text),
-            formatsName: formatsName
+            formatsName: formatsName,
+            linkTitle: LinkTitle.normalized(linkTitle, url: text)
         )
     }
 

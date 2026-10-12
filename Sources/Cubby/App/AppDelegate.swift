@@ -326,9 +326,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func capture(_ capture: PasteboardCapture, from source: SourceApp?) {
         guard settings.shouldCapture(from: source), settings.shouldRecord(capture) else { return }
         switch capture {
-        case .content(let content):
+        case .content(let content, let linkTitle):
             // 入历史后交给复制时自动翻译（只处理文本，图片不自动翻译）
-            if let recording = store?.recordInBackground(content, source: source) {
+            if let recording = store?.recordInBackground(content, source: source, linkTitle: linkTitle) {
                 clipAutoTranslator?.track(recording)
             }
         case .rawImage(let image): store?.recordInBackground(image, source: source)

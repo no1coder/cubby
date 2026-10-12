@@ -111,6 +111,18 @@ struct AppSettingsSecretTests {
         }
     }
 
+    @Test("链接标题同样参与密钥过滤：标题疑似密钥时整条不记录", arguments: [true, false])
+    func linkTitleFollowsSecretRules(ignoresSecrets: Bool) {
+        withIsolatedDefaults { defaults in
+            let settings = AppSettings(defaults: defaults)
+            settings.ignoresSecrets = ignoresSecrets
+            let link = ClipContent.text("https://example.com/settings/tokens")
+            #expect(settings.shouldRecord(PasteboardCapture.content(link, linkTitle: secret)) == !ignoresSecrets)
+            #expect(settings.shouldRecord(PasteboardCapture.content(link, linkTitle: "Tokens")))
+            #expect(settings.shouldRecord(PasteboardCapture.content(link, linkTitle: nil)))
+        }
+    }
+
     @Test("shouldRecord 与 shouldCapture 相互独立")
     func independentFromCapture() {
         withIsolatedDefaults { defaults in

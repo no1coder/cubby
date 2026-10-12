@@ -3,20 +3,21 @@ import Foundation
 // MARK: - 关键词匹配（忽略大小写与变音符）
 
 public extension ClipItem {
-    /// 关键词是否命中正文、文件路径、来源应用名、图片中识别出的文字或译文。
+    /// 关键词是否命中正文、文件路径、来源应用名、链接的网页标题、图片中识别出的文字或译文。
     /// 超长文本只检索前 searchLimit 个字符，保证逐字搜索时的响应速度。
     func matches(keyword: String) -> Bool {
         matchesExcludingImageText(keyword) || imageTextMatches(keyword) || translationMatches(keyword)
     }
 
-    /// 不看识别文字的匹配：来源应用名、图片类型名（先查这些短字段），再查正文或文件路径
+    /// 不看识别文字的匹配：来源应用名、网页标题、图片类型名（先查这些短字段），再查正文或文件路径
     func matchesExcludingImageText(_ keyword: String) -> Bool {
         matchesMetadata(keyword) || searchableContent?.localizedStandardContains(keyword) == true
     }
 
-    /// 关键词是否命中来源应用名；图片还可按类型名命中（不暴露内部 blob 文件名）
+    /// 关键词是否命中来源应用名或链接的网页标题；图片还可按类型名命中（不暴露内部 blob 文件名）
     func matchesMetadata(_ keyword: String) -> Bool {
         if source?.name?.localizedStandardContains(keyword) == true { return true }
+        if linkTitle?.localizedStandardContains(keyword) == true { return true }
         guard case .image = payload else { return false }
         return kind.displayName.localizedStandardContains(keyword)
     }

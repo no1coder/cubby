@@ -46,7 +46,17 @@ struct ClipSearchIndexEquivalenceTests {
         Fixtures.text("Gru\u{00DF}").translated(TranslationFixtures.text("de", segments: ["Stra\u{00DF}e \u{2460}"])),
         Fixtures.image(name: "d.png").withRecognizedText("Invoice").translated(
             TranslationFixtures.image(blob: "t.png", segments: ["\u{53D1}\u{7968} total", "Caf\u{00E9}"])),
+        // 链接标题：普通、含变音符与 ß、含不一致字符
+        link("https://example.com/cache", title: "Caf\u{00E9} Guide 2026"),
+        link("https://example.org/strasse", title: "Stra\u{00DF}e \u{FB01}le notes", source: safari),
+        link("https://example.net/i", title: "\u{0130}stanbul \u{2460}"),
     ]
+
+    private static func link(_ url: String, title: String, source: SourceApp? = nil) -> ClipItem {
+        ClipItem(
+            kind: .link, payload: .text(url), source: source, createdAt: Fixtures.baseDate,
+            contentHash: ContentHasher.hash(text: url), linkTitle: title)
+    }
 
     static let queries: [String] = [
         "cafe", "CAFÉ", "e\u{301}", "e", "\u{00E9}", "strasse", "STRASSE", "straße", "ss", "s", "\u{1E9E}", "ß",
@@ -60,6 +70,7 @@ struct ClipSearchIndexEquivalenceTests {
         "hello", "bonjour hello", "hello bonjour", "cache hello", "invoice total", "total invoice", "notes",
         "safari cache", "\u{7F13}\u{5B58} cache", "\u{30AD}\u{30E3}", "**", "https", "resume notes", "c1",
         "\u{53D1}\u{7968} invoice", "invoice \u{53D1}\u{7968}", "2026 hello", "cafe cache",
+        "guide", "example guide", "guide example", "cafe guide", "example.com", "strasse notes", "safari strasse",
     ]
 
     private func assertEquivalent(_ items: [ClipItem], _ texts: [String], category: ClipCategory = .all) {

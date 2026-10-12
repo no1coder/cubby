@@ -405,10 +405,12 @@ public final class AppSettings {
         }
     }
 
-    /// 剪贴板监听取到的内容：尚未转码的图片与 .image 走同一条图片规则
+    /// 剪贴板监听取到的内容：尚未转码的图片与 .image 走同一条图片规则；
+    /// 链接标题会随条目保存，开启密钥过滤时标题疑似密钥也整条不记录
     public func shouldRecord(_ capture: PasteboardCapture) -> Bool {
         switch capture {
-        case .content(let content): shouldRecord(content)
+        case .content(let content, let linkTitle):
+            shouldRecord(content) && !(ignoresSecrets && linkTitle.map(SecretDetector.containsSecret) == true)
         case .rawImage: shouldRecordImage
         }
     }

@@ -1,7 +1,7 @@
 import Foundation
 
 /// 搜索结果的相关度分档（值越小越靠前）。
-/// 前三档看正文（文本、文件路径）：整句命中 → 首个关键词靠前 → 其余（含仅来源应用名、图片类型名命中）；
+/// 前三档看正文（文本、文件路径）：整句命中 → 首个关键词靠前 → 其余（含仅来源应用名、网页标题、图片类型名命中）；
 /// 只有借助图片识别文字才能命中全部关键词的条目排在所有正文命中之后，内部同样分三档；
 /// 再往后是还要借助译文才能命中的条目（原文 > 图中文字 > 译文），同样分三档。多个关键词可跨字段命中
 public enum SearchRelevance: Int, Comparable, CaseIterable, Sendable {
@@ -49,7 +49,7 @@ public enum SearchRelevance: Int, Comparable, CaseIterable, Sendable {
 
 /// 命中所依赖的字段（见 SearchRelevance.matchedField）
 public enum SearchMatchField: Equatable, Sendable {
-    /// 正文与元数据（来源应用名、图片类型名）
+    /// 正文与元数据（来源应用名、网页标题、图片类型名）
     case content
     /// 还用到了图片中识别出的文字
     case imageText
@@ -79,7 +79,7 @@ protocol SearchRecord {
     var imageText: Text? { get }
     /// 可搜索的译文（全部语言）；没有时为 nil
     var translation: Text? { get }
-    /// 来源应用名、图片类型名是否包含
+    /// 来源应用名、网页标题、图片类型名是否包含
     func metadataContains(_ needle: Text.Needle) -> Bool
 }
 

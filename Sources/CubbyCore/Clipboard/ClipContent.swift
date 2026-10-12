@@ -23,9 +23,11 @@ public struct RawImage: Equatable, Sendable {
 
 /// 监听剪贴板时取出的一份内容：多数可以直接入库（ClipContent）；只有 TIFF 的图片先只取原始字节，入库前在后台转码。
 /// 不在 ClipContent 里加一个「未规范化图片」case：ClipContent 被设置（密钥检测）、截图输出等多处按类型穷举，
-/// 未规范化的图片只在「剪贴板监听 → 后台记录」这一条路径上存在，单独的类型让其他路径无从拿到未转码的数据
+/// 未规范化的图片只在「剪贴板监听 → 后台记录」这一条路径上存在，单独的类型让其他路径无从拿到未转码的数据。
+/// linkTitle 是浏览器随链接一起放上剪贴板的网页标题（已经 LinkTitle 规范化；不是链接或没有标题时为 nil），
+/// 同样只在这条路径上存在，故放在这里而不是 ClipContent
 public enum PasteboardCapture: Equatable, Sendable {
-    case content(ClipContent)
+    case content(ClipContent, linkTitle: String? = nil)
     case rawImage(RawImage)
 }
 
