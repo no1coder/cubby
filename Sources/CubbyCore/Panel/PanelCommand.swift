@@ -221,8 +221,9 @@ public extension PanelCommand {
         let row = max(columns, 1)
         let target: Int
         switch self {
-        case .moveUp: target = start - row
-        case .moveDown: target = start + row
+        // 网格里首行按 ↑、末行按 ↓ 原地不动（与访达图标视图一致）；单列时等同于夹在首条 / 末条
+        case .moveUp: target = start >= row ? start - row : start
+        case .moveDown: target = start / row < last / row ? start + row : start
         case .moveLeft: target = start - 1
         case .moveRight: target = start + 1
         case .pageUp: target = start - Self.pageSize * row
@@ -231,7 +232,7 @@ public extension PanelCommand {
         case .moveToLast: target = last
         default: return nil
         }
-        // 网格里最后一行不满时，↓ 落到最后一格（与访达图标视图一致），而不是原地不动
+        // 下一行不满、正下方没有格子时，↓ 落到最后一格（夹回范围）
         return min(max(target, 0), last)
     }
 }
