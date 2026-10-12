@@ -31,14 +31,14 @@ struct GeneralSettingsPane: View {
                         onRecordingChange: onShortcutRecordingChange
                     )
                 }
-                Picker("Panel position", selection: $settings.panelPosition) {
-                    // 停靠排布的视图（侧栏、横条）完成前只列浮动位置（docs/UI-UPGRADE-PLAN.md 第 3 节）
-                    ForEach(PanelPosition.allCases.filter { $0.layout == .floating }, id: \.self) { position in
-                        Text(position.displayName).tag(position)
-                    }
-                }
+                PanelPositionPicker(selection: $settings.panelPosition)
             } header: {
                 Text("Shortcut & Panel")
+            } footer: {
+                Text(
+                    "Use the layout button at the top of the panel to switch between floating, right and bottom at any time."
+                )
+                .foregroundStyle(.secondary)
             }
 
             Section {

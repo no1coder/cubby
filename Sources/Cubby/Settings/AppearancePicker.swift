@@ -33,22 +33,26 @@ private struct AppearanceOptionLabel: View {
     var body: some View {
         VStack(spacing: AppearanceThumbnail.labelSpacing) {
             AppearanceThumbnail(appearance: appearance)
-                .overlay { if isSelected { selectionRing } }
+                .overlay { if isSelected { ThumbnailSelectionRing(cornerRadius: AppearanceThumbnail.cornerRadius) } }
             Text(appearance.displayName)
                 .font(.system(size: FontSize.footnote, weight: isSelected ? .semibold : .regular))
                 .foregroundStyle(isSelected ? Color.primary : Color.primary.opacity(0.75))
         }
         .contentShape(Rectangle())
     }
+}
 
-    /// 与选中卡片一致：2pt 强调色外环，再往外 3pt 的 25% 强调色光晕
-    private var selectionRing: some View {
-        let radius = AppearanceThumbnail.cornerRadius
-        return ZStack {
-            RoundedRectangle(cornerRadius: radius + 1, style: .continuous)
+/// 缩略图选中外环，与选中卡片一致：2pt 强调色外环，再往外 3pt 的 25% 强调色光晕。
+/// 外观与面板位置两组缩略图共用
+struct ThumbnailSelectionRing: View {
+    let cornerRadius: CGFloat
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: cornerRadius + 1, style: .continuous)
                 .stroke(Color.accentColor, lineWidth: 2)
                 .padding(-1)
-            RoundedRectangle(cornerRadius: radius + 3.5, style: .continuous)
+            RoundedRectangle(cornerRadius: cornerRadius + 3.5, style: .continuous)
                 .stroke(Color.accentColor.opacity(0.25), lineWidth: 3)
                 .padding(-3.5)
         }

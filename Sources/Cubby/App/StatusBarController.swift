@@ -32,6 +32,7 @@ final class StatusBarController: NSObject, NSMenuDelegate {
     ) {
         PasteboardAccess.openSettings()
     }
+    private let panelPositionItem: PanelPositionMenuItem
     private let appearanceItem: AppearanceMenuItem
     /// 已知有新版本时显示在菜单顶部（U5）
     private let updateAvailableItem = ClosureMenuItem(title: "", handler: {})
@@ -42,6 +43,7 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         self.actions = actions
         self.openItem = ClosureMenuItem(title: Self.openTitle) { actions.togglePanel(nil) }
         self.screenshotItem = ClosureMenuItem(title: Self.screenshotTitle, handler: actions.takeScreenshot)
+        self.panelPositionItem = PanelPositionMenuItem(settings: settings)
         self.appearanceItem = AppearanceMenuItem(settings: settings)
         super.init()
 
@@ -106,6 +108,7 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         screenshotItem.attributedTitle = settings.screenshotHotKey.map {
             Self.titleWithDetail(Self.screenshotTitle, detail: $0.displayName)
         }
+        panelPositionItem.refresh()
         appearanceItem.refresh()
         pauseItem.state = settings.isPaused ? .on : .off
         accessWarningItem.isHidden = !PasteboardAccess.needsAttention
@@ -153,6 +156,7 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         menu.addItem(openItem)
         menu.addItem(screenshotItem)
         menu.addItem(.separator())
+        menu.addItem(panelPositionItem)
         menu.addItem(appearanceItem)
         menu.addItem(.separator())
         menu.addItem(pauseItem)
