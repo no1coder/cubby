@@ -67,6 +67,12 @@ Cubby lives in your menu bar and remembers what you copy: text, links, code, col
       <sub><b>Address guard.</b> A swapped address is caught before you paste it.</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="docs/assets/gifs/screenshot-translate.gif" width="640" alt="Two English windows in a screenshot being translated into Chinese in place, line by line, then compared with the original using a divider"><br>
+      <sub><b>Screenshot translation (macOS 26).</b> Press <kbd>⇧⌘T</kbd> and the text is replaced in place, layout intact; drag the divider to compare.</sub>
+    </td>
+  </tr>
 </table>
 
 ## Features

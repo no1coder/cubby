@@ -67,6 +67,12 @@ Cubby se loge dans la barre des menus et retient tout ce que vous copiez : text
       <sub><b>Protection des adresses.</b> Une adresse substituée est repérée avant que vous ne la colliez.</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="docs/assets/gifs/screenshot-translate.gif" width="640" alt="Deux fenêtres en anglais d’une capture traduites en chinois sur place, ligne par ligne, puis comparées à l’original avec un séparateur"><br>
+      <sub><b>Traduction des captures (macOS 26).</b> Appuyez sur <kbd>⇧⌘T</kbd> : le texte est remplacé sur place, mise en page intacte ; faites glisser le séparateur pour comparer.</sub>
+    </td>
+  </tr>
 </table>
 
 ## Fonctionnalités

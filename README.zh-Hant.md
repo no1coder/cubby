@@ -67,6 +67,12 @@ Cubby 常駐在選單列，記住你複製過的文字、連結、程式碼、�
       <sub><b>地址守護。</b>地址被偷換，貼上前就攔下。</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="docs/assets/gifs/screenshot-translate-zh.gif" width="640" alt="截圖中的兩個英文視窗被逐行原地翻譯成中文，再用捲簾分隔線對照原文"><br>
+      <sub><b>截圖翻譯（macOS 26）。</b> 按 <kbd>⇧⌘T</kbd>，譯文直接蓋在原文位置，排版不亂；拖動捲簾對照原文。</sub>
+    </td>
+  </tr>
 </table>
 
 ## 功能

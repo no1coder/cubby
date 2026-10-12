@@ -67,6 +67,12 @@ Cubby はメニューバーに常駐し、コピーしたテキスト、リン�
       <sub><b>アドレスガード。</b>すり替えられたアドレスをペースト前に検出します。</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="docs/assets/gifs/screenshot-translate.gif" width="640" alt="スクリーンショット内の英語のウインドウ 2 つが行ごとにその場で中国語に翻訳され、仕切り線で原文と見比べる様子"><br>
+      <sub><b>スクリーンショット翻訳（macOS 26）。</b> <kbd>⇧⌘T</kbd> で文字がその場で置き換わり、レイアウトはそのまま。仕切りをドラッグして原文と比較できます。</sub>
+    </td>
+  </tr>
 </table>
 
 ## 機能

@@ -67,6 +67,12 @@ Cubby 常驻菜单栏，记住你复制过的文本、链接、代码、颜色�
       <sub><b>地址守护。</b>地址被偷换，粘贴前就拦下。</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="docs/assets/gifs/screenshot-translate-zh.gif" width="640" alt="截图中的两个英文窗口被逐行原地翻译成中文，再用卷帘分隔线对照原文"><br>
+      <sub><b>截图翻译（macOS 26）。</b> 按 <kbd>⇧⌘T</kbd>，译文直接盖在原文位置，排版不乱；拖动卷帘对照原文。</sub>
+    </td>
+  </tr>
 </table>
 
 ## 功能

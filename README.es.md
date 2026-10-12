@@ -67,6 +67,12 @@ Cubby vive en la barra de menús y recuerda lo que copias: texto, enlaces, códi
       <sub><b>Protección de direcciones.</b> Una dirección sustituida se detecta antes de que la pegues.</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="docs/assets/gifs/screenshot-translate.gif" width="640" alt="Dos ventanas en inglés de una captura traducidas al chino en su sitio, línea a línea, y comparadas con el original mediante un divisor"><br>
+      <sub><b>Traducción de capturas (macOS 26).</b> Pulsa <kbd>⇧⌘T</kbd> y el texto se sustituye en su sitio sin romper el diseño; arrastra el divisor para comparar.</sub>
+    </td>
+  </tr>
 </table>
 
 ## Funciones

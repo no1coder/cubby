@@ -67,6 +67,12 @@ Cubby wohnt in deiner Menüleiste und merkt sich, was du kopierst: Text, Links, 
       <sub><b>Adressschutz.</b> Eine ausgetauschte Adresse fällt auf, bevor du sie einfügst.</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="docs/assets/gifs/screenshot-translate.gif" width="640" alt="Zwei englische Fenster in einem Bildschirmfoto werden Zeile für Zeile direkt ins Chinesische übersetzt und dann per Trennlinie mit dem Original verglichen"><br>
+      <sub><b>Bildschirmfoto-Übersetzung (macOS 26).</b> <kbd>⇧⌘T</kbd> ersetzt den Text direkt an Ort und Stelle, das Layout bleibt erhalten; zum Vergleichen die Trennlinie ziehen.</sub>
+    </td>
+  </tr>
 </table>
 
 ## Funktionen
