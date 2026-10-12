@@ -25,6 +25,7 @@ The release script extracts the section that starts with "## [x.y.z]".
 
 ### Changed
 
+- **New icon**: a blue app icon with cards dropping into a tray, and a matching menu bar icon. While recording is paused, the menu bar icon shows an outlined card.
 - **A new welcome guide**: the first-launch guide is now four short steps (Welcome, Permissions, Choose a Style and Shortcut) with **Back** and **Continue**. In **Choose a Style**, pick where the clipboard appears (a floating panel, docked to the right edge or docked to the bottom edge) and the appearance (Match System, Light or Dark); both apply right away and can be changed later in **Settings › General**. The Shortcut step also lists the **Only images** and clothesline shortcuts when they're on.
 - **A clearer panel**: more transparent glass on macOS 26, larger corners, and redesigned cards. Each card starts with a row showing the app, the time and its ⌘ number, so the content uses the full width; text is a little larger. Links show a letter tile, the page title when the browser copied one, and the full address. Code shows its language (Swift, JavaScript, Python, JSON, Shell, HTML, CSS, SQL, Go or Rust) with light syntax colors, colors show their HEX and rgb() values, and images are larger. The list is grouped into Today, Yesterday and Earlier.
 - Hover over a card to favorite, preview or delete it (and pin images to the screen) without a right-click. Categories are now a segmented control.

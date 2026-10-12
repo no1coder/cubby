@@ -1,7 +1,7 @@
 import AppKit
 
-/// 菜单栏图标：与 App 图标同构的「小格子」剪影（模板图，自动适配深浅色菜单栏）。
-/// 正常状态：储物盒实心 + 右上格抽出卡片；暂停记录：储物盒空心、没有卡片。
+/// 菜单栏图标：design/cubby-logo/svg/MenuBarIconTemplate.svg（100 单位网格，y 向下）的代码版，模板图自动适配深浅色菜单栏。
+/// 正常状态：U 形托盘 + 前卡（-5°）+ 半透明后卡（+11°）；暂停记录：托盘 + 空心前卡、没有后卡。
 /// 有新版本时右上角留出一个圆形缺口，强调色蓝点由 StatusItemUpdateBadge 叠在缺口里（模板图只能是单色）
 enum StatusBarIcon {
     static let size = NSSize(width: 18, height: 18)
@@ -11,8 +11,16 @@ enum StatusBarIcon {
     /// 蓝点四周擦出的留白，让它在任何菜单栏底色上都与图标分开
     static let badgeGap: CGFloat = 1.5
 
+    /// 设计稿网格（100 单位）到 18pt 的缩放
+    private static let scale = size.width / 100
+    /// 后卡的不透明度（设计稿 fill-opacity）
+    private static let backCardOpacity: CGFloat = 0.45
+    /// 暂停时空心前卡的描边宽度（网格单位）
+    private static let pausedStroke: CGFloat = 6
+
     static func image(paused: Bool, badged: Bool = false) -> NSImage {
-        let image = NSImage(size: size, flipped: false) { _ in
+        // 翻转坐标与 SVG 一致（y 向下）；旋转角度的正负也随之与 SVG 相同
+        let image = NSImage(size: size, flipped: true) { _ in
             draw(paused: paused)
             if badged { clearBadgeNotch() }
             return true
@@ -22,13 +30,13 @@ enum StatusBarIcon {
         return image
     }
 
-    /// 擦除蓝点及其留白所在的圆
+    /// 擦除蓝点及其留白所在的圆（badgeCenter 是左下原点坐标，换算到翻转坐标）
     private static func clearBadgeNotch() {
         guard let context = NSGraphicsContext.current else { return }
         let radius = badgeDiameter / 2 + badgeGap
+        let center = CGPoint(x: badgeCenter.x, y: size.height - badgeCenter.y)
         let notch = NSBezierPath(
-            ovalIn: NSRect(
-                x: badgeCenter.x - radius, y: badgeCenter.y - radius, width: radius * 2, height: radius * 2))
+            ovalIn: NSRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2))
         context.saveGraphicsState()
         context.compositingOperation = .clear
         notch.fill()
@@ -36,64 +44,60 @@ enum StatusBarIcon {
     }
 
     private static func draw(paused: Bool) {
-        NSColor.black.setStroke()
-        NSColor.black.setFill()
+        guard let context = NSGraphicsContext.current else { return }
+        context.saveGraphicsState()
+        defer { context.restoreGraphicsState() }
+        let transform = NSAffineTransform()
+        transform.scale(by: scale)
+        transform.concat()
 
-        // 柜体
-        let body = NSBezierPath(
-            roundedRect: NSRect(x: 1.6, y: 1.6, width: 14.8, height: 10.6), xRadius: 2.6, yRadius: 2.6)
-        body.lineWidth = 1.3
-        body.stroke()
-
-        // 2 × 2 储物格：右上格留给卡片
-        let bins = [
-            NSRect(x: 3.6, y: 3.5, width: 4.6, height: 2.9),
-            NSRect(x: 9.8, y: 3.5, width: 4.6, height: 2.9),
-            NSRect(x: 3.6, y: 7.4, width: 4.6, height: 2.9),
-        ]
-        for bin in bins {
-            let path = NSBezierPath(roundedRect: bin, xRadius: 0.9, yRadius: 0.9)
-            if paused {
-                path.lineWidth = 0.9
-                path.stroke()
-            } else {
-                path.fill()
-            }
+        if !paused {
+            NSColor.black.withAlphaComponent(backCardOpacity).setFill()
+            card(NSRect(x: 52, y: 18, width: 22, height: 34), degrees: 11).fill()
         }
-        guard !paused else { return }
-        drawCard()
+        NSColor.black.setFill()
+        NSColor.black.setStroke()
+        let front = card(NSRect(x: 33, y: 24, width: 28, height: 46), degrees: -5)
+        if paused {
+            // 描边向内收半个线宽，外轮廓与实心前卡一致
+            let inset = card(
+                NSRect(x: 33, y: 24, width: 28, height: 46).insetBy(dx: pausedStroke / 2, dy: pausedStroke / 2),
+                degrees: -5, radius: 5 - pausedStroke / 2)
+            inset.lineWidth = pausedStroke
+            inset.stroke()
+        } else {
+            front.fill()
+        }
+        tray().fill()
     }
 
-    /// 从右上格抽出、略微倾斜的卡片，四周擦出间隙以便与柜体分离
-    private static func drawCard() {
-        guard let context = NSGraphicsContext.current else { return }
+    /// 绕自身中心旋转的圆角卡片（设计稿 rotate(角度 中心x 中心y)）
+    private static func card(_ rect: NSRect, degrees: CGFloat, radius: CGFloat = 5) -> NSBezierPath {
+        let path = NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius)
         let transform = NSAffineTransform()
-        transform.translateX(by: 12.1, yBy: 11.2)
-        transform.rotate(byDegrees: -6)
+        transform.translateX(by: rect.midX, yBy: rect.midY)
+        transform.rotate(byDegrees: degrees)
+        transform.translateX(by: -rect.midX, yBy: -rect.midY)
+        path.transform(using: transform as AffineTransform)
+        return path
+    }
 
-        let card = NSBezierPath(
-            roundedRect: NSRect(x: -2.2, y: -3.4, width: 4.4, height: 7.4), xRadius: 1.0, yRadius: 1.1)
-        card.transform(using: transform as AffineTransform)
-
-        // 擦除卡片周围 0.8pt，形成与柜体描边之间的留白
-        context.saveGraphicsState()
-        context.compositingOperation = .clear
-        card.lineWidth = 1.6
-        card.stroke()
-        card.fill()
-        context.restoreGraphicsState()
-
-        card.fill()
-
-        // 卡片上的「文字行」（镂空）
-        context.saveGraphicsState()
-        context.compositingOperation = .clear
-        for y in [1.6, -0.2] {
-            let line = NSBezierPath(
-                roundedRect: NSRect(x: -1.3, y: y, width: 2.6, height: 0.8), xRadius: 0.4, yRadius: 0.4)
-            line.transform(using: transform as AffineTransform)
-            line.fill()
-        }
-        context.restoreGraphicsState()
+    /// U 形托盘：外圆角 18、内圆角 6、壁厚 12（设计稿 path）
+    private static func tray() -> NSBezierPath {
+        let path = NSBezierPath()
+        path.move(to: NSPoint(x: 14, y: 42))
+        path.line(to: NSPoint(x: 14, y: 62))
+        path.appendArc(from: NSPoint(x: 14, y: 80), to: NSPoint(x: 32, y: 80), radius: 18)
+        path.line(to: NSPoint(x: 68, y: 80))
+        path.appendArc(from: NSPoint(x: 86, y: 80), to: NSPoint(x: 86, y: 62), radius: 18)
+        path.line(to: NSPoint(x: 86, y: 42))
+        path.line(to: NSPoint(x: 74, y: 42))
+        path.line(to: NSPoint(x: 74, y: 62))
+        path.appendArc(from: NSPoint(x: 74, y: 68), to: NSPoint(x: 68, y: 68), radius: 6)
+        path.line(to: NSPoint(x: 32, y: 68))
+        path.appendArc(from: NSPoint(x: 26, y: 68), to: NSPoint(x: 26, y: 62), radius: 6)
+        path.line(to: NSPoint(x: 26, y: 42))
+        path.close()
+        return path
     }
 }

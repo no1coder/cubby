@@ -24,19 +24,23 @@ struct AppIconImage: View {
         .accessibilityHidden(true)
     }
 
-    /// 与正式图标一致：圆角方形占 80%，紫蓝渐变 + 白色剪贴板
+    /// 与正式图标（design/cubby-logo）一致：圆角方形占 80%，从上到下 #4E90FF → #2358F2 → #1431B0 的蓝色渐变 + 白色托盘
     private var placeholder: some View {
         let plate = size * 0.8
         return RoundedRectangle(cornerRadius: plate * Radius.iconRatio, style: .continuous)
             .fill(
                 LinearGradient(
-                    colors: [Color(red: 0.55, green: 0.36, blue: 0.98), Color(red: 0.23, green: 0.45, blue: 0.98)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
+                    stops: [
+                        .init(color: Color(red: 0x4E / 255, green: 0x90 / 255, blue: 1), location: 0),
+                        .init(color: Color(red: 0x23 / 255, green: 0x58 / 255, blue: 0xF2 / 255), location: 0.55),
+                        .init(color: Color(red: 0x14 / 255, green: 0x31 / 255, blue: 0xB0 / 255), location: 1),
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
                 )
             )
             .overlay(
-                Image(systemName: "list.clipboard.fill")
+                Image(systemName: "tray.full.fill")
                     .font(.system(size: plate * 0.5, weight: .medium))
                     .foregroundStyle(.white)
             )

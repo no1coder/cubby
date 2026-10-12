@@ -93,11 +93,11 @@ cp "$CUBBY_ROOT/Resources/Info.plist" "$PLIST"
 "$PLIST_BUDDY" -c "Set :CFBundleIdentifier $BUNDLE_ID" "$PLIST"
 plutil -lint "$PLIST" >/dev/null
 
-# 应用图标（由 scripts/make-icon.swift 生成）
+# 应用图标（由 scripts/make-icon.sh 从 design/cubby-logo/ 生成）
 ICON_FILE="$CUBBY_ROOT/Resources/AppIcon.icns"
 if [[ ! -f "$ICON_FILE" ]]; then
     log "生成应用图标"
-    swift "$CUBBY_ROOT/scripts/make-icon.swift"
+    "$CUBBY_ROOT/scripts/make-icon.sh"
 fi
 cp "$ICON_FILE" "$APP_DIR/Contents/Resources/AppIcon.icns"
 
