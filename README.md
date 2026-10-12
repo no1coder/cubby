@@ -5,7 +5,8 @@
 <h1 align="center">Cubby</h1>
 
 <p align="center">
-  A native, keyboard-first clipboard history for macOS that keeps everything on your Mac.
+  <b>Everything you copy, one keystroke away.</b><br>
+  A native, keyboard-first clipboard manager for macOS that never leaves your Mac.
 </p>
 
 <p align="center">
@@ -15,7 +16,7 @@
 </p>
 
 <p align="center">
-  <b>English</b> · <a href="README.zh-Hans.md">简体中文</a>
+  <b>English</b> · <a href="README.zh-Hans.md">简体中文</a> · <a href="README.zh-Hant.md">繁體中文</a> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a> · <a href="README.de.md">Deutsch</a> · <a href="README.fr.md">Français</a>
 </p>
 
 ```sh
@@ -28,76 +29,179 @@ Or download the notarized DMG from [Releases](https://github.com/no1coder/cubby/
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/screenshots/panel-dark.png">
     <source media="(prefers-color-scheme: light)" srcset="docs/assets/screenshots/panel-light.png">
-    <img src="docs/assets/screenshots/panel-light.png" width="380" alt="The Cubby panel showing text, link, color, code, image and file cards">
+    <img src="docs/assets/screenshots/panel-light.png" width="380" alt="The Cubby panel showing text, link, code, color, file and image cards">
   </picture>
 </p>
 
-Cubby sits in your menu bar and remembers what you copy: text, links, colors, images and files. Press <kbd>⇧⌘V</kbd>, type a few letters to find what you need, and press <kbd>↩</kbd> to paste it into the app you were using. Press <kbd>⇧⌘2</kbd> to take a screenshot, mark it up, and it lands in your history next to everything else you copied. It only goes online to check for a new version (once a day, and you can turn that off) or to translate with a language model you set up yourself.
+Cubby lives in your menu bar and remembers what you copy: text, links, code, colors, images and files. Press <kbd>⇧⌘V</kbd>, type a few letters and press <kbd>↩</kbd> to paste into the app you were using, without touching the mouse. It's built for people who copy and paste all day (developers, designers, writers, anyone juggling addresses and snippets) and want a fast tool that respects their privacy. Your history stays on your Mac; Cubby only goes online to check for a new version (once a day, and you can turn that off) or to translate with a language model you set up yourself.
+
+**Highlights**
+
+- **Instant search and paste.** Typed cards for links, code, colors and files, search that also reads text inside images, and paste with <kbd>↩</kbd> or <kbd>⌘1</kbd>–<kbd>⌘9</kbd>.
+- **Your layout.** A floating panel, a sidebar docked to the right edge, or a shelf of cards along the bottom; plus an image-only grid on <kbd>⌃⇧V</kbd>.
+- **Screenshots and markup.** <kbd>⇧⌘2</kbd> captures a window or area, lets you annotate it, and files it in your history.
+- **The clothesline.** Hang up to 12 images at the top of the screen and pull them down from the menu bar whenever you need them.
+- **Address guard.** Get warned when malware swaps a crypto address or card number you copied.
+- **Translation on macOS 26.** Translate clipboard items and screenshots in place, on-device or with your own model.
+
+## See it in action
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/assets/gifs/search-paste.gif" alt="Opening the Cubby panel with Shift-Command-V, typing a few letters to filter the history and pressing Return to paste the match into another app"><br>
+      <sub><b>Search and paste.</b> Type to find, <kbd>↩</kbd> to paste.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/assets/gifs/clothesline.gif" alt="Dragging down from the menu bar to slide down a clothesline of images, hovering over the photos, then clicking one to mark it up"><br>
+      <sub><b>Clothesline.</b> Drag down from the menu bar to reach your pinned images.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/assets/gifs/screenshot-annotate.gif" alt="Taking a screenshot with Shift-Command-2, selecting an area, adding a box, text and an arrow, then copying it"><br>
+      <sub><b>Screenshot and markup.</b> Capture, annotate, paste.</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/assets/gifs/address-guard.gif" alt="A copied Ethereum address being swapped in the clipboard and Cubby's warning comparing both addresses character by character with the differences in red"><br>
+      <sub><b>Address guard.</b> A swapped address is caught before you paste it.</sub>
+    </td>
+  </tr>
+</table>
 
 ## Features
 
-**Capture**
+**Capture and find**
 
-- Records text, links, HEX colors, images and files. Rich text keeps its RTF / HTML formatting.
-- Copying something again moves it back to the top instead of creating a duplicate.
-- Favorites never expire; everything else is trimmed to a history limit you choose (50 – 2,000 items, 500 by default).
-
-**Find**
-
-- A global shortcut (<kbd>⇧⌘V</kbd> by default, or record your own) opens a card panel, with Liquid Glass on macOS 26.
-- Cards look like their content: links show the page title, code shows its language with syntax colors, a color card shows the color with its HEX and rgb() values, and images show the whole picture. The list is grouped into Today, Yesterday and Earlier.
-- Just start typing to search. Matches are highlighted, every word must match, and file paths and source app names are searchable too. The best matches come first, starting with items that contain your exact phrase, and each category shows how many items match.
-- Find images, screenshots included, by the text in them. The text is recognized on your Mac and never uploaded, and you can turn this off in Settings › History.
-- Filter by Text, Links, Images, Files, Colors or Favorites with <kbd>⇥</kbd>.
-- <kbd>Space</kbd> or <kbd>⌘Y</kbd> opens a side preview with the full content.
-- <kbd>⌃⇧V</kbd> opens only your images, in a two-column grid.
-- The panel floats next to the pointer, under the menu bar icon or in the center of the screen, or docks to the right edge as a sidebar or to the bottom edge as a shelf of cards. Choose Light, Dark or Match System appearance.
+- Records text (rich text keeps its RTF / HTML formatting), links, HEX colors, images and files. Copying something again moves it back to the top. Favorites never expire; everything else is trimmed to a limit you choose (50 – 2,000 items, 500 by default).
+- Cards look like their content: links show the page title and full address, code shows its language with syntax colors, colors show HEX and rgb() values, images show the whole picture. Each card shows the source app, the time and its <kbd>⌘</kbd> number, grouped into Today, Yesterday and Earlier.
+- Just start typing to search. Every word must match, matches are highlighted, the best ones come first, and each category shows how many items match. File paths, source apps, link titles and text in images (recognized on your Mac) are searchable too.
+- Filter by Text, Links, Images, Files, Colors or Favorites with <kbd>⇥</kbd>. <kbd>Space</kbd> opens a side preview; <kbd>⌘B</kbd> (Pick Words) splits a text into word chips so you paste only the part you need.
+- Five panel positions: next to the pointer, under the menu bar icon, centered, docked to the right edge as a full-height sidebar, or docked to the bottom as a shelf of cards. <kbd>⌃⇧V</kbd> opens only your images in a grid. Light, Dark or Match System appearance; Liquid Glass on macOS 26.
 
 **Paste**
 
-- <kbd>↩</kbd> pastes into the app you were using; the footer shows which app that is.
-- <kbd>⇧↩</kbd> pastes in the other format (original ↔ plain text), <kbd>⌘↩</kbd> only copies.
+- <kbd>↩</kbd> pastes into the app you were using (the footer shows which), <kbd>⇧↩</kbd> pastes in the other format (original ↔ plain text), <kbd>⌘↩</kbd> only copies.
 - <kbd>⌘1</kbd> – <kbd>⌘9</kbd> paste one of the first nine items; any card can be dragged into another app.
-- <kbd>⌘⌫</kbd> deletes an item, <kbd>⌘Z</kbd> brings it back.
-- On macOS 26, <kbd>⌘T</kbd> translates the selected item in a card beside the panel, and <kbd>⌥↩</kbd> translates and pastes it in one step. See [Clipboard translation](#clipboard-translation).
+- Hover over a card to favorite, preview, delete or pin it. <kbd>⌘⌫</kbd> deletes, <kbd>⌘Z</kbd> brings it back.
 
 **Screenshots**
 
-- <kbd>⇧⌘2</kbd> freezes the screen so you can pick a window or drag out an area. Finished screenshots are copied to the clipboard **and saved to your clipboard history**, so you can find them and paste them again later, like anything else you copy.
-- Windows are detected as you hover. Where windows overlap, <kbd>⇥</kbd> or the scroll wheel steps through them one layer at a time, so even a mostly hidden window is one click away. Press <kbd>Space</kbd> for a clean capture of just that window, unobstructed, with its rounded corners and shadow.
-- Annotate with rectangles, ellipses, arrows, a pen, a highlighter, mosaic, text and numbered steps. Annotations stay editable until you finish: select one to move it, change its color or delete it.
-- Pin a screenshot to the screen as a floating window, save it as a PNG, or extract its text with on-device Vision OCR. Nothing goes online.
-- Pin any image from your history to the screen the same way with <kbd>⇧⌘P</kbd>, or hang up to 12 on a clothesline at the top of the screen with <kbd>⌘L</kbd>. Drag down from the menu bar (or rest the pointer at the top edge) to slide it down, then double-click a photo to copy it, drag it into an app, or click it to annotate.
-- On macOS 26, translate the text in a screenshot in place with <kbd>⇧⌘T</kbd>, using Apple's on-device translation (the default) or an OpenAI-compatible model such as DeepSeek, Qwen, Kimi or a local Ollama. See [Screenshot translation](#screenshot-translation).
-- A pixel magnifier shows the color under the pointer; press <kbd>C</kbd> to copy it.
+- <kbd>⇧⌘2</kbd> freezes the screen: hover to pick a window (<kbd>⇥</kbd> or scroll steps through overlapping ones), drag out an area, or press <kbd>Space</kbd> for a clean capture of just one window with its shadow.
+- Annotate with rectangles, ellipses, arrows, pen, highlighter, mosaic, text and numbered steps, all editable until you finish.
+- The result is copied **and saved to your history**. You can also pin it to the screen, save it as a PNG, or extract its text with on-device OCR. A magnifier copies the color under the pointer with <kbd>C</kbd>.
 
-**Private by design**
+**Clothesline**
 
-- History is stored only on your Mac and is excluded from Time Machine.
-- Skips content that password managers mark as concealed or transient, apps in your **Ignored Apps** list, and, by default, text that looks like an API key, private key or JWT.
-- Pause recording at any time from the menu bar; the panel shows a banner until you resume.
-- The address guard warns you when a crypto address or bank card number you copied is swapped for another one, shows the difference character by character, and won't paste the replaced value. It never clears your clipboard or intercepts <kbd>⌘V</kbd>.
-- No network access except a daily update check, which only reads the latest version number from GitHub (ticked by default on the welcome screen, and you can turn it off), and translating with a model you set up. No analytics, no telemetry. See [Privacy](#privacy).
+- Press <kbd>⌘L</kbd> on an image to hang it on a line at the top of the screen (up to 12). Drag down from an empty spot in the menu bar, rest the pointer at the top edge, press <kbd>⌃⌥T</kbd> or use the menu to slide it down.
+- Double-click a photo to copy it, drag it into an app, or click it to enlarge and annotate; **Done & Hang Back** saves the result as a new item and keeps the original. Photos on the line survive history trimming.
 
-**Native**
+**Address guard**
 
-- Swift 6 with SwiftUI and AppKit, zero third-party dependencies, Universal binary.
-- Menu bar only, no Dock icon. English and Simplified Chinese interface; it follows macOS by default, or pick one in Settings › General.
-- Works with VoiceOver, and follows Reduce Motion and Increase Contrast.
+- If a Bitcoin, Ethereum / EVM, TRON, Solana or Litecoin address, or a bank card number, you copied is replaced in the clipboard within seconds while the same app stays in front, a warning compares both values character by character with the differences in red. **Restore What I Copied** puts yours back.
+- The replacing item is marked red in your history and can't be pasted, copied or dragged. When you paste an address from Cubby, it checks the clipboard still matches first.
+- It never clears your clipboard or intercepts <kbd>⌘V</kbd>. Configure it in Settings › Security.
 
-| Translate a screenshot in place | Translate a clipboard item |
-| :---: | :---: |
-| <img src="docs/assets/screenshots/screenshot-translate-dark.png" alt="A screenshot of two English windows with every label and line replaced in place by its Chinese translation"> | <img src="docs/assets/screenshots/clipboard-translate-dark.png" alt="The translation card next to the panel, showing an English email and its Chinese translation paragraph by paragraph"> |
+**Translation** (macOS 26)
 
-<details>
-<summary><b>More screenshots</b></summary>
-<br>
+- <kbd>⌘T</kbd> translates the selected item in a card beside the panel; <kbd>⌥↩</kbd> translates and pastes in one step; hold <kbd>⌥</kbd> to preview a translation in the list.
+- <kbd>⇧⌘T</kbd> in a screenshot translates its text in place, block by block.
+- Uses Apple's on-device Translation by default, or any OpenAI-compatible model you set up (DeepSeek, Qwen, Kimi, Zhipu GLM, OpenAI, OpenRouter, a local Ollama or a custom URL). See [Translation](#translation).
 
-| Side preview | First launch | Privacy settings |
-| :---: | :---: | :---: |
-| <img src="docs/assets/screenshots/preview-dark.png" alt="Side preview next to the panel"> | <img src="docs/assets/screenshots/onboarding-dark.png" alt="First-launch guide with permission status"> | <img src="docs/assets/screenshots/settings-privacy-dark.png" alt="Privacy settings"> |
+**Privacy and polish**
 
-</details>
+- Local only, excluded from Time Machine, no analytics or telemetry. Skips password-manager content, apps you ignore, and text that looks like an API key, private key or JWT. Pause recording any time. See [Privacy](#privacy).
+- Swift 6 with SwiftUI and AppKit, zero third-party dependencies, Universal binary. Menu bar only, no Dock icon. English and Simplified Chinese interface. Works with VoiceOver, Reduce Motion and Increase Contrast.
+- A small blue dot on the menu bar icon tells you when a new version is out.
+
+## Design
+
+The v0.3 interface was designed as a set of mockups before it was built. They're shown here with the Chinese UI, and some details changed during implementation; the [user guide](docs/USER-GUIDE.md) describes the shipping app. All mockups are in [docs/design/ui-upgrade](docs/design/ui-upgrade).
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/design/ui-upgrade/MainLight.png">
+        <img src="docs/design/ui-upgrade/Main.png" width="280" alt="Mockup of the floating panel: search field, category bar, typed cards for a note, a GitHub link, Swift code, a color and an image, with a right-click menu">
+      </picture><br>
+      <sub>Floating panel with typed cards</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/design/ui-upgrade/Search.png" width="280" alt="Mockup of search: highlighted matches with per-category counts, a no-results state offering to search for the first word only, and the empty-history state"><br>
+      <sub>Search, no results and empty states</sub>
+    </td>
+    <td align="center" width="33%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/design/ui-upgrade/ImageGridLight.png">
+        <img src="docs/design/ui-upgrade/ImageGrid.png" width="280" alt="Mockup of the Only Images view: a two-column grid of screenshots and photos with a hover toolbar">
+      </picture><br>
+      <sub>Only images (<kbd>⌃⇧V</kbd>)</sub>
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/design/ui-upgrade/DockRightLight.png">
+        <img src="docs/design/ui-upgrade/DockRight.png" width="420" alt="Mockup of the panel docked to the right edge as a full-height sidebar next to a Notes window">
+      </picture><br>
+      <sub>Docked to the right edge</sub>
+    </td>
+    <td align="center" width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/design/ui-upgrade/DockBottomLight.png">
+        <img src="docs/design/ui-upgrade/DockBottom.png" width="420" alt="Mockup of the panel docked to the bottom edge as a shelf of cards, with the preview open above the selected image card">
+      </picture><br>
+      <sub>Docked to the bottom edge</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/design/ui-upgrade/ClotheslineLight.png">
+        <img src="docs/design/ui-upgrade/Clothesline.png" width="420" alt="Mockup of the clothesline: four photos pegged on a line at the top of the screen, with the hint click to edit, double-click to copy, drag to an app">
+      </picture><br>
+      <sub>The clothesline</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/design/ui-upgrade/ClotheslineEdit.png" width="420" alt="Mockup of an enlarged clothesline photo being annotated with a box, an arrow, numbered steps, text and mosaic, with Copy and Done and Hang Back buttons"><br>
+      <sub>Annotating a photo from the line</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/design/ui-upgrade/TamperAlert.png" width="420" alt="Mockup of the address guard warning: the copied Ethereum address and the replacing one compared character by character, with the differences in red"><br>
+      <sub>Address guard warning</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/design/ui-upgrade/Preview.png" width="420" alt="Mockup of the side preview next to the panel: a rich-text note shown in full with Translate, Paste as Plain Text and Paste buttons"><br>
+      <sub>Side preview (Space)</sub>
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/design/ui-upgrade/Onboarding.png" width="280" alt="Mockup of step 3 of the welcome guide: choose a floating panel, a right sidebar or a bottom shelf, and the appearance"><br>
+      <sub>Four-step welcome guide</sub>
+    </td>
+    <td align="center" width="33%">
+      <picture>
+        <source media="(prefers-color-scheme: light)" srcset="docs/design/ui-upgrade/SettingsLight.png">
+        <img src="docs/design/ui-upgrade/Settings.png" width="280" alt="Mockup of Settings with a sidebar, showing General: appearance, shortcuts, five panel positions and clothesline options">
+      </picture><br>
+      <sub>Settings with a sidebar</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/design/ui-upgrade/MenuBar.png" width="280" alt="Mockup of the menu bar menu: status line, open clipboard, only images, screenshot, clothesline, and the Panel Position submenu"><br>
+      <sub>Menu bar menu</sub>
+    </td>
+  </tr>
+</table>
 
 ## Install
 
@@ -133,126 +237,97 @@ The [user guide](docs/USER-GUIDE.md) walks through every feature step by step. I
 
 ## First launch and permissions
 
-On first launch Cubby opens a four-step guide where you allow two permissions (their status updates live), choose where the panel appears and its appearance, and set the panel and screenshot shortcuts. You can reopen it any time with **Setup Guide…** in the menu bar icon's right-click menu. A third permission, Screen Recording, is only needed for screenshots, so the guide doesn't ask for it: Cubby asks the first time you take a screenshot.
+On first launch a four-step guide (Welcome, Permissions, Choose a Style, Shortcut) asks for two permissions, lets you pick the panel layout and appearance, and sets your shortcuts. Reopen it any time with **Setup Guide…** in the menu bar icon's right-click menu.
 
-**Clipboard access on macOS 15.4 and later.** Click **Grant Access** in the guide (or in Settings › Privacy) and macOS asks right away; choose **Allow Paste**. If nothing happens, copy something first and click again. The prompt has no "always allow" choice, so macOS would keep asking every time you copy: set Cubby to **Allow** in System Settings › Privacy & Security › Paste from Other Apps (called Paste before macOS 26). Once macOS has asked, the button changes to **Open System Settings** and takes you there.
+**Clipboard access on macOS 15.4 and later.** Click **Grant Access** in the guide (or in Settings › Privacy) and choose **Allow Paste**. If nothing happens, copy something first and click again. The prompt has no "always allow" choice, so also set Cubby to **Allow** in System Settings › Privacy & Security › Paste from Other Apps (called Paste before macOS 26); once macOS has asked, the button changes to **Open System Settings** and takes you there.
 
 | Permission | Why Cubby needs it | Where to grant it |
 | --- | --- | --- |
-| **Clipboard access** (macOS 15.4 and later) | To read what you copy. Without it macOS keeps asking, or nothing gets recorded. | Click **Grant Access** and choose **Allow Paste**, then System Settings › Privacy & Security › Paste from Other Apps (Paste before macOS 26) → set Cubby to **Allow** |
-| **Accessibility** | To paste directly by sending <kbd>⌘V</kbd> to the frontmost app. Without it, choosing an item only copies it to the clipboard. | System Settings › Privacy & Security › Accessibility → turn on **Cubby** |
-| **Screen Recording** (only for screenshots) | To capture the screen when you take a screenshot. It's never used at launch or in the background, and clipboard history works without it. | System Settings › Privacy & Security › Screen & System Audio Recording (Screen Recording on macOS 14) → turn on **Cubby** |
+| **Clipboard access** (macOS 15.4 and later) | To read what you copy. Without it macOS keeps asking, or nothing gets recorded. | Click **Grant Access** and choose **Allow Paste**, then System Settings › Privacy & Security › Paste from Other Apps → set Cubby to **Allow** |
+| **Accessibility** | To paste by sending <kbd>⌘V</kbd> to the frontmost app. Without it, choosing an item only copies it. | System Settings › Privacy & Security › Accessibility → turn on **Cubby** |
+| **Screen Recording** (only for screenshots) | To capture the screen when you take a screenshot. Never used at launch or in the background. Cubby asks the first time you take one. | System Settings › Privacy & Security › Screen & System Audio Recording (Screen Recording on macOS 14) → turn on **Cubby** |
+| **Input Monitoring** (optional) | Helps the address guard tell your own <kbd>⌘C</kbd> / <kbd>⌘X</kbd> from a replacement. It only notices those two shortcuts, never what you type. | Settings › Security › **Grant Access**, or System Settings › Privacy & Security › Input Monitoring |
 
-After you turn on Screen Recording, macOS may ask you to quit and reopen Cubby before screenshots work; the **Quit & Reopen Cubby** button in Cubby's Screen Recording window does both. Settings › Privacy shows the status of all three permissions.
+After you turn on Screen Recording, macOS may ask you to quit and reopen Cubby; the **Quit & Reopen Cubby** button in Cubby's Screen Recording window does both.
 
-Click the menu bar icon to open the panel; right-click (or Control-click) it for Only Images, screenshots, the clothesline, panel position, appearance, pause, clear history, settings and quit.
+Click the menu bar icon to open the panel. Right-click (or Control-click) it for its status, Only Images, Take Screenshot, Show Clothesline, Panel Position, Appearance, Pause Recording, Clear History, User Guide, Setup Guide, Check for Updates, Settings and Quit.
 
 ## Keyboard shortcuts
 
 | Key | Action |
 | --- | --- |
-| <kbd>⇧⌘V</kbd> | Open or close the panel (global, customizable in Settings › General) |
-| <kbd>⌃⇧V</kbd> | Open the panel on your images only (global, customizable or off in Settings › General) |
-| <kbd>⌃⌥T</kbd> | Show or hide the clothesline (global, customizable or off in Settings › General) |
+| <kbd>⇧⌘V</kbd> | Open or close the panel (global, customizable) |
+| <kbd>⌃⇧V</kbd> | Open the panel on your images only (global, customizable or off) |
+| <kbd>⌃⌥T</kbd> | Show or hide the clothesline (global, customizable or off) |
+| <kbd>⇧⌘2</kbd> | Take a screenshot (global, customizable or off) |
 | Type anything | Search |
-| <kbd>↑</kbd> <kbd>↓</kbd> or <kbd>⌃P</kbd> <kbd>⌃N</kbd> | Move the selection |
-| <kbd>⌥↑</kbd> <kbd>⌥↓</kbd> or <kbd>Home</kbd> <kbd>End</kbd> | Jump to the first / last item |
-| <kbd>Page Up</kbd> <kbd>Page Down</kbd> | Move up / down 5 items |
-| <kbd>←</kbd> <kbd>→</kbd> | Move the selection in the image grid or the bottom shelf |
+| <kbd>↑</kbd> <kbd>↓</kbd> (<kbd>←</kbd> <kbd>→</kbd> in the image grid and bottom shelf) | Move the selection |
 | <kbd>↩</kbd> or double-click | Paste into the current app |
-| <kbd>⇧↩</kbd> | Paste in the other format (original ↔ plain text) |
-| <kbd>⌘↩</kbd> | Copy only, don't paste |
+| <kbd>⇧↩</kbd> / <kbd>⌘↩</kbd> | Paste in the other format / copy only |
 | <kbd>⌘1</kbd> – <kbd>⌘9</kbd> | Paste item 1 – 9 |
-| <kbd>⌘T</kbd> | Translate the selected item (macOS 26); press again to close the translation card |
-| <kbd>⌥↩</kbd> | Translate and paste (macOS 26) |
 | <kbd>Space</kbd> / <kbd>⌘Y</kbd> | Toggle the preview (<kbd>Space</kbd> only while the search field is empty) |
 | <kbd>⇥</kbd> / <kbd>⇧⇥</kbd> | Next / previous category |
+| <kbd>⌘B</kbd> | Pick Words |
 | <kbd>⌘P</kbd> | Favorite / unfavorite |
 | <kbd>⇧⌘P</kbd> | Pin the selected image to the screen |
 | <kbd>⌘L</kbd> | Hang the selected image on the clothesline, or take it down |
-| <kbd>⌘⌫</kbd> | Delete |
-| <kbd>⌘Z</kbd> | Undo delete |
+| <kbd>⌘T</kbd> / <kbd>⌥↩</kbd> / hold <kbd>⌥</kbd> | Translate / translate and paste / preview the translation (macOS 26) |
+| <kbd>⌘⌫</kbd> / <kbd>⌘Z</kbd> | Delete / undo delete |
 | <kbd>⌘O</kbd> | Open the link or file |
 | <kbd>⌘,</kbd> | Settings |
-| <kbd>esc</kbd> | Close help or preview → clear search → close the panel |
+| <kbd>esc</kbd> | Step back: close help or preview → clear search → close the panel |
 
-The keyboard button at the right of the panel footer shows this list inside the app, and right-clicking a card lists its actions with their shortcuts.
-
-## Clipboard translation
-
-On macOS 26, select an item in the panel and press <kbd>⌘T</kbd> (or <kbd>⇧⌘T</kbd>). A translation card opens beside the panel and fills in paragraph by paragraph. Rich text keeps its headings, lists, bold text and links, and inline code isn't translated. Images are translated in place, like screenshots. While the card is open, it follows your selection. In the card, <kbd>↩</kbd> pastes the translation, <kbd>⇧↩</kbd> pastes it as plain text, <kbd>⌘C</kbd> copies it and <kbd>⌘S</kbd> saves it as a new item. Copying or pasting a translation doesn't add it to your history.
-
-<p align="center">
-  <img src="docs/assets/screenshots/clipboard-translate-image-dark.png" width="640" alt="An English app screenshot from the history translated into Chinese in the translation card, with the panel beside it">
-</p>
-
-- <kbd>⌥↩</kbd> translates the selected item and pastes the translation in one step.
-- Hold <kbd>⌥</kbd> on an item to preview its translation in the list, and release it to go back. Pressing <kbd>↩</kbd> while you hold it pastes what you see.
-- The card's language menu can remember a target language for the app you're pasting into, for example always English when pasting into Slack. Settings › Translation lists these apps.
-- Translations are saved with the item, so they show up instantly the next time, and search finds items by their translations too. **Settings › Translation › Clear All Translations…** deletes them.
-- **Translate text when you copy it** (Settings › Translation, off by default) translates foreign text as you copy it, with System Translation on your Mac. It only works for languages you've already downloaded, and it never downloads a language or goes online.
-
-Clipboard translation uses the engine you chose for screenshots (see [Screenshot translation](#screenshot-translation)). With a large language model, only the text of the item you translate is sent (for an image, the text recognized in it). Text that looks like a secret is sent only after you confirm it, and never from an image.
-
-## Screenshots
-
-Press <kbd>⇧⌘2</kbd>, choose **Take Screenshot** from the menu bar icon's right-click menu, or click the camera button in the panel. The screen freezes and the window under the pointer lights up: click to select it, or drag to select an area. Fine-tune the selection with its handles, draw on it with the toolbar, then press <kbd>↩</kbd>. The screenshot is copied to the clipboard and saved to your history, and the app you were using stays in front, so you can paste it right away.
-
-<p align="center">
-  <img src="docs/assets/screenshots/screenshot-annotate-dark.png" width="640" alt="Annotating a screenshot: the selection with annotations and the toolbar below it">
-</p>
+<details>
+<summary><b>Screenshot shortcuts</b></summary>
+<br>
 
 | Key | Action |
 | --- | --- |
-| <kbd>⇧⌘2</kbd> | Take a screenshot (global, customizable in Settings › Screenshots) |
 | Click / drag | Select the highlighted window or screen / select an area |
 | <kbd>⇥</kbd> / <kbd>⇧⇥</kbd> or scroll | Step through overlapping windows under the pointer, down to the whole screen |
-| <kbd>Space</kbd> | Window mode: a click or <kbd>↩</kbd> then captures only the highlighted window, unobstructed, with its shadow (<kbd>⌥</kbd>-click leaves out the shadow). Press <kbd>Space</kbd> again to leave |
+| <kbd>Space</kbd> | Window mode: capture only the highlighted window, unobstructed, with its shadow (<kbd>⌥</kbd>-click leaves out the shadow) |
 | Hold <kbd>⇧</kbd> / <kbd>⌥</kbd> / <kbd>Space</kbd> while dragging | Square selection / grow from the center / move the selection |
 | <kbd>⌘A</kbd> | Select the whole screen |
-| <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> | Move the selection, or the selected annotation, by 1 pt (10 pt with <kbd>⇧</kbd>) |
-| <kbd>R</kbd> <kbd>O</kbd> <kbd>A</kbd> <kbd>P</kbd> <kbd>H</kbd> <kbd>M</kbd> <kbd>T</kbd> <kbd>N</kbd> | Rectangle, ellipse, arrow, pen, highlighter, mosaic, text, number. Press the same key again, or <kbd>V</kbd>, to go back to the pointer |
+| <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> | Move the selection or the selected annotation by 1 pt (10 pt with <kbd>⇧</kbd>) |
+| <kbd>R</kbd> <kbd>O</kbd> <kbd>A</kbd> <kbd>P</kbd> <kbd>H</kbd> <kbd>M</kbd> <kbd>T</kbd> <kbd>N</kbd> | Rectangle, ellipse, arrow, pen, highlighter, mosaic, text, number (same key or <kbd>V</kbd> returns to the pointer) |
 | <kbd>⌫</kbd> | Delete the selected annotation |
 | <kbd>⌘Z</kbd> / <kbd>⇧⌘Z</kbd> | Undo / redo annotations |
-| <kbd>C</kbd> | Copy the color under the magnifier (hold <kbd>⇧</kbd> to show RGB instead of HEX) |
+| <kbd>C</kbd> | Copy the color under the magnifier (hold <kbd>⇧</kbd> for RGB) |
 | <kbd>↩</kbd>, <kbd>⌘C</kbd> or double-click | Done: copy to the clipboard and history |
-| <kbd>⌘S</kbd> | Save as a PNG: a save dialog lets you pick the folder and file name. Cancel it to go back to your screenshot with its annotations |
+| <kbd>⌘S</kbd> | Save as a PNG |
 | <kbd>⌘P</kbd> | Pin to the screen |
 | <kbd>⌘T</kbd> | Extract text and copy it |
-| <kbd>⇧⌘T</kbd> | Translate the text in the selection (macOS 26). Once translated, switch between the original and the translation |
-| Right-click | Clear the selection and select again (annotations stay); with no selection, cancel |
-| <kbd>esc</kbd> | Cancel. Once you've drawn something, press <kbd>esc</kbd> twice to discard it |
+| <kbd>⇧⌘T</kbd> | Translate the text in the selection (macOS 26) |
+| Right-click | Clear the selection and select again; with no selection, cancel |
+| <kbd>esc</kbd> | Cancel (press twice once you've drawn something) |
 
-While you type in a text box, <kbd>esc</kbd> or <kbd>⌘↩</kbd> finishes the text instead of canceling, so input methods keep working.
+</details>
 
-A pinned screenshot floats above your windows. Drag it to move it, scroll or pinch to zoom, press <kbd>⌘0</kbd> for actual size, and right-click it to copy, save or change its opacity. Double-click it or press <kbd>esc</kbd> to close it. Images already in your history can be pinned too: select one in the panel and press <kbd>⇧⌘P</kbd>, or choose **Pin to Screen** from its right-click menu or the preview, and it appears in the middle of the screen.
+The keyboard button in the panel footer shows the shortcut list inside the app, and right-clicking a card lists its actions. The [user guide](docs/USER-GUIDE.md#shortcut-reference) has the complete reference, including the clothesline, the translation card and pinned images.
 
-In Settings › Screenshots you can change or turn off the shortcut and choose the save folder; by default it's the same folder as macOS screenshots. The save dialog starts in the folder you used last. Turn off **Ask where to save each time** to have <kbd>⌘S</kbd> save straight to that folder without a dialog. While recording is paused, screenshots still work but aren't added to your history. The first screenshot asks for the Screen Recording permission (see [First launch and permissions](#first-launch-and-permissions)).
+## Translation
 
-### Screenshot translation
+On macOS 26, select an item in the panel and press <kbd>⌘T</kbd>: a translation card opens beside the panel and fills in paragraph by paragraph, keeping headings, lists, bold text and links. In a screenshot, <kbd>⇧⌘T</kbd> draws each translation where the original text was; hold <kbd>Space</kbd> to peek at the original or drag the divider to compare.
 
-On macOS 26, click **Translate** in the screenshot toolbar or press <kbd>⇧⌘T</kbd>. Cubby recognizes the text in the selection, translates it block by block and draws each translation where the original was. Hold <kbd>Space</kbd> to peek at the original, or use the slider to compare. Copying and saving use whichever version the Original / Translation switch shows.
-
-<p align="center">
-  <img src="docs/assets/screenshots/screenshot-translate-compare-dark.png" width="640" alt="Comparing a translated screenshot: the original English on the left of the divider, the Chinese translation on the right">
-</p>
+| Translate a screenshot in place | Translate a clipboard item |
+| :---: | :---: |
+| <img src="docs/assets/screenshots/screenshot-translate-dark.png" alt="A screenshot of two English windows with every label and line replaced in place by its Chinese translation"> | <img src="docs/assets/screenshots/clipboard-translate-dark.png" alt="The translation card next to the panel, showing an English email and its Chinese translation paragraph by paragraph"> |
 
 Choose the engine in **Settings › Translation**:
 
-- **System Translation** (default): Apple's built-in Translation. It runs on your Mac and works offline. The first time you translate a language, macOS asks to download its language pack; Cubby shows that prompt, and you decide.
-- **Large language model**: any service with an OpenAI-compatible Chat Completions API. Presets: DeepSeek, Qwen (Alibaba Cloud Model Studio, China and international endpoints), Kimi (Moonshot AI), Zhipu GLM (and Z.ai), OpenAI, OpenRouter, Ollama on your Mac, or a custom base URL. Pick a model from the list (**Refresh**) or type its name, then click **Test Connection**. These settings appear once you choose **Large Language Model** as the engine; from then on translations use the model, and you can switch back to system translation at any time.
+- **System Translation** (default): Apple's built-in Translation, on your Mac and offline. macOS asks before downloading a language pack.
+- **Large language model**: any OpenAI-compatible Chat Completions service. Presets for DeepSeek, Qwen (Alibaba Cloud Model Studio), Kimi (Moonshot AI), Zhipu GLM (and Z.ai), OpenAI, OpenRouter and Ollama on your Mac, or a custom base URL.
 
-Your API key is stored in the macOS login Keychain, one entry per provider. It never goes into preferences, history or logs, and Settings only shows its last four characters. When you translate with a model, only the text recognized in the selection is sent, to the service you chose. The image is never uploaded, and text under mosaic or text that looks like a secret is never sent. Remote services must use HTTPS; plain HTTP is only allowed for `localhost`.
+Your API key is stored in the macOS login Keychain, never in preferences, history or logs. With a model, only the text you translate is sent (for an image or screenshot, the text recognized in it); the image itself is never uploaded, text under mosaic is never sent, and text that looks like a secret is sent only after you confirm (never from an image). Remote services must use HTTPS; plain HTTP is only allowed for `localhost`.
 
 ## Privacy
 
-- **Local only.** History lives in `~/Library/Application Support/Cubby`: the folder is readable only by you (0700), files are 0600, and the folder is excluded from Time Machine.
+- **Local only.** History lives in `~/Library/Application Support/Cubby`: the folder is readable only by you (0700), files are 0600, and it's excluded from Time Machine.
 - **Skips sensitive content.** Items marked concealed or transient (as password managers do), apps in your Ignored Apps list (Settings › Privacy), and, unless you turn it off, text that looks like an API key, private key or JWT.
 - **Pastes where you expect.** Cubby checks that the target app is still frontmost before sending <kbd>⌘V</kbd>, and that an address it's about to paste is still the one in your clipboard.
-- **Address guard stays local.** It only notices <kbd>⌘C</kbd> and <kbd>⌘X</kbd> if you allow Input Monitoring, never what you type, and its security log stays on your Mac with shortened values only.
-- **Screenshots stay on your Mac.** The screen is captured only when you take a screenshot. While you select and annotate, the image stays in memory, and canceling leaves nothing behind. Text is recognized on your Mac with Apple's Vision framework.
-- **Image text stays local.** To make images searchable, text in them is recognized on your Mac and kept only in your history file. Turning off Settings › History › Search text in images deletes it.
-- **Online only for updates and the translation service you set up.** The automatic update check (once a day, ticked by default on the welcome screen, and you can turn it off in Settings › General) and **Check for Updates** only read the latest version number from `api.github.com/repos/no1coder/cubby/releases/latest` and upload nothing. Screenshot translation with a large language model sends the text recognized in the selection, and nothing else, to the service you set up; translating a clipboard item with it sends that item's text. System Translation, and translating when you copy, stay on your Mac.
+- **Address guard stays local.** With Input Monitoring it only notices <kbd>⌘C</kbd> and <kbd>⌘X</kbd>, never what you type, and its security log stays on your Mac with shortened values only.
+- **Screenshots and image text stay on your Mac.** The screen is captured only when you take a screenshot, and canceling leaves nothing behind. Text in images is recognized on your Mac with Apple's Vision framework and kept only in your history file.
+- **Online only for updates and the translation service you set up.** The update check (once a day, on by default, off in Settings › General) only reads the latest version number from `api.github.com/repos/no1coder/cubby/releases/latest` and uploads nothing. A language model you configure receives only the text you translate.
 - **No analytics, no telemetry, no crash reporting.**
 
 Full details in [PRIVACY.md](PRIVACY.md).
@@ -286,6 +361,13 @@ If the check fails, delete the app, download it again and [open an issue](https:
 </details>
 
 <details>
+<summary><b>Cubby warned me that an address was replaced. What should I do?</b></summary>
+
+The clipboard changed to another address or card number of the same kind right after you copied one, while the same app stayed in front. Compare the two values in the warning. If you didn't make the change, click **Restore What I Copied** and check your Mac for software you don't recognize; if you did (for example, you quickly copied a second address in the same app), click **I Changed It Myself**. Allowing Input Monitoring in Settings › Security helps Cubby tell your own copies apart.
+
+</details>
+
+<details>
 <summary><b>Where is my data stored?</b></summary>
 
 - History: `~/Library/Application Support/Cubby` (`history.json` plus an `Images` folder)
@@ -299,7 +381,7 @@ Settings › History can reveal the folder in Finder. See [PRIVACY.md](PRIVACY.m
 <details>
 <summary><b>Can I export or back up my history?</b></summary>
 
-Not yet. Import and export are planned for v0.3 (see the [roadmap](docs/ROADMAP.md)). The data folder is excluded from Time Machine on purpose, because clipboards often contain sensitive content. Until export ships, you can quit Cubby and copy `~/Library/Application Support/Cubby` manually. Keep in mind that the copy contains everything you have copied, unencrypted.
+Not yet; import and export are on the [roadmap](docs/ROADMAP.md). The data folder is excluded from Time Machine on purpose, because clipboards often contain sensitive content. Until export ships, you can quit Cubby and copy `~/Library/Application Support/Cubby` manually. Keep in mind that the copy contains everything you have copied, unencrypted.
 
 </details>
 
@@ -328,7 +410,7 @@ Bug reports, translations and pull requests are welcome. [CONTRIBUTING.md](CONTR
 
 ## Roadmap
 
-See [docs/ROADMAP.md](docs/ROADMAP.md). Planned for v0.3: automatic cleanup by age, multi-select and merged paste, a paste queue, text transforms, editing before pasting, Quick Look and import / export. Later screenshot improvements include selecting UI elements by holding <kbd>⌥</kbd> and restoring the last selection. Release notes are in [CHANGELOG.md](CHANGELOG.md).
+v0.3 brought docked layouts, the image grid, the clothesline, the address guard, Pick Words and a redesigned panel, settings and welcome guide. Still planned: automatic cleanup by age, multi-select and merged paste, a paste queue, text transforms, editing before pasting, Quick Look and import / export; for screenshots, selecting UI elements by holding <kbd>⌥</kbd> and restoring the last selection. See [docs/ROADMAP.md](docs/ROADMAP.md) for details and [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ## License
 
