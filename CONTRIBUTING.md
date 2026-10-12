@@ -114,6 +114,12 @@ Add `--light` or `--dark` to force an appearance (it overrides **Settings › Ge
 CUBBY_DATA_DIR=/tmp/cubby-demo .build/debug/Cubby --scenario search:swift --light
 ```
 
+Add `--demo-history` to fill the panel with made-up items that mirror the design boards in `docs/design/ui-upgrade` (notes, a link, code, colors, images and a file). It **requires `CUBBY_DATA_DIR`**, replaces the history in that folder, and doesn't record your clipboard while it runs:
+
+```sh
+CUBBY_DATA_DIR=/tmp/cubby-demo .build/debug/Cubby --demo-history --scenario category:image --dark
+```
+
 Add `--lock-input` to ignore your mouse and keyboard while a scenario is on screen, so a stray click or <kbd>↩</kbd> can't change it (or copy a screenshot to your clipboard) while you capture it. Quit with `kill` or Activity Monitor.
 
 To see the Simplified Chinese interface, run a debug build from an app bundle with the compiled string catalog (the bare executable only shows English), for example with a separate bundle ID such as `io.github.no1coder.Cubby.devshots` so it doesn't share preferences or permissions with your installed copy. Capture only Cubby's own windows (`screencapture -o -l <window ID>`), never the whole screen.

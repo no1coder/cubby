@@ -48,6 +48,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.terminate(nil)
             return
         }
+        // 设计稿走查：写入演示历史（同样只写 CUBBY_DATA_DIR）
+        if DesignDemoHistory.isRequested, !DesignDemoHistory.seed() {
+            logger.error("Could not write the design demo history (it needs CUBBY_DATA_DIR)")
+            NSApp.terminate(nil)
+            return
+        }
         #endif
         let panel = makeComponents()
 
@@ -59,7 +65,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         .contains {
             Self.debugScenario?.hasPrefix($0) == true
         }
-        if !skipsClipboard { monitor?.start() }
+        // 演示历史只用于截图：不记录剪贴板
+        if !skipsClipboard, !DesignDemoHistory.isRequested { monitor?.start() }
         #else
         monitor?.start()
         #endif
