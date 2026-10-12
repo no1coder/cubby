@@ -12,6 +12,8 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+## [0.3.1] - 2026-10-13
+
 ### Fixed
 
 - **Screenshots include Cubby itself**: the panel, the clothesline, pinned images, Settings and the menu bar icon now appear in screenshots instead of being left out, so you can capture Cubby too. Pressing the screenshot shortcut no longer hides the open panel; Cubby's windows like Settings can be picked by hovering, like any other window.
@@ -132,7 +134,8 @@ Internal preview under the working name Zhantie. Not publicly released.
 
 - Menu bar clipboard history with a global shortcut to open it.
 
-[Unreleased]: https://github.com/no1coder/cubby/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/no1coder/cubby/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/no1coder/cubby/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/no1coder/cubby/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/no1coder/cubby/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/no1coder/cubby/releases/tag/v0.2.0
