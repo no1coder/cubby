@@ -106,9 +106,7 @@ struct ScreenshotShortcutRecorder: View {
             optionalHotKey: $settings.screenshotHotKey,
             defaultHotKey: .screenshotDefault,
             allowsClearing: allowsTurningOff,
-            reservations: [
-                .init(hotKey: settings.hotKey, message: ShortcutReservationCopy.panel)
-            ],
+            reservations: HotKeyReservations.excluding(.screenshot, settings: settings),
             onRecordingChange: onRecordingChange
         )
     }

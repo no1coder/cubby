@@ -129,6 +129,37 @@ struct AppSettingsPanelLayoutTests {
         }
     }
 
+    @Test("从未设置过时，默认 ⌃⇧V 已被面板或截图快捷键占用：视为关闭，不与自己的快捷键撞键")
+    func defaultYieldsToExistingShortcuts() throws {
+        try withIsolatedDefaults { defaults in
+            defaults.set(try JSONEncoder().encode(HotKey.imagesDefault), forKey: "hotKey")
+            #expect(AppSettings(defaults: defaults).imagesHotKey == nil)
+        }
+        try withIsolatedDefaults { defaults in
+            defaults.set(try JSONEncoder().encode(HotKey.imagesDefault), forKey: "screenshotHotKey")
+            #expect(AppSettings(defaults: defaults).imagesHotKey == nil)
+        }
+    }
+
+    @Test("用户明确设成 ⌃⇧V 时照样读回（冲突由设置里的录制器拦下，不在这里改写）")
+    func explicitChoiceIsKept() throws {
+        try withIsolatedDefaults { defaults in
+            defaults.set(try JSONEncoder().encode(HotKey.imagesDefault), forKey: "imagesHotKey")
+            defaults.set(try JSONEncoder().encode(customHotKey), forKey: "hotKey")
+            #expect(AppSettings(defaults: defaults).imagesHotKey == .imagesDefault)
+        }
+    }
+
+    @Test("晾衣绳的默认 ⌃⌥T 被其他快捷键占用时同样视为关闭")
+    func clotheslineDefaultYields() throws {
+        try withIsolatedDefaults { defaults in
+            defaults.set(try JSONEncoder().encode(HotKey.clotheslineDefault), forKey: "imagesHotKey")
+            let settings = AppSettings(defaults: defaults)
+            #expect(settings.imagesHotKey == .clotheslineDefault)
+            #expect(settings.clotheslineHotKey == nil)
+        }
+    }
+
     @Test("与其他可关闭的快捷键各用各的禁用标志")
     func disabledFlagsAreIndependent() {
         withIsolatedDefaults { defaults in
@@ -138,6 +169,51 @@ struct AppSettingsPanelLayoutTests {
             #expect(reloaded.screenshotHotKey == .screenshotDefault)
             #expect(reloaded.clotheslineHotKey == .clotheslineDefault)
             #expect(reloaded.hotKey == .default)
+        }
+    }
+}
+
+/// 按动作读写全局快捷键（设置里的冲突检查、热键注册失败时的回退共用）
+@Suite("AppSettings 按动作读写快捷键")
+@MainActor
+struct AppSettingsHotKeyActionTests {
+    private let custom = HotKey(keyCode: UInt32(kVK_ANSI_J), modifiers: UInt32(controlKey | optionKey), keyLabel: "J")
+
+    @Test("每个动作读到对应的快捷键", arguments: HotKeyAction.allCases)
+    func reading(_ action: HotKeyAction) {
+        withIsolatedDefaults { defaults in
+            let settings = AppSettings(defaults: defaults)
+            let expected: HotKey? =
+                switch action {
+                case .togglePanel: .default
+                case .screenshot: .screenshotDefault
+                case .images: .imagesDefault
+                case .clothesline: .clotheslineDefault
+                }
+            #expect(settings.hotKey(for: action) == expected)
+        }
+    }
+
+    @Test("按动作写入后可读回，且不影响其他动作", arguments: HotKeyAction.allCases)
+    func writing(_ action: HotKeyAction) {
+        withIsolatedDefaults { defaults in
+            let settings = AppSettings(defaults: defaults)
+            settings.setHotKey(custom, for: action)
+            #expect(AppSettings(defaults: defaults).hotKey(for: action) == custom)
+            for other in HotKeyAction.allCases where other != action {
+                #expect(settings.hotKey(for: other) != custom)
+            }
+        }
+    }
+
+    @Test("面板快捷键不可关闭：写入 nil 被忽略；其他动作写入 nil 即关闭")
+    func clearing() {
+        withIsolatedDefaults { defaults in
+            let settings = AppSettings(defaults: defaults)
+            settings.setHotKey(nil, for: .togglePanel)
+            #expect(settings.hotKey(for: .togglePanel) == .default)
+            settings.setHotKey(nil, for: .images)
+            #expect(settings.hotKey(for: .images) == nil)
         }
     }
 }

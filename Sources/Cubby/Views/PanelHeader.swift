@@ -10,8 +10,11 @@ struct PanelHeader: View {
         VStack(spacing: 10) {
             // 搜索框可以收缩：长占位文字或大字号下不能把右侧按钮挤出面板
             HStack(spacing: 4) {
-                SearchField(text: $viewModel.searchText, isFocused: isSearchFocused)
-                    .layoutPriority(-1)
+                SearchField(
+                    text: $viewModel.searchText, isFocused: isSearchFocused,
+                    searchesImages: viewModel.category == .image && viewModel.settings.indexesImageText
+                )
+                .layoutPriority(-1)
                 LayoutButton(layout: viewModel.layout) { viewModel.cycleLayout() }
                 HeaderIconButton(
                     systemName: "camera.viewfinder",
@@ -55,13 +58,15 @@ struct PanelHeader: View {
 struct SearchField: View {
     @Binding var text: String
     var isFocused: FocusState<Bool>.Binding
+    /// 「图片」分类：提示可以按图中识别出的文字搜索
+    var searchesImages = false
 
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: FontSize.title, weight: .medium))
                 .foregroundStyle(.secondary)
-            TextField("Search clipboard", text: $text)
+            TextField(placeholder, text: $text)
                 .textFieldStyle(.plain)
                 .font(.system(size: FontSize.callout))
                 .focused(isFocused)
@@ -85,6 +90,14 @@ struct SearchField: View {
         .frame(height: PanelMetrics.controlHeight)
         .background(FieldBackground(cornerRadius: Radius.field))
         .animation(.easeOut(duration: 0.12), value: text.isEmpty)
+    }
+}
+
+extension SearchField {
+    fileprivate var placeholder: String {
+        searchesImages
+            ? String(localized: "Search images by text", comment: "Search field placeholder in the Images category")
+            : String(localized: "Search clipboard", comment: "Search field placeholder")
     }
 }
 

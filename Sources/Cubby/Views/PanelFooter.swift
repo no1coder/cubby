@@ -33,6 +33,8 @@ struct PanelFooter: View {
         var showsClearSearch = false
         /// 横条：「← → 选择」
         var showsArrows = false
+        /// 图片网格：「空格 预览」
+        var showsPreviewKey = false
 
         func with<Value>(_ keyPath: WritableKeyPath<Layout, Value>, _ value: Value) -> Layout {
             var copy = self
@@ -87,6 +89,14 @@ struct PanelFooter: View {
     private var baseLayouts: [Layout] {
         let wide = Self.pasteTargetMaxWidth
         let compact = Self.compactPasteTargetMaxWidth
+        // 图片网格（ImageGrid 画板）：「N 张图片 · ↩ 粘贴 · 空格 预览」，不提示另一种格式
+        if viewModel.showsImageGrid {
+            return [
+                Layout(showsAlternate: false, targetMaxWidth: compact, showsPreviewKey: true),
+                Layout(showsAlternate: false, targetMaxWidth: compact),
+                Layout(showsCount: false, showsAlternate: false, targetMaxWidth: compact),
+            ]
+        }
         guard viewModel.translation != nil else {
             return [
                 Layout(targetMaxWidth: wide), Layout(targetMaxWidth: compact),
@@ -169,6 +179,10 @@ struct PanelFooter: View {
                         KeyHint(keys: "⌥↩", label: TranslationFooterHints.translatePasteLabel)
                             .layoutPriority(1)
                     }
+                    if layout.showsPreviewKey {
+                        KeyHint(keys: spaceKeyName, label: previewLabel)
+                            .layoutPriority(1)
+                    }
                     if layout.showsClearSearch {
                         KeyHint(keys: "esc", label: clearSearchLabel)
                             .layoutPriority(1)
@@ -191,6 +205,14 @@ struct PanelFooter: View {
         return layouts.filter { seen.insert($0).inserted }
     }
 
+    private var spaceKeyName: String {
+        String(localized: "Space", comment: "Key name in a tooltip")
+    }
+
+    private var previewLabel: String {
+        String(localized: "Preview", comment: "Card hover button")
+    }
+
     private var selectLabel: String {
         String(localized: "Select", comment: "Shelf hint for ← and → that move the selection")
     }
@@ -205,7 +227,10 @@ struct PanelFooter: View {
     }
 
     private var countText: String {
-        count == viewModel.totalCount
+        if viewModel.showsImageGrid, viewModel.keywords.isEmpty {
+            return String(localized: "\(count) images", comment: "Footer: number of images in the image grid")
+        }
+        return count == viewModel.totalCount
             ? String(localized: "\(count) items", comment: "Footer: number of items in the panel")
             : String(
                 localized: "\(count) of \(viewModel.totalCount)",

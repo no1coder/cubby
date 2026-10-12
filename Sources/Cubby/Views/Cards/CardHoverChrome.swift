@@ -3,8 +3,9 @@ import SwiftUI
 
 /// 悬停快捷操作：收藏 ⌘P / 预览 空格 / 删除 ⌘⌫；图片卡另有「贴到屏幕」
 struct CardQuickActions {
-    let toggleFavorite: () -> Void
-    let togglePreview: () -> Void
+    /// 图片网格的工具条没有收藏与预览（设计稿：晾到绳上 / 贴到屏幕 / 删除），为 nil
+    let toggleFavorite: (() -> Void)?
+    let togglePreview: (() -> Void)?
     let delete: () -> Void
     /// 只有图片卡提供
     let pinToScreen: (() -> Void)?
@@ -65,16 +66,21 @@ private struct CardHoverToolbar: View {
                     symbol: "pin", label: String(localized: "Pin to Screen", comment: "Card hover button"),
                     shortcut: "⇧⌘P", action: pin)
             }
-            ToolbarButton(
-                symbol: item.isFavorite ? "star.fill" : "star",
-                label: item.isFavorite
-                    ? String(localized: "Remove from Favorites", comment: "Card hover button")
-                    : String(localized: "Add to Favorites", comment: "Card hover button"),
-                shortcut: "⌘P", action: actions.toggleFavorite)
-            ToolbarButton(
-                symbol: "eye", label: String(localized: "Preview", comment: "Card hover button"),
-                shortcut: String(localized: "Space", comment: "Key name in a tooltip"), isActive: actions.isPreviewing,
-                action: actions.togglePreview)
+            if let toggleFavorite = actions.toggleFavorite {
+                ToolbarButton(
+                    symbol: item.isFavorite ? "star.fill" : "star",
+                    label: item.isFavorite
+                        ? String(localized: "Remove from Favorites", comment: "Card hover button")
+                        : String(localized: "Add to Favorites", comment: "Card hover button"),
+                    shortcut: "⌘P", action: toggleFavorite)
+            }
+            if let togglePreview = actions.togglePreview {
+                ToolbarButton(
+                    symbol: "eye", label: String(localized: "Preview", comment: "Card hover button"),
+                    shortcut: String(localized: "Space", comment: "Key name in a tooltip"),
+                    isActive: actions.isPreviewing,
+                    action: togglePreview)
+            }
             ToolbarButton(
                 symbol: "trash", label: String(localized: "Delete", comment: "Card hover button"),
                 shortcut: "⌘⌫", action: actions.delete)

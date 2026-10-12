@@ -73,9 +73,7 @@ struct OnboardingView: View {
         ) {
             ShortcutRecorder(
                 hotKey: $settings.hotKey,
-                reservations: settings.screenshotHotKey.map {
-                    [.init(hotKey: $0, message: ShortcutReservationCopy.screenshots)]
-                } ?? [],
+                reservations: HotKeyReservations.excluding(.togglePanel, settings: settings),
                 onRecordingChange: onShortcutRecordingChange
             )
         }

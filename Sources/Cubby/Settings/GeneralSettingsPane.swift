@@ -27,9 +27,20 @@ struct GeneralSettingsPane: View {
                 LabeledContent("Keyboard shortcut") {
                     ShortcutRecorder(
                         hotKey: $settings.hotKey,
-                        reservations: screenshotReservation,
+                        reservations: HotKeyReservations.excluding(.togglePanel, settings: settings),
                         onRecordingChange: onShortcutRecordingChange
                     )
+                }
+                LabeledContent {
+                    ShortcutRecorder(
+                        optionalHotKey: $settings.imagesHotKey,
+                        defaultHotKey: .imagesDefault,
+                        reservations: HotKeyReservations.excluding(.images, settings: settings),
+                        onRecordingChange: onShortcutRecordingChange
+                    )
+                } label: {
+                    Text("Only images")
+                    Text("Opens the image grid directly")
                 }
                 PanelPositionPicker(selection: $settings.panelPosition)
             } header: {
@@ -74,11 +85,6 @@ struct GeneralSettingsPane: View {
         }
         .formStyle(.grouped)
         .task { await permissions.run() }
-    }
-
-    /// 面板快捷键不能与截图快捷键相同
-    private var screenshotReservation: [ShortcutRecorder.Reservation] {
-        settings.screenshotHotKey.map { [.init(hotKey: $0, message: ShortcutReservationCopy.screenshots)] } ?? []
     }
 
     /// ⇧↩ 与 ⌘↩ 的说明：按另一种格式分别给出完整句子，不拼接格式名

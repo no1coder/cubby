@@ -36,8 +36,11 @@ struct ShelfContent: View {
 
     private var topRow: some View {
         HStack(spacing: 10) {
-            SearchField(text: $viewModel.searchText, isFocused: isSearchFocused)
-                .frame(width: ShelfMetrics.searchWidth)
+            SearchField(
+                text: $viewModel.searchText, isFocused: isSearchFocused,
+                searchesImages: viewModel.category == .image && viewModel.settings.indexesImageText
+            )
+            .frame(width: ShelfMetrics.searchWidth)
             if viewModel.keywords.isEmpty {
                 CategoryTabs(selection: viewModel.category, minItemWidth: ShelfMetrics.segmentWidth) {
                     viewModel.selectCategory($0)

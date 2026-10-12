@@ -116,6 +116,8 @@ struct CardInteractions: ViewModifier {
     let item: ClipItem
     let isSelected: Bool
     let viewModel: PanelViewModel
+    /// 图片网格的格子：悬停工具条只有贴到屏幕与删除（设计稿）
+    var isGridCell = false
 
     func body(content: Content) -> some View {
         content
@@ -134,15 +136,17 @@ struct CardInteractions: ViewModifier {
     private var quickActions: CardQuickActions {
         let isPreviewing = isSelected && viewModel.isPreviewVisible
         return CardQuickActions(
-            toggleFavorite: { viewModel.toggleFavorite(item) },
-            togglePreview: {
-                if isPreviewing {
-                    viewModel.setPreviewVisible(false)
-                } else {
-                    viewModel.select(item)
-                    viewModel.setPreviewVisible(true)
-                }
-            },
+            toggleFavorite: isGridCell ? nil : { viewModel.toggleFavorite(item) },
+            togglePreview: isGridCell
+                ? nil
+                : {
+                    if isPreviewing {
+                        viewModel.setPreviewVisible(false)
+                    } else {
+                        viewModel.select(item)
+                        viewModel.setPreviewVisible(true)
+                    }
+                },
             delete: { viewModel.delete(item) },
             pinToScreen: item.kind == .image ? { viewModel.pin(item) } : nil,
             isPreviewing: isPreviewing

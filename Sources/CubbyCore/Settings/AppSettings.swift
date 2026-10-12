@@ -274,21 +274,26 @@ public final class AppSettings {
         self.defaults = defaults
         // 先迁移再读取，保证下面读到的都是当前版本的键值
         Self.migrateSettings(in: defaults)
-        hotKey =
+        let panelHotKey =
             defaults.data(forKey: Keys.hotKey)
             .flatMap { try? JSONDecoder().decode(HotKey.self, from: $0) } ?? .default
+        hotKey = panelHotKey
         let position = defaults.string(forKey: Keys.panelPosition).flatMap(PanelPosition.init(rawValue:)) ?? .mouse
         panelPosition = position
         let storedFloating = defaults.string(forKey: Keys.floatingPanelPosition).flatMap(PanelPosition.init(rawValue:))
         // 当前就是浮动位置时以它为准（与 didSet 的规则一致）；旧版本改过位置而没写这个键时也不会读到过期值
         floatingPanelPosition =
             [position, storedFloating].compactMap { $0 }.first { $0.layout == .floating } ?? .mouse
-        imagesHotKey = Self.storedHotKey(
-            Keys.imagesHotKey, disabledKey: Keys.imagesHotKeyDisabled, default: .imagesDefault, in: defaults)
+        // 新快捷键的默认值若已被用户自己的面板 / 截图快捷键占用，视为关闭（不与自家快捷键撞键）
+        let screenshot = Self.storedScreenshotHotKey(in: defaults)
+        let images = Self.storedHotKey(
+            Keys.imagesHotKey, disabledKey: Keys.imagesHotKeyDisabled, default: .imagesDefault,
+            unlessTakenBy: [panelHotKey, screenshot], in: defaults)
+        imagesHotKey = images
         clotheslineEnabled = defaults.object(forKey: Keys.clotheslineEnabled) as? Bool ?? true
         clotheslineHotKey = Self.storedHotKey(
             Keys.clotheslineHotKey, disabledKey: Keys.clotheslineHotKeyDisabled, default: .clotheslineDefault,
-            in: defaults)
+            unlessTakenBy: [panelHotKey, screenshot, images], in: defaults)
         clothesline = Clothesline(
             itemIDs: (defaults.stringArray(forKey: Keys.clotheslineItems) ?? []).compactMap(UUID.init(uuidString:)))
         appearance = defaults.string(forKey: Keys.appearance).flatMap(AppAppearance.init(rawValue:)) ?? .system
@@ -307,7 +312,7 @@ public final class AppSettings {
         pasteDirectly = defaults.object(forKey: Keys.pasteDirectly) as? Bool ?? true
         isPaused = defaults.bool(forKey: Keys.isPaused)
         ignoredBundleIDs = defaults.stringArray(forKey: Keys.ignoredBundleIDs) ?? Self.defaultIgnoredBundleIDs
-        screenshotHotKey = Self.storedScreenshotHotKey(in: defaults)
+        screenshotHotKey = screenshot
         screenshotSaveDirectory = Self.storedScreenshotSaveDirectory(in: defaults)
         asksWhereToSaveScreenshots = defaults.object(forKey: Keys.screenshotAsksWhereToSave) as? Bool ?? true
         annotationStyles = ToolStyles.decode(defaults.data(forKey: Keys.annotationStyles))
@@ -348,12 +353,17 @@ public final class AppSettings {
             in: defaults)
     }
 
-    /// 可关闭的快捷键：禁用标志优先；否则解码已存储的快捷键，缺失或损坏时回退默认值
+    /// 可关闭的快捷键：禁用标志优先；否则解码已存储的快捷键，缺失或损坏时回退默认值。
+    /// 回退的默认值已被 takenBy 中的快捷键占用时视为关闭（用户明确存过的值不改写，冲突由设置里的录制器拦下）
     private static func storedHotKey(
-        _ key: String, disabledKey: String, default fallback: HotKey, in defaults: UserDefaults
+        _ key: String, disabledKey: String, default fallback: HotKey, unlessTakenBy taken: [HotKey?] = [],
+        in defaults: UserDefaults
     ) -> HotKey? {
         guard !defaults.bool(forKey: disabledKey) else { return nil }
-        return defaults.data(forKey: key).flatMap { try? JSONDecoder().decode(HotKey.self, from: $0) } ?? fallback
+        if let stored = defaults.data(forKey: key).flatMap({ try? JSONDecoder().decode(HotKey.self, from: $0) }) {
+            return stored
+        }
+        return taken.contains(fallback) ? nil : fallback
     }
 
     /// 写入可关闭的快捷键：nil 时移除快捷键并记下「用户主动关闭」，与「从未设置（用默认值）」区分

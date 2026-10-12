@@ -58,6 +58,8 @@ struct PanelView: View {
             Group {
                 if items.isEmpty {
                     PanelEmptyState(viewModel: viewModel)
+                } else if viewModel.showsImageGrid {
+                    ImageGrid(items: items, viewModel: viewModel)
                 } else {
                     CardList(items: items, viewModel: viewModel)
                 }

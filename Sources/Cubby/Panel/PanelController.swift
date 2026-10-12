@@ -51,7 +51,7 @@ final class PanelController {
     let preview: PreviewPanelController
     let viewModel: PanelViewModel
     let store: ClipStore
-    private let settings: AppSettings
+    let settings: AppSettings
     let paster: PanelPaster
     private let keyboard = PanelKeyboard()
     private let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Panel")
@@ -59,7 +59,7 @@ final class PanelController {
     private(set) var isShown = false
     private var lastHiddenAt: Date?
     /// 面板落位后的最终位置：入场动画进行中打开预览时，预览按它对齐而不是按动画中的帧
-    private var restingFrame: CGRect?
+    var restingFrame: CGRect?
     /// 用于丢弃过期的隐藏动画回调
     private var generation = 0
 
@@ -369,7 +369,7 @@ final class PanelController {
             allowsSpace: viewModel.searchText.isEmpty,
             translationCardOpen: viewModel.isTranslationCardOpen,
             textPickOpen: viewModel.isTextPickOpen,
-            arrowsMoveHorizontally: viewModel.layout.isHorizontal
+            arrowsMoveHorizontally: viewModel.arrowsMoveHorizontally
         )
         // 任何其他按键都取消「按住 ⌥ 预览」（⌥↩ 粘贴正在显示的内容）
         viewModel.keyPressed(isOptionReturn: command == .translateAndPaste, isEscape: command == .escape)

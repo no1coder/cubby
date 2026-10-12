@@ -6,24 +6,24 @@ import CubbyCore
 /// 组装各模块：存储、剪贴板监听、全局热键、面板、菜单栏、设置与引导
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    private let settings = AppSettings()
-    private let hotKeys = HotKeyManager()
+    let settings = AppSettings()
+    let hotKeys = HotKeyManager()
     private lazy var updates = UpdateCoordinator(settings: settings)
-    private let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "App")
+    let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "App")
 
     private var store: ClipStore?
     private var monitor: ClipboardMonitor?
-    private var panel: PanelController?
+    var panel: PanelController?
     private var statusBar: StatusBarController?
     private var settingsWindow: SettingsWindowController?
     private var onboardingWindow: OnboardingWindowController?
     /// 使用说明窗口：第一次打开时才创建并载入文档
     private lazy var userGuide = UserGuideWindowController()
-    private var screenshots: ScreenshotCoordinator?
+    var screenshots: ScreenshotCoordinator?
     /// 历史图片的本机文字识别（按图中文字搜索）
     private var imageTextIndexer: ImageTextIndexer?
     /// 各动作最近一次注册成功的快捷键，新快捷键被占用时回退到它
-    private var lastWorkingHotKeys: [HotKeyAction: HotKey] = [:]
+    var lastWorkingHotKeys: [HotKeyAction: HotKey] = [:]
     /// 截图翻译的 API Key 存储（设置页与翻译服务共用）
     private lazy var translationKeys: any TranslationKeyStoring = Self.makeTranslationKeyStore()
     /// 「设置 › 翻译」的状态；macOS 26 以前为 nil
@@ -73,6 +73,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         #endif
         lastWorkingHotKeys[.togglePanel] = settings.hotKey
         lastWorkingHotKeys[.screenshot] = settings.screenshotHotKey
+        lastWorkingHotKeys[.images] = settings.imagesHotKey
         #if DEBUG
         // 截图走查时不注册全局热键，避免与已安装的正式版冲突
         if Self.debugScenario == nil { registerHotKeys() }
@@ -336,111 +337,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    // MARK: - 快捷键
-
-    private func registerHotKeys() {
-        registerPanelHotKey()
-        registerScreenshotHotKey()
-    }
-
-    private func registerPanelHotKey() {
-        register(settings.hotKey, for: .togglePanel) { [weak self] in
-            self?.panel?.toggle()
-        }
-    }
-
-    /// 用户清空截图快捷键时注销（只剩菜单栏与面板按钮两个入口）
-    private func registerScreenshotHotKey() {
-        guard let hotKey = settings.screenshotHotKey else {
-            hotKeys.unregister(.screenshot)
-            return
-        }
-        register(hotKey, for: .screenshot) { [weak self] in
-            self?.screenshots?.start(.hotKey)
-        }
-    }
-
-    /// 暂停期间（正在录制另一个快捷键）只登记，真正的结果在恢复时由 hotKeysResumed 处理
-    private func register(_ hotKey: HotKey, for action: HotKeyAction, handler: @escaping () -> Void) {
-        switch hotKeys.register(hotKey, for: action, handler: handler) {
-        case .registered: lastWorkingHotKeys[action] = hotKey
-        case .deferred: break
-        case .failed: hotKeyRegistrationFailed(hotKey, for: action)
-        }
-    }
-
-    private func hotKeyRegistrationFailed(_ hotKey: HotKey, for action: HotKeyAction) {
-        logger.error(
-            """
-            Failed to register hot key \(hotKey.displayName, privacy: .public) \
-            for action \(action.rawValue), maybe used by another app
-            """
-        )
-        notifyHotKeyConflict(hotKey, for: action)
-    }
-
-    /// 新快捷键被占用时告知用户，并回退到该动作上一个可用的快捷键（回退会再次触发注册）
-    private func notifyHotKeyConflict(_ hotKey: HotKey, for action: HotKeyAction) {
-        let fallback = lastWorkingHotKeys[action].flatMap { $0 == hotKey ? nil : $0 }
-        let message =
-            fallback.map {
-                String(
-                    localized: "\(hotKey.displayName) is already in use. Switched back to \($0.displayName).",
-                    comment: "HUD when a new global shortcut is taken. %1$@ = new shortcut, %2$@ = previous shortcut"
-                )
-            }
-            ?? String(
-                localized: "\(hotKey.displayName) is used by another app. Choose a different shortcut in Settings.",
-                comment: "HUD when the global shortcut is taken"
-            )
-        if let anchor = HUDToast.defaultAnchor() {
-            HUDToast.show(message, symbolName: "exclamationmark.triangle.fill", tint: .orange, at: anchor)
-        }
-        guard let fallback else { return }
-        switch action {
-        case .togglePanel: settings.hotKey = fallback
-        case .screenshot: settings.screenshotHotKey = fallback
-        case .images: settings.imagesHotKey = fallback
-        case .clothesline: settings.clotheslineHotKey = fallback
-        }
-    }
-
-    /// 录制新快捷键期间暂停全局热键；恢复时报告暂停期间登记的快捷键是否注册成功
-    private func setShortcutRecording(_ isRecording: Bool) {
-        if isRecording {
-            hotKeys.suspend()
-        } else {
-            hotKeysResumed(failed: hotKeys.resume())
-        }
-    }
-
-    /// 注册成功的记为「上一个可用」；失败的提示并回滚（与直接注册失败同一路径）
-    private func hotKeysResumed(failed: [HotKeyAction]) {
-        for action in HotKeyAction.allCases {
-            if let working = hotKeys.registeredHotKey(for: action) {
-                lastWorkingHotKeys[action] = working
-            }
-        }
-        for action in failed {
-            guard let hotKey = currentHotKey(for: action) else { continue }
-            hotKeyRegistrationFailed(hotKey, for: action)
-        }
-    }
-
-    private func currentHotKey(for action: HotKeyAction) -> HotKey? {
-        switch action {
-        case .togglePanel: settings.hotKey
-        case .screenshot: settings.screenshotHotKey
-        case .images: settings.imagesHotKey
-        case .clothesline: settings.clotheslineHotKey
-        }
-    }
-
     // MARK: - 设置监听（各项独立订阅，互不触发）
 
     private func observeSettings() {
         observe({ [settings] in settings.hotKey }) { [weak self] in self?.registerPanelHotKey() }
         observe({ [settings] in settings.screenshotHotKey }) { [weak self] in self?.registerScreenshotHotKey() }
+        observe({ [settings] in settings.imagesHotKey }) { [weak self] in self?.registerImagesHotKey() }
         observe({ [settings] in settings.appearance }) { [settings] in AppearanceApplier.apply(settings.appearance) }
         observe({ [settings] in settings.historyLimit }) { [weak self] in
             guard let self else { return }

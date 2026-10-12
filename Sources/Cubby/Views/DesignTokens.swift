@@ -20,6 +20,8 @@ enum Radius {
     static let segment: CGFloat = 9
     /// 悬停工具条里的按钮（26 × 24）
     static let toolbarButton: CGFloat = 7
+    /// 「只看图片」网格的格子
+    static let gridCell: CGFloat = 14
     /// 设置页分组（与系统 Form 分组一致）
     static let group: CGFloat = 10
     /// 输入框、图标按钮、录制框、预览中的块
@@ -69,6 +71,8 @@ enum PanelMetrics {
     /// 图片卡的缩略图：距卡片上、左、右边缘 6，高 128
     static let cardImageInset: CGFloat = 6
     static let cardImageHeight: CGFloat = 128
+    /// 「只看图片」两列网格的格子高度
+    static let gridCellHeight: CGFloat = 150
     /// 主面板与预览面板的底栏高度（并排时分割线对齐）
     static let footerHeight: CGFloat = 38
     /// 搜索框高度

@@ -221,6 +221,17 @@ struct CardPalette {
         )
     }
 
+    /// 图片网格的格子：中性底色（加载前、透明图片下看到的是它），说明文字白色，选中时加白色内环
+    static func imageCell(_ scheme: ColorScheme, increasedContrast: Bool = false) -> CardPalette {
+        CardPalette(
+            background: Color.primary.opacity(scheme == .dark ? 0.08 : 0.06),
+            primary: .white,
+            secondary: Color.white.opacity(increasedContrast ? 0.9 : 0.8),
+            stroke: Color.primary.opacity(increasedContrast ? increasedContrastStroke : 0.08),
+            isCustom: true
+        )
+    }
+
     /// 颜色是否接近纯白（不透明且亮度 > 0.9；颜色预览的色块同样需要更明显的描边）
     static func isNearWhite(_ rgba: RGBAColor) -> Bool {
         rgba.alpha >= 1 && luminance(rgba) > nearWhiteLuminance

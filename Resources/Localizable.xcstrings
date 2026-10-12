@@ -62,6 +62,28 @@
         }
       }
     },
+    "%@ Only images" : {
+      "comment" : "HUD above the docked bottom panel after the Only Images shortcut. %@ = the shortcut",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 只看图片"
+          }
+        }
+      }
+    },
+    "%@ Only images · ←→↑↓ to move in the grid" : {
+      "comment" : "HUD above the panel after the Only Images shortcut. %@ = the shortcut, e.g. ⌃⇧V",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 只看图片 · ←→↑↓ 在网格中移动"
+          }
+        }
+      }
+    },
     "%@ and %lld more (%lld files)" : {
       "comment" : "Title of an item with several files. %1$@ = first file name, %2$lld = number of other files, %3$lld = total number of files. Translations may omit %2$lld or %3$lld.",
       "localizations" : {
@@ -300,6 +322,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 个文件"
+          }
+        }
+      }
+    },
+    "%lld images" : {
+      "comment" : "Footer: number of images in the image grid",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld image"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld images"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 张图片"
           }
         }
       }
@@ -958,6 +1009,17 @@
         }
       }
     },
+    "Already used for the clothesline" : {
+      "comment" : "Shortcut recorder error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已用于晾衣绳"
+          }
+        }
+      }
+    },
     "Already used to open the panel" : {
       "comment" : "Shortcut recorder error",
       "localizations" : {
@@ -965,6 +1027,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已用作呼出快捷键"
+          }
+        }
+      }
+    },
+    "Already used to show only images" : {
+      "comment" : "Shortcut recorder error",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已用于只看图片"
           }
         }
       }
@@ -4225,6 +4298,16 @@
         }
       }
     },
+    "Only images" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只看图片"
+          }
+        }
+      }
+    },
     "Only uses system translation on this Mac. Requires the language to be downloaded." : {
       "localizations" : {
         "zh-Hans" : {
@@ -4380,6 +4463,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "兼容 OpenAI 接口：DeepSeek、通义千问、Kimi、Ollama 等"
+          }
+        }
+      }
+    },
+    "Opens the image grid directly" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直接打开图片网格"
           }
         }
       }
@@ -5823,6 +5916,7 @@
       }
     },
     "Search clipboard" : {
+      "comment" : "Search field placeholder",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -5832,7 +5926,19 @@
         }
       }
     },
+    "Search images by text" : {
+      "comment" : "Search field placeholder in the Images category",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按图中文字搜索图片"
+          }
+        }
+      }
+    },
     "Search text in images" : {
+      "comment" : "Search field placeholder in the Images category",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {

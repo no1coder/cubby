@@ -8,6 +8,21 @@ extension PanelViewModel {
         settings.panelPosition.layout
     }
 
+    /// 「图片」分类在浮动面板与侧栏里以两列网格显示（横条本来就是一排方卡，不另做网格）
+    var showsImageGrid: Bool {
+        category == .image && layout != .shelf
+    }
+
+    /// 键盘移动选中项时一行有几格：网格里 ↑ / ↓ 移动一整行
+    var selectionColumns: Int {
+        showsImageGrid ? layout.imageGridColumns : 1
+    }
+
+    /// ← / → 移动选中项（搜索框为空时）：横条与图片网格
+    var arrowsMoveHorizontally: Bool {
+        layout.isHorizontal || showsImageGrid
+    }
+
     /// 顶栏布局按钮：浮动 → 右侧 → 底部 → 浮动（回到上次选的浮动位置）
     func cycleLayout() {
         settings.panelPosition = settings.panelPosition.cycledLayout(floatingFallback: settings.floatingPanelPosition)

@@ -5,6 +5,7 @@ import SwiftUI
 struct CardSurface: ViewModifier {
     let palette: CardPalette
     let isSelected: Bool
+    var cornerRadius = Radius.card
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -13,7 +14,7 @@ struct CardSurface: ViewModifier {
     private static let glowWidth: CGFloat = 4
 
     func body(content: Content) -> some View {
-        let shape = RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
         content
             .background(shape.fill(isSelected ? palette.selectedBackground ?? palette.background : palette.background))
             .overlay(shape.strokeBorder(palette.stroke, lineWidth: 0.5))
@@ -25,15 +26,15 @@ struct CardSurface: ViewModifier {
     private var selectionRing: some View {
         let ring = Self.ringWidth
         let glow = Self.glowWidth
-        RoundedRectangle(cornerRadius: Radius.card + ring / 2, style: .continuous)
+        RoundedRectangle(cornerRadius: cornerRadius + ring / 2, style: .continuous)
             .stroke(Color.accentColor, lineWidth: ring)
             .padding(-ring / 2)
-        RoundedRectangle(cornerRadius: Radius.card + ring + glow / 2, style: .continuous)
+        RoundedRectangle(cornerRadius: cornerRadius + ring + glow / 2, style: .continuous)
             .stroke(Color.accentColor.opacity(colorScheme == .dark ? 0.22 : 0.18), lineWidth: glow)
             .padding(-(ring + glow / 2))
         // 彩色 / 代码卡再加一圈白色内环，保证在任何底色上可辨
         if palette.isCustom {
-            RoundedRectangle(cornerRadius: Radius.card - 2, style: .continuous)
+            RoundedRectangle(cornerRadius: cornerRadius - 2, style: .continuous)
                 .strokeBorder(Color.white.opacity(0.9), lineWidth: 1)
                 .padding(2)
         }
@@ -50,7 +51,7 @@ struct CardSurface: ViewModifier {
 }
 
 extension View {
-    func cardSurface(_ palette: CardPalette, isSelected: Bool) -> some View {
-        modifier(CardSurface(palette: palette, isSelected: isSelected))
+    func cardSurface(_ palette: CardPalette, isSelected: Bool, cornerRadius: CGFloat = Radius.card) -> some View {
+        modifier(CardSurface(palette: palette, isSelected: isSelected, cornerRadius: cornerRadius))
     }
 }

@@ -219,7 +219,9 @@ final class PanelViewModel {
     private func moveSelection(_ command: PanelCommand) {
         let visible = items
         let current = visible.firstIndex { $0.id == selectedItem?.id } ?? 0
-        guard let next = command.selectionIndex(from: current, count: visible.count) else { return }
+        guard let next = command.selectionIndex(from: current, count: visible.count, columns: selectionColumns) else {
+            return
+        }
         selectedID = visible[next].id
     }
 

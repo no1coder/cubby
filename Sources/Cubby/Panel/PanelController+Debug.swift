@@ -10,7 +10,7 @@ extension PanelController {
     var debugDetailWindow: NSWindow { preview.window }
     var debugIsShown: Bool { isShown }
 
-    /// 仅调试构建：复现指定界面状态，便于截图走查（preview / help / toast / hover / search:<关键词> / category:<分类> /
+    /// 仅调试构建：复现指定界面状态，便于截图走查（preview / help / toast / hover / images / search:<关键词> / category:<分类> /
     /// preview:<分类> / contextmenu:<分类> / pin:<分类> / keys:<按键,…>；带分类的场景先切到该分类，再对第一条操作）
     func applyDebugScenario(_ scenario: String) {
         show()
@@ -28,6 +28,8 @@ extension PanelController {
             if let item = viewModel.selectedItem { viewModel.delete(item) }
         case "search": viewModel.searchText = argument
         case "hover": viewModel.debugHoveredItemID = viewModel.items.dropFirst().first?.id
+        // 与按下「只看图片」快捷键相同（走查时不注册全局快捷键）
+        case "images": toggleImages()
         case "contextmenu": PanelDebugInput.rightClickFirstCard(in: panel)
         case "pin": viewModel.handle(.pinToScreen)
         case "keys": PanelDebugInput.postKeys(argument, to: panel)
