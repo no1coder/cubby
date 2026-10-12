@@ -9,6 +9,9 @@ struct CardQuickActions {
     let delete: () -> Void
     /// 只有图片卡提供
     let pinToScreen: (() -> Void)?
+    /// 挂到 / 取下晾衣绳：只有图片卡，且晾衣绳开启时
+    var toggleClothesline: (() -> Void)?
+    var isOnClothesline = false
     /// 这张卡片的预览正在显示（预览按钮显示为按下状态）
     let isPreviewing: Bool
 }
@@ -61,6 +64,12 @@ private struct CardHoverToolbar: View {
     var body: some View {
         let isDark = colorScheme == .dark
         HStack(spacing: 1) {
+            if let toggleClothesline = actions.toggleClothesline {
+                ToolbarButton(
+                    symbol: ClotheslineCopy.symbolName,
+                    label: ClotheslineCopy.toggleTitle(isHanging: actions.isOnClothesline),
+                    shortcut: "⌘L", isActive: actions.isOnClothesline, action: toggleClothesline)
+            }
             if let pin = actions.pinToScreen {
                 ToolbarButton(
                     symbol: "pin", label: String(localized: "Pin to Screen", comment: "Card hover button"),

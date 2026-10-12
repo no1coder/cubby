@@ -44,6 +44,7 @@ struct ImageGrid: View {
         ImageGridCell(
             item: item, index: index, isSelected: isSelected, imageURL: viewModel.imageURL(for: item),
             translation: CardTranslationDecorations.make(for: item, keywords: keywords, viewModel: viewModel),
+            isOnClothesline: viewModel.isOnClothesline(item),
             onInlineAction: { viewModel.translation?.inline.performAction() }
         )
         .e2eAnchor("list.card.\(item.id)")
@@ -60,6 +61,7 @@ struct ImageGridCell: View {
     let isSelected: Bool
     let imageURL: URL?
     var translation: CardTranslationDecoration?
+    var isOnClothesline = false
     var onInlineAction: () -> Void = {}
 
     @Environment(\.colorScheme) private var colorScheme
@@ -76,6 +78,7 @@ struct ImageGridCell: View {
             .frame(height: PanelMetrics.gridCellHeight)
             .overlay(alignment: .bottom) { caption(palette) }
             .overlay(alignment: .topLeading) { badges }
+            .overlay(alignment: .topTrailing) { if isOnClothesline { ClotheslineBadge() } }
             .overlay { if translation?.inline?.isRunning == true { InlineRunningOverlay() } }
             .clipShape(shape)
             .cardSurface(palette, isSelected: isSelected, cornerRadius: Radius.gridCell)

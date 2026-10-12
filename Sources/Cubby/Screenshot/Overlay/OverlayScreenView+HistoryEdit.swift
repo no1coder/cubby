@@ -29,10 +29,12 @@ extension OverlayScreenView {
         guard let render, let selection, space.intersects(selection) else {
             historyHeader?.isHidden = true
             historyHint?.isHidden = true
+            historyPin?.isHidden = true
             return
         }
         layoutHeader(render, selection: space.pixelAligned(selection))
         layoutHint(selection: space.pixelAligned(selection))
+        layoutPin(selection: space.pixelAligned(selection))
     }
 
     // MARK: - 私有
@@ -69,6 +71,25 @@ extension OverlayScreenView {
             width: rounded.width, height: rounded.height)
         hint.frame = alignedViewRect(SelectionGeometry.clamped(global, to: space.screen.frame))
         hint.isHidden = false
+    }
+
+    /// 木夹子夹在图片顶边正中（一半在图片外），像刚从绳上取下来
+    private func layoutPin(selection: CGRect) {
+        let pin = historyPin ?? makePin()
+        let size = HistoryEditTokens.pinSize
+        let global = CGRect(
+            x: selection.midX - size.width / 2, y: selection.minY - size.height / 2,
+            width: size.width, height: size.height)
+        pin.frame = alignedViewRect(global)
+        pin.isHidden = false
+    }
+
+    private func makePin() -> NSView {
+        let pin = OverlayPassthroughHostingView(rootView: Clothespin())
+        pin.sizingOptions = []
+        addSubview(pin, positioned: .above, relativeTo: canvas)
+        historyPin = pin
+        return pin
     }
 
     private func makeHeader(_ render: HistoryEditRender) -> FirstMouseHostingView<HistoryEditHeader> {

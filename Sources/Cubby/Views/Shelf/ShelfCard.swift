@@ -11,6 +11,7 @@ struct ShelfCard: View {
     let keywords: [String]
     let imageURL: URL?
     var translation: CardTranslationDecoration?
+    var isOnClothesline = false
     /// ⌥↩ 行内问题上的按钮
     var onInlineAction: () -> Void = {}
 
@@ -64,6 +65,7 @@ struct ShelfCard: View {
                 .e2eAnchor("list.peek.\(item.id)")
         } else {
             ShelfCardBody(item: item, style: style, palette: palette, keywords: keywords, imageURL: imageURL)
+                .overlay(alignment: .topTrailing) { if isOnClothesline { ClotheslineBadge() } }
         }
     }
 

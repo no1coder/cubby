@@ -108,6 +108,7 @@ private struct ShelfCardRow: View {
             item: item, index: index, isSelected: isSelected, keywords: keywords,
             imageURL: viewModel.imageURL(for: item),
             translation: CardTranslationDecorations.make(for: item, keywords: keywords, viewModel: viewModel),
+            isOnClothesline: viewModel.isOnClothesline(item),
             onInlineAction: { viewModel.translation?.inline.performAction() }
         )
         .background { if isSelected { SelectionAnchorReporter(viewModel: viewModel) } }

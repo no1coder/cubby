@@ -240,6 +240,23 @@
         }
       }
     },
+    "%@ × %@ · hung at %@" : {
+      "comment" : "Clothesline image editor header: image size in pixels and the time the item was copied",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ × %2$@ · hung at %3$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ × %2$@ · 晾于 %3$@"
+          }
+        }
+      }
+    },
     "%@: text is sent to %@ · click for options" : {
       "comment" : "Tooltip of the engine chip on the translation card for a cloud engine",
       "localizations" : {
@@ -525,6 +542,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld / %2$lld 条"
+          }
+        }
+      }
+    },
+    "%lld of %lld photos" : {
+      "comment" : "Settings: number of photos on the clothesline, e.g. “4 of 12 photos”",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld photos"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld / %2$lld 张"
+          }
+        }
+      }
+    },
+    "%lld photos on the clothesline" : {
+      "comment" : "Status item accessibility value",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photo on the clothesline"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld photos on the clothesline"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "晾衣绳上有 %lld 张照片"
           }
         }
       }
@@ -868,6 +931,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "收藏"
+          }
+        }
+      }
+    },
+    "After Capturing" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图之后"
           }
         }
       }
@@ -1650,6 +1723,16 @@
         }
       }
     },
+    "Click a photo on the line to enlarge and annotate it, double-click to copy it, or drag it into another app. Taking a photo down doesn't remove it from your history." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单击绳上的照片放大标注，双击复制，或拖到其他应用。取下照片不会把它从历史中删除。"
+          }
+        }
+      }
+    },
     "Click to capture · ⌥ no shadow · Space to exit" : {
       "comment" : "Screenshot window capture mode hint under the window label",
       "localizations" : {
@@ -1657,6 +1740,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "单击截取 · ⌥ 去阴影 · 空格 退出"
+          }
+        }
+      }
+    },
+    "Click to edit" : {
+      "comment" : "Clothesline hover hint",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "单击编辑"
           }
         }
       }
@@ -1742,6 +1836,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "逐层关闭"
+          }
+        }
+      }
+    },
+    "Clothesline" : {
+      "comment" : "Accessibility label of the clothesline window",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "晾衣绳"
           }
         }
       }
@@ -1946,7 +2051,7 @@
       }
     },
     "Copied to clipboard" : {
-      "comment" : "HUD after copying an item",
+      "comment" : "HUD after copying\nHUD after copying an item",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1989,7 +2094,7 @@
       }
     },
     "Copy" : {
-      "comment" : "Footer hint for ↩ when it only copies",
+      "comment" : "Clothesline image editor toolbar button\nClothesline photo action\nFooter hint for ↩ when it only copies",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -2006,6 +2111,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "复制（双击卡片同效）"
+          }
+        }
+      }
+    },
+    "Copy Annotated Image (⌘C)" : {
+      "comment" : "Clothesline image editor toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制标注后的图片（⌘C）"
           }
         }
       }
@@ -2080,6 +2196,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按阅读顺序复制全部译文"
+          }
+        }
+      }
+    },
+    "Copy annotated image" : {
+      "comment" : "Clothesline image editor hint after the ⌘C key cap",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "复制标注后的图片"
           }
         }
       }
@@ -2375,6 +2502,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无法重新打开 Cubby，请手动退出后再打开"
+          }
+        }
+      }
+    },
+    "Couldn't save the image to history" : {
+      "comment" : "HUD when Done & Hang Back fails to write the annotated image",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法把图片存入历史"
           }
         }
       }
@@ -2721,6 +2859,17 @@
         }
       }
     },
+    "Done & Hang Back" : {
+      "comment" : "Clothesline image editor toolbar button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成并晾回"
+          }
+        }
+      }
+    },
     "Done (↩)" : {
       "comment" : "Screenshot toolbar tooltip",
       "localizations" : {
@@ -2728,6 +2877,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "完成（↩）"
+          }
+        }
+      }
+    },
+    "Done, the original stays in history" : {
+      "comment" : "Clothesline image editor hint after the Return key cap",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成，原图仍留在历史中"
+          }
+        }
+      }
+    },
+    "Double-click to copy" : {
+      "comment" : "Clothesline hover hint",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "双击复制"
           }
         }
       }
@@ -2829,6 +3000,17 @@
         }
       }
     },
+    "Drag to an app" : {
+      "comment" : "Clothesline hover hint",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "拖到应用"
+          }
+        }
+      }
+    },
     "Drag to select · Click for window · Space clean window · Esc to cancel" : {
       "comment" : "First-run hint at the bottom of the screenshot overlay",
       "localizations" : {
@@ -2863,7 +3045,7 @@
       }
     },
     "Edit" : {
-      "comment" : "Menu title",
+      "comment" : "Clothesline photo action\nMenu title",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -2935,6 +3117,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "多个关键词需要全部命中。试试少输入一个词，或在「全部」分类下搜索。"
+          }
+        }
+      }
+    },
+    "Every screenshot you take is hung at the top of the screen, ready to grab" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每张截图都会晾在屏幕顶部，随手可取"
           }
         }
       }
@@ -3213,6 +3405,59 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "绿色"
+          }
+        }
+      }
+    },
+    "Hang Up" : {
+      "comment" : "Preview button: hang the image on the clothesline",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "晾上"
+          }
+        }
+      }
+    },
+    "Hang images at the top of the screen" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把图片晾在屏幕顶部"
+          }
+        }
+      }
+    },
+    "Hang on Clothesline" : {
+      "comment" : "Context menu item and hover button for images",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "晾到晾衣绳"
+          }
+        }
+      }
+    },
+    "Hang screenshots on the clothesline" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "把截图晾到晾衣绳"
+          }
+        }
+      }
+    },
+    "Hanging" : {
+      "comment" : "Badge on an image that is on the clothesline",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "晾着"
           }
         }
       }
@@ -4136,6 +4381,28 @@
         }
       }
     },
+    "Not saved: recording is paused" : {
+      "comment" : "HUD when Done & Hang Back can't add the annotated image to the history",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未保存：已暂停记录"
+          }
+        }
+      }
+    },
+    "Not saved: too large for history" : {
+      "comment" : "HUD when Done & Hang Back can't add the annotated image to the history",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未保存：超出历史大小限制"
+          }
+        }
+      }
+    },
     "Not sent · looks like it contains a secret" : {
       "comment" : "Translation card privacy line",
       "localizations" : {
@@ -4284,6 +4551,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本机、免费、离线（macOS 自带 Translation）"
+          }
+        }
+      }
+    },
+    "Only Images" : {
+      "comment" : "Status menu item: open the panel on the image grid",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只看图片"
           }
         }
       }
@@ -4917,6 +5195,16 @@
         }
       }
     },
+    "Photos on the line" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "绳上的照片"
+          }
+        }
+      }
+    },
     "Pick Words" : {
       "comment" : "Title of the pick-words card, context menu item and VoiceOver action",
       "localizations" : {
@@ -5143,6 +5431,16 @@
         }
       }
     },
+    "Press ⌘L on an image in the panel to hang it; rest the pointer at the top edge to slide the line down" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在面板里对图片按 ⌘L 晾上；指针停在屏幕顶边时晾衣绳会滑下"
+          }
+        }
+      }
+    },
     "Preview" : {
       "comment" : "Card hover button\nShortcut help",
       "localizations" : {
@@ -5193,6 +5491,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "紫色"
+          }
+        }
+      }
+    },
+    "Put Back" : {
+      "comment" : "Clothesline image editor close button accessibility label",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "放回"
+          }
+        }
+      }
+    },
+    "Put Back (Esc)" : {
+      "comment" : "Clothesline image editor close button tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "放回（Esc）"
+          }
+        }
+      }
+    },
+    "Put back" : {
+      "comment" : "Clothesline image editor hint after the esc key cap",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "放回"
           }
         }
       }
@@ -5712,6 +6043,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "存为新条目（⌘S）"
+          }
+        }
+      }
+    },
+    "Save as a new history item and hang it back (↩)" : {
+      "comment" : "Clothesline image editor toolbar tooltip",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "存为新的历史条目并晾回（↩）"
           }
         }
       }
@@ -6236,6 +6578,16 @@
         }
       }
     },
+    "Show / Hide" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示 / 收起"
+          }
+        }
+      }
+    },
     "Show Backup" : {
       "comment" : "Panel warning button: reveal the backup file in Finder",
       "localizations" : {
@@ -6243,6 +6595,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查看备份"
+          }
+        }
+      }
+    },
+    "Show Clothesline · %lld photos" : {
+      "comment" : "Status menu item that slides the clothesline down. %lld = number of photos on it",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Show Clothesline · %lld photo"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Show Clothesline · %lld photos"
+                }
+              }
+            }
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示晾衣绳 · %lld 张"
           }
         }
       }
@@ -6308,6 +6689,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "签名: %@"
+          }
+        }
+      }
+    },
+    "Slide down after the pointer rests at the top edge for" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "指针在顶边停留多久后滑下"
           }
         }
       }
@@ -6642,6 +7033,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tab ⇥ 切换层级"
+          }
+        }
+      }
+    },
+    "Take All Down" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全部取下"
+          }
+        }
+      }
+    },
+    "Take Down" : {
+      "comment" : "Clothesline photo action",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "取下"
+          }
+        }
+      }
+    },
+    "Take Down from Clothesline" : {
+      "comment" : "Context menu item and hover button for images",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从晾衣绳取下"
           }
         }
       }
@@ -8051,6 +8474,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "智谱 GLM"
+          }
+        }
+      }
+    },
+    "Zoom In" : {
+      "comment" : "Clothesline image editor zoom button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "放大"
+          }
+        }
+      }
+    },
+    "Zoom Out" : {
+      "comment" : "Clothesline image editor zoom button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩小"
+          }
+        }
+      }
+    },
+    "Zoom isn't available after annotating" : {
+      "comment" : "Clothesline image editor: tooltip of the disabled zoom buttons",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "标注后无法缩放"
           }
         }
       }

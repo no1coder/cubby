@@ -191,6 +191,10 @@ struct HistoryEditHint: View {
 
 /// 放大编辑的尺寸与不透明度（覆盖层底色总是压暗的深色，文字一律用白色）
 enum HistoryEditTokens {
+    /// 放大的图片的圆角（背景合成、遮罩镂空同一个值）
+    static let imageCornerRadius: CGFloat = 10
+    /// 夹在图片顶边正中的木夹子（比绳上的略大，与设计稿一致）
+    static let pinSize = CGSize(width: 12, height: 30)
     static let headerHeight: CGFloat = 36
     /// 标题行底边与图片顶边的间距
     static let headerGap: CGFloat = 12

@@ -18,6 +18,8 @@ struct OverlayCanvasState {
     var hoverStyle: OverlayHoverStyle = .target
     /// 悬停目标是窗口（圆角描边、圆角去遮罩）；整屏为 false
     var hoverIsWindow = false
+    /// 去遮罩区域的圆角（晾衣绳放大编辑时与图片的圆角一致）；为 nil 时按悬停目标决定
+    var highlightCornerRadius: CGFloat?
     /// 首用引导条（本屏底部居中）
     var showsOnboarding = false
     var selection: CGRect?
@@ -70,7 +72,7 @@ final class OverlayCanvasView: NSView {
     /// 遮罩路径的输入：高亮区域 + 是否圆角
     private struct DimKey: Equatable {
         let highlight: CGRect?
-        let rounded: Bool
+        let radius: CGFloat
     }
 
     init(frame: FrozenFrame) {
@@ -126,7 +128,8 @@ final class OverlayCanvasView: NSView {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         // 悬停在窗口上时去遮罩区域与描边一样是圆角；有选区后是直角
-        updateDim(DimKey(highlight: state.highlight, rounded: state.hover != nil && state.hoverIsWindow))
+        let windowRadius = state.hover != nil && state.hoverIsWindow ? OverlayTokens.windowCornerRadius : 0
+        updateDim(DimKey(highlight: state.highlight, radius: state.highlightCornerRadius ?? windowRadius))
         translationLayer.update(state.translation, space: space)
         let target = OverlayRenderTarget(screen: space.screen, pixelated: state.pixelated)
         highlighterLayer.update(items: state.highlighters, target: target)
@@ -160,8 +163,7 @@ final class OverlayCanvasView: NSView {
         path.addRect(CGRect(origin: .zero, size: space.size))
         if let highlight = key.highlight, space.intersects(highlight) {
             let hole = space.layerRect(space.pixelAligned(highlight.intersection(space.screen.frame)))
-            let radius = key.rounded ? OverlayTokens.windowCornerRadius : 0
-            path.addPath(OverlaySelectionChrome.roundedRect(hole, radius: radius))
+            path.addPath(OverlaySelectionChrome.roundedRect(hole, radius: key.radius))
         }
         dimLayer.path = path
     }

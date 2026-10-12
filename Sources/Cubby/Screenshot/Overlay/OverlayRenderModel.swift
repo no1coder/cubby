@@ -24,6 +24,7 @@ enum OverlayRenderModel {
         } else if let selection = session.selection {
             // 选区锁定（放大编辑）：图片本身就是选区，不画描边与手柄
             state.selection = session.isSelectionLocked ? nil : selection
+            if session.isSelectionLocked { state.highlightCornerRadius = HistoryEditTokens.imageCornerRadius }
             let showsHandles =
                 (session.phase == .adjusting || session.phase == .annotating) && !session.isSelectionLocked
             state.handles = showsHandles ? SelectionGeometry.visibleHandles(for: selection) : []

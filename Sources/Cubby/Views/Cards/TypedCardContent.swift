@@ -114,12 +114,14 @@ struct ImageCardContent: View {
     let imageURL: URL?
     let palette: CardPalette
     let accessories: CardAccessories
+    var isOnClothesline = false
 
     private static let captionIconSize: CGFloat = 16
 
     var body: some View {
         VStack(spacing: 0) {
             thumbnail
+                .overlay(alignment: .topTrailing) { if isOnClothesline { ClotheslineBadge() } }
                 .padding([.top, .horizontal], PanelMetrics.cardImageInset)
             HStack(spacing: 7) {
                 AppIconView(

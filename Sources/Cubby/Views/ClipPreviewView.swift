@@ -113,7 +113,15 @@ struct ClipPreviewView: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
             Spacer()
-            if item.kind == .link || item.kind == .file || item.kind == .image {
+            // 图片：晾起来 / 贴到屏幕 / 粘贴（设计稿；「打开」仍可用 ⌘O 与右键菜单）
+            if item.kind == .image, viewModel.offersClothesline {
+                Button(
+                    viewModel.isOnClothesline(item)
+                        ? String(localized: "Take Down", comment: "Clothesline photo action")
+                        : String(localized: "Hang Up", comment: "Preview button: hang the image on the clothesline")
+                ) { viewModel.toggleClothesline(item) }
+                .buttonStyle(CapsuleButtonStyle(isPrimary: false))
+            } else if item.kind == .link || item.kind == .file || item.kind == .image {
                 Button("Open") { viewModel.open(item) }
                     .buttonStyle(CapsuleButtonStyle(isPrimary: false))
                     // 文件全部不存在时打开只会提示音，直接置灰

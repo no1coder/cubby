@@ -49,11 +49,25 @@ struct ClotheslineGeometryTests {
         #expect(ClotheslineGeometry.centers(count: 1, width: width) == [width / 2])
     }
 
-    @Test("多张照片等分两端之间，每张居中于自己那段")
+    @Test("放不下最大段宽时等分两端之间，每张居中于自己那段")
     func centersEvenlySpaced() {
-        let centers = ClotheslineGeometry.centers(count: 4, width: 1056)
-        // 两端之间 1000，每段 250
-        #expect(centers == [153, 403, 653, 903])
+        let centers = ClotheslineGeometry.centers(count: 5, width: 1056)
+        // 两端之间 1000，每段 200（小于最大段宽 240）
+        #expect(centers == [128, 328, 528, 728, 928])
+    }
+
+    @Test("宽屏上照片按最大段宽向中间靠拢，整组居中")
+    func centersClusterOnWideScreens() {
+        let centers = ClotheslineGeometry.centers(count: 4, width: 2560)
+        let slot: CGFloat = ClotheslineGeometry.maximumSlot
+        let expected: [CGFloat] = [-1.5, -0.5, 0.5, 1.5].map { 1280 + slot * $0 }
+        #expect(centers == expected)
+    }
+
+    @Test("照片中心之间的距离不超过最大段宽")
+    func centersSpacingCapped() {
+        let centers = ClotheslineGeometry.centers(count: 3, width: 1800)
+        #expect(zip(centers, centers.dropFirst()).allSatisfy { $1 - $0 == ClotheslineGeometry.maximumSlot })
     }
 
     @Test("窗口过窄时所有照片落在左端固定点")

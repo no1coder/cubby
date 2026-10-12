@@ -33,8 +33,9 @@ struct PanelFooter: View {
         var showsClearSearch = false
         /// 横条：「← → 选择」
         var showsArrows = false
-        /// 图片网格：「空格 预览」
+        /// 图片网格：「空格 预览」「⌘L 晾起来」
         var showsPreviewKey = false
+        var showsHangKey = false
 
         func with<Value>(_ keyPath: WritableKeyPath<Layout, Value>, _ value: Value) -> Layout {
             var copy = self
@@ -91,7 +92,9 @@ struct PanelFooter: View {
         let compact = Self.compactPasteTargetMaxWidth
         // 图片网格（ImageGrid 画板）：「N 张图片 · ↩ 粘贴 · 空格 预览」，不提示另一种格式
         if viewModel.showsImageGrid {
+            let hangs = viewModel.offersClothesline
             return [
+                Layout(showsAlternate: false, targetMaxWidth: compact, showsPreviewKey: true, showsHangKey: hangs),
                 Layout(showsAlternate: false, targetMaxWidth: compact, showsPreviewKey: true),
                 Layout(showsAlternate: false, targetMaxWidth: compact),
                 Layout(showsCount: false, showsAlternate: false, targetMaxWidth: compact),
@@ -182,6 +185,14 @@ struct PanelFooter: View {
                     if layout.showsPreviewKey {
                         KeyHint(keys: spaceKeyName, label: previewLabel)
                             .layoutPriority(1)
+                    }
+                    if layout.showsHangKey {
+                        KeyHint(
+                            keys: "⌘L",
+                            label: String(
+                                localized: "Hang Up", comment: "Preview button: hang the image on the clothesline")
+                        )
+                        .layoutPriority(1)
                     }
                     if layout.showsClearSearch {
                         KeyHint(keys: "esc", label: clearSearchLabel)

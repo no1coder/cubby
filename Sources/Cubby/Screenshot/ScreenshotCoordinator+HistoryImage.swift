@@ -140,6 +140,11 @@ extension ScreenshotCoordinator {
 
     // MARK: - 结果
 
+    /// 该覆盖层是不是晾衣绳放大编辑（它的输出不再自动挂到晾衣绳）
+    func isEditingHistoryImage(in overlay: any ScreenshotOverlayPresenting) -> Bool {
+        historyEdit?.overlay === overlay
+    }
+
     /// 取出属于该覆盖层的放大编辑（取出后不再回调第二次）
     func takeHistoryEdit(for overlay: any ScreenshotOverlayPresenting) -> HistoryImageEditSession? {
         guard let edit = historyEdit, edit.overlay === overlay else { return nil }
@@ -157,7 +162,7 @@ extension ScreenshotCoordinator {
         case .cancel:
             edit.onFinish(.cancelled)
         case .copy(let export):
-            output.copy(export)
+            output.copy(export, hangsOnClothesline: false)
             edit.onFinish(.copied)
         case .hangBack(let export):
             let source = edit.source.item.source
@@ -170,7 +175,10 @@ extension ScreenshotCoordinator {
             logger.error("History image edit failed: \(String(describing: failure), privacy: .public)")
             warn(String(localized: "Couldn't create the screenshot", comment: "HUD when exporting a screenshot fails"))
             edit.onFinish(.cancelled)
-        case .pin, .extractText, .copyColor, .translatedText, .captureWindow:
+        case .pin(let export):
+            output.pin(export, hangsOnClothesline: false)
+            edit.onFinish(.other)
+        case .extractText, .copyColor, .translatedText, .captureWindow:
             handle(result, presentation: presentation)
             edit.onFinish(.other)
         }

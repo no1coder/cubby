@@ -18,21 +18,29 @@ public enum ClotheslineGeometry {
         return sag * (1 - u * u)
     }
 
-    /// 各张照片中心的 x：在两端之间等分成 count 段，每张居中于自己那段。
+    /// 每张照片占的最大段宽（照片最宽 180 + 间距约 60）：宽屏上照片不铺满整条绳，而是向中间靠拢
+    public static let maximumSlot: CGFloat = 240
+
+    /// 各张照片中心的 x：每张占一段（两端之间等分，但不超过 maximumSlot），整组在两端之间居中。
     /// 段宽小于 photoWidth + minimumGap 时照片会重叠，调用方先用 photoWidth(count:width:maxWidth:) 缩小照片
     public static func centers(count: Int, width: CGFloat) -> [CGFloat] {
         guard count > 0 else { return [] }
         let span = max(width - anchorInset * 2, 0)
-        let slot = span / CGFloat(count)
-        return (0..<count).map { anchorInset + slot * (CGFloat($0) + 0.5) }
+        let slot = slot(count: count, span: span)
+        let start = anchorInset + (span - slot * CGFloat(count)) / 2
+        return (0..<count).map { start + slot * (CGFloat($0) + 0.5) }
     }
 
     /// 每张照片的最大宽度：放得下时取 maxWidth，否则按段宽减去间距缩小（不小于 minimumWidth）
     public static func photoWidth(count: Int, width: CGFloat, maxWidth: CGFloat, minimumWidth: CGFloat = 56) -> CGFloat
     {
         guard count > 0 else { return maxWidth }
-        let slot = max(width - anchorInset * 2, 0) / CGFloat(count)
+        let slot = slot(count: count, span: max(width - anchorInset * 2, 0))
         return max(min(maxWidth, slot - minimumGap), minimumWidth)
+    }
+
+    private static func slot(count: Int, span: CGFloat) -> CGFloat {
+        min(span / CGFloat(count), maximumSlot)
     }
 
     /// 照片按原始宽高比放进 maxWidth × maxHeight 的框内（不放大到超过框）

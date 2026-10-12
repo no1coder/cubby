@@ -101,6 +101,7 @@ struct CardList: View {
             keywords: keywords,
             imageURL: viewModel.imageURL(for: item),
             translation: CardTranslationDecorations.make(for: item, keywords: keywords, viewModel: viewModel),
+            isOnClothesline: viewModel.isOnClothesline(item),
             onInlineAction: { viewModel.translation?.inline.performAction() }
         )
         .e2eAnchor("list.card.\(item.id)")
@@ -149,6 +150,9 @@ struct CardInteractions: ViewModifier {
                 },
             delete: { viewModel.delete(item) },
             pinToScreen: item.kind == .image ? { viewModel.pin(item) } : nil,
+            toggleClothesline: item.kind == .image && viewModel.offersClothesline
+                ? { viewModel.toggleClothesline(item) } : nil,
+            isOnClothesline: viewModel.isOnClothesline(item),
             isPreviewing: isPreviewing
         )
     }
@@ -202,6 +206,12 @@ private struct CardContextMenu: View {
         if item.kind == .image {
             Button("Pin to Screen") { viewModel.pin(item) }
                 .keyboardShortcut("p", modifiers: [.command, .shift])
+            if viewModel.offersClothesline {
+                Button(ClotheslineCopy.toggleTitle(isHanging: viewModel.isOnClothesline(item))) {
+                    viewModel.toggleClothesline(item)
+                }
+                .keyboardShortcut("l", modifiers: .command)
+            }
         }
         Button(TextPickCopy.title) { viewModel.openTextPick(for: item) }
             .keyboardShortcut("b", modifiers: .command)
@@ -256,6 +266,11 @@ private struct CardAccessibilityActions: ViewModifier {
                 }
                 if item.kind == .image {
                     Button("Pin to Screen") { viewModel.pin(item) }
+                    if viewModel.offersClothesline {
+                        Button(ClotheslineCopy.toggleTitle(isHanging: viewModel.isOnClothesline(item))) {
+                            viewModel.toggleClothesline(item)
+                        }
+                    }
                 }
                 if viewModel.translation != nil {
                     Button(TranslationMenuItems.translateTitle) { viewModel.openTranslation(for: item) }

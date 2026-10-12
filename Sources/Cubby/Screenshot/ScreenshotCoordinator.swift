@@ -108,6 +108,7 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
         pins: PinnedImageController,
         pasteboard: NSPasteboard = .general,
         savePrompt: any SaveDestinationPrompting = ScreenshotSavePrompt.shared,
+        onImageRecorded: @escaping @MainActor (ClipItem) -> Void = { _ in },
         beforeCapture: @escaping @MainActor () -> Void
     ) {
         self.settings = settings
@@ -118,7 +119,8 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
         self.beforeCapture = beforeCapture
         self.savePrompt = savePrompt
         self.output = ScreenshotOutputService(
-            settings: settings, store: store, recognizer: TextRecognizer(), pins: pins, pasteboard: pasteboard)
+            settings: settings, store: store, recognizer: TextRecognizer(), pins: pins, pasteboard: pasteboard,
+            onImageRecorded: onImageRecorded)
         guide.onGranted = { [weak self] in self?.showReadyHint() }
         observeScreenChanges()
     }
@@ -324,7 +326,7 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
         guard settings.asksWhereToSaveScreenshots else {
             state = .idle
             overlay.dismiss()
-            output.save(export)
+            output.save(export, hangsOnClothesline: !isEditingHistoryImage(in: overlay))
             restoreFocus()
             finishHistoryEdit(of: overlay, with: .other)
             return
@@ -357,7 +359,7 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
         if let url {
             state = .idle
             overlay.dismiss()
-            output.save(export, to: url)
+            output.save(export, to: url, hangsOnClothesline: !isEditingHistoryImage(in: overlay))
             restoreFocus()
             finishHistoryEdit(of: overlay, with: .other)
         } else if layoutChangedWhileSuspended {

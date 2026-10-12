@@ -18,6 +18,18 @@ struct ScreenshotSettingsPane: View {
             }
 
             savingSection
+
+            // 截图联动（docs/UI-UPGRADE-PLAN.md 第 5 节）：默认关闭；关闭了晾衣绳时不显示
+            if settings.clotheslineEnabled {
+                Section {
+                    Toggle(isOn: $settings.hangsScreenshotsOnClothesline) {
+                        Text("Hang screenshots on the clothesline")
+                        Text("Every screenshot you take is hung at the top of the screen, ready to grab")
+                    }
+                } header: {
+                    Text("After Capturing")
+                }
+            }
         }
         .formStyle(.grouped)
     }

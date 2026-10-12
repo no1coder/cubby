@@ -11,15 +11,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private lazy var updates = UpdateCoordinator(settings: settings)
     let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "App")
 
-    private var store: ClipStore?
+    var store: ClipStore?
     private var monitor: ClipboardMonitor?
     var panel: PanelController?
-    private var statusBar: StatusBarController?
+    var statusBar: StatusBarController?
     private var settingsWindow: SettingsWindowController?
     private var onboardingWindow: OnboardingWindowController?
     /// 使用说明窗口：第一次打开时才创建并载入文档
     private lazy var userGuide = UserGuideWindowController()
     var screenshots: ScreenshotCoordinator?
+    /// 屏幕顶部的晾衣绳（第 6 步）
+    var clothesline: ClotheslineController?
     /// 历史图片的本机文字识别（按图中文字搜索）
     private var imageTextIndexer: ImageTextIndexer?
     /// 各动作最近一次注册成功的快捷键，新快捷键被占用时回退到它
@@ -74,6 +76,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         lastWorkingHotKeys[.togglePanel] = settings.hotKey
         lastWorkingHotKeys[.screenshot] = settings.screenshotHotKey
         lastWorkingHotKeys[.images] = settings.imagesHotKey
+        lastWorkingHotKeys[.clothesline] = settings.clotheslineHotKey
+        applyClotheslineEnabled()
         #if DEBUG
         // 截图走查时不注册全局热键，避免与已安装的正式版冲突
         if Self.debugScenario == nil { registerHotKeys() }
@@ -127,6 +131,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.translationSettings = translationSettings
         self.statusBar = statusBar
         self.screenshots = screenshots
+        self.clothesline = makeClothesline(store: store, screenshots: screenshots)
         self.imageTextIndexer = ImageTextIndexer(
             store: store,
             settings: settings,
@@ -160,6 +165,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             store: store,
             overlayFactory: ScreenshotCoordinator.overlayFactory(ScreenshotOverlayController.self),
             pins: PinnedImageController(settings: settings),
+            onImageRecorded: { [weak self] item in self?.hangScreenshotIfEnabled(item) },
             beforeCapture: { [weak panel] in panel?.hide(animated: false) }
         )
         panel.takeScreenshot = { [weak coordinator] in coordinator?.start(.panelButton) }
@@ -214,7 +220,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             updates: updates,
             actions: .init(
                 togglePanel: { anchor in panel.toggle(anchor.map { .statusItem($0) } ?? .hotKey) },
+                showOnlyImages: { panel.toggleImages() },
                 takeScreenshot: { [weak screenshots] in screenshots?.start(.menu) },
+                toggleClothesline: { [weak self] in self?.toggleClothesline() },
                 openSettings: { settingsWindow.show() },
                 showOnboarding: { [weak self] in self?.showOnboarding() },
                 showUserGuide: { [weak self] in self?.showUserGuide() },
@@ -292,6 +300,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             userGuide.show(query: scenario.hasPrefix("guide:") ? String(scenario.dropFirst("guide:".count)) : nil)
         } else if scenario == "hud" {
             showHotKeyTip()
+        } else if scenario == "clothesline" || scenario == "clothesline:hover" {
+            // 绳上的条目由 -clotheslineItems 启动参数给出（参数域，不写入偏好设置）
+            clothesline?.debugShow(hoveringSecond: scenario.hasSuffix(":hover"))
+        } else if scenario == "clothesline:edit" {
+            debugEditOnClothesline()
         } else if scenario.hasPrefix("screenshot:") {
             // screenshot:<名称>，见 ScreenshotCoordinator.startDebugScenario
             screenshots?.start(.debugScenario(scenario))
@@ -343,6 +356,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         observe({ [settings] in settings.hotKey }) { [weak self] in self?.registerPanelHotKey() }
         observe({ [settings] in settings.screenshotHotKey }) { [weak self] in self?.registerScreenshotHotKey() }
         observe({ [settings] in settings.imagesHotKey }) { [weak self] in self?.registerImagesHotKey() }
+        observeClothesline()
         observe({ [settings] in settings.appearance }) { [settings] in AppearanceApplier.apply(settings.appearance) }
         observe({ [settings] in settings.historyLimit }) { [weak self] in
             guard let self else { return }
@@ -353,7 +367,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         observe({ [updates] in updates.reminder }) { [weak self] in self?.statusBar?.refreshAppearance() }
     }
 
-    private func observe<Value>(
+    func observe<Value>(
         _ value: @escaping @MainActor @Sendable () -> Value,
         onChange: @escaping @MainActor @Sendable () -> Void
     ) {

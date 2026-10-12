@@ -8,6 +8,18 @@ extension AppDelegate {
         registerPanelHotKey()
         registerScreenshotHotKey()
         registerImagesHotKey()
+        registerClotheslineHotKey()
+    }
+
+    /// 晾衣绳的显示 / 收起：关闭了快捷键或整个晾衣绳时注销
+    func registerClotheslineHotKey() {
+        guard settings.clotheslineEnabled, let hotKey = settings.clotheslineHotKey else {
+            hotKeys.unregister(.clothesline)
+            return
+        }
+        register(hotKey, for: .clothesline) { [weak self] in
+            self?.toggleClothesline()
+        }
     }
 
     /// 「只看图片」：用户关闭时注销

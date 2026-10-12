@@ -52,6 +52,8 @@ struct GeneralSettingsPane: View {
                 .foregroundStyle(.secondary)
             }
 
+            ClotheslineSettingsSection(settings: settings, onShortcutRecordingChange: onShortcutRecordingChange)
+
             Section {
                 Picker("When you choose an item", selection: $settings.pasteDirectly) {
                     Text("Paste into the current app").tag(true)

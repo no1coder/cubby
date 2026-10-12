@@ -55,6 +55,8 @@ final class PanelViewModel {
     /// 底部横条里选中卡片的中心 x（面板窗口坐标）：详情区水平居中于它；变化时通知控制器重新定位详情区
     @ObservationIgnored var shelfAnchorX: CGFloat?
     @ObservationIgnored var onShelfAnchorChange: (() -> Void)?
+    /// 挂到 / 取下晾衣绳（AppDelegate 接到 ClotheslineController）；nil 时关闭了晾衣绳，入口隐藏
+    @ObservationIgnored var onToggleClothesline: ((ClipItem) -> Void)?
     /// 可见的提醒变了（横条要随之调整高度）
     @ObservationIgnored var onWarningsChange: (() -> Void)?
     /// 拆词结果的粘贴 / 复制（由 PanelController 注入：写剪贴板，粘贴时再走条目粘贴的投递段）；复制返回是否写入
@@ -192,7 +194,7 @@ final class PanelViewModel {
         case .undo: return undoDelete()
         case .toggleFavorite: if let item = selectedItem { toggleFavorite(item) }
         case .pinToScreen: pinSelected()
-        case .toggleClothesline: break  // 第 6 步接线
+        case .toggleClothesline: toggleClotheslineForSelection()
         case .togglePreview: setPreviewVisible(!isPreviewVisible)
         case .translate: toggleTranslationCard()
         case .translateAndPaste: translateAndPasteSelected()

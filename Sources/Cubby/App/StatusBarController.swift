@@ -6,7 +6,9 @@ import CubbyCore
 final class StatusBarController: NSObject, NSMenuDelegate {
     struct Actions {
         let togglePanel: (CGRect?) -> Void
+        let showOnlyImages: () -> Void
         let takeScreenshot: () -> Void
+        let toggleClothesline: () -> Void
         let openSettings: () -> Void
         let showOnboarding: () -> Void
         let showUserGuide: () -> Void
@@ -23,6 +25,8 @@ final class StatusBarController: NSObject, NSMenuDelegate {
     private let menu = NSMenu()
     private let openItem: ClosureMenuItem
     private let screenshotItem: ClosureMenuItem
+    private let imagesItem: ClosureMenuItem
+    private let clotheslineItem: ClosureMenuItem
     private let pauseItem = ClosureMenuItem(
         title: String(localized: "Pause Recording", comment: "Status menu item"),
         handler: {}
@@ -43,6 +47,8 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         self.actions = actions
         self.openItem = ClosureMenuItem(title: Self.openTitle) { actions.togglePanel(nil) }
         self.screenshotItem = ClosureMenuItem(title: Self.screenshotTitle, handler: actions.takeScreenshot)
+        self.imagesItem = ClosureMenuItem(title: Self.imagesTitle, handler: actions.showOnlyImages)
+        self.clotheslineItem = ClosureMenuItem(title: "", handler: actions.toggleClothesline)
         self.panelPositionItem = PanelPositionMenuItem(settings: settings)
         self.appearanceItem = AppearanceMenuItem(settings: settings)
         super.init()
@@ -69,8 +75,26 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         let release = updates.reminder.availableRelease
         if let button = statusItem.button {
             Self.applyAppearance(to: button, badge: updateBadge, paused: settings.isPaused, release: release)
+            applyClotheslineCount(to: button)
         }
         refreshUpdateItem(release)
+    }
+
+    /// 绳上挂着照片时，图标右侧显示张数（「⌗ 4」）；绳上为空或关闭了晾衣绳时只有图标
+    private func applyClotheslineCount(to button: NSStatusBarButton) {
+        let count = settings.clotheslineEnabled ? settings.clothesline.count : 0
+        statusItem.length = count > 0 ? NSStatusItem.variableLength : NSStatusItem.squareLength
+        button.imagePosition = count > 0 ? .imageLeading : .imageOnly
+        button.attributedTitle =
+            count > 0
+            ? NSAttributedString(
+                string: " \(count)",
+                attributes: [.font: NSFont.monospacedDigitSystemFont(ofSize: NSFont.systemFontSize, weight: .medium)])
+            : NSAttributedString()
+        button.setAccessibilityValue(
+            count > 0
+                ? String(localized: "\(count) photos on the clothesline", comment: "Status item accessibility value")
+                : nil)
     }
 
     /// 按暂停与更新状态设置图标（有新版本时带缺口与读屏说明）、蓝点与提示文字；面板 E2E 用同一函数检查蓝点
@@ -110,6 +134,10 @@ final class StatusBarController: NSObject, NSMenuDelegate {
         }
         panelPositionItem.refresh()
         appearanceItem.refresh()
+        imagesItem.attributedTitle = settings.imagesHotKey.map {
+            Self.titleWithDetail(Self.imagesTitle, detail: $0.displayName)
+        }
+        refreshClotheslineItem()
         pauseItem.state = settings.isPaused ? .on : .off
         accessWarningItem.isHidden = !PasteboardAccess.needsAttention
     }
@@ -118,6 +146,24 @@ final class StatusBarController: NSObject, NSMenuDelegate {
 
     private static var openTitle: String {
         String(localized: "Open Clipboard", comment: "Status menu item: open the panel")
+    }
+
+    private static var imagesTitle: String {
+        String(localized: "Only Images", comment: "Status menu item: open the panel on the image grid")
+    }
+
+    /// 「显示晾衣绳 · 4 张」+ 快捷键；关闭了晾衣绳时隐藏，绳上为空时置灰
+    private func refreshClotheslineItem() {
+        clotheslineItem.isHidden = !settings.clotheslineEnabled
+        let count = settings.clothesline.count
+        let title = String(
+            localized: "Show Clothesline · \(count) photos",
+            comment: "Status menu item that slides the clothesline down. %lld = number of photos on it")
+        clotheslineItem.attributedTitle =
+            settings.clotheslineHotKey.map {
+                Self.titleWithDetail(title, detail: $0.displayName)
+            } ?? NSAttributedString(string: title)
+        clotheslineItem.isEnabled = count > 0
     }
 
     private static var screenshotTitle: String {
@@ -151,10 +197,14 @@ final class StatusBarController: NSObject, NSMenuDelegate {
 
     private func buildMenu() {
         menu.delegate = self
+        // 菜单项的可用状态由我们在 menuNeedsUpdate 里设置（例如绳上为空时「显示晾衣绳」置灰）
+        menu.autoenablesItems = false
         menu.addItem(updateAvailableItem)
         menu.addItem(accessWarningItem)
         menu.addItem(openItem)
+        menu.addItem(imagesItem)
         menu.addItem(screenshotItem)
+        menu.addItem(clotheslineItem)
         menu.addItem(.separator())
         menu.addItem(panelPositionItem)
         menu.addItem(appearanceItem)

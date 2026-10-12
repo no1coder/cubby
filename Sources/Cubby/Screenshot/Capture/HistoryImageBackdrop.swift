@@ -75,15 +75,23 @@ enum HistoryImageBackdrop {
             y: CGFloat(context.height) - local.maxY * scale,
             width: local.width * scale,
             height: local.height * scale)
+        let radius = HistoryEditTokens.imageCornerRadius * scale
+        let shape = CGPath(roundedRect: target, cornerWidth: radius, cornerHeight: radius, transform: nil)
         context.saveGState()
         context.setShadow(
             offset: CGSize(width: 0, height: -shadowOffset * scale), blur: shadowBlur * scale,
             color: CGColor(gray: 0, alpha: shadowAlpha))
         context.setFillColor(CGColor(gray: 0, alpha: 1))
-        context.fill(target)
+        context.addPath(shape)
+        context.fillPath()
         context.restoreGState()
+        // 圆角只用于显示；导出按原图（直角）
+        context.saveGState()
+        context.addPath(shape)
+        context.clip()
         context.interpolationQuality = .high
         context.draw(image, in: target)
+        context.restoreGState()
     }
 
     /// 缩小到长边 96 px 再高斯模糊（边缘夹取，不会出现暗边）

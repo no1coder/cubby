@@ -46,6 +46,7 @@ final class OverlayScreenView: NSView {
     /// 放大编辑的标题行与快捷键提示（第一次需要时创建，见 +HistoryEdit）
     var historyHeader: FirstMouseHostingView<HistoryEditHeader>?
     var historyHint: NSHostingView<HistoryEditHint>?
+    var historyPin: NSView?
     var historyHeaderModel: HistoryEditHeaderModel?
 
     var space: OverlaySpace { canvas.space }

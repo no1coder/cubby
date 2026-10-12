@@ -24,6 +24,8 @@ struct ScreenshotOutputService {
     private let pins: PinnedImageController
     /// 默认为系统剪贴板；调试时可换成独立的命名剪贴板，避免覆盖用户剪贴板
     private let pasteboard: NSPasteboard
+    /// 截图（复制 / 存储 / 贴图）写入历史后：设置里开了「截图后挂到晾衣绳」时由 AppDelegate 挂上
+    private let onImageRecorded: @MainActor (ClipItem) -> Void
     private static let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Screenshot")
 
     init(
@@ -31,13 +33,15 @@ struct ScreenshotOutputService {
         store: ClipStore,
         recognizer: TextRecognizer,
         pins: PinnedImageController,
-        pasteboard: NSPasteboard = .general
+        pasteboard: NSPasteboard = .general,
+        onImageRecorded: @escaping @MainActor (ClipItem) -> Void = { _ in }
     ) {
         self.settings = settings
         self.store = store
         self.recognizer = recognizer
         self.pins = pins
         self.pasteboard = pasteboard
+        self.onImageRecorded = onImageRecorded
     }
 
     /// 历史来源：图标取 Cubby 自身（bundle 已安装，能取到图标），名称显示「截图」
@@ -50,8 +54,11 @@ struct ScreenshotOutputService {
 
     // MARK: - 出口
 
-    func copy(_ export: ScreenshotExport) {
-        copyImage(png: export.png, pixelSize: export.pixelSize, anchor: Self.anchor(for: export.selection))
+    /// - Parameter hangsOnClothesline: false = 晾衣绳放大编辑的输出（编辑的是绳上已有的图，不再自动挂上）
+    func copy(_ export: ScreenshotExport, hangsOnClothesline: Bool = true) {
+        copyImage(
+            png: export.png, pixelSize: export.pixelSize, anchor: Self.anchor(for: export.selection),
+            hangsOnClothesline: hangsOnClothesline)
     }
 
     /// 纯净窗口截图（§9.3）：复制并入历史，不进入标注
@@ -72,7 +79,7 @@ struct ScreenshotOutputService {
     }
 
     /// 直接存入默认文件夹（设置里关闭了「每次存储前询问位置」）
-    func save(_ export: ScreenshotExport) {
+    func save(_ export: ScreenshotExport, hangsOnClothesline: Bool = true) {
         let anchor = Self.anchor(for: export.selection)
         let png = export.png
         let destination = ScreenshotSaveLocation.destination(preferred: settings.screenshotSaveDirectory)
@@ -83,7 +90,8 @@ struct ScreenshotOutputService {
             }.value
             switch result {
             case .success(let outcome):
-                let history = recordImage(png: png, pixelSize: export.pixelSize)
+                let history = recordImage(
+                    png: png, pixelSize: export.pixelSize, hangsOnClothesline: hangsOnClothesline)
                 succeed(
                     Self.savedMessage(for: outcome), note: Self.note(for: history),
                     symbolName: "square.and.arrow.down", at: anchor)
@@ -97,12 +105,13 @@ struct ScreenshotOutputService {
     }
 
     /// 写到存储对话框选定的位置（同名文件已由对话框确认替换）；入历史（暂停记录时除外），记住文件夹
-    func save(_ export: ScreenshotExport, to url: URL) {
+    func save(_ export: ScreenshotExport, to url: URL, hangsOnClothesline: Bool = true) {
         let anchor = Self.anchor(for: export.selection)
         Task {
             switch await ScreenshotSaveWriter.write(export.png, to: url, settings: settings) {
             case .success(let written):
-                let history = recordImage(png: export.png, pixelSize: export.pixelSize)
+                let history = recordImage(
+                    png: export.png, pixelSize: export.pixelSize, hangsOnClothesline: hangsOnClothesline)
                 succeed(
                     ScreenshotSaveWriter.savedMessage(for: written), note: Self.note(for: history),
                     symbolName: "square.and.arrow.down", at: anchor)
@@ -116,9 +125,11 @@ struct ScreenshotOutputService {
     }
 
     /// 贴图本身就是反馈，不弹 HUD
-    func pin(_ export: ScreenshotExport) {
+    func pin(_ export: ScreenshotExport, hangsOnClothesline: Bool = true) {
         pins.pin(export)
-        if recordImage(png: export.png, pixelSize: export.pixelSize) == .tooLarge {
+        let history = recordImage(
+            png: export.png, pixelSize: export.pixelSize, hangsOnClothesline: hangsOnClothesline)
+        if history == .tooLarge {
             Self.logger.notice("Pinned screenshot too large for history")
         }
     }
@@ -186,7 +197,7 @@ struct ScreenshotOutputService {
 
     // MARK: - 剪贴板与历史
 
-    private func copyImage(png: Data, pixelSize: CGSize, anchor: CGPoint) {
+    private func copyImage(png: Data, pixelSize: CGSize, anchor: CGPoint, hangsOnClothesline: Bool = true) {
         var copied = true
         do {
             try ScreenshotPasteboard.write(png: png, to: pasteboard)
@@ -194,7 +205,7 @@ struct ScreenshotOutputService {
             Self.logger.error("Failed to write the screenshot to the pasteboard")
             copied = false
         }
-        let history = recordImage(png: png, pixelSize: pixelSize)
+        let history = recordImage(png: png, pixelSize: pixelSize, hangsOnClothesline: hangsOnClothesline)
         report(
             copied: copied, history: history,
             success: String(localized: "Copied to clipboard", comment: "HUD after copying an item"),
@@ -225,11 +236,16 @@ struct ScreenshotOutputService {
     }
 
     /// 入历史（后台计算摘要并写入文件，按调用顺序插入）
-    private func recordImage(png: Data, pixelSize: CGSize) -> HistoryResult {
+    private func recordImage(png: Data, pixelSize: CGSize, hangsOnClothesline: Bool) -> HistoryResult {
         guard !settings.isPaused else { return .skipped }
         guard png.count <= CaptureLimits.maxImageBytes else { return .tooLarge }
         let content = ClipContent.image(png: png, width: Int(pixelSize.width), height: Int(pixelSize.height))
-        store.recordInBackground(content, source: Self.screenshotSource)
+        let recording = store.recordInBackground(content, source: Self.screenshotSource)
+        guard hangsOnClothesline else { return .recorded }
+        let onImageRecorded = onImageRecorded
+        Task {
+            if let item = await recording.value { onImageRecorded(item) }
+        }
         return .recorded
     }
 
