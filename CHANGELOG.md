@@ -12,6 +12,8 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+## [0.3.0] - 2026-10-12
+
 ### Added
 
 - **Pick Words**: press `⌘B` (or press and hold a card, or choose **Pick Words** from its right-click menu) to split a text item, or the recognized text of an image, into word chips next to the panel. Click, drag or `⇧`-click to pick the words you need, then press `↩` to paste them or `⌘C` to copy them. Links, email addresses and phone numbers stay in one piece, and picked words aren't added to your history.
@@ -126,6 +128,7 @@ Internal preview under the working name Zhantie. Not publicly released.
 
 - Menu bar clipboard history with a global shortcut to open it.
 
-[Unreleased]: https://github.com/no1coder/cubby/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/no1coder/cubby/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/no1coder/cubby/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/no1coder/cubby/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/no1coder/cubby/releases/tag/v0.2.0
