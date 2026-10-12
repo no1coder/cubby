@@ -18,6 +18,10 @@ enum PanelDebugInput {
 
     private static let namedKeys: [String: Key] = [
         "space": Key(code: kVK_Space, characters: " "),
+        "left": Key(code: kVK_LeftArrow, characters: ""),
+        "right": Key(code: kVK_RightArrow, characters: ""),
+        "up": Key(code: kVK_UpArrow, characters: ""),
+        "down": Key(code: kVK_DownArrow, characters: ""),
         "home": Key(code: kVK_Home, characters: ""),
         "end": Key(code: kVK_End, characters: ""),
         "pageup": Key(code: kVK_PageUp, characters: ""),

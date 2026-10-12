@@ -166,6 +166,11 @@ enum CardStyle {
         }
     }
 
+    var isColor: Bool {
+        if case .color = self { return true }
+        return false
+    }
+
     func palette(_ scheme: ColorScheme, increasedContrast: Bool = false) -> CardPalette {
         switch self {
         case .standard: .standard(scheme, increasedContrast: increasedContrast)

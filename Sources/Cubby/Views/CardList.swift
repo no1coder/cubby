@@ -92,8 +92,7 @@ struct CardList: View {
         return starts
     }
 
-    /// 一张卡片及其手势、右键菜单、拖拽与读屏操作。长按（0.45 秒、移动不超过 4pt）打开拆词卡，
-    /// 与单击选中、双击粘贴、拖出并存（docs/TEXT-PICK-DESIGN.md §2）
+    /// 一张卡片及其交互（见 CardInteractions）
     private func card(_ item: ClipItem, index: Int, isSelected: Bool, keywords: [String]) -> some View {
         ClipCardView(
             item: item,
@@ -105,26 +104,34 @@ struct CardList: View {
             onInlineAction: { viewModel.translation?.inline.performAction() }
         )
         .e2eAnchor("list.card.\(item.id)")
-        .onTapGesture { viewModel.select(item) }
-        .simultaneousGesture(TapGesture(count: 2).onEnded { viewModel.paste(item) })
-        // 长按挂在单击 / 双击之外：内层手势优先，挂在里面会吞掉单击选中
-        .modifier(CardLongPress { viewModel.openTextPick(for: item) })
-        .contextMenu { CardContextMenu(item: item, viewModel: viewModel) }
-        .onDrag { DragProvider.provider(for: item, imageURL: viewModel.imageURL(for: item)) }
-        // 悬停工具条叠在所有手势之上：按钮上的单击 / 双击 / 长按 / 拖动不会传给卡片（否则双击收藏会顺带粘贴）
-        .overlay {
-            CardHoverChrome(
-                item: item, isSelected: isSelected, actions: quickActions(for: item, isSelected: isSelected))
-        }
-        .modifier(CardAccessibilityActions(item: item, viewModel: viewModel))
+        .modifier(CardInteractions(item: item, isSelected: isSelected, viewModel: viewModel))
         .padding(.vertical, Self.edgeFade)
         .id(item.id)
     }
 }
 
-extension CardList {
+/// 卡片的交互（列表与横条共用）：单击选中、双击粘贴、长按拆词（0.45 秒、移动不超过 4pt，
+/// docs/TEXT-PICK-DESIGN.md §2）、右键菜单、拖出、悬停工具条与读屏操作
+struct CardInteractions: ViewModifier {
+    let item: ClipItem
+    let isSelected: Bool
+    let viewModel: PanelViewModel
+
+    func body(content: Content) -> some View {
+        content
+            .onTapGesture { viewModel.select(item) }
+            .simultaneousGesture(TapGesture(count: 2).onEnded { viewModel.paste(item) })
+            // 长按挂在单击 / 双击之外：内层手势优先，挂在里面会吞掉单击选中
+            .modifier(CardLongPress { viewModel.openTextPick(for: item) })
+            .contextMenu { CardContextMenu(item: item, viewModel: viewModel) }
+            .onDrag { DragProvider.provider(for: item, imageURL: viewModel.imageURL(for: item)) }
+            // 悬停工具条叠在所有手势之上：按钮上的单击 / 双击 / 长按 / 拖动不会传给卡片（否则双击收藏会顺带粘贴）
+            .overlay { CardHoverChrome(item: item, isSelected: isSelected, actions: quickActions) }
+            .modifier(CardAccessibilityActions(item: item, viewModel: viewModel))
+    }
+
     /// 悬停工具条：预览按钮在这张卡片的预览已打开时再按一次关闭
-    fileprivate func quickActions(for item: ClipItem, isSelected: Bool) -> CardQuickActions {
+    private var quickActions: CardQuickActions {
         let isPreviewing = isSelected && viewModel.isPreviewVisible
         return CardQuickActions(
             toggleFavorite: { viewModel.toggleFavorite(item) },
@@ -296,7 +303,7 @@ private struct TranslationMenuItems: View {
 }
 
 /// 调试构建把「保持悬停」的卡片传给各张卡片；正式构建不做任何事
-private struct DebugHoverEnvironment: ViewModifier {
+struct DebugHoverEnvironment: ViewModifier {
     let viewModel: PanelViewModel
 
     func body(content: Content) -> some View {

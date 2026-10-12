@@ -8,7 +8,9 @@ struct PanelPositionPicker: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            // 可见的标题同时作为读屏的分组标题，分组本身不再重复朗读
             Text("Panel position")
+                .accessibilityAddTraits(.isHeader)
             HStack(alignment: .top, spacing: PanelPositionThumbnail.spacing) {
                 ForEach(PanelPosition.allCases, id: \.self) { position in
                     Button {
@@ -24,7 +26,6 @@ struct PanelPositionPicker: View {
             }
             .padding(.vertical, 4)
             .accessibilityElement(children: .contain)
-            .accessibilityLabel(Text("Panel position"))
         }
     }
 }
@@ -94,7 +95,7 @@ struct PanelPositionThumbnail: View {
                 floatingPanel
                     .offset(x: 34, y: 13)
                 Image(systemName: "cursorarrow")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.system(size: FontSize.caption2, weight: .semibold))
                     .foregroundStyle(palette.pointer)
                     .offset(x: 24, y: 6)
             }

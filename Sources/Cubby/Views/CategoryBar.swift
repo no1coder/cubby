@@ -38,6 +38,8 @@ struct FieldBackground: View {
 /// 放不下时（较长的语言、放大的字号）退为全部图标，悬停显示名称
 struct CategoryTabs: View {
     let selection: ClipCategory
+    /// 横条里每一项至少这么宽（各项不再平分整行，控件按内容收紧）
+    var minItemWidth: CGFloat?
     let onSelect: (ClipCategory) -> Void
 
     @Namespace private var namespace
@@ -56,6 +58,11 @@ struct CategoryTabs: View {
         .animation(Motion.animation(.snappy(duration: Motion.tabSlide), reduceMotion: reduceMotion), value: selection)
     }
 
+    /// 面板里各项平分整行；横条里按内容收紧
+    private var maxItemWidth: CGFloat? {
+        minItemWidth == nil ? .infinity : nil
+    }
+
     private func track(iconsOnly: Bool) -> some View {
         HStack(spacing: 2) {
             ForEach(ClipCategory.allCases, id: \.self) { category in
@@ -70,7 +77,8 @@ struct CategoryTabs: View {
                     onSelect(category)
                 }
                 .frame(height: Self.itemHeight)
-                .frame(maxWidth: category == .favorite && !iconsOnly ? Self.favoriteWidth : .infinity)
+                .frame(minWidth: minItemWidth)
+                .frame(maxWidth: category == .favorite && !iconsOnly ? Self.favoriteWidth : maxItemWidth)
             }
         }
         .padding(Self.trackPadding)

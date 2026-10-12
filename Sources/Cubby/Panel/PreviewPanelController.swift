@@ -16,7 +16,16 @@ final class PreviewPanelController {
     private let viewModel: PanelViewModel
     /// 预览内容只在面板显示期间挂载（见 PreviewPanelView）
     private let mount = PreviewMount()
-    private var anchor: (host: CGRect, visible: CGRect)?
+    private var anchor: Anchor?
+    /// 横条里选中卡片的中心 x（屏幕坐标），每次定位时读取
+    private var anchorX: () -> CGFloat? = { nil }
+
+    /// 详情区依附的主面板：落位后的位置、所在屏幕的可见区域与排布
+    private struct Anchor {
+        let host: CGRect
+        let visible: CGRect
+        let layout: PanelLayout
+    }
     /// 条目内容不可变，测量结果按（条目，详情区）缓存，连续切换选中项时不重复离屏布局
     private var heightCache: [HeightKey: CGFloat] = [:]
 
@@ -44,9 +53,16 @@ final class PreviewPanelController {
     var window: NSWindow { panel }
     #endif
 
-    /// - Parameter hostFrame: 主面板落位后的最终位置（入场动画中不能用动画帧，否则纵向差 8pt）
-    func show(beside hostFrame: CGRect, visibleFrame: CGRect) {
-        anchor = (hostFrame, visibleFrame)
+    /// - Parameters:
+    ///   - hostFrame: 主面板落位后的最终位置（入场动画中不能用动画帧，否则纵向差 8pt）
+    ///   - layout: 浮动与侧栏放在旁边（优先左侧、顶部对齐）；横条放在正上方、水平居中于选中卡片
+    ///   - anchorX: 横条里选中卡片的中心 x（屏幕坐标）
+    func show(
+        beside hostFrame: CGRect, visibleFrame: CGRect, layout: PanelLayout = .floating,
+        anchorX: @escaping () -> CGFloat? = { nil }
+    ) {
+        anchor = Anchor(host: hostFrame, visible: visibleFrame, layout: layout)
+        self.anchorX = anchorX
         mount.isActive = true
         panel.setFrame(targetFrame(), display: true)
         // 在上屏前同步挂载并排好内容：淡入的第一帧就有内容，不会先闪一帧空白
@@ -68,6 +84,14 @@ final class PreviewPanelController {
         panel.orderOut(nil)
     }
 
+    /// 主面板或锚点（横条里选中卡片滚动时）移动了：直接跟到新位置，不做动画（滚动时每帧都会调用）
+    func reposition(host: CGRect? = nil) {
+        guard panel.isVisible, let current = anchor else { return }
+        if let host { anchor = Anchor(host: host, visible: current.visible, layout: current.layout) }
+        let frame = targetFrame()
+        if frame != panel.frame { panel.setFrame(frame, display: true) }
+    }
+
     /// 选中项、详情区或翻译卡布局变化时按新内容调整高度；减弱动态效果时直接跳到新高度
     func relayout() {
         guard panel.isVisible, anchor != nil else { return }
@@ -84,16 +108,20 @@ final class PreviewPanelController {
         }
     }
 
+    /// 浮动与侧栏：旁边、顶部对齐，最高与主面板等高；横条：正上方、底部对齐向上长高，最高 620 与上方剩余空间
     private func targetFrame() -> CGRect {
         guard let anchor else { return panel.frame }
-        let full = PanelPlacement.frame(
-            size: CGSize(width: PreviewMetrics.width, height: anchor.host.height),
-            beside: anchor.host,
-            visibleFrame: anchor.visible
+        let isShelf = anchor.layout == .shelf
+        return PanelPlacement.detailFrame(
+            width: PreviewMetrics.width,
+            height: max(idealHeight(), minHeight),
+            host: anchor.host,
+            layout: anchor.layout,
+            visibleFrame: anchor.visible,
+            maxHeight: isShelf ? PreviewMetrics.shelfMaxHeight : anchor.host.height,
+            anchorX: isShelf ? anchorX() : nil,
+            gap: isShelf ? PreviewMetrics.shelfGap : PanelPlacement.detailGap
         )
-        let height = min(max(idealHeight(), minHeight), full.height)
-        // 顶部与主面板对齐
-        return CGRect(x: full.minX, y: full.maxY - height, width: full.width, height: height)
     }
 
     private var minHeight: CGFloat {

@@ -12,6 +12,7 @@ struct PanelHeader: View {
             HStack(spacing: 4) {
                 SearchField(text: $viewModel.searchText, isFocused: isSearchFocused)
                     .layoutPriority(-1)
+                LayoutButton(layout: viewModel.layout) { viewModel.cycleLayout() }
                 HeaderIconButton(
                     systemName: "camera.viewfinder",
                     label: screenshotTitle,
@@ -51,7 +52,7 @@ struct PanelHeader: View {
     }
 }
 
-private struct SearchField: View {
+struct SearchField: View {
     @Binding var text: String
     var isFocused: FocusState<Bool>.Binding
 
@@ -87,24 +88,27 @@ private struct SearchField: View {
     }
 }
 
-private struct HeaderIconButton: View {
+struct HeaderIconButton: View {
     let systemName: String
     /// VoiceOver 朗读的按钮名称（悬停提示可能带快捷键，不适合作为名称）
     let label: String
     let help: Text
+    /// 按下状态（如停靠时的布局按钮）：强调色淡底 + 强调色图标
+    var isActive = false
     let action: () -> Void
 
+    @Environment(\.colorScheme) private var colorScheme
     @State private var isHovered = false
 
     var body: some View {
         Button(action: action) {
             Image(systemName: systemName)
                 .font(.system(size: FontSize.title))
-                .foregroundStyle(isHovered ? .primary : .secondary)
+                .foregroundStyle(isActive ? Color.accentColor : (isHovered ? Color.primary : Color.secondary))
                 .frame(width: PanelMetrics.iconButtonSize, height: PanelMetrics.iconButtonSize)
                 .background(
                     RoundedRectangle(cornerRadius: Radius.iconButton, style: .continuous)
-                        .fill(Color.primary.opacity(isHovered ? 0.08 : 0))
+                        .fill(fill)
                 )
                 .contentShape(Rectangle())
         }
@@ -112,5 +116,11 @@ private struct HeaderIconButton: View {
         .onHover { isHovered = $0 }
         .help(help)
         .accessibilityLabel(label)
+        .accessibilityAddTraits(isActive ? .isSelected : [])
+    }
+
+    private var fill: Color {
+        if isActive { return Color.accentColor.opacity(colorScheme == .dark ? 0.22 : 0.14) }
+        return Color.primary.opacity(isHovered ? 0.08 : 0)
     }
 }

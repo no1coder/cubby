@@ -4483,6 +4483,17 @@
         }
       }
     },
+    "Panel Position" : {
+      "comment" : "Status menu item: submenu to choose where the panel appears (floating or docked)",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "面板位置"
+          }
+        }
+      }
+    },
     "Panel position" : {
       "localizations" : {
         "zh-Hans" : {
@@ -5853,6 +5864,17 @@
         }
       }
     },
+    "Select" : {
+      "comment" : "Shelf hint for ← and → that move the selection",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择"
+          }
+        }
+      }
+    },
     "Select (or ⌃P ⌃N)" : {
       "comment" : "Shortcut help",
       "localizations" : {
@@ -6376,6 +6398,17 @@
         }
       }
     },
+    "Switch Layout" : {
+      "comment" : "Panel header button that cycles floating, right and bottom",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换布局"
+          }
+        }
+      }
+    },
     "Switch category" : {
       "comment" : "Shortcut help",
       "localizations" : {
@@ -6383,6 +6416,39 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "切换分类"
+          }
+        }
+      }
+    },
+    "Switch layout (now: docked bottom)" : {
+      "comment" : "Tooltip of the panel layout button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换布局（当前：固定底部）"
+          }
+        }
+      }
+    },
+    "Switch layout (now: docked right)" : {
+      "comment" : "Tooltip of the panel layout button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换布局（当前：固定右侧）"
+          }
+        }
+      }
+    },
+    "Switch layout (now: floating)" : {
+      "comment" : "Tooltip of the panel layout button",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "切换布局（当前：浮动）"
           }
         }
       }
@@ -7548,6 +7614,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "请使用 https://（仅本机地址可以用 http://）。"
+          }
+        }
+      }
+    },
+    "Use the layout button at the top of the panel to switch between floating, right and bottom at any time." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "面板顶栏的布局按钮可随时在浮动、右侧、底部之间切换。"
           }
         }
       }

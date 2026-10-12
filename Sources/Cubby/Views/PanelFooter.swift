@@ -9,6 +9,8 @@ import CubbyCore
 struct PanelFooter: View {
     let viewModel: PanelViewModel
     let count: Int
+    /// 底部横条没有底栏：同样的提示放在顶部一行的右侧（不显示数量，最前面加「← → 选择」）
+    var isInShelfTopRow = false
 
     /// 「粘贴到 [图标] App 名」短语的最大宽度：宽松档（中文下 App 名约 90pt），过长时尾部截断
     private static let pasteTargetMaxWidth: CGFloat = 144
@@ -29,6 +31,14 @@ struct PanelFooter: View {
         var showsTranslatePaste = false
         /// 搜索时：「esc 清除搜索」（最先让位）
         var showsClearSearch = false
+        /// 横条：「← → 选择」
+        var showsArrows = false
+
+        func with<Value>(_ keyPath: WritableKeyPath<Layout, Value>, _ value: Value) -> Layout {
+            var copy = self
+            copy[keyPath: keyPath] = value
+            return copy
+        }
     }
 
     var body: some View {
@@ -50,20 +60,25 @@ struct PanelFooter: View {
             }
             helpButton
         }
-        // 数量文字与卡片左缘对齐；帮助按钮与顶栏齿轮按钮的中心在同一条竖线上
-        .padding(.leading, PanelMetrics.inset)
-        .padding(.trailing, PanelMetrics.inset + (PanelMetrics.iconButtonSize - Self.helpButtonSize) / 2)
-        .frame(height: PanelMetrics.footerHeight)
-        .background(FooterBackground())
+        .modifier(
+            FooterChrome(
+                isBar: !isInShelfTopRow, trailingInset: (PanelMetrics.iconButtonSize - Self.helpButtonSize) / 2)
+        )
         .animation(
             Motion.animation(.snappy(duration: Motion.layoutChange), reduceMotion: reduceMotion),
             value: viewModel.toast
         )
     }
 
-    /// 依次尝试的排布（从最完整到最紧凑）；搜索时先尝试带「esc 清除搜索」的完整排布
+    /// 依次尝试的排布（从最完整到最紧凑）；搜索时先尝试带「esc 清除搜索」的完整排布。
+    /// 横条里不显示数量，最前面的几档带「← → 选择」
     private var layouts: [Layout] {
-        let base = baseLayouts
+        var base = baseLayouts
+        if isInShelfTopRow {
+            let countless = Self.unique(base.map { $0.with(\.showsCount, false) })
+            // ← → 只在搜索框为空时移动选中项（有字时移动光标），搜索时不提示
+            base = viewModel.keywords.isEmpty ? countless.map { $0.with(\.showsArrows, true) } + countless : countless
+        }
         guard !viewModel.keywords.isEmpty, var first = base.first else { return base }
         first.showsClearSearch = true
         return [first] + base
@@ -93,7 +108,7 @@ struct PanelFooter: View {
     /// 翻译卡打开时：数量 + 卡片的按键提示
     private func cardContent(_ level: TranslationFooterHints.Level) -> some View {
         HStack(spacing: 10) {
-            if level.showsCount {
+            if level.showsCount && !isInShelfTopRow {
                 countLabel
             }
             Spacer(minLength: 4)
@@ -137,6 +152,10 @@ struct PanelFooter: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             } else if count > 0 {
                 Group {
+                    if layout.showsArrows {
+                        KeyHint(keys: "← →", label: selectLabel)
+                            .layoutPriority(1)
+                    }
                     primaryHint(fillsMaxWidth: showsAlternate, maxWidth: targetMaxWidth)
                     if showsAlternate {
                         KeyHint(keys: "⇧↩", label: alternateLabel)
@@ -164,6 +183,16 @@ struct PanelFooter: View {
     /// ↩ 与 ⇧↩ 都只复制，⇧↩ 的标签随之改为「复制…」，不再与「↩ 复制」矛盾
     private var pastesIntoTarget: Bool {
         viewModel.canPasteDirectly && viewModel.target != nil
+    }
+
+    /// 按顺序去掉重复的排布（ViewThatFits 的 ForEach 以排布本身为标识）
+    private static func unique(_ layouts: [Layout]) -> [Layout] {
+        var seen = Set<Layout>()
+        return layouts.filter { seen.insert($0).inserted }
+    }
+
+    private var selectLabel: String {
+        String(localized: "Select", comment: "Shelf hint for ← and → that move the selection")
     }
 
     private var clearSearchLabel: String {
@@ -335,5 +364,24 @@ private struct FooterBackground: View {
                     .fill(isDark ? Color.white.opacity(0.08) : Color.black.opacity(0.06))
                     .frame(height: 0.5)
             }
+    }
+}
+
+/// 底栏的外框：主面板与侧栏为 38 高的底栏（数量与卡片左缘对齐，帮助按钮与顶栏齿轮按钮的中心对齐）；
+/// 横条里只是顶部一行右侧的一段，不加底色与留白
+private struct FooterChrome: ViewModifier {
+    let isBar: Bool
+    let trailingInset: CGFloat
+
+    func body(content: Content) -> some View {
+        if isBar {
+            content
+                .padding(.leading, PanelMetrics.inset)
+                .padding(.trailing, PanelMetrics.inset + trailingInset)
+                .frame(height: PanelMetrics.footerHeight)
+                .background(FooterBackground())
+        } else {
+            content
+        }
     }
 }

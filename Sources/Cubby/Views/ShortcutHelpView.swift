@@ -21,23 +21,32 @@ struct HelpOverlay: View {
                 .contentShape(Rectangle())
                 .onTapGesture(perform: onClose)
                 .accessibilityHidden(true)
-            ShortcutHelpView(
-                alternateFormat: alternateFormat,
-                pastesDirectly: pastesDirectly,
-                translation: translation,
-                textPickOpen: textPickOpen,
-                onOpenUserGuide: onOpenUserGuide
-            )
-            .background(
-                RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
-                    .fill(.regularMaterial)
-                    .shadow(color: .black.opacity(0.25), radius: 16, y: 6)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
-                    .strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5)
-            )
+            // 放得下时居中显示；放不下（底部横条只有 304 高）时可以滚动，不被裁掉
+            ViewThatFits(in: .vertical) {
+                card
+                ScrollView { card.padding(.vertical, PanelMetrics.inset) }
+                    .scrollIndicators(.automatic)
+            }
         }
+    }
+
+    private var card: some View {
+        ShortcutHelpView(
+            alternateFormat: alternateFormat,
+            pastesDirectly: pastesDirectly,
+            translation: translation,
+            textPickOpen: textPickOpen,
+            onOpenUserGuide: onOpenUserGuide
+        )
+        .background(
+            RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
+                .fill(.regularMaterial)
+                .shadow(color: .black.opacity(0.25), radius: 16, y: 6)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
+                .strokeBorder(Color.primary.opacity(0.08), lineWidth: 0.5)
+        )
     }
 }
 

@@ -61,6 +61,9 @@ public enum PanelPlacement {
         case bottom
     }
 
+    /// 详情区与主面板之间的默认间距
+    public static let detailGap: CGFloat = 8
+
     /// 停靠面板与屏幕可见区域边缘的留白（面板悬在边缘，四周仍有圆角与阴影，不是贴死的抽屉）
     public static let dockMargin: CGFloat = 8
 
@@ -94,7 +97,7 @@ public enum PanelPlacement {
         visibleFrame: CGRect,
         maxHeight: CGFloat,
         anchorX: CGFloat? = nil,
-        gap: CGFloat = 8
+        gap: CGFloat = detailGap
     ) -> CGRect {
         switch layout {
         case .floating, .sidebar:

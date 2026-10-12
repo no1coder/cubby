@@ -10,36 +10,10 @@ struct PanelView: View {
     var body: some View {
         let items = viewModel.items
         ZStack {
-            VStack(spacing: 0) {
-                PanelHeader(viewModel: viewModel, isSearchFocused: $isSearchFocused)
-                ForEach(viewModel.visibleWarnings) { warning in
-                    WarningBanner(
-                        warning: warning,
-                        actionTitle: viewModel.actionTitle(for: warning),
-                        onAction: { viewModel.performAction(for: warning) },
-                        onSecondary: warning.secondaryActionTitle == nil
-                            ? nil : { viewModel.performSecondaryAction(for: warning) },
-                        onDismiss: warning.isDismissible ? { viewModel.dismissWarning(warning) } : nil
-                    )
-                }
-                Group {
-                    if items.isEmpty {
-                        EmptyStateView(
-                            searchText: viewModel.searchText,
-                            category: viewModel.category,
-                            hotKey: viewModel.settings.hotKey,
-                            searchesTranslations: viewModel.translation != nil,
-                            fallbackKeyword: viewModel.firstKeywordFallback,
-                            onSearchFallback: {
-                                if let keyword = viewModel.firstKeywordFallback { viewModel.searchText = keyword }
-                            }
-                        )
-                    } else {
-                        CardList(items: items, viewModel: viewModel)
-                    }
-                }
-                .frame(maxHeight: .infinity)
-                PanelFooter(viewModel: viewModel, count: items.count)
+            if viewModel.layout == .shelf {
+                ShelfContent(viewModel: viewModel, isSearchFocused: $isSearchFocused, items: items)
+            } else {
+                listLayout(items)
             }
             // 帮助浮层覆盖整个面板（含搜索栏与底栏），遮罩按面板圆角裁切
             if viewModel.isShowingHelp {
@@ -55,6 +29,7 @@ struct PanelView: View {
             value: viewModel.visibleWarnings
         )
         .onAppear { isSearchFocused = true }
+        .onChange(of: viewModel.visibleWarnings) { viewModel.onWarningsChange?() }
         // 翻译卡跟随选中项；⌥↩ 与按住 ⌥ 预览只属于原条目（选中项变化时取消）
         .onChange(of: viewModel.selectedItem?.id) { viewModel.selectionDidChange() }
         // 停在图片上等它识别出文字：拆词卡从状态页换成词块（同一条目、文字变化）
@@ -63,6 +38,32 @@ struct PanelView: View {
             // 先取消再聚焦，保证面板再次出现时焦点一定回到搜索框
             isSearchFocused = false
             Task { @MainActor in isSearchFocused = true }
+        }
+    }
+
+    /// 浮动面板与右侧侧栏：搜索与分类 + 提醒横幅 + 竖向卡片列表 + 底栏
+    private func listLayout(_ items: [ClipItem]) -> some View {
+        VStack(spacing: 0) {
+            PanelHeader(viewModel: viewModel, isSearchFocused: $isSearchFocused)
+            ForEach(viewModel.visibleWarnings) { warning in
+                WarningBanner(
+                    warning: warning,
+                    actionTitle: viewModel.actionTitle(for: warning),
+                    onAction: { viewModel.performAction(for: warning) },
+                    onSecondary: warning.secondaryActionTitle == nil
+                        ? nil : { viewModel.performSecondaryAction(for: warning) },
+                    onDismiss: warning.isDismissible ? { viewModel.dismissWarning(warning) } : nil
+                )
+            }
+            Group {
+                if items.isEmpty {
+                    PanelEmptyState(viewModel: viewModel)
+                } else {
+                    CardList(items: items, viewModel: viewModel)
+                }
+            }
+            .frame(maxHeight: .infinity)
+            PanelFooter(viewModel: viewModel, count: items.count)
         }
     }
 
@@ -84,5 +85,23 @@ struct PanelView: View {
     private var helpTranslation: ShortcutHelpView.Translation {
         guard viewModel.translation != nil else { return .unavailable }
         return viewModel.isTranslationCardOpen ? .cardOpen : .available
+    }
+}
+
+/// 列表为空时的说明（浮动面板、侧栏与横条共用）
+struct PanelEmptyState: View {
+    @Bindable var viewModel: PanelViewModel
+
+    var body: some View {
+        EmptyStateView(
+            searchText: viewModel.searchText,
+            category: viewModel.category,
+            hotKey: viewModel.settings.hotKey,
+            searchesTranslations: viewModel.translation != nil,
+            fallbackKeyword: viewModel.firstKeywordFallback,
+            onSearchFallback: {
+                if let keyword = viewModel.firstKeywordFallback { viewModel.searchText = keyword }
+            }
+        )
     }
 }

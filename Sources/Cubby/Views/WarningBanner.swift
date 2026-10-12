@@ -28,11 +28,41 @@ struct WarningBanner: View {
     let onSecondary: (() -> Void)?
     /// nil 表示不提供「稍后」（如暂停记录：唯一的出口是恢复）
     let onDismiss: (() -> Void)?
+    /// 底部横条里的单行样式：图标 + 标题 + 按钮，不显示说明（说明放在悬停提示里），不占卡片的高度
+    var isCompact = false
 
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.colorSchemeContrast) private var contrast
 
     var body: some View {
+        if isCompact {
+            compactBody
+        } else {
+            regularBody
+        }
+    }
+
+    private var compactBody: some View {
+        HStack(spacing: Appearance.iconSpacing) {
+            Image(systemName: warning.symbolName)
+                .font(.system(size: FontSize.body))
+                .foregroundStyle(tint)
+                .accessibilityHidden(true)
+            Text(warning.title)
+                .font(.system(size: FontSize.footnote, weight: .semibold))
+                .lineLimit(1)
+                .help(warning.detail)
+                .accessibilityHint(warning.detail)
+            Spacer(minLength: Appearance.buttonSpacing)
+            buttons
+        }
+        .padding(.horizontal, PanelMetrics.inset)
+        .frame(height: PanelMetrics.compactBannerHeight)
+        .background(background)
+        .accessibilityElement(children: .contain)
+    }
+
+    private var regularBody: some View {
         HStack(alignment: .top, spacing: Appearance.iconSpacing) {
             Image(systemName: warning.symbolName)
                 .font(.system(size: FontSize.body))

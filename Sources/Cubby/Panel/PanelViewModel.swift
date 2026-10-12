@@ -50,6 +50,13 @@ final class PanelViewModel {
     @ObservationIgnored var onDetailPaneChange: ((DetailPane?) -> Void)?
     /// 把图片条目贴到屏幕上（由 PanelController 注入）
     @ObservationIgnored var onPinImage: ((ClipItem) -> Void)?
+    /// 顶栏布局按钮切换了排布：面板控制器按新排布重新定位（见 PanelViewModel+Layout）
+    @ObservationIgnored var onLayoutChange: (() -> Void)?
+    /// 底部横条里选中卡片的中心 x（面板窗口坐标）：详情区水平居中于它；变化时通知控制器重新定位详情区
+    @ObservationIgnored var shelfAnchorX: CGFloat?
+    @ObservationIgnored var onShelfAnchorChange: (() -> Void)?
+    /// 可见的提醒变了（横条要随之调整高度）
+    @ObservationIgnored var onWarningsChange: (() -> Void)?
     /// 拆词结果的粘贴 / 复制（由 PanelController 注入：写剪贴板，粘贴时再走条目粘贴的投递段）；复制返回是否写入
     @ObservationIgnored var onPastePicked: ((TextPickRequest) -> Void)?
     @ObservationIgnored var onCopyPicked: ((TextPickRequest) -> Bool)?

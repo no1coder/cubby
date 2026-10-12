@@ -32,7 +32,7 @@ enum Radius {
     static let iconRatio: CGFloat = 0.225
 }
 
-/// 字号阶梯：10 / 11 / 12 / 13 / 14 / 15 / 18，禁止使用其他字号
+/// 字号阶梯：10 / 11 / 12 / 13 / 14 / 15 / 18 / 22，禁止使用其他字号
 enum FontSize {
     /// 键帽
     static let caption2: CGFloat = 10
@@ -48,6 +48,8 @@ enum FontSize {
     static let title: CGFloat = 15
     /// 颜色卡的 HEX 值（等宽）
     static let display: CGFloat = 18
+    /// 底部横条颜色方卡里居中的 HEX（等宽）
+    static let shelfHex: CGFloat = 22
 }
 
 /// 面板布局常量
@@ -82,11 +84,18 @@ extension PanelMetrics {
     static let sidebarWidth: CGFloat = 400
     /// 固定底部横条的高度（宽度为可见区域宽度减去左右留白）
     static let shelfHeight: CGFloat = 304
+    /// 横条里的单行提醒：高 36，与上方间隔 6；横条每多一条提醒长高 42
+    static let compactBannerHeight: CGFloat = 36
+    static let compactBannerSpacing: CGFloat = 6
+    static let shelfBannerHeight: CGFloat = compactBannerHeight + compactBannerSpacing
 }
 
 /// 预览面板布局常量
 enum PreviewMetrics {
     static let width: CGFloat = 440
+    /// 底部横条上方的详情区：与横条的间距、最大高度（还受横条上方剩余空间限制）
+    static let shelfGap: CGFloat = 18
+    static let shelfMaxHeight: CGFloat = 620
     /// 单个文件 / 短文本的内容高度（头 48 + 一行文件 60 + 脚 36 + 内边距 16），不留大片空白
     static let minHeight: CGFloat = 160
     /// 头部（来源 + 时间 + 类型徽标）高度
@@ -100,6 +109,8 @@ enum Motion {
     /// 面板入场：透明度 0→1 并下落 entranceOffset
     static let panelEntrance: TimeInterval = 0.16
     static let entranceOffset: CGFloat = 8
+    /// 停靠排布的入场：侧栏从右侧滑入、横条从底部升起这么远
+    static let dockEntranceOffset: CGFloat = 24
     /// 面板关闭淡出；减弱动态效果时的入场淡入也用这个时长（不位移）
     static let fade: TimeInterval = 0.1
     /// 预览面板淡入与高度调整

@@ -99,6 +99,9 @@ final class PanelController {
         }
         viewModel.onDetailPaneChange = { [weak self] pane in self?.updateDetail(pane) }
         viewModel.onPinImage = { [weak self] item in self?.pinToScreen(item) }
+        viewModel.onLayoutChange = { [weak self] in self?.relocateForLayoutChange() }
+        viewModel.onShelfAnchorChange = { [weak self] in self?.preview.reposition() }
+        viewModel.onWarningsChange = { [weak self] in self?.fitShelfToWarnings() }
         keyboard.handler = { [weak self] event in self?.handleKeyDown(event) ?? false }
         keyboard.onOptionChange = { [weak self] isDown in self?.viewModel.optionKeyChanged(isDown: isDown) }
         keyboard.onPointerDown = { [weak self] in self?.viewModel.pointerPressed() }
@@ -125,12 +128,7 @@ final class PanelController {
         #else
         let target = PasteTarget.current()
         #endif
-        guard let frame = targetFrame(for: trigger) else { return }
-
-        generation += 1
-        isShown = true
-        restingFrame = frame
-        ImageCache.shared.cancelScheduledPurge()
+        // 先准备内容：横条的高度取决于要显示几条提醒
         viewModel.prepareForDisplay(
             target: target,
             warnings: PanelWarning.current(
@@ -140,15 +138,23 @@ final class PanelController {
             ),
             canPasteDirectly: settings.pasteDirectly && PasteService.isTrusted
         )
+        guard let frame = targetFrame(for: trigger) else { return }
+
+        generation += 1
+        isShown = true
+        restingFrame = frame
+        ImageCache.shared.cancelScheduledPurge()
         present(at: frame)
         keyboard.install(for: panel)
     }
 
-    /// 入场：从上方 entranceOffset 处淡入并落位；减弱动态效果时原地短淡入
+    /// 入场：浮动面板从上方 entranceOffset 处落下，侧栏从右侧滑入，横条从底部升起，同时淡入；
+    /// 减弱动态效果时原地短淡入
     private func present(at frame: CGRect) {
         let reduceMotion = Motion.prefersReducedMotion
         panel.alphaValue = 0
-        panel.setFrame(reduceMotion ? frame : frame.offsetBy(dx: 0, dy: Motion.entranceOffset), display: false)
+        panel.setFrame(
+            reduceMotion ? frame : frame.offsetBy(dx: entranceOffset.dx, dy: entranceOffset.dy), display: false)
         panel.makeKeyAndOrderFront(nil)
         NSAnimationContext.runAnimationGroup { context in
             context.duration = reduceMotion ? Motion.fade : Motion.panelEntrance
@@ -158,6 +164,34 @@ final class PanelController {
                 panel.animator().setFrame(frame, display: true)
             }
         }
+    }
+
+    /// 入场的起始偏移（AppKit 坐标，y 向上）
+    private var entranceOffset: CGVector {
+        switch settings.panelPosition.layout {
+        case .floating: CGVector(dx: 0, dy: Motion.entranceOffset)
+        case .sidebar: CGVector(dx: Motion.dockEntranceOffset, dy: 0)
+        case .shelf: CGVector(dx: 0, dy: -Motion.dockEntranceOffset)
+        }
+    }
+
+    /// 顶栏布局按钮切换排布后：详情区先收起，面板按新排布重新定位并播放入场动画（不重置搜索与选中项）
+    private func relocateForLayoutChange() {
+        guard isShown, let frame = targetFrame(for: .hotKey) else { return }
+        viewModel.closeDetailPane()
+        viewModel.shelfAnchorX = nil
+        restingFrame = frame
+        present(at: frame)
+    }
+
+    /// 横条显示期间提醒出现或消失：窗口随之长高 / 变矮，卡片高度不变
+    private func fitShelfToWarnings() {
+        guard isShown, settings.panelPosition.layout == .shelf, let frame = targetFrame(for: .hotKey),
+            frame != restingFrame
+        else { return }
+        restingFrame = frame
+        panel.setFrame(frame, display: true, animate: !Motion.prefersReducedMotion)
+        preview.reposition(host: frame)
     }
 
     func hide(animated: Bool = true) {
@@ -223,7 +257,10 @@ final class PanelController {
         switch settings.panelPosition.layout {
         case .floating: return nil
         case .sidebar: (edge, size) = (.right, CGSize(width: PanelMetrics.sidebarWidth, height: Self.panelSize.height))
-        case .shelf: (edge, size) = (.bottom, CGSize(width: Self.panelSize.width, height: PanelMetrics.shelfHeight))
+        case .shelf:
+            // 每条提醒在横条里收成一行，横条随之长高，卡片不被压扁
+            let banners = CGFloat(viewModel.visibleWarnings.count) * PanelMetrics.shelfBannerHeight
+            (edge, size) = (.bottom, CGSize(width: Self.panelSize.width, height: PanelMetrics.shelfHeight + banners))
         }
         let point =
             switch trigger {
@@ -255,7 +292,10 @@ final class PanelController {
         if preview.isVisible {
             preview.relayout()
         } else {
-            preview.show(beside: restingFrame ?? panel.frame, visibleFrame: screen.visibleFrame)
+            preview.show(
+                beside: restingFrame ?? panel.frame, visibleFrame: screen.visibleFrame,
+                layout: settings.panelPosition.layout
+            ) { [weak self] in self?.shelfAnchorOnScreen }
         }
     }
 
@@ -306,6 +346,12 @@ final class PanelController {
         ) { hide(animated: false) }
     }
 
+    /// 横条里选中卡片的中心在屏幕上的 x（详情区水平居中于它）；不是横条或尚未报告时为 nil
+    private var shelfAnchorOnScreen: CGFloat? {
+        guard settings.panelPosition.layout == .shelf, let x = viewModel.shelfAnchorX else { return nil }
+        return (restingFrame ?? panel.frame).minX + x
+    }
+
     /// 面板中心（面板关闭后 HUD 显示在这里）
     var anchor: CGPoint {
         CGPoint(x: panel.frame.midX, y: panel.frame.midY)
@@ -322,7 +368,8 @@ final class PanelController {
             characters: event.charactersIgnoringModifiers,
             allowsSpace: viewModel.searchText.isEmpty,
             translationCardOpen: viewModel.isTranslationCardOpen,
-            textPickOpen: viewModel.isTextPickOpen
+            textPickOpen: viewModel.isTextPickOpen,
+            arrowsMoveHorizontally: viewModel.layout.isHorizontal
         )
         // 任何其他按键都取消「按住 ⌥ 预览」（⌥↩ 粘贴正在显示的内容）
         viewModel.keyPressed(isOptionReturn: command == .translateAndPaste, isEscape: command == .escape)
