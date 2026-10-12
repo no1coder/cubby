@@ -82,12 +82,25 @@ enum E2EInspect {
     static func visibleHUD() -> (view: NSView, text: String)? {
         for window in NSApp.windows where window.isVisible {
             guard let content = window.contentView as? (NSView & E2ERootViewProviding) else { continue }
-            let root = content.e2eRootView
-            guard String(describing: Swift.type(of: root)).contains("HUDToastView"),
-                let message = Mirror(reflecting: root).children.first(where: { $0.label == "message" })?.value
-                    as? String
-            else { continue }
+            // HUDToast 用 AnyView 包装内容（与粘贴核对 HUD 共用窗口），逐层展开找到 HUDToastView
+            guard let message = hudMessage(in: content.e2eRootView) else { continue }
             return (content, message)
+        }
+        return nil
+    }
+
+    /// 在视图值里（含 AnyView 的存储）找 HUDToastView 的 message；最多展开几层
+    private static func hudMessage(in value: Any, depth: Int = 0) -> String? {
+        let mirror = Mirror(reflecting: value)
+        // AnyView 的存储类型名是 AnyViewStorage<HUDToastView>，也含这个名字：只认 message 字段确实存在的那一层
+        if String(describing: Swift.type(of: value)).hasPrefix("HUDToastView"),
+            let message = mirror.children.first(where: { $0.label == "message" })?.value as? String
+        {
+            return message
+        }
+        guard depth < 6 else { return nil }
+        for child in mirror.children {
+            if let message = hudMessage(in: child.value, depth: depth + 1) { return message }
         }
         return nil
     }

@@ -11,13 +11,18 @@ final class PanelE2EAnchors {
     static var isEnabled = false
 
     private(set) var frames: [String: CGRect] = [:]
+    /// 每个锚点由哪个视图实例登记：列表重建时新视图先登记、旧视图后消失，旧视图不能把新登记的删掉
+    private var owners: [String: UUID] = [:]
 
-    func set(_ name: String, frame: CGRect) {
+    func set(_ name: String, frame: CGRect, owner: UUID) {
         frames[name] = frame
+        owners[name] = owner
     }
 
-    func remove(_ name: String) {
+    func remove(_ name: String, owner: UUID) {
+        guard owners[name] == owner else { return }
         frames[name] = nil
+        owners[name] = nil
     }
 
     func contains(_ name: String) -> Bool {
@@ -42,16 +47,21 @@ final class PanelE2EAnchors {
 /// 记录视图位置（.global 即宿主视图的左上原点坐标，宿主视图铺满窗口内容）
 struct PanelE2EAnchorModifier: ViewModifier {
     let name: String
+    @State private var owner = UUID()
 
     func body(content: Content) -> some View {
         if PanelE2EAnchors.isEnabled {
+            // 出现时与位置变化时都登记：列表重建后新视图的 onGeometryChange 有时不会给出初始值
             content
-                .onGeometryChange(for: CGRect.self) { proxy in
-                    proxy.frame(in: .global)
-                } action: { frame in
-                    PanelE2EAnchors.shared.set(name, frame: frame)
+                .background {
+                    GeometryReader { proxy in
+                        let frame = proxy.frame(in: .global)
+                        Color.clear
+                            .onAppear { PanelE2EAnchors.shared.set(name, frame: frame, owner: owner) }
+                            .onChange(of: frame) { PanelE2EAnchors.shared.set(name, frame: frame, owner: owner) }
+                    }
                 }
-                .onDisappear { PanelE2EAnchors.shared.remove(name) }
+                .onDisappear { PanelE2EAnchors.shared.remove(name, owner: owner) }
         } else {
             content
         }
