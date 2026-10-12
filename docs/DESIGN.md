@@ -47,7 +47,7 @@
 | 链接卡 | 38pt 字母底板（域名首字母，颜色由域名决定，不联网取网站图标）+ 域名 · 时间 + 页面标题（复制时浏览器带来的才有，13pt medium）+ 完整地址（11pt，中间截断） |
 | 代码卡 | 两种外观都是深底（深色 `rgb(8,9,16) 0.55` + `white 0.09` 描边，浅色 `#1D1F2B`）；头部右侧语言徽标（Swift、JavaScript、Python、JSON、Shell、HTML、CSS、SQL、Go、Rust，认不出为「代码」）；12pt 等宽，关键字粉、字符串橙、类型青；逐行截断，最多 4 行 |
 | 颜色卡 | 背景即该颜色；左侧 40pt 色块图标 + HEX（18pt 等宽 semibold）+ 「rgb(…) · 来源 · 时间」；文字按亮度选黑 / 白，次要文字 0.7 |
-| 图片卡 | 缩略图内缩 6pt、圆角 11、高 128，`fill` 裁切，加载前后高度不变；竖长图（高 / 宽 > 1.5）顶部对齐；下方一行「来源 · 尺寸」与 ⌘N |
+| 图片卡 | 缩略图内缩 6pt、圆角 11，整张显示不裁切：框的宽高比取图片本身的比例，夹在 4:3（最高，卡片宽约 348 时约 261pt）到 3.5:1（最扁）之间；比例在范围内时 `fill` 铺满正好是整张图，超出范围（竖图、手机截图、超宽横幅）时 `fit` 缩进框里，空出部分为 primary 0.06 的中性底色（`ImageThumbnail.cardFrame`）。高度由比例决定，加载前后不变；下方一行「来源 · 尺寸」与 ⌘N |
 | 文件卡 | 文件全部不存在时：文件名加删除线并转为次要色，图标 0.4，路径一行改为「File no longer exists」（多个文件为「Files no longer exist」）；「打开」「在访达中显示」置灰 |
 | 提醒横幅 | 橙色底（深色 0.12 / 浅色 0.10 + 0.5pt 橙色 0.3 描边），`Radius.card`；一个主按钮，可忽略的提醒另有「Not Now」。暂停记录时显示「Recording paused」横幅，唯一按钮为「Resume」，不提供「Not Now」，排在权限类提醒之后。常量见 `WarningBanner.Appearance` |
 | 更新横幅 | 与提醒横幅同一位置、同一结构与透明度，但用强调色（`Color.accentColor`）而不是橙色；排在权限类提醒之后、「Recording paused」之前。新版本：「Version x is available」+「You're running x.」，按钮「View & Download」+「Not Now」；Homebrew 安装时说明改为「Run brew upgrade --cask cubby in Terminal to upgrade.」，按钮「Copy Upgrade Command」（复制后约 2 秒显示「Copied」）+「Release Notes」+「Not Now」。询问：「Remind you about new versions?」，按钮「Remind Me」+「No Thanks」。不写更新内容（发布说明只在发布页）。见 [UPDATE-REMINDER-DESIGN.md](UPDATE-REMINDER-DESIGN.md) |

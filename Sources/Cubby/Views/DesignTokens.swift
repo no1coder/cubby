@@ -68,9 +68,8 @@ enum PanelMetrics {
     static let imageCaptionPadding = (top: CGFloat(9), bottom: CGFloat(10))
     /// 卡片头部一行与正文之间、正文各行块之间的间距
     static let cardRowSpacing: CGFloat = 7
-    /// 图片卡的缩略图：距卡片上、左、右边缘 6，高 128
+    /// 图片卡的缩略图：距卡片上、左、右边缘 6（高度按图片比例，见 ImageThumbnail.cardFrame）
     static let cardImageInset: CGFloat = 6
-    static let cardImageHeight: CGFloat = 128
     /// 「只看图片」两列网格的格子高度
     static let gridCellHeight: CGFloat = 150
     /// 主面板与预览面板的底栏高度（并排时分割线对齐）

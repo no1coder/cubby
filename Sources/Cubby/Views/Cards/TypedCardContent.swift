@@ -107,7 +107,7 @@ struct ColorCardContent: View {
     }
 }
 
-/// 图片卡：缩略图内缩 6pt、圆角 11、高 128；下方一行「来源 · 尺寸」与 ⌘N
+/// 图片卡：缩略图内缩 6pt、圆角 11，高度按图片比例（整张显示，见 ImageThumbnail.cardFrame）；下方一行「来源 · 尺寸」与 ⌘N
 struct ImageCardContent: View {
     let item: ClipItem
     let ref: ImageRef
@@ -144,16 +144,19 @@ struct ImageCardContent: View {
         }
     }
 
-    /// 先用透明占位确定尺寸，再把图片放进 overlay：fill 模式下宽幅图片的理想宽度会超过卡片，
-    /// 直接参与布局会把整张卡片撑宽。竖长图顶部对齐，看得到开头而不是中段
+    /// 先用透明占位按比例确定尺寸，再把图片放进 overlay（图片的理想尺寸不参与布局，不会把卡片撑宽）。
+    /// 常见截图比例的框与图片同比例，铺满即整张；过高 / 过扁的图整张缩进框里，空出的部分是中性底色
     private var thumbnail: some View {
-        let isTall = ImageThumbnail.isTall(width: ref.width, height: ref.height)
+        let frame = ImageThumbnail.cardFrame(width: ref.width, height: ref.height)
         let pixelSize = ImageThumbnail.pixelSize(width: ref.width, height: ref.height)
         return Color.clear
             .frame(maxWidth: .infinity)
-            .frame(height: PanelMetrics.cardImageHeight)
-            .overlay(alignment: isTall ? .top : .center) {
-                AsyncThumbnail(url: imageURL, maxPixelSize: pixelSize, contentMode: .fill)
+            .aspectRatio(frame.aspectRatio, contentMode: .fit)
+            .background(palette.primary.opacity(frame.showsWholeImageByFilling ? 0 : 0.06))
+            .overlay {
+                AsyncThumbnail(
+                    url: imageURL, maxPixelSize: pixelSize,
+                    contentMode: frame.showsWholeImageByFilling ? .fill : .fit)
             }
             .clipShape(RoundedRectangle(cornerRadius: Radius.cardImage, style: .continuous))
     }
