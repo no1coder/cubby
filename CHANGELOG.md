@@ -12,6 +12,8 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+## [0.3.3] - 2026-10-13
+
 ### Fixed
 
 - **Permissions that stopped working after an update are recognized**: macOS ties Screen Recording and Accessibility to the app's exact code signature, so after switching between differently signed builds (even from the same developer) the switch in System Settings still looks on but no longer applies. Cubby used to keep asking you to turn on Screen Recording; it now tells you the old entry is out of date and shows how to remove and re-add it (Settings › Privacy and the Screen Recording window). Accessibility detection, which missed this case, now catches it too. Detection needs one successful grant on this version, so permissions that aren't allowed also show how to fix an entry that already looks on.
@@ -144,7 +146,8 @@ Internal preview under the working name Zhantie. Not publicly released.
 
 - Menu bar clipboard history with a global shortcut to open it.
 
-[Unreleased]: https://github.com/no1coder/cubby/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/no1coder/cubby/compare/v0.3.3...HEAD
+[0.3.3]: https://github.com/no1coder/cubby/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/no1coder/cubby/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/no1coder/cubby/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/no1coder/cubby/compare/v0.2.1...v0.3.0
