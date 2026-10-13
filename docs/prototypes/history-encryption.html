@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<title>小格子 · 历史加密 · 简易原型</title>
+<link rel="icon" href="data:,">
+<style>
+:root{--acc:#0A84FF;--ok:#30D158;--warn:#FF9F0A;--t1:#F2F2F5;--t2:rgba(235,235,245,.6);--t3:rgba(235,235,245,.3);
+  --sans:-apple-system,"SF Pro Text","PingFang SC","Helvetica Neue",sans-serif;--mono:ui-monospace,"SF Mono",Menlo,monospace}
+*{box-sizing:border-box}
+body{margin:0;padding:28px 36px 60px;background:#0b0b0d;color:var(--t1);font:13px/1.45 var(--sans);-webkit-font-smoothing:antialiased}
+h1{font-size:18px;margin:0 0 6px}
+h2{font-size:15px;margin:0 0 4px}
+.note{color:var(--t2);font-size:12px;margin:0 0 14px;max-width:760px}
+section{margin-bottom:44px}
+.stage{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+.win{border-radius:14px;background:rgba(32,32,36,.96);box-shadow:0 0 0 .5px rgba(255,255,255,.14),0 20px 50px rgba(0,0,0,.55);overflow:hidden}
+.cap{color:var(--t3);font-size:11px;margin-top:8px;text-align:center}
+
+/* 状态切换 */
+.seg{display:inline-flex;background:rgba(255,255,255,.08);border-radius:8px;padding:2px;gap:2px;margin-bottom:14px}
+.seg button{all:unset;cursor:pointer;padding:4px 12px;border-radius:6px;color:var(--t2);font-size:12px}
+.seg button.on{background:rgba(255,255,255,.2);color:var(--t1);font-weight:600}
+
+/* 设置窗口 */
+.settings{width:620px;display:flex;height:430px}
+.side{width:170px;background:rgba(255,255,255,.03);padding:44px 8px 8px;border-right:.5px solid rgba(255,255,255,.08)}
+.side div{padding:5px 10px;border-radius:6px;color:var(--t2);display:flex;gap:8px;align-items:center}
+.side div.on{background:rgba(255,255,255,.1);color:var(--t1)}
+.main{flex:1;padding:18px 20px;overflow:hidden}
+.main h3{margin:0 0 14px;font-size:15px}
+.group{background:rgba(255,255,255,.05);border-radius:10px;box-shadow:0 0 0 .5px rgba(255,255,255,.06);margin-bottom:6px}
+.line{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;min-height:38px}
+.line+.line{border-top:.5px solid rgba(255,255,255,.07)}
+.line .sub{color:var(--t2);font-size:11.5px;margin-top:1px}
+.val{color:var(--t2)}
+.foot{color:var(--t2);font-size:11.5px;padding:2px 12px 14px;max-width:440px}
+.btn{all:unset;cursor:pointer;padding:3px 11px;border-radius:6px;background:rgba(255,255,255,.14);font-size:12px;white-space:nowrap}
+.btn.pri{background:var(--acc)}
+.status{display:flex;align-items:center;gap:6px}
+.dot{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;font-size:10px;color:#000;font-weight:700;flex:none}
+.dot.ok{background:var(--ok)}.dot.warn{background:var(--warn)}
+.bar{height:5px;width:150px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
+.bar i{display:block;height:100%;width:62%;background:var(--acc)}
+.new{outline:1.5px dashed rgba(10,132,255,.75);outline-offset:3px;border-radius:10px}
+
+/* 面板 */
+.panel{width:360px;height:430px;border-radius:18px;display:flex;flex-direction:column}
+.search{margin:12px 12px 8px;height:32px;border-radius:8px;background:rgba(255,255,255,.07);color:var(--t3);display:flex;align-items:center;padding:0 12px}
+.banner{margin:4px 12px 8px;padding:10px 12px;border-radius:12px;background:rgba(255,159,10,.16)}
+.banner b{display:flex;gap:6px;align-items:center}
+.banner p{margin:3px 0 8px 22px;color:var(--t2);font-size:12px}
+.banner .acts{margin-left:22px;display:flex;gap:8px}
+.list{flex:1;padding:4px 12px;display:flex;flex-direction:column;gap:8px}
+.card{border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.08)}
+.placeholder{flex:1;display:grid;place-items:center;text-align:center;color:var(--t2)}
+.spin{width:22px;height:22px;border-radius:50%;border:2.5px solid rgba(255,255,255,.15);border-top-color:var(--acc);animation:s 1s linear infinite;margin:0 auto 10px}
+@keyframes s{to{transform:rotate(360deg)}}
+
+/* 对比 */
+.cmp{display:flex;gap:18px;flex-wrap:wrap}
+.term{width:430px;padding:12px 14px;font:11.5px/1.55 var(--mono);color:#d7d7db;white-space:pre-wrap;word-break:break-all;background:#151517;border-radius:10px;box-shadow:0 0 0 .5px rgba(255,255,255,.1)}
+.term .p{color:var(--ok)}.term .bad{color:#ff6961}.term .dim{color:var(--t3)}
+.tag{display:inline-block;font:600 11px var(--sans);padding:2px 8px;border-radius:5px;margin-bottom:6px}
+.tag.before{background:rgba(255,105,97,.18);color:#ff8a83}.tag.after{background:rgba(48,209,88,.16);color:#5fe07f}
+
+/* 系统弹窗 */
+.alert{width:300px;padding:18px 18px 14px;border-radius:14px;text-align:center}
+.alert .icon{width:44px;height:44px;border-radius:10px;margin:0 auto 10px;background:linear-gradient(#3d8bff,#1a5fe0);display:grid;place-items:center;font-size:22px}
+.alert b{display:block;font-size:13px;margin-bottom:6px}
+.alert p{color:var(--t2);font-size:11.5px;margin:0 0 12px}
+.alert .pw{height:24px;border-radius:6px;background:rgba(255,255,255,.08);margin-bottom:12px;text-align:left;padding:3px 8px;color:var(--t3);font-size:12px}
+.alert .row{display:flex;gap:6px}.alert .row .btn{flex:1;text-align:center;padding:5px 0}
+</style>
+</head>
+<body>
+<h1>历史加密 · 简易原型</h1>
+<p class="note">配合 <code>docs/HISTORY-ENCRYPTION-DESIGN.md</code> 看。界面实际为英文 + 简体中文本地化，这里只展示中文。虚线框 = 本次新增。</p>
+
+<section>
+  <h2>① 设置 › 历史：新增「加密」一行</h2>
+  <p class="note">切换查看四种状态。正常时只是一行绿色「已开启」，不打扰；只有锁定、无法解密时才变橙色并给出按钮。</p>
+  <div class="seg" id="seg">
+    <button data-s="ok" class="on">正常</button><button data-s="migrating">正在加密现有历史</button><button data-s="locked">已锁定</button><button data-s="lost">无法解密旧历史</button>
+  </div>
+  <div class="stage">
+    <div>
+      <div class="win settings">
+        <div class="side"><div>⚙︎ 通用</div><div class="on">🕘 历史</div><div>✂︎ 截图</div><div>🔒 隐私</div><div>🛡 安全</div></div>
+        <div class="main">
+          <h3>历史</h3>
+          <div class="group"><div class="line"><span>最多保留</span><span class="val">1000 条 ⌄</span></div></div>
+          <div class="foot">达到上限时删除最早的条目，收藏不计入上限。</div>
+          <div class="group">
+            <div class="line"><span>条目</span><span class="val">409 条（12 条收藏）</span></div>
+            <div class="line"><span>占用空间</span><span class="val">65.4 MB</span></div>
+            <div class="line new" id="encRow"></div>
+            <div class="line"><div>数据文件夹<div class="sub">~/Library/Application Support/Cubby</div></div><button class="btn">在访达中显示</button></div>
+          </div>
+          <div class="foot" id="encFoot"></div>
+        </div>
+      </div>
+      <div class="cap">设置窗口（节选）</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>② 面板：迁移中的占位、锁定时的横幅</h2>
+  <p class="note">老用户升级后第一次启动，迁移通常 1–2 秒；这期间打开面板看到占位，完成后条目自动出现。锁定横幅与现有权限横幅同一位置、同一样式。</p>
+  <div class="stage">
+    <div>
+      <div class="win panel">
+        <div class="search">搜索</div>
+        <div class="placeholder new" style="margin:0 12px 12px"><div><div class="spin"></div>正在加密历史…<div style="font-size:11px;color:var(--t3);margin-top:4px">只在升级后第一次启动时进行</div></div></div>
+      </div>
+      <div class="cap">迁移中</div>
+    </div>
+    <div>
+      <div class="win panel">
+        <div class="search">搜索</div>
+        <div class="banner new">
+          <b><span class="dot warn">!</span>历史已锁定</b>
+          <p>无法读取钥匙串中的密钥，新复制的内容暂不保存。</p>
+          <div class="acts"><button class="btn pri">重试</button><button class="btn">稍后</button></div>
+        </div>
+        <div class="list">
+          <div class="card">刚刚复制的文字（仅在本次运行中保留）</div>
+          <div class="card" style="color:var(--t2)">https://github.com/no1coder/cubby</div>
+        </div>
+      </div>
+      <div class="cap">已锁定（用户在系统询问中点了「拒绝」）</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>③ 其他应用读取数据目录时看到什么</h2>
+  <p class="note">任何同一用户下的应用、脚本都能执行这些命令，不会有任何系统提示。加密后它们只能拿到密文；文件名也不再是内容哈希，没法用来比对「你是否复制过某张图」。</p>
+  <div class="cmp">
+    <div><span class="tag before">现在（0.3.3）</span>
+<div class="term"><span class="p">$</span> cd ~/Library/Application\ Support/Cubby
+<span class="p">$</span> ls Images | head -2
+001b9096a4bc…df2.png
+001f8ddf3df8…166.formats
+<span class="p">$</span> grep -o '"text":"[^"]*"' history.json | head -2
+<span class="bad">"text":"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA…"
+"text":"我的银行卡号 6222 0212 3456 7890"</span>
+<span class="p">$</span> open Images/001b9096…df2.png   <span class="dim"># 直接看到截图</span></div></div>
+    <div><span class="tag after">加密后</span>
+<div class="term"><span class="p">$</span> cd ~/Library/Application\ Support/Cubby
+<span class="p">$</span> ls Vault Vault/Blobs | head -4
+Blobs  Backups  history.cubby  security-log.cubby
+9c4e1a7f03b2…e81
+<span class="p">$</span> head -c 64 Vault/history.cubby | xxd
+<span class="dim">00000000: 4342 5956 0101 a3f2 91c0 7e44 1b6d e2a9  CBYV......~D.m..
+00000010: 5f0c 88d1 2e97 c34b 0af6 7712 d9e0 4c3a  _......K..w...L:</span>
+<span class="p">$</span> security find-generic-password -s io.github.no1coder.Cubby.history -w
+<span class="dim"># → 系统弹窗询问用户，见 ④</span></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>④ 系统弹窗（不是我们的界面，只为说明）</h2>
+  <p class="note">询问里的应用名可以伪造，所以使用说明与设置页这样教：<b>只有刚安装或更新了 Cubby、而且是 Cubby 自己在问时才允许；其他任何时候、任何应用来问，一律「拒绝」。</b>拒绝不会丢数据——Cubby 进入「已锁定」，点「重试」再允许即可。正式版之间签名稳定，正常升级不会出现询问。</p>
+  <div class="stage">
+    <div><div class="win alert"><div class="icon">⌨︎</div><b>“终端”想要使用你钥匙串中的机密信息“io.github.no1coder.Cubby.history”。</b><p>若要允许此操作，请输入“登录”钥匙串密码。</p><div class="pw">密码</div><div class="row"><button class="btn">始终允许</button><button class="btn pri">拒绝</button><button class="btn">允许</button></div></div><div class="cap">任何其他应用来问 → 拒绝</div></div>
+    <div><div class="win alert"><div class="icon">📋</div><b>“Cubby”想要使用你钥匙串中的机密信息“io.github.no1coder.Cubby.history”。</b><p>若要允许此操作，请输入“登录”钥匙串密码。</p><div class="pw">密码</div><div class="row"><button class="btn pri">始终允许</button><button class="btn">拒绝</button><button class="btn">允许</button></div></div><div class="cap">只在刚安装 / 更新 Cubby 后、Cubby 自己来问 → 允许</div></div>
+  </div>
+</section>
+
+<script>
+const states = {
+  ok: {
+    row: `<div>加密<div class="sub">历史、图片与日志以加密形式保存</div></div><span class="status"><span class="dot ok">✓</span>已开启</span>`,
+    foot: `密钥保存在你的登录钥匙串中，其他应用只能读到密文。钥匙串询问只在刚安装或更新 Cubby 后、由 Cubby 发起时才允许，其他情况一律拒绝。`
+  },
+  migrating: {
+    row: `<div>加密<div class="sub">正在加密现有历史… 254 / 409</div></div><div class="bar"><i></i></div>`,
+    foot: `只在升级后第一次启动时进行。完成并校验无误后，才会删除旧的未加密文件。`
+  },
+  locked: {
+    row: `<div>加密<div class="sub" style="color:var(--warn)">历史已锁定：无法读取钥匙串中的密钥</div></div><button class="btn pri">重试</button>`,
+    foot: `新复制的内容暂存在内存中；点「重试」并在 Cubby 的询问中允许后，会合并回历史。已有的历史不会丢失。`
+  },
+  lost: {
+    row: `<div>加密<div class="sub" style="color:var(--warn)">找不到旧历史的密钥，已从空历史重新开始</div></div><button class="btn">在访达中显示</button>`,
+    foot: `钥匙串里的密钥不见了（例如重置过登录钥匙串），旧历史无法解密。旧数据保留在「Vault-unreadable-2026-10-13」文件夹中，不会被删除；钥匙串恢复后会自动还原。`
+  }
+};
+const seg = document.getElementById('seg');
+function show(s){
+  document.getElementById('encRow').innerHTML = states[s].row;
+  document.getElementById('encFoot').textContent = states[s].foot;
+  seg.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.s === s));
+}
+seg.addEventListener('click', e => { if (e.target.dataset.s) show(e.target.dataset.s); });
+show('ok');
+</script>
+</body>
+</html>
