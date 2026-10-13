@@ -32,7 +32,7 @@
 
 | 变量 | 使用者 | 含义 |
 | --- | --- | --- |
-| `SIGN_IDENTITY` | build-app / make-dmg / release | 签名身份（证书名或 SHA-1）。`build-app.sh` 默认第一个 Apple Development 证书，`release.sh` 默认第一个 Developer ID Application 证书；`-` 为 ad-hoc |
+| `SIGN_IDENTITY` | build-app / make-dmg / release | 签名身份（证书名或 SHA-1）。`build-app.sh` 默认依次选第一个 Developer ID Application、Apple Development 证书，`release.sh` 默认第一个 Developer ID Application 证书；`-` 为 ad-hoc |
 | `TIMESTAMP` | build-app | `auto`（默认：Developer ID 用安全时间戳，其余 `--timestamp=none`）/ `secure` / `none` |
 | `BUNDLE_ID` | build-app | 覆盖 bundle ID，如 `io.github.no1coder.Cubby.dev` 让开发版与正式版共存 |
 | `BUILD_NUMBER` | build-app | 覆盖 `CFBundleVersion`，默认 `git rev-list --count HEAD`，非 git 仓库为 1 |

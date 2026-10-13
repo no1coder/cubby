@@ -151,11 +151,14 @@ The full list lives in `AppDelegate.applyDebugScenario`, `PanelController.applyD
 
 ## Local signing and permissions
 
-macOS ties the Accessibility permission to the app's code signature. `make app`, `make run` and `make install` sign with, in order:
+macOS ties the Accessibility and Screen Recording permissions to the app's code signature, including the certificate type. `make app`, `make run` and `make install` sign with, in order:
 
 1. `SIGN_IDENTITY`, if set (`-` means ad-hoc);
-2. the first **Apple Development** certificate in your keychain;
-3. an ad-hoc signature.
+2. the first **Developer ID Application** certificate in your keychain, so local builds match releases and installing one over the other keeps the permissions (this adds a secure timestamp, which needs a network connection; build offline with `TIMESTAMP=none`);
+3. the first **Apple Development** certificate in your keychain;
+4. an ad-hoc signature.
+
+Switching between a Developer ID and an Apple Development build counts as a different app too, even from the same team.
 
 An ad-hoc signature changes on every build. After a rebuild, System Settings still shows Cubby as allowed under Accessibility, but the permission no longer applies and Cubby only copies instead of pasting.
 

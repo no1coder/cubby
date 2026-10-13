@@ -4,9 +4,10 @@
 # 用法：./scripts/build-app.sh            （或 make app）
 #
 # 环境变量（均可选）：
-#   SIGN_IDENTITY  签名身份（证书名称或 SHA-1 指纹）。未设置时自动选用钥匙串中第一个
-#                  "Apple Development" 证书，找不到则回退为 "-"（ad-hoc 临时签名）。
-#                  使用 "Developer ID Application" 证书时自动启用安全时间戳（公证必需）。
+#   SIGN_IDENTITY  签名身份（证书名称或 SHA-1 指纹）。未设置时依次选用钥匙串中第一个
+#                  "Developer ID Application"、"Apple Development" 证书，都找不到则回退为 "-"（ad-hoc 临时签名）。
+#                  优先 Developer ID：与正式发布版签名一致，本地版与发布版交替安装时系统授权不会失效。
+#                  使用 Developer ID 证书时自动启用安全时间戳（公证必需，需要联网；离线构建可设 TIMESTAMP=none）。
 #   TIMESTAMP      时间戳策略：auto（默认，按身份类型决定）| secure | none
 #   BUNDLE_ID      覆盖 CFBundleIdentifier，默认 io.github.no1coder.Cubby；
 #                  开发版可用 io.github.no1coder.Cubby.dev 与正式版共存（授权、偏好互不影响）。
@@ -14,7 +15,7 @@
 #
 # 版本号：CFBundleShortVersionString 取自仓库根目录 VERSION 文件（单一来源）；
 #         源 Resources/Info.plist 中的版本号只供开发构建显示，与 VERSION 不一致时给出警告。
-# 注意：辅助功能权限与签名绑定，使用固定证书签名可避免每次重新构建后都要重新授权。
+# 注意：辅助功能、屏幕录制权限与签名（含证书类型）绑定，使用固定证书签名可避免每次重新构建后都要重新授权。
 set -euo pipefail
 
 # shellcheck source=lib/common.sh
@@ -56,7 +57,8 @@ done
 
 # 签名身份与时间戳策略（先于编译确定，参数有误时尽早失败）
 if [[ -z "${SIGN_IDENTITY:-}" ]]; then
-    SIGN_IDENTITY="$(find_identity "Apple Development")"
+    SIGN_IDENTITY="$(find_identity "Developer ID Application")"
+    SIGN_IDENTITY="${SIGN_IDENTITY:-$(find_identity "Apple Development")}"
     SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 fi
 KIND="$(identity_kind "$SIGN_IDENTITY")"
