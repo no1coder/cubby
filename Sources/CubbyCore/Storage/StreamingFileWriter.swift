@@ -44,20 +44,45 @@ enum StreamingFileWriter {
     /// 只匹配本类型生成的「.<文件名>.<UUID>.tmp」，并跳过 staleAge 内修改过的文件，不会误删正在进行的写入。
     /// 尽力而为：列目录或删除失败时保持原样，不影响读取
     static func removeStaleTemporaryFiles(for url: URL, olderThan staleAge: TimeInterval = 60, now: Date = Date()) {
-        let fileManager = FileManager.default
-        let directory = url.deletingLastPathComponent()
         let prefix = temporaryPrefix(for: url)
+        removeStaleTemporaryFiles(in: url.deletingLastPathComponent(), olderThan: staleAge, now: now) { name in
+            name.hasPrefix(prefix) && UUID(uuidString: String(name.dropFirst(prefix.count))) != nil
+        }
+    }
+
+    /// 同上，但不限目标文件名：清理目录中所有本类型生成的过期临时文件（用于文件名不固定的目录，如加密 Blobs）
+    static func removeStaleTemporaryFiles(in directory: URL, olderThan staleAge: TimeInterval = 60, now: Date = Date())
+    {
+        removeStaleTemporaryFiles(in: directory, olderThan: staleAge, now: now) { name in
+            // 「.<文件名>.<UUID>」：末尾是 UUID，其前是 "."，开头是 "." 且文件名非空
+            let token = name.suffix(uuidStringLength)
+            let head = name.dropLast(uuidStringLength)
+            return head.count > 2 && head.hasPrefix(".") && head.hasSuffix(".")
+                && UUID(uuidString: String(token)) != nil
+        }
+    }
+
+    /// - Parameter matches: 收到去掉 ".tmp" 后缀的文件名，判断是否为本类型生成的临时文件
+    private static func removeStaleTemporaryFiles(
+        in directory: URL,
+        olderThan staleAge: TimeInterval,
+        now: Date,
+        matching matches: (String) -> Bool
+    ) {
+        let fileManager = FileManager.default
         guard let names = try? fileManager.contentsOfDirectory(atPath: directory.path) else { return }
-        for name in names where name.hasPrefix(prefix) && name.hasSuffix(temporarySuffix) {
-            let token = name.dropFirst(prefix.count).dropLast(temporarySuffix.count)
+        for name in names where name.hasSuffix(temporarySuffix) {
             let candidate = directory.appendingPathComponent(name)
-            guard UUID(uuidString: String(token)) != nil,
+            guard matches(String(name.dropLast(temporarySuffix.count))),
                 let modified = try? fileManager.attributesOfItem(atPath: candidate.path)[.modificationDate] as? Date,
                 now.timeIntervalSince(modified) > staleAge
             else { continue }
             try? fileManager.removeItem(at: candidate)
         }
     }
+
+    /// UUID 字符串的固定长度（8-4-4-4-12）
+    private static let uuidStringLength = 36
 
     private static let temporarySuffix = ".tmp"
 

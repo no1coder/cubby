@@ -20,6 +20,8 @@ public enum HistoryStorageError: Error, Equatable {
     case corrupted(backupURL: URL)
     /// 历史文件由更新版本的 Cubby 写入（版本号高于当前支持的版本）；原文件保持原样，调用方应只读
     case unsupportedVersion(found: Int)
+    /// 加密历史的密钥 ID 与当前密钥不符（不是内容损坏）；原文件保持原样，调用方应只读
+    case keyMismatch
 }
 
 /// 以 JSON 文件保存历史记录，写入为原子操作。
