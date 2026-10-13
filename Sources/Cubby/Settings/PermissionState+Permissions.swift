@@ -21,36 +21,37 @@ extension PermissionState {
                     localized: "Not allowed. Choosing an item only copies it.",
                     comment: "Accessibility permission status"
                 ),
-                buttonAction: .grantAccess
+                buttonAction: .grantAccess,
+                note: alreadyOnNote
             )
         case .stale:
-            PermissionState(
-                level: .warning,
-                message: String(
-                    localized: "No longer valid (the app's signature changed after an update)",
-                    comment: "Accessibility permission status"
-                ),
-                buttonAction: .openSystemSettings
-            )
+            PermissionState(level: .warning, message: staleMessage, buttonAction: .openSystemSettings)
         }
     }
 
-    /// 屏幕录制只有截图需要：未授权是中性状态，不用警告色。
+    /// 屏幕录制只有截图需要：未授权是中性状态，不用警告色；但授权失效说明用户本想使用，按警告显示。
     /// 设置页的按钮会先向系统申请（首次会弹出系统询问），因此叫「Grant Access」
     @MainActor
     static var screenRecording: PermissionState {
-        switch ScreenRecordingAuthorization.status {
+        screenRecording(ScreenRecordingAuthorization.status)
+    }
+
+    static func screenRecording(_ status: ScreenRecordingAuthorization.Status) -> PermissionState {
+        switch status {
         case .granted:
             PermissionState(level: .ok, message: allowed)
-        case .denied:
+        case .notGranted:
             PermissionState(
                 level: .neutral,
                 message: String(
                     localized: "Not allowed. Only needed for screenshots.",
                     comment: "Screen Recording permission status"
                 ),
-                buttonAction: .grantAccess
+                buttonAction: .grantAccess,
+                note: alreadyOnNote
             )
+        case .stale:
+            PermissionState(level: .warning, message: staleMessage, buttonAction: .openSystemSettings)
         }
     }
 
@@ -109,6 +110,22 @@ extension PermissionState {
     }
 
     // MARK: - 共用文案
+
+    /// 0.3.2 及更早版本没有记下屏幕录制的签名、辅助功能只记了团队 ID，这些用户首次升级时检测不到失效，
+    /// 只能报告「未授权」：附上手动修复的说明作为兜底
+    static var alreadyOnNote: String {
+        String(
+            localized: "Already on in System Settings? Remove Cubby with “−”, add it again, then reopen Cubby.",
+            comment: "Hint below a permission that isn't allowed, for entries made stale by an update"
+        )
+    }
+
+    private static var staleMessage: String {
+        String(
+            localized: "No longer valid (the app's signature changed after an update)",
+            comment: "Accessibility / Screen Recording permission status"
+        )
+    }
 
     private static var allowed: String {
         String(localized: "Allowed", comment: "Permission status, same wording as System Settings")

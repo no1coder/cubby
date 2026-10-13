@@ -106,17 +106,12 @@ private struct ScreenRecordingGuideView: View {
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 16)
-            Text(
-                """
-                Cubby needs Screen Recording to capture your screen. It only captures when you take a \
-                screenshot, and frames stay in memory until you copy, save or pin them.
-                """
-            )
-            .font(.system(size: FontSize.body))
-            .foregroundStyle(.secondary)
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(.top, 8)
+            explanation
+                .font(.system(size: FontSize.body))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 8)
             relaunchHint
                 .padding(.top, 12)
             buttons
@@ -131,6 +126,28 @@ private struct ScreenRecordingGuideView: View {
         .task { await permissions.run() }
         .onChange(of: permissions.screenRecording.isGranted) { _, isGranted in
             if isGranted { onGranted() }
+        }
+    }
+
+    /// 授权因签名变化而失效时，系统设置里的开关仍显示开启：说明原因与修复方法，而不是再请用户去打开开关
+    private var explanation: Text {
+        if permissions.isScreenRecordingStale {
+            Text(
+                """
+                After an update, the old Cubby entry in System Settings may still look turned on, but it \
+                no longer applies to this version. Select Cubby, click “−” to remove it, then click “+” \
+                and add Cubby again. Then quit and reopen Cubby.
+                """
+            )
+        } else {
+            Text(
+                """
+                Cubby needs Screen Recording to capture your screen. It only captures when you take a \
+                screenshot, and frames stay in memory until you copy, save or pin them.
+                """
+            )
+                + Text(verbatim: "\n\n")
+                + Text(PermissionState.alreadyOnNote)
         }
     }
 

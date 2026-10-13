@@ -354,6 +354,19 @@ tccutil reset Accessibility io.github.no1coder.Cubby
 </details>
 
 <details>
+<summary><b>Bildschirmaufnahme ist eingeschaltet, aber Cubby fragt bei jedem Bildschirmfoto erneut danach.</b></summary>
+
+Gleiche Ursache wie oben: Die Berechtigung ist an die Codesignatur gebunden, daher kann der alte Eintrag nach einem Update oder einem anders signierten Build noch eingeschaltet aussehen, obwohl er nicht mehr greift. Cubby erkennt das und zeigt unter Settings › Privacy, wie du es behebst. Öffne Systemeinstellungen › Datenschutz & Sicherheit › Bildschirm- & Systemaudioaufnahme (unter macOS 14: Bildschirmaufnahme), wähle **Cubby** aus, klick auf **−**, um es zu entfernen, klick dann auf **+** und füge Cubby wieder hinzu, und beende Cubby und öffne es erneut. Alternativ führst du aus:
+
+```sh
+tccutil reset ScreenCapture io.github.no1coder.Cubby
+```
+
+Mach dann ein Bildschirmfoto und erteile den Zugriff erneut.
+
+</details>
+
+<details>
 <summary><b>macOS meldet, dass Cubby nicht geöffnet oder nicht überprüft werden kann.</b></summary>
 
 Offizielle Releases sind notarisiert, du solltest also nur eine einzige Bestätigung „aus dem Internet geladen“ sehen und sonst nichts. Stell sicher, dass du Cubby von der Releases-Seite dieses Repositorys geladen oder mit Homebrew installiert hast und es aus dem Ordner „Programme“ startest. Die Signatur prüfst du mit:

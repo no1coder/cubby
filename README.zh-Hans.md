@@ -354,6 +354,19 @@ tccutil reset Accessibility io.github.no1coder.Cubby
 </details>
 
 <details>
+<summary><b>屏幕录制开关显示已开启，但 Cubby 截图时仍反复要求授权。</b></summary>
+
+原因同上：该权限与代码签名绑定。更新后，或安装了签名不同的版本，旧条目可能仍显示开启，实际已失效。Cubby 能检测到这种情况，并在「设置 › 隐私」中给出修复方法。打开「系统设置 › 隐私与安全性 › 录屏与系统录音」（macOS 14 为「屏幕录制」），选中 **Cubby**，点 **−** 删除，再点 **+** 重新添加 Cubby，然后退出并重新打开 Cubby。也可以在终端执行：
+
+```sh
+tccutil reset ScreenCapture io.github.no1coder.Cubby
+```
+
+然后截图并重新授权。
+
+</details>
+
+<details>
 <summary><b>macOS 提示无法打开 Cubby 或无法验证开发者。</b></summary>
 
 正式发布版已经过公证，正常情况下只会出现一次「从互联网下载」的确认。请确认是从本仓库的 Releases 页面下载或通过 Homebrew 安装，并从「应用程序」中启动。可以这样检查签名：

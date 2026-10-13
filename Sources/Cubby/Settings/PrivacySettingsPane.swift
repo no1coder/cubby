@@ -27,7 +27,7 @@ struct PrivacySettingsPane: View {
                 )
                 // 只在授权失效时加入：Form 会为内容为空的行保留一行空白
                 if permissions.isAccessibilityStale {
-                    AccessibilityRepairGuide()
+                    PermissionRepairGuide.accessibility
                 }
                 PermissionRow(
                     title: "Screen Recording",
@@ -35,6 +35,9 @@ struct PrivacySettingsPane: View {
                     state: permissions.screenRecording,
                     action: ScreenRecordingAuthorization.requestOrOpenSettings
                 )
+                if permissions.isScreenRecordingStale {
+                    PermissionRepairGuide.screenRecording
+                }
             } header: {
                 Text("Permissions")
             } footer: {

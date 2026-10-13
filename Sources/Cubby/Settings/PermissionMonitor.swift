@@ -12,6 +12,8 @@ final class PermissionMonitor {
     private(set) var isAccessibilityStale = AccessibilityAuthorization.status == .stale
     private(set) var pasteboard = PermissionState.pasteboard
     private(set) var screenRecording = PermissionState.screenRecording
+    /// 屏幕录制授权是否因签名变化而失效
+    private(set) var isScreenRecordingStale = ScreenRecordingAuthorization.status == .stale
     /// 正在等待剪贴板权限的系统询问结果（按钮暂时禁用）
     private(set) var isRequestingPasteboard = false
 
@@ -31,8 +33,13 @@ final class PermissionMonitor {
         if pasteboardStatus != .notDetermined { clipboardWasEmpty = false }
         let newPasteboard = PermissionState.pasteboard(pasteboardStatus, clipboardWasEmpty: clipboardWasEmpty)
         if newPasteboard != pasteboard { pasteboard = newPasteboard }
-        let newScreenRecording = PermissionState.screenRecording
+        let screenRecordingStatus = ScreenRecordingAuthorization.status
+        let newScreenRecording = PermissionState.screenRecording(screenRecordingStatus)
         if newScreenRecording != screenRecording { screenRecording = newScreenRecording }
+        let isScreenRecordingStale = screenRecordingStatus == .stale
+        if isScreenRecordingStale != self.isScreenRecordingStale {
+            self.isScreenRecordingStale = isScreenRecordingStale
+        }
     }
 
     /// 在视图的 .task 中调用，视图消失时随任务取消而停止

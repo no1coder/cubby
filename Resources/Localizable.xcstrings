@@ -967,12 +967,32 @@
         }
       }
     },
+    "1. In the Screen Recording list, select Cubby and click “−” to remove it." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1. 在「屏幕录制」列表中选中 Cubby，点击「−」移除"
+          }
+        }
+      }
+    },
     "2. Come back here, click “Grant Access Again” and turn on Cubby in the list that appears." : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "2. 回到这里点击「重新授权」，在弹出的列表中打开 Cubby"
+          }
+        }
+      }
+    },
+    "2. Come back here, click “Grant Access Again”, turn on Cubby in the list, then quit and reopen Cubby." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2. 回到这里点击「重新授权」，在列表中打开 Cubby，然后退出并重新打开 Cubby"
           }
         }
       }
@@ -1136,6 +1156,16 @@
         }
       }
     },
+    "After an update, the old Cubby entry in System Settings may still look turned on, but it no longer applies to this version. Select Cubby, click “−” to remove it, then click “+” and add Cubby again. Then quit and reopen Cubby." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新后系统设置中 Cubby 的旧授权条目可能仍显示为开启，但已不再对当前版本生效。请选中 Cubby，点击「−」移除，再点击「+」重新添加 Cubby，然后退出并重新打开 Cubby。"
+          }
+        }
+      }
+    },
     "After an update, the old entry in System Settings may still look turned on, but it no longer applies to this version." : {
       "localizations" : {
         "zh-Hans" : {
@@ -1269,6 +1299,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "原文已是%@ · ⌘T 选择目标语言"
+          }
+        }
+      }
+    },
+    "Already on in System Settings? Remove Cubby with “−”, add it again, then reopen Cubby." : {
+      "comment" : "Hint below a permission that isn't allowed, for entries made stale by an update",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统设置里已显示开启？请用「−」移除 Cubby 后重新添加，再重新打开 Cubby。"
           }
         }
       }
@@ -4885,7 +4926,7 @@
       }
     },
     "No longer valid (the app's signature changed after an update)" : {
-      "comment" : "Accessibility permission status",
+      "comment" : "Accessibility / Screen Recording permission status",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -5411,6 +5452,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "打开登录项设置"
+          }
+        }
+      }
+    },
+    "Open Screen Recording Settings" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开屏幕录制设置"
           }
         }
       }

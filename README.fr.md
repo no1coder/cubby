@@ -354,6 +354,19 @@ Ouvrez ensuite Cubby et accordez de nouveau l’accès.
 </details>
 
 <details>
+<summary><b>L’Enregistrement de l’écran est activé, mais Cubby le redemande à chaque capture.</b></summary>
+
+Même cause que ci-dessus : l’autorisation est liée à la signature de code, donc après une mise à jour ou avec une version signée différemment, l’ancienne entrée peut sembler activée sans plus s’appliquer. Cubby le détecte et indique comment corriger le problème dans **Settings › Privacy**. Ouvrez Réglages Système › Confidentialité et sécurité › Enregistrement de l’écran et de l’audio du système (Enregistrement de l’écran sous macOS 14), sélectionnez **Cubby**, cliquez sur **−** pour le retirer, puis cliquez sur **+** et ajoutez Cubby à nouveau, et quittez puis rouvrez Cubby. Vous pouvez aussi exécuter :
+
+```sh
+tccutil reset ScreenCapture io.github.no1coder.Cubby
+```
+
+Prenez ensuite une capture et accordez de nouveau l’accès.
+
+</details>
+
+<details>
 <summary><b>macOS indique que Cubby ne peut pas être ouvert ou vérifié.</b></summary>
 
 Les releases officielles sont notarisées : vous ne devriez voir qu’une seule confirmation « téléchargé depuis Internet », rien de plus. Assurez-vous d’avoir téléchargé Cubby depuis la page Releases de ce dépôt ou de l’avoir installé avec Homebrew, et de le lancer depuis Applications. Vous pouvez vérifier la signature avec :

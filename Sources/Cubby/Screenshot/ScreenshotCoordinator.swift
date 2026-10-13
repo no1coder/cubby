@@ -466,11 +466,13 @@ final class ScreenshotCoordinator: ScreenshotOverlayDelegate {
 
     // MARK: - 权限
 
-    /// 已授权返回 true；否则申请（每次启动最多一次系统弹窗）并显示引导窗口，不开始截图
+    /// 已授权返回 true；否则申请（每次启动最多一次系统弹窗）并显示引导窗口，不开始截图。
+    /// 授权失效时旧条目还在，申请不会有效果，直接显示引导（窗口内说明如何修复）
     private func ensureAuthorized() -> Bool {
-        guard ScreenRecordingAuthorization.status != .granted else { return true }
-        if ScreenRecordingAuthorization.request() { return true }
-        logger.info("Screen recording not granted, showing the guide")
+        let status = ScreenRecordingAuthorization.status
+        guard status != .granted else { return true }
+        if status == .notGranted, ScreenRecordingAuthorization.request() { return true }
+        logger.info("Screen recording not granted (\(status.rawValue, privacy: .public)), showing the guide")
         guide.show()
         return false
     }

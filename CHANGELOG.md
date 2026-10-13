@@ -12,6 +12,10 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+### Fixed
+
+- **Permissions that stopped working after an update are recognized**: macOS ties Screen Recording and Accessibility to the app's exact code signature, so after switching between differently signed builds (even from the same developer) the switch in System Settings still looks on but no longer applies. Cubby used to keep asking you to turn on Screen Recording; it now tells you the old entry is out of date and shows how to remove and re-add it (Settings › Privacy and the Screen Recording window). Accessibility detection, which missed this case, now catches it too. Detection needs one successful grant on this version, so permissions that aren't allowed also show how to fix an entry that already looks on.
+
 ## [0.3.2] - 2026-10-13
 
 ### Fixed

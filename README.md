@@ -354,6 +354,19 @@ Then open Cubby and grant access again.
 </details>
 
 <details>
+<summary><b>Screen Recording is switched on, but Cubby keeps asking for it when I take a screenshot.</b></summary>
+
+Same cause as above: the permission is tied to the code signature, so after an update or a differently signed build the old entry can still look on while no longer applying. Cubby detects this and shows how to fix it in Settings › Privacy. Open System Settings › Privacy & Security › Screen & System Audio Recording (Screen Recording on macOS 14), select **Cubby**, click **−** to remove it, then click **+** and add Cubby again, and quit and reopen Cubby. Alternatively, run:
+
+```sh
+tccutil reset ScreenCapture io.github.no1coder.Cubby
+```
+
+Then take a screenshot and grant access again.
+
+</details>
+
+<details>
 <summary><b>macOS says Cubby can't be opened or can't be verified.</b></summary>
 
 Official releases are notarized, so you should see a single "downloaded from the Internet" confirmation and nothing else. Make sure you downloaded Cubby from this repository's Releases page or installed it with Homebrew, and that you launch it from Applications. You can check the signature with:

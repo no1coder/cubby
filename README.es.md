@@ -354,6 +354,19 @@ Después abre Cubby y vuelve a conceder el acceso.
 </details>
 
 <details>
+<summary><b>La Grabación de pantalla está activada, pero Cubby la sigue pidiendo cuando hago una captura.</b></summary>
+
+La causa es la misma que en el caso anterior: el permiso está vinculado a la firma de código, así que tras una actualización o con una compilación firmada de otra forma la entrada antigua puede seguir pareciendo activada aunque ya no tenga efecto. Cubby lo detecta y te muestra cómo solucionarlo en Settings › Privacy. Abre Ajustes del Sistema › Privacidad y seguridad › Grabación de pantalla y audio del sistema (Grabación de pantalla en macOS 14), selecciona **Cubby**, haz clic en **−** para quitarlo, luego haz clic en **+** y vuelve a añadir Cubby, y sal de Cubby y vuelve a abrirlo. También puedes ejecutar:
+
+```sh
+tccutil reset ScreenCapture io.github.no1coder.Cubby
+```
+
+Después haz una captura y vuelve a conceder el acceso.
+
+</details>
+
+<details>
 <summary><b>macOS dice que Cubby no se puede abrir o no se puede verificar.</b></summary>
 
 Las versiones oficiales están notarizadas, así que solo deberías ver una confirmación de «descargado de internet» y nada más. Asegúrate de haber descargado Cubby desde la página de Releases de este repositorio o de haberlo instalado con Homebrew, y de abrirlo desde Aplicaciones. Puedes comprobar la firma con:

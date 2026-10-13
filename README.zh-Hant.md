@@ -354,6 +354,19 @@ tccutil reset Accessibility io.github.no1coder.Cubby
 </details>
 
 <details>
+<summary><b>螢幕錄製開關顯示已開啟，但 Cubby 截圖時仍一再要求授權。</b></summary>
+
+原因同上：這項權限與程式碼簽署綁在一起。更新之後，或安裝了簽署不同的版本，舊項目可能仍顯示開啟，實際上卻已失效。Cubby 會偵測到這種情況，並在「設定 › 隱私」中說明修復方式。打開「系統設定 › 隱私權與安全性 › 螢幕與系統錄音」（macOS 14 為「螢幕錄製」），選取 **Cubby**，按 **−** 移除，再按 **+** 重新加入 Cubby，然後結束並重新開啟 Cubby。也可以在終端機執行：
+
+```sh
+tccutil reset ScreenCapture io.github.no1coder.Cubby
+```
+
+然後截圖並重新授權。
+
+</details>
+
+<details>
 <summary><b>macOS 提示無法打開 Cubby，或無法驗證開發者。</b></summary>
 
 正式版都經過公證，正常情況下只會出現一次「從網際網路下載」的確認。請確認你是從本儲存庫的 Releases 頁面下載，或透過 Homebrew 安裝，並且從「應用程式」中啟動。可以這樣檢查簽署：
