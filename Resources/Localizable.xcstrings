@@ -1218,13 +1218,13 @@
         }
       }
     },
-    "Allow Cubby in Privacy & Security › Accessibility." : {
-      "comment" : "Panel warning detail. Use the name of the pane in System Settings.",
+    "Allow Cubby in Privacy & Security › Accessibility. Already on? Remove Cubby with “−” and add it again." : {
+      "comment" : "Panel warning detail. Use the name of the pane in System Settings. The second sentence covers entries made stale by an update, which older versions can't detect.",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在「隐私与安全性 › 辅助功能」中允许 Cubby"
+            "value" : "在「隐私与安全性 › 辅助功能」中允许 Cubby。已显示开启？请用「−」移除 Cubby 后重新添加。"
           }
         }
       }

@@ -81,8 +81,14 @@ enum PanelWarning: Hashable, Identifiable {
             Self.pasteboardAccessDetail
         case .accessibility:
             String(
-                localized: "Allow Cubby in Privacy & Security › Accessibility.",
-                comment: "Panel warning detail. Use the name of the pane in System Settings."
+                localized: """
+                    Allow Cubby in Privacy & Security › Accessibility. \
+                    Already on? Remove Cubby with “−” and add it again.
+                    """,
+                comment: """
+                    Panel warning detail. Use the name of the pane in System Settings. The second sentence covers \
+                    entries made stale by an update, which older versions can't detect.
+                    """
             )
         case .accessibilityStale:
             String(

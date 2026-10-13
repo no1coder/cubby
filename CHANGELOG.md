@@ -12,6 +12,10 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+### Fixed
+
+- **The panel's Accessibility warning explains entries that already look on**: when Cubby can't tell that an update made the old entry stale (for example right after upgrading from 0.3.2 or earlier), the warning now also says to remove Cubby with “−” and add it again.
+
 ## [0.3.3] - 2026-10-13
 
 ### Fixed
