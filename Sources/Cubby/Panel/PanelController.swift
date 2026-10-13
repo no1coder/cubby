@@ -35,6 +35,11 @@ final class PanelController {
     }
     /// 翻译交互的时长（E2E 换成更短的值；须在设置 clipTranslation 之前设置）
     var translationTimings = TranslationTimings()
+    /// 加密 Vault 的状态：「历史已锁定」横幅、迁移占位（AppDelegate 注入）
+    var vault: VaultCoordinator? {
+        get { viewModel.vault }
+        set { viewModel.vault = newValue }
+    }
     /// 更新提醒：面板顶部的蓝色横幅（AppDelegate 注入；面板 E2E 注入接桩的协调器）
     var updates: UpdateCoordinator? {
         get { viewModel.updates }

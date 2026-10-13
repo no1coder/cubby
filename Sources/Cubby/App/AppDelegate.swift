@@ -147,6 +147,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let settingsWindow = SettingsWindowController(
             settings: settings,
             store: store,
+            vault: vault,
             updates: updates,
             translation: translationSettings,
             addressGuard: addressGuard,
@@ -190,6 +191,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         panel.statusItemFrame = { [weak statusBar] in statusBar?.buttonFrame }
         panel.updates = updates
+        panel.vault = vault
     }
 
     /// 截图协调器：面板顶栏按钮与快捷键共用。快捷键 / 菜单截图时面板保持原样，可以截到面板本身

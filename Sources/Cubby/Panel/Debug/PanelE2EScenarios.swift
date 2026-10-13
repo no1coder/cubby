@@ -3,7 +3,7 @@ import AppKit
 import CubbyCore
 
 /// 全部面板脚本（按运行顺序；docs/CLIP-TRANSLATION-DESIGN.md §9 的面板 E2E 清单 + 按住 ⌥、⇄、跟随选中项、按应用记住语言；
-/// 然后是拆词，docs/TEXT-PICK-DESIGN.md §4；最后是更新提醒，docs/UPDATE-REMINDER-DESIGN.md §2）
+/// 然后是拆词，docs/TEXT-PICK-DESIGN.md §4；然后是更新提醒，docs/UPDATE-REMINDER-DESIGN.md §2；最后是历史加密，docs/HISTORY-ENCRYPTION-DESIGN.md §5）
 @MainActor
 enum PanelE2EScenarios {
     static var all: [PanelE2EScenario] {
@@ -13,7 +13,7 @@ enum PanelE2EScenarios {
             holdOptionEscape, imageWithoutText, swap, followSelection, rememberForApp, unsupported, unavailable, help,
             refusals, swapRefused, partialFailure, cacheWholeSegment, imageCached, holdOptionCloud,
             cardRoutesTranslateAndPaste, copyCachedAfterEngineChange, holdOptionNoteAfterRelease,
-        ] + textPick + updates
+        ] + textPick + updates + vault
     }
 
     // MARK: - 翻译卡的打开与关闭

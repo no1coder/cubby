@@ -12,6 +12,13 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+### Added
+
+- **Encrypted history**: everything Cubby keeps that comes from your clipboard (history, recognized text, translations, images, rich-text formats, thumbnails, translated images, the security log and backups) is now stored encrypted in a new `Vault` folder inside the data folder. The key is a random key in your login keychain that only Cubby's signature is trusted to read, so other apps and scripts running as you see only encrypted data, and copying the data folder elsewhere reveals nothing. It's always on; **Settings › History › Encryption** shows **On**. On the first launch after updating, Cubby encrypts your existing history automatically (the panel shows **Encrypting your history…** for a moment); the unencrypted `history.json` and `Images/` are deleted only after the encrypted copy has been read back and verified. Dragging an image to Finder no longer writes a temporary copy; opening an image with **Open** (`⌘O`) or dropping it on an app that only accepts a file uses a decrypted copy that's deleted when Cubby quits and at its next launch. Keep FileVault on to protect the disk itself. See [PRIVACY.md](PRIVACY.md).
+  - **If macOS asks whether Cubby can use the key in your keychain**: the app name in that prompt can be faked. Only allow it right after you've installed or updated Cubby, and only when it's Cubby itself asking; deny it at any other time and for any other app. Denying never loses data: Cubby shows **History is locked**, keeps new copies in memory, and merges them back after you click **Try Again** and allow. Releases share a stable signature, so normal updates don't ask; you'll only see it once after running a differently signed build, such as one you built yourself.
+  - **Going back to 0.3.3 or earlier**: older versions can't read the encrypted history and start with an empty one. When you update again, items you copied on the older version are merged in, but items you deleted or cleared while on the older version reappear.
+  - If the key can't be found but encrypted history exists (for example after resetting your login keychain), Cubby never deletes it: it renames the folder to `Vault-unreadable-<date>`, starts a new history, and offers **Show in Finder**. The old history is restored automatically if the key comes back.
+
 ### Fixed
 
 - **The panel's Accessibility warning explains entries that already look on**: when Cubby can't tell that an update made the old entry stale (for example right after upgrading from 0.3.2 or earlier), the warning now also says to remove Cubby with “−” and add it again.

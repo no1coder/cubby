@@ -39,7 +39,7 @@ public struct SharedFileExport: Sendable {
     }
 
     /// 可读、安全的文件名：去掉路径分隔与控制字符，不以点开头，限制长度
-    static func fileName(_ name: String, fileExtension: String) -> String {
+    public static func fileName(_ name: String, fileExtension: String) -> String {
         let cleaned = String(String.UnicodeScalarView(name.unicodeScalars.map { disallowed.contains($0) ? " " : $0 }))
             .trimmingCharacters(in: CharacterSet.whitespaces.union(CharacterSet(charactersIn: ".")))
         let base = cleaned.isEmpty ? fallbackName : String(cleaned.prefix(maximumNameLength))

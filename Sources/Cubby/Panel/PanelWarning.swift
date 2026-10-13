@@ -15,6 +15,9 @@ enum PanelWarning: Hashable, Identifiable {
     case historyFromNewerVersion
     /// 历史文件曾损坏，已备份后重新开始
     case historyRestored(backupURL: URL)
+    /// 无法读取钥匙串中的历史密钥（docs/HISTORY-ENCRYPTION-DESIGN.md E8 ①）：本次运行只在内存中记录，可重试。
+    /// 由 PanelViewModel+Vault 按 Vault 状态实时插入，不在 current(...) 中计算
+    case historyLocked
     /// 从磁盘映像或系统隔离位置运行，权限与开机启动可能无法保留
     case runningFromTemporaryLocation
     /// 新版本可用（蓝色，docs/UPDATE-REMINDER-DESIGN.md U5、U6、U8；排在权限类提醒之后、暂停之前）
@@ -47,6 +50,8 @@ enum PanelWarning: Hashable, Identifiable {
             String(localized: "History was created by a newer version of Cubby", comment: "Panel warning title")
         case .historyRestored:
             String(localized: "History file was damaged, starting over", comment: "Panel warning title")
+        case .historyLocked:
+            String(localized: "History is locked", comment: "Panel warning title: the encryption key can't be read")
         case .updateAvailable(let notice):
             UpdateCopy.versionAvailable(notice.release.version.description)
         case .updatePermission:
@@ -123,6 +128,11 @@ enum PanelWarning: Hashable, Identifiable {
                 localized: "The original file was backed up. You can find it in Finder.",
                 comment: "Panel warning detail"
             )
+        case .historyLocked:
+            String(
+                localized: "Can't read the key from the keychain, so new copies aren't saved for now.",
+                comment: "Panel warning detail when history is locked"
+            )
         case .updateAvailable(let notice):
             notice.viaHomebrew ? UpdateCopy.homebrewHint : UpdateCopy.runningVersion(notice.currentVersion)
         case .updatePermission:
@@ -153,6 +163,8 @@ enum PanelWarning: Hashable, Identifiable {
             String(localized: "Check for Updates", comment: "Button")
         case .historyRestored:
             String(localized: "Show Backup", comment: "Panel warning button: reveal the backup file in Finder")
+        case .historyLocked:
+            EncryptionCopy.tryAgain
         case .updateAvailable(let notice):
             notice.viaHomebrew ? UpdateCopy.copyUpgradeCommand : UpdateCopy.viewAndDownload
         case .updatePermission:
@@ -188,7 +200,8 @@ enum PanelWarning: Hashable, Identifiable {
         case .runningFromTemporaryLocation: ItemOpener.revealInFinder([Bundle.main.bundlePath])
         case .historyFromNewerVersion: Self.checkForUpdates?()
         case .historyRestored(let backupURL): ItemOpener.revealInFinder([backupURL.path])
-        case .updateAvailable, .updatePermission: break
+        // 更新横幅交给 PanelViewModel+Update，「历史已锁定」的重试交给 PanelViewModel+Vault
+        case .updateAvailable, .updatePermission, .historyLocked: break
         case .paused: settings.isPaused = false
         }
     }

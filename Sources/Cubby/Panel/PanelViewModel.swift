@@ -69,6 +69,8 @@ final class PanelViewModel {
     /// 红色记录上的「详情」（PanelController 接到 AppDelegate）
     @ObservationIgnored var onShowTamperDetails: ((UUID) -> Void)?
     @ObservationIgnored let sensitiveValues = SensitiveValueCache()
+    /// 加密 Vault（「历史已锁定」横幅与迁移占位，见 PanelViewModel+Vault）；nil 表示没有接线
+    @ObservationIgnored var vault: VaultCoordinator?
     /// 更新提醒（顶部蓝色横幅，见 PanelViewModel+Update）；nil 表示没有接线
     @ObservationIgnored var updates: UpdateCoordinator?
     /// 横幅上「复制升级命令」的「已复制」反馈
@@ -127,7 +129,7 @@ final class PanelViewModel {
 
     /// 已恢复记录时立即隐藏「已暂停」横幅（settings 可观察，横幅随之消失）；更新横幅实时插在暂停之前
     var visibleWarnings: [PanelWarning] {
-        let attention = warnings.filter { warning in
+        let attention = PanelWarning.insertingVault(vaultWarning, into: warnings).filter { warning in
             guard warning != .paused || settings.isPaused else { return false }
             return dismissedWarnings[warning] != warning.stateSignature
         }
@@ -140,7 +142,7 @@ final class PanelViewModel {
     }
 
     func performAction(for warning: PanelWarning) {
-        guard !performUpdateAction(warning) else { return }
+        guard !performUpdateAction(warning), !performVaultAction(warning) else { return }
         warning.performAction(settings: settings)
     }
 

@@ -5,6 +5,7 @@ import SwiftUI
 struct AboutSettingsPane: View {
     let settings: AppSettings
     let store: ClipStore
+    let vault: VaultCoordinator?
     let updates: UpdateCoordinator
     let openUserGuide: () -> Void
 
@@ -101,7 +102,8 @@ struct AboutSettingsPane: View {
     private func copyDiagnostics() {
         Task { @MainActor in
             let size = await DirectorySize.bytes(at: AppPaths.root)
-            Diagnostics.copy(Diagnostics.report(settings: settings, store: store, dataSize: size))
+            Diagnostics.copy(
+                Diagnostics.report(settings: settings, store: store, vaultStatus: vault?.status, dataSize: size))
             didCopyDiagnostics = true
             try? await Task.sleep(for: Self.copiedFeedbackDuration)
             didCopyDiagnostics = false

@@ -6,6 +6,8 @@ import CubbyCore
 struct HistorySettingsPane: View {
     @Bindable var settings: AppSettings
     let store: ClipStore
+    /// 加密 Vault 的状态（「加密」一行）；nil 时不显示（调试走查等没有接线的场合）
+    let vault: VaultCoordinator?
 
     @State private var diskUsage: Int64?
     @State private var isConfirmingClear = false
@@ -51,6 +53,12 @@ struct HistorySettingsPane: View {
                         ProgressView().controlSize(.small)
                     }
                 }
+                if let vault {
+                    EncryptionStatusRow(vault: vault)
+                    if !vault.unreadableFolders.isEmpty, !vault.status.isResetAfterMissingKey {
+                        UnreadableHistoryRow(folders: vault.unreadableFolders)
+                    }
+                }
                 LabeledContent {
                     Button("Show in Finder", action: revealDataDirectory)
                 } label: {
@@ -58,6 +66,10 @@ struct HistorySettingsPane: View {
                     Text(dataDirectoryPath)
                         .truncationMode(.middle)
                         .textSelection(.enabled)
+                }
+            } footer: {
+                if let vault {
+                    EncryptionFooter(vault: vault)
                 }
             }
 

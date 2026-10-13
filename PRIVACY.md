@@ -14,23 +14,69 @@ The one exception is a service you set up yourself: if you choose a large langua
 
 ### What Cubby stores on your Mac
 
-Everything lives in `~/Library/Application Support/Cubby`:
+Everything lives in `~/Library/Application Support/Cubby/Vault`, and every file in it is encrypted (see [Encryption](#encryption)):
 
 | Item | Contents |
 | --- | --- |
-| `history.json` | Text, links and colors you copied; the RTF / HTML versions of rich text; for copied files, their paths (not the files themselves); the name and bundle ID of the app you copied from; the time of copying; whether an item is a favorite; and translations of items you translated |
-| `Images/` | Images you copied, and translated versions of images you translated |
-| `security-log.json` | The address guard's security log (Settings › Security): the time, the kind (for example Ethereum address), a shortened value like `0x5aAe…eAed`, the app in front, and which history item replaced your copy. Never the full value. Entries are kept for 90 days, except the ones that still keep a replaced item blocked |
+| `history.cubby` | Text, links and colors you copied; the RTF / HTML versions of rich text; for copied files, their paths (not the files themselves); the name and bundle ID of the app you copied from; the time of copying; whether an item is a favorite; text recognized in images; link titles; and translations of items you translated |
+| `Blobs/` | Images you copied, their rich-text formats and thumbnails, and translated versions of images you translated. File names are derived from a key, not from the content, so they don't reveal what you copied |
+| `security-log.cubby` | The address guard's security log (Settings › Security): the time, the kind (for example Ethereum address), a shortened value like `0x5aAe…eAed`, the app in front, and which history item replaced your copy. Never the full value. Entries are kept for 90 days, except the ones that still keep a replaced item blocked |
+| `Backups/` | Backups Cubby makes when it upgrades the history format or finds a damaged history file |
+
+`.lock` (used so only one copy of Cubby changes the folder at a time) and, if you set a custom data folder with `CUBBY_DATA_DIR`, `vault-id` (a random identifier that tells Cubby which key belongs to the folder) contain no clipboard content.
 
 - The folder can only be opened by your macOS user (permissions 0700), and the files can only be read by you (0600).
 - The folder is excluded from Time Machine backups.
-- Cubby does not add its own encryption. Turn on FileVault to encrypt the disk at rest.
 - History is limited to the number of items you choose in Settings › History. Favorites don't count toward the limit.
 - Translations are kept with the item they belong to and are deleted with it. **Settings › Translation › Clear All Translations…** deletes all of them.
 
 Your settings (shortcuts, panel position, ignored apps, screenshot folder, translation engine, provider, base URL, model, clipboard translation options, the target language you chose for each app you paste into, the latest version found by the update check, and so on) are stored in `~/Library/Preferences/io.github.no1coder.Cubby.plist`. They contain no clipboard content and no API keys.
 
 If you set up a large language model for screenshot translation, its API key is stored in your login Keychain, not in these files. See [Screenshot translation](#screenshot-translation).
+
+### Encryption
+
+Cubby encrypts everything in its data folder that comes from your clipboard. It is always on; **Settings › History › Encryption** shows **On**.
+
+- **What is encrypted:** your history (text, recognized text, translations, link titles and the content hashes used to find duplicates), images, rich-text formats, thumbnails, translated images, the address guard's security log, and backups. Files use AES-256-GCM, which also detects any change to them.
+- **What isn't:** your settings in `~/Library/Preferences/io.github.no1coder.Cubby.plist` (they contain no clipboard content), screenshots you save to a folder yourself (those are your own files), and translation API keys (already in the Keychain).
+- **Where the key is:** a random 256-bit key stored in your login Keychain as a generic password (service `io.github.no1coder.Cubby.history`). The Keychain trusts only Cubby's code signature to read it. Cubby reads it once at launch and keeps it in memory; Hardened Runtime stops other processes from reading Cubby's memory or injecting code into it.
+
+What it protects against:
+
+- Other apps, scripts and install scripts running as your macOS user quietly reading the data folder. Before, they could read it without any prompt; now they get only encrypted data, and reaching the key goes through the Keychain, which asks you.
+- The data folder being zipped, synced to a cloud drive or sent to someone by mistake.
+- Using file names to check whether you copied a particular image.
+
+What it doesn't protect against:
+
+- Malware that already has administrator (root) rights, or that has tricked you into giving it your login password: it can unlock your whole login Keychain.
+- Apps that read the system clipboard at the moment you copy. That is the system clipboard itself, not Cubby.
+- Apps you've given Accessibility or Screen Recording, which can control or see Cubby's windows.
+- Copies you hand to other apps (see below).
+- Rolling your history back to an older encrypted copy. Encryption keeps the data secret and unaltered, but can't tell whether it's the latest version.
+- An app you allowed when the Keychain asked (see [If macOS asks about the key](#if-macos-asks-about-the-key)).
+
+Deleting a file only unlinks it, and on an SSD Cubby can't guarantee that old blocks are overwritten. Keep FileVault on to encrypt the disk at rest, including any unencrypted history left behind by earlier versions.
+
+**Upgrading from an earlier version.** Cubby 0.3.3 and earlier stored history unencrypted in `history.json` and `Images/`. On the first launch after updating, Cubby encrypts them into `Vault/`; the panel shows **Encrypting your history…** and Settings › History shows the progress. The unencrypted files are deleted only after the encrypted copy has been written and read back successfully. If the update is interrupted, Cubby picks up where it left off at the next launch.
+
+**Going back to an earlier version.** Versions 0.3.3 and earlier can't read `Vault/` and start with an empty, unencrypted history. When you update again, the items you copied in the meantime are merged into the encrypted history and the unencrypted files are deleted. Items you deleted or cleared while on the older version aren't deleted from the encrypted history, so they reappear.
+
+**Files handed to other apps.** Dragging an image to Finder lets Finder write the file itself, so no temporary copy is made. When an app needs a file path, for example when you open an image with **Open** (<kbd>⌘O</kbd>, usually in Preview) or drop it on an app that accepts only files, Cubby writes a decrypted copy to `$TMPDIR/Cubby-Shared/`. Those copies can be read by other processes running as your user. Cubby deletes them when it quits and again at its next launch, but not while it runs, so a file you're editing in Preview isn't deleted under you.
+
+**If the key can't be read.** Cubby never deletes encrypted data on its own.
+
+- If reading the key fails (you denied the Keychain prompt, the Keychain is locked, or another error), the history is locked: the panel shows **History is locked** with **Try Again** and **Not Now**, and Settings › History shows the same with **Try Again**. Until then, nothing is written to disk; what you copy is kept in memory only. After **Try Again** succeeds, those items are merged into your history.
+- If the key is gone but encrypted history exists (for example after you reset your login Keychain), Cubby renames the folder to `Vault-unreadable-<date>`, keeps it, and starts a new, empty history. Settings › History says so and offers **Show in Finder**. If the key comes back (for example you restore the Keychain), Cubby restores the old history automatically at the next launch.
+
+### If macOS asks about the key
+
+macOS may ask whether an app can use the confidential information `io.github.no1coder.Cubby.history` in your keychain.
+
+- The app name in that prompt can be faked. **Only allow it right after you've installed or updated Cubby, and only when it's Cubby itself asking.** At any other time, or if any other app asks, choose **Deny**.
+- Denying never loses data. Cubby goes into the locked state and keeps new copies in memory; click **Try Again** and allow, and they're merged back into your history.
+- Releases share a stable signature, so normal updates don't ask. You'll see the prompt once only after running a build with a different signature, for example one you built yourself.
 
 ### What Cubby does not record
 
@@ -68,7 +114,7 @@ Cubby connects to the network only in the two cases below. The automatic update 
 - **Where:** the same base URL, with the same rules, as screenshot translation. The translation card shows the engine and the host the text was sent to.
 - **What is sent:** the text of the item you translate, split into paragraphs, together with the target language, the detected source language, the model name and your API key. For rich text, bold text and link text are marked up; link addresses are replaced with placeholders and are never sent, inline code is replaced with placeholders and isn't sent, and code blocks aren't sent. The check for text that looks like a secret covers exactly this text, including rich-text content that isn't in the item's plain text. For an image, the text recognized in it is sent, not the image. Long text is split into several requests with up to 3 paragraphs of context, as for screenshots.
 - **What is never sent:** link addresses; text that looks like a secret, unless you confirm it for that item each time (a confirmation applies only to the service shown when you gave it); text that looks like a secret in an image, which can't be confirmed; and the other items in your history.
-- Cubby shows the reply as plain text with the item's formatting and puts the original link addresses back on your Mac. A translated image is kept only in `Images/` with its item; Cubby writes no temporary copies.
+- Cubby shows the reply as plain text with the item's formatting and puts the original link addresses back on your Mac. A translated image is kept only with its item, encrypted in `Vault/Blobs/`; translating writes no temporary copies.
 
 Cubby does not download or install updates by itself: **View & Download** opens the release page in your default browser. Opening a link from your history with <kbd>⌘O</kbd> hands it to your default browser; Cubby does not fetch link previews or titles. macOS itself may contact Apple to verify the app's notarization. That is system behavior, not something Cubby does.
 
@@ -105,7 +151,7 @@ Screenshot translation is available on macOS 26 and later.
 
 Clipboard translation is available on macOS 26 and later. It uses the engine and API key from Settings › Translation.
 
-- **Translations stay with the item.** Each translation is saved in your local history file with the item it belongs to (up to 3 languages per item), and a translated image is saved in `Images/`. Search also looks at translations. They are deleted with the item, and **Settings › Translation › Clear All Translations…** deletes all of them.
+- **Translations stay with the item.** Each translation is saved in your local history file with the item it belongs to (up to 3 languages per item), and a translated image is saved, encrypted, in `Vault/Blobs/`. Search also looks at translations. They are deleted with the item, and **Settings › Translation › Clear All Translations…** deletes all of them.
 - **Copying or pasting a translation doesn't add it to your history.** Only **Save as New Item** (<kbd>⌘S</kbd>) does, and it follows **Pause Recording** and "Don't record likely secrets and tokens" like anything you copy.
 - **Translate text when you copy it** is off by default. When you turn it on, new text items are translated with System Translation on your Mac, only for languages you've already downloaded. It never downloads a language, never uses a large language model and never goes online. It skips links, code and text that looks like a secret, and it stops while recording is paused or Low Power Mode is on.
 - The target language you choose for an app you paste into is stored in your settings as that app's bundle ID and a language code.
@@ -116,7 +162,7 @@ To let you find images by the text in them, Cubby recognizes text in images in y
 
 ### Diagnostic information
 
-**Settings › About › Copy Diagnostic Info** copies a plain-text summary to your clipboard: Cubby version and build, macOS version, chip, install location, signing information, permission status, number of items and size of the data folder. It never includes clipboard content, and it is not sent anywhere. You decide whether to paste it into a bug report.
+**Settings › About › Copy Diagnostic Info** copies a plain-text summary to your clipboard: Cubby version and build, macOS version, chip, install location, signing information, permission status, encryption status, number of items and size of the data folder. It never includes clipboard content, and it is not sent anywhere. You decide whether to paste it into a bug report.
 
 ### Deleting your data
 
@@ -131,7 +177,7 @@ To let you find images by the text in them, Cubby recognizes text in images in y
   tccutil reset All io.github.no1coder.Cubby
   ```
 
-  If you saved API keys for screenshot translation, remove them in Settings › Translation before quitting, or delete the items named `io.github.no1coder.Cubby.translation` in Keychain Access.
+  If you saved API keys for screenshot translation, remove them in Settings › Translation before quitting, or delete the items named `io.github.no1coder.Cubby.translation` in Keychain Access. To remove the history key too, delete the item named `io.github.no1coder.Cubby.history` in Keychain Access. Do this only after deleting the data folder: without the key, the encrypted history can't be read.
 
   If you installed with Homebrew, `brew uninstall --zap --cask cubby` removes the app and its data.
 
@@ -153,23 +199,69 @@ Cubby 不收集、不上传、不分享任何数据。没有账户、统计、�
 
 ### 本机存储的内容
 
-所有数据位于 `~/Library/Application Support/Cubby`：
+所有数据位于 `~/Library/Application Support/Cubby/Vault`，其中每个文件都经过加密（详见[加密](#加密)）：
 
 | 项目 | 内容 |
 | --- | --- |
-| `history.json` | 复制的文本、链接和颜色；富文本的 RTF / HTML 版本；复制文件时记录其路径（不复制文件本身）；复制时所在应用的名称和 bundle ID；复制时间；是否收藏；你翻译过的条目的译文 |
-| `Images/` | 复制的图片，以及你翻译过的图片的译后版本 |
-| `security-log.json` | 地址守护的安全记录（设置 › 剪贴板安全）：时间、类型（如以太坊地址）、缩写的值（如 `0x5aAe…eAed`）、当时的前台应用，以及替换了你复制内容的那条历史。从不保存完整的值。记录保留 90 天，仍在禁止被替换条目的记录除外 |
+| `history.cubby` | 复制的文本、链接和颜色；富文本的 RTF / HTML 版本；复制文件时记录其路径（不复制文件本身）；复制时所在应用的名称和 bundle ID；复制时间；是否收藏；图片中识别出的文字；链接标题；你翻译过的条目的译文 |
+| `Blobs/` | 复制的图片及其富文本格式与缩略图，以及你翻译过的图片的译后版本。文件名由密钥派生而非由内容生成，不会透露你复制了什么 |
+| `security-log.cubby` | 地址守护的安全记录（设置 › 剪贴板安全）：时间、类型（如以太坊地址）、缩写的值（如 `0x5aAe…eAed`）、当时的前台应用，以及替换了你复制内容的那条历史。从不保存完整的值。记录保留 90 天，仍在禁止被替换条目的记录除外 |
+| `Backups/` | 升级历史格式或发现历史文件损坏时 Cubby 留下的备份 |
+
+`.lock`（保证同一时间只有一个 Cubby 实例修改该目录）以及用 `CUBBY_DATA_DIR` 指定自定义数据目录时的 `vault-id`（一个随机标识，用来找到该目录对应的密钥）不含任何剪贴板内容。
 
 - 目录仅限你的 macOS 用户访问（权限 0700），文件仅限你读取（0600）。
 - 目录排除在 Time Machine 备份之外。
-- Cubby 不额外加密数据。建议开启 FileVault 对磁盘进行加密。
 - 历史条数受「设置 › 历史」中的上限约束，收藏不计入上限。
 - 译文随所属条目保存、随条目删除；「设置 › 翻译 › 清除全部译文…」可删除全部译文。
 
 设置（快捷键、面板位置、排除的应用、截图存储位置、翻译引擎、服务商、接入地址、模型名、剪贴板翻译选项、按粘贴目标应用记住的目标语言、更新检查查到的最新版本号等）保存在 `~/Library/Preferences/io.github.no1coder.Cubby.plist`，不含任何剪贴板内容，也不含 API Key。
 
 如果你为截图翻译配置了大模型，其 API Key 保存在登录钥匙串中，而不是上述文件里。详见[截图翻译](#截图翻译)。
+
+### 加密
+
+Cubby 会加密数据目录中一切由剪贴板内容派生的数据。加密始终开启，「设置 › 历史 › 加密」显示「已开启」。
+
+- **加密的内容：** 历史（文本、识别出的文字、译文、链接标题以及用于去重的内容哈希）、图片、富文本格式、缩略图、译后的图片、地址守护的安全记录与备份。文件使用 AES-256-GCM 加密，任何改动都能被发现。
+- **不加密的内容：** `~/Library/Preferences/io.github.no1coder.Cubby.plist` 中的设置（不含剪贴板内容）、你主动保存到文件夹的截图（那是你自己的文件）、翻译 API Key（本来就在钥匙串中）。
+- **密钥在哪里：** 一个随机生成的 256 位密钥，以通用密码的形式保存在登录钥匙串中（服务名 `io.github.no1coder.Cubby.history`）。钥匙串只信任 Cubby 的代码签名读取它。Cubby 在启动时读取一次并保存在内存中；Cubby 启用了 Hardened Runtime，其他进程无法读取它的内存或向它注入代码。
+
+能防：
+
+- 同一 macOS 用户下的其他应用、脚本、安装脚本静默读取数据目录。以前它们无需任何提示即可读取；现在只能拿到密文，要拿到密钥必须经过钥匙串，系统会询问你。
+- 数据目录被打包、同步到网盘或误传给别人。
+- 通过文件名比对确认你是否复制过某张图片。
+
+不能防：
+
+- 已获得管理员（root）权限，或已骗到你登录密码的恶意软件：它可以解开整个登录钥匙串。
+- 在你复制的当下读取系统剪贴板的应用。这是系统剪贴板本身，与 Cubby 无关。
+- 被授予「辅助功能」或「屏幕录制」权限、能操控或看到 Cubby 窗口的应用。
+- 你交给其他应用的副本（见下文）。
+- 用较旧的加密文件回滚历史。加密保证数据不被读取和篡改，但无法判断它是不是最新版本。
+- 在钥匙串询问中被你点了「允许」的应用（见[系统询问钥匙串密钥时怎么选](#系统询问钥匙串密钥时怎么选)）。
+
+删除文件只是取消链接，在固态硬盘上 Cubby 无法保证旧数据块被覆写。建议继续开启 FileVault 对磁盘进行加密，旧版本留下的未加密历史也因此受到保护。
+
+**从旧版本升级。** Cubby 0.3.3 及更早版本把历史以明文保存在 `history.json` 与 `Images/` 中。更新后首次启动时，Cubby 会把它们加密到 `Vault/`；期间面板显示「正在加密历史…」，「设置 › 历史」显示进度。只有在加密副本写入并读回校验无误后，才会删除未加密的文件。如果过程被中断，下次启动时会接着完成。
+
+**退回旧版本。** 0.3.3 及更早版本无法读取 `Vault/`，会从空的未加密历史开始。再次更新后，这期间复制的条目会合并进加密历史，未加密的文件随后删除。在旧版本中删除或清空的条目不会从加密历史中删除，因此会重新出现。
+
+**交给其他应用的文件。** 把图片拖到访达时由访达自己写入文件，不产生临时副本。当其他应用需要文件路径时（例如用「打开」（<kbd>⌘O</kbd>，通常在「预览」中）打开图片，或拖放到只接受文件的应用），Cubby 会把解密后的副本写入 `$TMPDIR/Cubby-Shared/`。这些副本同一用户下的其他进程可以读取。Cubby 在退出时和下次启动时删除它们，运行期间不删，以免你正在「预览」中编辑的文件被删掉。
+
+**无法读取密钥时。** Cubby 任何情况下都不会自动删除加密数据。
+
+- 如果读取密钥失败（你在询问中点了拒绝、钥匙串已锁定或其他错误），历史会被锁定：面板显示「历史已锁定」横幅以及「重试」「稍后」，「设置 › 历史」显示同样的提示与「重试」。在此之前不会写入磁盘，新复制的内容只保存在内存中；点「重试」成功后，这些条目会合并回历史。
+- 如果密钥不见了但加密历史还在（例如重置过登录钥匙串），Cubby 会把该目录改名为 `Vault-unreadable-<日期>` 保留下来，并从空历史重新开始。「设置 › 历史」会说明这一情况并提供「在访达中显示」。如果密钥恢复了（例如还原了钥匙串），下次启动时 Cubby 会自动还原旧历史。
+
+### 系统询问钥匙串密钥时怎么选
+
+macOS 可能会询问某个应用能否使用你钥匙串中的机密信息 `io.github.no1coder.Cubby.history`。
+
+- 询问里的应用名可以伪造。**只有刚安装或更新了 Cubby、而且是 Cubby 自己在问时才允许**；其他任何时候、任何应用来问，一律选「拒绝」。
+- 拒绝不会丢数据：Cubby 进入「已锁定」，新复制的内容暂存在内存中；点「重试」并允许后合并回历史。
+- 正式版之间签名稳定，正常升级不会出现询问；只有运行过签名不同的版本（例如自己构建的版本）后才会问一次。
 
 ### 不会记录的内容
 
@@ -207,7 +299,7 @@ Cubby 只在以下两种情况下联网。自动检查更新是一个由你决�
 - **发往何处：** 与截图翻译相同的接入地址，规则也相同。翻译卡上会显示所用引擎和文字发往的主机名。
 - **发送内容：** 所翻译条目的文字（按段落拆分），以及目标语言、检测到的源语言、模型名和你的 API Key。富文本中的粗体和链接文字会以标记形式发送；链接地址换成占位符、从不发送，行内代码换成占位符、不发送，代码块也不发送。疑似密钥的检查针对的正是这些要发送的文字，包括条目纯文本中没有、只在富文本中出现的内容。图片发送的是其中识别出的文字，而不是图片本身。长文本与截图一样分多次请求，并附带最多 3 段上文。
 - **绝不发送：** 链接地址；疑似密钥的文字（除非你每次针对该条确认，且确认只对当时显示的服务有效）；图片中的疑似密钥（无法确认发送）；历史中的其他条目。
-- Cubby 以纯文本加上条目原有格式显示返回内容，并在本机把原文的链接地址放回。译后的图片只随条目保存在 `Images/` 中，Cubby 不写入任何临时副本。
+- Cubby 以纯文本加上条目原有格式显示返回内容，并在本机把原文的链接地址放回。译后的图片只随条目加密保存在 `Vault/Blobs/` 中，翻译时不写入任何临时副本。
 
 Cubby 不会自行下载或安装更新：「查看并下载」只是在默认浏览器中打开发布页。用 <kbd>⌘O</kbd> 打开历史中的链接时，由你的默认浏览器打开；Cubby 不抓取链接预览或标题。macOS 可能会联系 Apple 验证应用的公证状态，这属于系统行为，并非 Cubby 发起。
 
@@ -244,7 +336,7 @@ Cubby 不会自行下载或安装更新：「查看并下载」只是在默认�
 
 剪贴板翻译需要 macOS 26 及以上版本，使用「设置 › 翻译」中的引擎与 API Key。
 
-- **译文随条目保存。** 每条译文与所属条目一起保存在本地历史文件中（每条最多 3 种语言），译后的图片保存在 `Images/` 中。搜索也会查找译文。译文随条目删除，「设置 › 翻译 › 清除全部译文…」可删除全部译文。
+- **译文随条目保存。** 每条译文与所属条目一起保存在本地历史文件中（每条最多 3 种语言），译后的图片加密保存在 `Vault/Blobs/` 中。搜索也会查找译文。译文随条目删除，「设置 › 翻译 › 清除全部译文…」可删除全部译文。
 - **复制或粘贴译文不会加入历史。** 只有「存为新条目」（<kbd>⌘S</kbd>）才会，并且与复制的内容一样遵守「暂停记录」与「不记录疑似密钥和令牌」。
 - **复制外文时自动翻译**默认关闭。开启后，新复制的文本用本机的系统翻译自动翻译，只适用于已下载的语言；从不下载语言、从不使用大模型，也不联网。链接、代码和疑似密钥的文字不会自动翻译；暂停记录或开启低电量模式时停止。
 - 你为粘贴目标应用选择的目标语言以该应用的 bundle ID 与语言代码保存在设置中。
@@ -255,7 +347,7 @@ Cubby 不会自行下载或安装更新：「查看并下载」只是在默认�
 
 ### 诊断信息
 
-「设置 › 关于 › 复制诊断信息」会把一段纯文本摘要复制到剪贴板：Cubby 版本与构建号、macOS 版本、芯片、安装位置、签名信息、权限状态、条目数与数据目录大小。其中绝不包含剪贴板内容，也不会被发送到任何地方，是否粘贴到问题报告中由你决定。
+「设置 › 关于 › 复制诊断信息」会把一段纯文本摘要复制到剪贴板：Cubby 版本与构建号、macOS 版本、芯片、安装位置、签名信息、权限状态、加密状态、条目数与数据目录大小。其中绝不包含剪贴板内容，也不会被发送到任何地方，是否粘贴到问题报告中由你决定。
 
 ### 删除数据
 
@@ -270,7 +362,7 @@ Cubby 不会自行下载或安装更新：「查看并下载」只是在默认�
   tccutil reset All io.github.no1coder.Cubby
   ```
 
-  如果为截图翻译保存过 API Key，请在退出前到「设置 › 翻译」中移除，或在「钥匙串访问」中删除名为 `io.github.no1coder.Cubby.translation` 的条目。
+  如果为截图翻译保存过 API Key，请在退出前到「设置 › 翻译」中移除，或在「钥匙串访问」中删除名为 `io.github.no1coder.Cubby.translation` 的条目。如果要连历史密钥一起删除，在「钥匙串访问」中删除名为 `io.github.no1coder.Cubby.history` 的条目。请在删除数据目录之后再删它：没有密钥，加密的历史就无法读取。
 
   通过 Homebrew 安装的，`brew uninstall --zap --cask cubby` 会同时删除应用与数据。
 

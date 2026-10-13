@@ -56,7 +56,9 @@ struct PanelView: View {
                 )
             }
             Group {
-                if items.isEmpty {
+                if viewModel.isVaultPreparing {
+                    VaultPreparingPlaceholder()
+                } else if items.isEmpty {
                     PanelEmptyState(viewModel: viewModel)
                 } else if viewModel.showsImageGrid {
                     ImageGrid(items: items, viewModel: viewModel)

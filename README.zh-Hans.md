@@ -33,7 +33,7 @@ brew install --cask no1coder/tap/cubby
   </picture>
 </p>
 
-Cubby 常驻菜单栏，记住你复制过的文本、链接、代码、颜色、图片和文件。按 <kbd>⇧⌘V</kbd>，输入几个字，按 <kbd>↩</kbd> 就能粘贴到刚才使用的应用，全程不用碰鼠标。它为整天复制粘贴的人而做：开发者、设计师、写作者，以及经常要倒腾地址和片段的每个人，既要快，也要放心。历史只保存在你的 Mac 上；Cubby 只在两种情况下联网：检查新版本（每天一次，可以关闭），以及使用你自己配置的大模型翻译。
+Cubby 常驻菜单栏，记住你复制过的文本、链接、代码、颜色、图片和文件。按 <kbd>⇧⌘V</kbd>，输入几个字，按 <kbd>↩</kbd> 就能粘贴到刚才使用的应用，全程不用碰鼠标。它为整天复制粘贴的人而做：开发者、设计师、写作者，以及经常要倒腾地址和片段的每个人，既要快，也要放心。历史只保存在你的 Mac 上，并且加密存储；Cubby 只在两种情况下联网：检查新版本（每天一次，可以关闭），以及使用你自己配置的大模型翻译。
 
 **亮点**
 
@@ -116,7 +116,7 @@ Cubby 常驻菜单栏，记住你复制过的文本、链接、代码、颜色�
 
 **隐私与细节**
 
-- 只存本机，排除在 Time Machine 之外，无统计、无遥测。不记录密码管理器的内容、你忽略的应用，以及疑似 API Key、私钥、JWT 的文本。可随时暂停记录。详见 [隐私](#隐私)。
+- 只存本机，用登录钥匙串中的密钥加密，排除在 Time Machine 之外，无统计、无遥测。不记录密码管理器的内容、你忽略的应用，以及疑似 API Key、私钥、JWT 的文本。可随时暂停记录。详见 [隐私](#隐私)。
 - Swift 6 + SwiftUI / AppKit，零第三方依赖，Universal 二进制。只在菜单栏，不占 Dock。界面支持英文与简体中文。支持 VoiceOver，并遵循「减弱动态效果」与「增强对比度」。
 - 有新版本时，菜单栏图标会出现一个小蓝点。
 
@@ -328,7 +328,7 @@ API Key 存在 macOS 登录钥匙串中，不会写入偏好设置、历史或�
 
 ## 隐私
 
-- **只存本机。** 历史保存在 `~/Library/Application Support/Cubby`：目录权限 0700（仅本人可访问）、文件 0600，并排除在 Time Machine 之外。
+- **只存本机，加密存储。** 历史、图片与日志加密保存在 `~/Library/Application Support/Cubby/Vault`，密钥存放在登录钥匙串中、只信任 Cubby 的签名读取，同一用户下的其他应用和脚本只能读到密文。目录权限 0700（仅本人可访问）、文件 0600，并排除在 Time Machine 之外。加密挡不住已获得管理员权限的恶意软件，也挡不住能看到 Cubby 窗口的应用，因此仍建议开启 FileVault。
 - **跳过敏感内容。** 不记录标记为机密 / 临时的内容（密码管理器会这样标记）、「忽略的应用」列表中的应用（设置 › 隐私），以及（除非你关闭该选项）疑似 API Key、私钥、JWT 的文本。
 - **粘贴不跑偏。** 发送 <kbd>⌘V</kbd> 前校验目标应用仍在前台；粘贴地址前还会确认剪贴板里仍是这个地址。
 - **地址守护只在本机。** 开启输入监控后也只识别 <kbd>⌘C</kbd> 和 <kbd>⌘X</kbd>，从不记录你输入的内容；安全记录只保存在本机，且只存缩写后的值。
@@ -387,9 +387,20 @@ spctl -a -vvv /Applications/Cubby.app    # 期望输出：source=Notarized Devel
 </details>
 
 <details>
+<summary><b>macOS 询问 Cubby 能否使用钥匙串中的密钥，该怎么选？</b></summary>
+
+Cubby 把加密历史用的密钥保存在登录钥匙串中（`io.github.no1coder.Cubby.history`）。
+
+- 询问里的应用名可以伪造。只有刚安装或更新了 Cubby、而且是 Cubby 自己在问时才允许；其他任何时候、任何应用来问，一律点「拒绝」。
+- 拒绝不会丢数据：Cubby 显示「历史已锁定」，新复制的内容暂存在内存中；点「重试」并允许后，会合并回历史。
+- 正式版之间签名稳定，正常升级不会出现询问；只有运行过签名不同的版本（例如自己构建的版本）后才会问一次。
+
+</details>
+
+<details>
 <summary><b>数据存在哪里？</b></summary>
 
-- 历史：`~/Library/Application Support/Cubby`（`history.json` 与 `Images` 文件夹）
+- 历史：`~/Library/Application Support/Cubby/Vault`（`history.cubby`、`security-log.cubby` 与存放图片的 `Blobs` 文件夹，全部加密）
 - 偏好设置：`~/Library/Preferences/io.github.no1coder.Cubby.plist`
 - 存储的截图：存储对话框中选择的位置；关闭「每次存储前询问位置」时为「设置 › 截图」中的文件夹（默认与系统截图相同）
 
@@ -400,7 +411,7 @@ spctl -a -vvv /Applications/Cubby.app    # 期望输出：source=Notarized Devel
 <details>
 <summary><b>能导出或备份历史吗？</b></summary>
 
-暂不支持，导入导出已列入 [路线图](docs/ROADMAP.md)。数据目录有意排除在 Time Machine 之外，因为剪贴板常含敏感内容。在此之前，可以先退出 Cubby，再手动复制 `~/Library/Application Support/Cubby`。请注意副本中包含你复制过的全部内容，且未加密。
+暂不支持，导入导出已列入 [路线图](docs/ROADMAP.md)。数据目录有意排除在 Time Machine 之外，因为剪贴板常含敏感内容。在此之前，可以先退出 Cubby，再手动复制 `~/Library/Application Support/Cubby`。副本是加密的，只有用登录钥匙串中的密钥才能读取，离开这个密钥就无法使用。
 
 </details>
 
@@ -420,6 +431,8 @@ rm -rf /Applications/Cubby.app ~/Library/Application\ Support/Cubby
 defaults delete io.github.no1coder.Cubby
 tccutil reset All io.github.no1coder.Cubby
 ```
+
+无论哪种方式，历史密钥都会留在登录钥匙串中。如需一并删除，执行 `security delete-generic-password -s io.github.no1coder.Cubby.history`。
 
 </details>
 

@@ -263,6 +263,17 @@ enum PanelE2EFixtures {
     }
 
     /// 写入演示历史：文本条目直接构造，图片写入 blob；预先缓存的译文放进 ClipItem.translations
+    /// 旧版本留下的明文历史（Vault 迁移脚本用）：count 条纯文本，最新的在前
+    static func plaintextHistory(count: Int, now: Date) -> ClipHistory {
+        let items = (0..<count).map { index in
+            ClipItem(
+                kind: .text, payload: .text("Plaintext item \(index)"), source: nil,
+                createdAt: now.addingTimeInterval(-Double(index) * 60),
+                contentHash: String(format: "%064x", index + 1))
+        }
+        return ClipHistory(items: items)
+    }
+
     static func history(blobs: any ClipBlobStoring, now: Date) throws -> ClipHistory {
         let items = try entries.map { entry in try item(for: entry, blobs: blobs, now: now) }
         return ClipHistory(items: items)

@@ -33,7 +33,7 @@ Ou téléchargez le DMG notarisé depuis les [Releases](https://github.com/no1co
   </picture>
 </p>
 
-Cubby se loge dans la barre des menus et retient tout ce que vous copiez : texte, liens, code, couleurs, images et fichiers. Appuyez sur <kbd>⇧⌘V</kbd>, tapez quelques lettres puis <kbd>↩</kbd> pour coller dans l’app que vous utilisiez, sans toucher à la souris. Cubby s’adresse à ceux qui copient-collent toute la journée (développeurs, designers, rédacteurs, et tous ceux qui jonglent avec des adresses et des extraits de texte) et veulent un outil rapide qui respecte leur vie privée. Votre historique reste sur votre Mac ; Cubby ne se connecte à Internet que pour vérifier la présence d’une nouvelle version (une fois par jour, désactivable) ou pour traduire avec un modèle de langage que vous avez vous-même configuré.
+Cubby se loge dans la barre des menus et retient tout ce que vous copiez : texte, liens, code, couleurs, images et fichiers. Appuyez sur <kbd>⇧⌘V</kbd>, tapez quelques lettres puis <kbd>↩</kbd> pour coller dans l’app que vous utilisiez, sans toucher à la souris. Cubby s’adresse à ceux qui copient-collent toute la journée (développeurs, designers, rédacteurs, et tous ceux qui jonglent avec des adresses et des extraits de texte) et veulent un outil rapide qui respecte leur vie privée. Votre historique reste sur votre Mac, chiffré ; Cubby ne se connecte à Internet que pour vérifier la présence d’une nouvelle version (une fois par jour, désactivable) ou pour traduire avec un modèle de langage que vous avez vous-même configuré.
 
 **Points forts**
 
@@ -116,7 +116,7 @@ Cubby se loge dans la barre des menus et retient tout ce que vous copiez : text
 
 **Confidentialité et finitions**
 
-- Tout reste en local, exclu de Time Machine, sans statistiques ni télémétrie. Ignore le contenu des gestionnaires de mots de passe, les apps que vous excluez et le texte qui ressemble à une clé d’API, une clé privée ou un JWT. Mettez l’enregistrement en pause à tout moment. Voir [Confidentialité](#confidentialité).
+- Tout reste en local, chiffré avec une clé de votre trousseau de session, exclu de Time Machine, sans statistiques ni télémétrie. Ignore le contenu des gestionnaires de mots de passe, les apps que vous excluez et le texte qui ressemble à une clé d’API, une clé privée ou un JWT. Mettez l’enregistrement en pause à tout moment. Voir [Confidentialité](#confidentialité).
 - Swift 6 avec SwiftUI et AppKit, aucune dépendance tierce, binaire universel. Uniquement dans la barre des menus, sans icône dans le Dock. Interface en anglais et en chinois simplifié. Compatible avec VoiceOver, Réduire les animations et Augmenter le contraste.
 - Un petit point bleu sur l’icône de la barre des menus vous signale la sortie d’une nouvelle version.
 
@@ -328,7 +328,7 @@ Votre clé d’API est stockée dans le trousseau de session macOS, jamais dans 
 
 ## Confidentialité
 
-- **Tout en local.** L’historique se trouve dans `~/Library/Application Support/Cubby` : le dossier n’est lisible que par vous (0700), les fichiers sont en 0600, et il est exclu de Time Machine.
+- **Tout en local, chiffré.** L’historique, les images et les journaux sont stockés chiffrés dans `~/Library/Application Support/Cubby/Vault`, avec une clé rangée dans votre trousseau de session que seule la signature de Cubby est autorisée à lire : les autres apps et scripts exécutés sous votre compte ne voient que des données chiffrées. Le dossier n’est lisible que par vous (0700), les fichiers sont en 0600, et il est exclu de Time Machine. Le chiffrement n’arrête ni un logiciel malveillant disposant des droits d’administrateur, ni une app capable de voir les fenêtres de Cubby : gardez FileVault activé.
 - **Contenu sensible ignoré.** Les éléments marqués comme masqués ou transitoires (comme le font les gestionnaires de mots de passe), les apps de votre liste d’apps ignorées (**Settings › Privacy**) et, sauf si vous le désactivez, le texte qui ressemble à une clé d’API, une clé privée ou un JWT.
 - **Colle là où vous l’attendez.** Avant d’envoyer <kbd>⌘V</kbd>, Cubby vérifie que l’app cible est toujours au premier plan, et qu’une adresse sur le point d’être collée est toujours celle de votre presse-papiers.
 - **La protection des adresses reste locale.** Avec la Surveillance de l’entrée, elle ne repère que <kbd>⌘C</kbd> et <kbd>⌘X</kbd>, jamais ce que vous tapez, et son journal de sécurité reste sur votre Mac avec des valeurs abrégées uniquement.
@@ -387,9 +387,20 @@ Le presse-papiers a changé pour une autre adresse ou un autre numéro de carte 
 </details>
 
 <details>
+<summary><b>macOS demande si Cubby peut utiliser la clé de mon trousseau.</b></summary>
+
+Cubby conserve la clé qui chiffre votre historique dans votre trousseau de session (`io.github.no1coder.Cubby.history`).
+
+- Le nom de l’app affiché dans cette demande peut être falsifié. N’autorisez l’accès que juste après avoir installé ou mis à jour Cubby, et seulement si c’est Cubby lui-même qui demande. À tout autre moment, ou si une autre app demande, cliquez sur « Refuser ».
+- Refuser ne fait jamais perdre de données. Cubby affiche **History is locked** et garde en mémoire ce que vous copiez ; cliquez sur **Try Again** puis autorisez l’accès, et ces éléments rejoignent votre historique.
+- Les versions publiées ont une signature stable : les mises à jour normales ne déclenchent pas cette demande. Vous ne la verrez qu’une fois, après avoir lancé une version signée différemment, par exemple une version compilée vous-même.
+
+</details>
+
+<details>
 <summary><b>Où sont stockées mes données ?</b></summary>
 
-- Historique : `~/Library/Application Support/Cubby` (`history.json` et un dossier `Images`)
+- Historique : `~/Library/Application Support/Cubby/Vault` (`history.cubby`, `security-log.cubby` et un dossier `Blobs` pour les images, le tout chiffré)
 - Préférences : `~/Library/Preferences/io.github.no1coder.Cubby.plist`
 - Captures enregistrées : l’emplacement choisi dans la fenêtre d’enregistrement ou, si **Ask where to save each time** est désactivé, le dossier défini dans **Settings › Screenshots** (par défaut, le même dossier que les captures d’écran de macOS)
 
@@ -400,7 +411,7 @@ Le presse-papiers a changé pour une autre adresse ou un autre numéro de carte 
 <details>
 <summary><b>Puis-je exporter ou sauvegarder mon historique ?</b></summary>
 
-Pas encore ; l’import et l’export figurent dans la [feuille de route](docs/ROADMAP.md). Le dossier de données est volontairement exclu de Time Machine, car le presse-papiers contient souvent des informations sensibles. En attendant l’export, vous pouvez quitter Cubby et copier `~/Library/Application Support/Cubby` à la main. Gardez à l’esprit que cette copie contient, non chiffré, tout ce que vous avez copié.
+Pas encore ; l’import et l’export figurent dans la [feuille de route](docs/ROADMAP.md). Le dossier de données est volontairement exclu de Time Machine, car le presse-papiers contient souvent des informations sensibles. En attendant l’export, vous pouvez quitter Cubby et copier `~/Library/Application Support/Cubby` à la main. Cette copie est chiffrée et ne peut être lue qu’avec la clé de votre trousseau de session ; sans elle, elle est inutilisable.
 
 </details>
 
@@ -420,6 +431,8 @@ rm -rf /Applications/Cubby.app ~/Library/Application\ Support/Cubby
 defaults delete io.github.no1coder.Cubby
 tccutil reset All io.github.no1coder.Cubby
 ```
+
+Dans les deux cas, la clé de l’historique reste dans votre trousseau de session. Pour la supprimer aussi, exécutez `security delete-generic-password -s io.github.no1coder.Cubby.history`.
 
 </details>
 

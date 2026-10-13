@@ -160,7 +160,7 @@ Without Accessibility access, or with `Settings › General › When you choose 
 - `⌘O`: open a link (in your default browser), a file or an image.
 - `⇧⌘P`: pin the selected image in the middle of the screen as a floating window; see "Pinned images" under Screenshots. For other items it only beeps.
 - `⌘L`: hang the selected image on the clothesline, or take it down; see "Clothesline". It works while the clothesline is on; for other items it only beeps.
-- Drag a card into another app to drop its text, image or file there.
+- Drag a card into another app to drop its text, image or file there. Dropping an image in Finder lets Finder write the file itself, so no temporary copy is made; see "Encryption" under Privacy and data.
 
 ### The right-click menu
 
@@ -569,6 +569,9 @@ Open Settings with **Settings…** in the menu bar icon's menu, the gear button 
 
 - **Keep up to:** 50 to 2,000 items, 500 by default. When the limit is reached, the oldest items are removed; favorites don't count.
 - **Search text in images:** on by default. Turning it off deletes all recognized text.
+- **Encryption:** **On**, with "History, images and logs are stored encrypted". It's always on. Right after an update, while Cubby encrypts your existing history, the row shows its progress.
+  - If the key can't be read, the row says "History is locked: can't read the key from the keychain"; click **Try Again**. See "Encryption" under Privacy and data.
+  - If the key for an older history is missing, the row says "Couldn't find the key for your old history, so Cubby started a new one"; **Show in Finder** reveals the old, still encrypted folder.
 - **Items**, **Storage used** and **Data folder**; **Show in Finder** reveals the folder.
 - **Clear history:** click **Clear…** and confirm. Favorites are kept.
 
@@ -630,12 +633,38 @@ Your data stays on your Mac. Cubby only goes online to check for a new version, 
 
 ### What's stored on your Mac
 
-- Your history lives in `~/Library/Application Support/Cubby`: `history.json` holds text, links, colors, rich-text formatting, file paths (not the files themselves), source apps, times, favorites, translations and text recognized in images; the `Images` folder holds images and translated images.
-- Only your macOS user can open this folder, and it's excluded from Time Machine backups. Cubby adds no encryption of its own; turn on FileVault to encrypt your disk.
-- The address guard's security log is `~/Library/Application Support/Cubby/security-log.json`. It holds shortened values only, for up to 90 days.
+- Your history lives, encrypted, in `~/Library/Application Support/Cubby/Vault`: `history.cubby` holds text, links, colors, rich-text formatting, file paths (not the files themselves), source apps, times, favorites, translations and text recognized in images; the `Blobs` folder holds images and translated images.
+- Only your macOS user can open this folder, and it's excluded from Time Machine backups.
+- The address guard's security log is `Vault/security-log.cubby`, also encrypted. It holds shortened values only, for up to 90 days.
 - Settings are stored in `~/Library/Preferences/io.github.no1coder.Cubby.plist`, with no clipboard content and no API keys.
 - API keys are stored in your login Keychain under `io.github.no1coder.Cubby.translation`, never in settings, history or logs.
 - The frozen screen image of a screenshot exists only in memory, and canceling leaves no trace. Pinned images disappear when Cubby quits.
+
+### Encryption
+
+Everything Cubby keeps that comes from your clipboard is stored encrypted: history, recognized text, translations, images, thumbnails, translated images, the security log and backups. It's always on, and `Settings › History` shows **Encryption: On**.
+
+- **The key:** a random key in your login Keychain (`io.github.no1coder.Cubby.history`). Only Cubby's signature is trusted to read it.
+- **What it protects against:** other apps and scripts running as you quietly reading the data folder (they now see only encrypted data), the folder being copied or synced somewhere by mistake, and file names revealing which images you copied.
+- **What it doesn't protect against:** malware with administrator rights or your login password, apps reading the clipboard at the moment you copy, apps you've allowed to use Accessibility or Screen Recording, copies you hand to other apps, and any app you allow when the Keychain asks. Keep FileVault on to encrypt your disk.
+- **Not encrypted:** your settings (no clipboard content), screenshots you save to a folder yourself, and API keys (already in the Keychain).
+- **Files for other apps:** dropping an image in Finder makes no temporary copy. When an app needs a file, for example when you open an image with `⌘O` or drop it on an app that accepts only files, Cubby writes a decrypted copy to a temporary folder (`$TMPDIR/Cubby-Shared`). Other apps running as you can read it. Cubby deletes these copies when it quits and again at its next launch.
+
+**After updating.** The first time you open an updated Cubby, it encrypts your existing history. The panel shows "Encrypting your history…" for a moment, and the items appear when it's done. The old, unencrypted files are deleted only after the encrypted copy has been checked.
+
+**Going back to an older version.** Versions 0.3.3 and earlier can't read the encrypted history and start with an empty one. When you update again, what you copied in the meantime is merged in, but items you deleted or cleared while on the older version come back.
+
+**History is locked.** If Cubby can't read the key, for example because you clicked **Deny** when macOS asked, the panel shows **History is locked** with **Try Again** and **Not Now**, and `Settings › History` shows the same. Nothing is lost: what you copy is kept in memory until Cubby can save it. Click **Try Again** and allow, and those items are merged into your history.
+
+**The key is missing.** If the key is gone but an encrypted history exists, for example after resetting your login Keychain, Cubby never deletes it. It renames the folder to `Vault-unreadable-` followed by the date, starts a new history, and `Settings › History` offers **Show in Finder**. If the key comes back, Cubby restores the old history automatically.
+
+### If macOS asks about the key
+
+macOS may ask whether an app can use `io.github.no1coder.Cubby.history` in your keychain.
+
+- The app name in the prompt can be faked. **Only allow it right after you've installed or updated Cubby, and only when it's Cubby itself asking.** At any other time, or if any other app asks, click **Deny**.
+- Denying never loses data. Cubby shows **History is locked** and keeps new copies in memory; click **Try Again** and allow, and they're merged back into your history.
+- Releases share a stable signature, so normal updates don't ask. You'll only see the prompt once after running a differently signed build, for example one you built yourself.
 
 ### What's never recorded
 
@@ -666,7 +695,7 @@ Never sent: the images themselves, text under a mosaic, text that looks like a s
 - **All translations:** `Settings › Translation › Clear All Translations…`.
 - **Text recognized in images:** turn off `Settings › History › Search text in images`.
 - **Your API key:** click **Remove** in `Settings › Translation`.
-- **Everything:** if you installed with Homebrew, run `brew uninstall --zap --cask cubby`. Otherwise quit Cubby, delete `/Applications/Cubby.app` and `~/Library/Application Support/Cubby`, then run `defaults delete io.github.no1coder.Cubby` and `tccutil reset All io.github.no1coder.Cubby` in Terminal. If you saved an API key, remove it in Settings first, or delete the `io.github.no1coder.Cubby.translation` item in Keychain Access.
+- **Everything:** if you installed with Homebrew, run `brew uninstall --zap --cask cubby`. Otherwise quit Cubby, delete `/Applications/Cubby.app` and `~/Library/Application Support/Cubby`, then run `defaults delete io.github.no1coder.Cubby` and `tccutil reset All io.github.no1coder.Cubby` in Terminal. If you saved an API key, remove it in Settings first, or delete the `io.github.no1coder.Cubby.translation` item in Keychain Access. To remove the history key too, delete the `io.github.no1coder.Cubby.history` item in Keychain Access after deleting the data folder.
 
 For the full details, see the [privacy policy (PRIVACY.md)](https://github.com/no1coder/cubby/blob/main/PRIVACY.md).
 
@@ -706,7 +735,11 @@ System Translation needs a language pack the first time you use a language. Clic
 
 ### macOS asks whether Cubby may use the Keychain
 
-When Cubby reads your saved API key, macOS may ask whether Cubby may use the Keychain item, typically after building from source or switching to a version with a different signature. Choose **Allow** or **Always Allow**. If you denied it, Settings shows "Couldn't access the Keychain, so the saved API key can't be used."; click **Try Again** to try once more.
+When Cubby reads its history key or your saved API key, macOS may ask whether Cubby may use the Keychain item. Releases share a stable signature, so this normally happens only once after building from source or running a differently signed build.
+
+- The app name in the prompt can be faked. Only allow it right after you've installed or updated Cubby, and only when it's Cubby itself asking. At any other time, or if any other app asks, click **Deny**.
+- If you denied the history key, the panel shows **History is locked**; click **Try Again** and allow. What you copied in the meantime is merged into your history. See "Encryption" under Privacy and data.
+- If you denied the API key, Settings shows "Couldn't access the Keychain, so the saved API key can't be used."; click **Try Again** to try once more.
 
 ### Cubby says an address was replaced
 

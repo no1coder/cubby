@@ -1689,6 +1689,17 @@
         }
       }
     },
+    "Can't be decrypted with the current key. It's kept and restored automatically if the key comes back." : {
+      "comment" : "Settings › History: subtitle of the old history row",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前密钥无法解密。旧数据会保留，钥匙串恢复对应密钥后会自动还原。"
+          }
+        }
+      }
+    },
     "Can't connect to %@" : {
       "comment" : "Screenshot translation failure. %@ = service name",
       "localizations" : {
@@ -1718,6 +1729,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "无法连接 %@"
+          }
+        }
+      }
+    },
+    "Can't read the key from the keychain, so new copies aren't saved for now." : {
+      "comment" : "Panel warning detail when history is locked",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法读取钥匙串中的密钥，新复制的内容暂不保存。"
           }
         }
       }
@@ -2878,6 +2900,17 @@
         }
       }
     },
+    "Couldn't find the key for your old history, so Cubby started a new one" : {
+      "comment" : "Settings › History: shown when the key for the old history is missing",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找不到旧历史的密钥，已从空历史重新开始"
+          }
+        }
+      }
+    },
     "Couldn't paste the translation" : {
       "comment" : "Inline translation error on a card",
       "localizations" : {
@@ -3581,6 +3614,39 @@
         }
       }
     },
+    "Encrypting existing history…" : {
+      "comment" : "Settings › History: subtitle while the existing history is being encrypted",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在加密现有历史…"
+          }
+        }
+      }
+    },
+    "Encrypting your history…" : {
+      "comment" : "Panel placeholder while the history is being encrypted",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在加密历史…"
+          }
+        }
+      }
+    },
+    "Encryption" : {
+      "comment" : "Settings › History: row title for history encryption",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加密"
+          }
+        }
+      }
+    },
     "Enter and save an API key." : {
       "comment" : "Translation settings: API key is missing",
       "localizations" : {
@@ -4149,6 +4215,17 @@
         }
       }
     },
+    "History encryption: %@" : {
+      "comment" : "Diagnostics line. The value stays in English (for example: ready, locked, migrating)",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史加密: %@"
+          }
+        }
+      }
+    },
     "History file was damaged and backed up" : {
       "comment" : "Diagnostics: history load issue",
       "localizations" : {
@@ -4167,6 +4244,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "历史文件损坏，已从头开始记录"
+          }
+        }
+      }
+    },
+    "History is locked" : {
+      "comment" : "Panel warning title: the encryption key can't be read",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史已锁定"
+          }
+        }
+      }
+    },
+    "History is locked: can't read the key from the keychain" : {
+      "comment" : "Settings › History: shown when the encryption key can't be read",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史已锁定：无法读取钥匙串中的密钥"
           }
         }
       }
@@ -4195,6 +4294,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "历史记录由更新版本的 Cubby 创建"
+          }
+        }
+      }
+    },
+    "History, images and logs are stored encrypted" : {
+      "comment" : "Settings › History: subtitle of the Encryption row when encryption is on",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "历史、图片与日志以加密形式保存"
           }
         }
       }
@@ -4806,6 +4916,17 @@
         }
       }
     },
+    "New copies are kept in memory for now. Click Try Again and allow Cubby's request, and they'll be merged into your history. Your existing history isn't lost." : {
+      "comment" : "Settings › History: footer when history is locked",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新复制的内容暂存在内存中；点「重试」并在 Cubby 的询问中允许后，会合并回历史。已有的历史不会丢失。"
+          }
+        }
+      }
+    },
     "Next to the pointer" : {
       "comment" : "Panel position option",
       "localizations" : {
@@ -5287,6 +5408,17 @@
         }
       }
     },
+    "Old history" : {
+      "comment" : "Settings › History: row for old history that can't be decrypted",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "旧历史"
+          }
+        }
+      }
+    },
     "Ollama (on this Mac)" : {
       "comment" : "Translation provider preset name",
       "localizations" : {
@@ -5294,6 +5426,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ollama（本机）"
+          }
+        }
+      }
+    },
+    "On" : {
+      "comment" : "Settings › History: history encryption is on",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已开启"
           }
         }
       }
@@ -5325,6 +5468,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "只改变 Cubby 自身的菜单和文字，自动翻译仍译为系统语言。"
+          }
+        }
+      }
+    },
+    "Only happens the first time after an update" : {
+      "comment" : "Panel placeholder detail while the history is being encrypted",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只在升级后第一次启动时进行"
           }
         }
       }
@@ -8402,6 +8556,28 @@
         }
       }
     },
+    "The key in your keychain is gone (for example, after resetting the login keychain), so the old history can't be decrypted. It's kept in the “%@” folder and won't be deleted, and it's restored automatically if the key comes back." : {
+      "comment" : "Settings › History: footer when the key for the old history is missing. The argument is a folder name.",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "钥匙串里的密钥不见了（例如重置过登录钥匙串），旧历史无法解密。旧数据保留在「%@」文件夹中，不会被删除；钥匙串恢复后会自动还原。"
+          }
+        }
+      }
+    },
+    "The key is stored in your login keychain, so other apps can only read encrypted data. Only allow a keychain prompt right after installing or updating Cubby, when Cubby itself asks. Deny it at any other time — denying never loses data." : {
+      "comment" : "Settings › History: footer under the Encryption row",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "密钥保存在你的登录钥匙串中，其他应用只能读到密文。钥匙串询问只在刚安装或更新 Cubby 后、由 Cubby 发起时才允许，其他情况一律拒绝；拒绝不会丢失数据。"
+          }
+        }
+      }
+    },
     "The key may have expired or been mistyped. Nothing was translated or cached." : {
       "comment" : "Translation failure detail",
       "localizations" : {
@@ -8627,6 +8803,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "不支持该语言组合"
+          }
+        }
+      }
+    },
+    "This only happens on the first launch after an update. The old unencrypted files are deleted only after everything is encrypted and verified." : {
+      "comment" : "Settings › History: footer while the existing history is being encrypted",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只在升级后第一次启动时进行。完成并校验无误后，才会删除旧的未加密文件。"
           }
         }
       }
@@ -9141,6 +9328,7 @@
       }
     },
     "Try Again" : {
+      "comment" : "Button: read the encryption key from the keychain again",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -9718,6 +9906,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "剪贴板已经变了，没有恢复"
+          }
+        }
+      }
+    },
+    "Your existing history couldn't be encrypted this time and was left as is. Cubby will try again next launch." : {
+      "comment" : "Settings › History: shown when encrypting the existing history failed",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这次没能加密现有历史，原文件保持不动，下次启动时会再试。"
           }
         }
       }

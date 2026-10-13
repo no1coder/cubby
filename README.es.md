@@ -33,7 +33,7 @@ O descarga el DMG notarizado desde [Releases](https://github.com/no1coder/cubby/
   </picture>
 </p>
 
-Cubby vive en la barra de menús y recuerda lo que copias: texto, enlaces, código, colores, imágenes y archivos. Pulsa <kbd>⇧⌘V</kbd>, escribe unas letras y pulsa <kbd>↩</kbd> para pegar en la app que estabas usando, sin tocar el ratón. Está hecho para quienes copian y pegan todo el día (desarrolladores, diseñadores, redactores, cualquiera que maneje direcciones y fragmentos de texto) y quieren una herramienta rápida que respete su privacidad. Tu historial se queda en tu Mac; Cubby solo se conecta a internet para buscar una nueva versión (una vez al día, y puedes desactivarlo) o para traducir con un modelo de lenguaje que tú mismo configures.
+Cubby vive en la barra de menús y recuerda lo que copias: texto, enlaces, código, colores, imágenes y archivos. Pulsa <kbd>⇧⌘V</kbd>, escribe unas letras y pulsa <kbd>↩</kbd> para pegar en la app que estabas usando, sin tocar el ratón. Está hecho para quienes copian y pegan todo el día (desarrolladores, diseñadores, redactores, cualquiera que maneje direcciones y fragmentos de texto) y quieren una herramienta rápida que respete su privacidad. Tu historial se queda en tu Mac, cifrado; Cubby solo se conecta a internet para buscar una nueva versión (una vez al día, y puedes desactivarlo) o para traducir con un modelo de lenguaje que tú mismo configures.
 
 **Lo más destacado**
 
@@ -116,7 +116,7 @@ Cubby vive en la barra de menús y recuerda lo que copias: texto, enlaces, códi
 
 **Privacidad y acabado**
 
-- Solo local, excluido de Time Machine, sin analíticas ni telemetría. Ignora el contenido de los gestores de contraseñas, las apps que excluyas y el texto que parezca una clave de API, una clave privada o un JWT. Pausa el registro cuando quieras. Consulta [Privacidad](#privacidad).
+- Solo local y cifrado con una clave de tu llavero de inicio de sesión, excluido de Time Machine, sin analíticas ni telemetría. Ignora el contenido de los gestores de contraseñas, las apps que excluyas y el texto que parezca una clave de API, una clave privada o un JWT. Pausa el registro cuando quieras. Consulta [Privacidad](#privacidad).
 - Swift 6 con SwiftUI y AppKit, cero dependencias de terceros, binario Universal. Solo en la barra de menús, sin icono en el Dock. Interfaz en inglés y chino simplificado. Compatible con VoiceOver, Reducir movimiento y Aumentar contraste.
 - Un pequeño punto azul en el icono de la barra de menús te avisa cuando hay una versión nueva.
 
@@ -328,7 +328,7 @@ Tu clave de API se guarda en el llavero de inicio de sesión de macOS, nunca en 
 
 ## Privacidad
 
-- **Solo local.** El historial está en `~/Library/Application Support/Cubby`: la carpeta solo la puedes leer tú (0700), los archivos son 0600 y está excluida de Time Machine.
+- **Solo local, cifrado.** El historial, las imágenes y los registros se guardan cifrados en `~/Library/Application Support/Cubby/Vault`, con una clave en tu llavero de inicio de sesión que solo la firma de Cubby puede leer, así que otras apps y scripts que se ejecutan con tu usuario solo ven datos cifrados. La carpeta solo la puedes leer tú (0700), los archivos son 0600 y está excluida de Time Machine. El cifrado no frena al malware con permisos de administrador ni a las apps que pueden ver las ventanas de Cubby, así que mantén FileVault activado.
 - **Ignora el contenido sensible.** Los elementos marcados como ocultos o transitorios (como hacen los gestores de contraseñas), las apps de tu lista de apps ignoradas (Settings › Privacy) y, salvo que lo desactives, el texto que parece una clave de API, una clave privada o un JWT.
 - **Pega donde esperas.** Antes de enviar <kbd>⌘V</kbd>, Cubby comprueba que la app de destino sigue en primer plano y que la dirección que va a pegar sigue siendo la de tu portapapeles.
 - **La protección de direcciones es local.** Con la Monitorización de entrada solo detecta <kbd>⌘C</kbd> y <kbd>⌘X</kbd>, nunca lo que escribes, y su registro de seguridad se queda en tu Mac y solo contiene valores abreviados.
@@ -387,9 +387,20 @@ El portapapeles cambió a otra dirección o número de tarjeta del mismo tipo ju
 </details>
 
 <details>
+<summary><b>macOS pregunta si Cubby puede usar la clave de mi llavero.</b></summary>
+
+Cubby guarda la clave que cifra tu historial en tu llavero de inicio de sesión (`io.github.no1coder.Cubby.history`).
+
+- El nombre de la app que aparece en esa pregunta se puede falsificar. Permítelo solo justo después de instalar o actualizar Cubby, y solo si es el propio Cubby quien pregunta. En cualquier otro momento, o si pregunta cualquier otra app, pulsa «Denegar».
+- Denegar nunca hace perder datos. Cubby muestra **History is locked** y guarda en memoria lo que copies; pulsa **Try Again**, permítelo y se añadirá a tu historial.
+- Las versiones publicadas comparten una firma estable, así que las actualizaciones normales no preguntan. Solo verás la pregunta una vez después de ejecutar una compilación con otra firma, por ejemplo una que hayas compilado tú.
+
+</details>
+
+<details>
 <summary><b>¿Dónde se guardan mis datos?</b></summary>
 
-- Historial: `~/Library/Application Support/Cubby` (`history.json` más una carpeta `Images`)
+- Historial: `~/Library/Application Support/Cubby/Vault` (`history.cubby`, `security-log.cubby` y una carpeta `Blobs` para las imágenes, todo cifrado)
 - Preferencias: `~/Library/Preferences/io.github.no1coder.Cubby.plist`
 - Capturas guardadas: donde elijas en el cuadro de diálogo de guardar o, con **Ask where to save each time** desactivado, en la carpeta indicada en Settings › Screenshots (por omisión, la misma carpeta que las capturas de macOS)
 
@@ -400,7 +411,7 @@ Settings › History puede mostrar la carpeta en el Finder. Consulta [PRIVACY.md
 <details>
 <summary><b>¿Puedo exportar o hacer una copia de seguridad de mi historial?</b></summary>
 
-Todavía no; la importación y la exportación están en la [hoja de ruta](docs/ROADMAP.md). La carpeta de datos se excluye de Time Machine a propósito, porque el portapapeles suele contener información sensible. Hasta que llegue la exportación, puedes salir de Cubby y copiar `~/Library/Application Support/Cubby` a mano. Ten en cuenta que esa copia contiene todo lo que has copiado, sin cifrar.
+Todavía no; la importación y la exportación están en la [hoja de ruta](docs/ROADMAP.md). La carpeta de datos se excluye de Time Machine a propósito, porque el portapapeles suele contener información sensible. Hasta que llegue la exportación, puedes salir de Cubby y copiar `~/Library/Application Support/Cubby` a mano. Esa copia está cifrada y solo se puede leer con la clave de tu llavero de inicio de sesión; sin ella no sirve de nada.
 
 </details>
 
@@ -420,6 +431,8 @@ rm -rf /Applications/Cubby.app ~/Library/Application\ Support/Cubby
 defaults delete io.github.no1coder.Cubby
 tccutil reset All io.github.no1coder.Cubby
 ```
+
+En ambos casos, la clave del historial se queda en tu llavero de inicio de sesión. Para eliminarla también, ejecuta `security delete-generic-password -s io.github.no1coder.Cubby.history`.
 
 </details>
 

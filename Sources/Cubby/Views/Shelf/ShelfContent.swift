@@ -26,7 +26,9 @@ struct ShelfContent: View {
                 .padding(.horizontal, Self.topRowPadding.leading)
                 .padding(.top, PanelMetrics.compactBannerSpacing)
             }
-            if items.isEmpty {
+            if viewModel.isVaultPreparing {
+                VaultPreparingPlaceholder()
+            } else if items.isEmpty {
                 PanelEmptyState(viewModel: viewModel)
             } else {
                 ShelfCardRow(items: items, viewModel: viewModel)

@@ -19,6 +19,19 @@ final class PanelE2EWorld {
         /// 更新提醒（docs/UPDATE-REMINDER-DESIGN.md）：正在运行的版本与是否按 Homebrew 安装处理
         var currentVersion = "0.2.1"
         var isHomebrewInstall = false
+        /// 加密 Vault（docs/HISTORY-ENCRYPTION-DESIGN.md）：nil 时直接用已解锁的加密存储；
+        /// 否则 ClipStore 以内存模式创建，由真实的 VaultCoordinator 在脚本调用 startVault() 后准备
+        var vault: VaultSetup?
+    }
+
+    /// Vault 脚本的起始条件
+    struct VaultSetup {
+        /// 数据目录里预先写入的明文历史（旧版本留下的 history.json）条数
+        var plaintextItems = 0
+        /// 读取密钥时先停在闸门上（模拟钥匙串询问），直到脚本开闸
+        var waitsAtGate = false
+        /// 读取密钥被拒绝（模拟用户在询问中点了「拒绝」）
+        var startsLocked = false
     }
 
     /// 固定的粘贴目标（只显示，不参与真实粘贴）
@@ -36,6 +49,10 @@ final class PanelE2EWorld {
     private(set) var settings: AppSettings
     private(set) var panel: PanelController
     private(set) var updates: UpdateCoordinator
+    /// Vault 脚本才有：真实的协调器、可控的密钥来源与它管理的数据目录
+    let vault: VaultCoordinator?
+    let keyGate: PanelE2EKeyGate?
+    let dataDirectory: URL
 
     init(name: String, root: URL, options: Options) throws {
         let directory = root.appendingPathComponent(name, isDirectory: true)
@@ -51,10 +68,20 @@ final class PanelE2EWorld {
         settings.pasteDirectly = false
         settings.isPaused = options.isPaused
         self.settings = settings
-        // 随机临时密钥的加密存储：演示条目与图片都以密文写入，不碰钥匙串（E3b）
-        let vault = DebugHistoryKey.vaultStores(in: directory)
-        try vault.storage.save(PanelE2EFixtures.history(blobs: vault.blobs, now: Date()))
-        store = ClipStore(storage: vault.storage, blobs: vault.blobs, limit: AppSettings.defaultHistoryLimit)
+        dataDirectory = directory.appendingPathComponent("data", isDirectory: true)
+        if let setup = options.vault {
+            let world = try Self.makeVaultWorld(setup, dataDirectory: dataDirectory)
+            store = world.store
+            vault = world.vault
+            keyGate = world.gate
+        } else {
+            // 随机临时密钥的加密存储：演示条目与图片都以密文写入，不碰钥匙串（E3b）
+            let stores = DebugHistoryKey.vaultStores(in: directory)
+            try stores.storage.save(PanelE2EFixtures.history(blobs: stores.blobs, now: Date()))
+            store = ClipStore(storage: stores.storage, blobs: stores.blobs, limit: AppSettings.defaultHistoryLimit)
+            vault = nil
+            keyGate = nil
+        }
         pasteboard = NSPasteboard(name: NSPasteboard.Name("io.github.no1coder.Cubby.panel-e2e.\(name)"))
         pasteboard.clearContents()
         translator = options.translationAvailable ? Self.makeTranslator(options) : nil
@@ -64,6 +91,27 @@ final class PanelE2EWorld {
         panel = Self.makePanel(
             store: store, settings: settings, pasteboard: pasteboard, options: options, translator: translator,
             updates: updates)
+        panel.vault = vault
+    }
+
+    /// 内存模式的 ClipStore + 真实的 VaultCoordinator（密钥来自闸门，数据目录里可预置旧版本的明文历史）
+    private static func makeVaultWorld(
+        _ setup: VaultSetup, dataDirectory: URL
+    ) throws -> (store: ClipStore, vault: VaultCoordinator, gate: PanelE2EKeyGate) {
+        try FileManager.default.createDirectory(at: dataDirectory, withIntermediateDirectories: true)
+        if setup.plaintextItems > 0 {
+            let plain = PlaintextFiles(dataDirectory: dataDirectory)
+            try JSONHistoryStorage(fileURL: plain.historyURL).save(
+                PanelE2EFixtures.plaintextHistory(count: setup.plaintextItems, now: Date()))
+        }
+        let gate = PanelE2EKeyGate(startsOpen: !setup.waitsAtGate)
+        gate.setLocked(setup.startsLocked)
+        let store = ClipStore(inMemoryWithLimit: AppSettings.defaultHistoryLimit)
+        let vault = VaultCoordinator(
+            store: store, keySource: HistoryKeySource.Choice(provider: gate, isEphemeral: false),
+            dataDirectory: dataDirectory
+        ) { AppSettings.defaultHistoryLimit }
+        return (store, vault, gate)
     }
 
     private static func makePanel(
@@ -106,6 +154,7 @@ final class PanelE2EWorld {
         panel = Self.makePanel(
             store: store, settings: settings, pasteboard: pasteboard, options: options, translator: translator,
             updates: updates)
+        panel.vault = vault
         updates.start()
     }
 
@@ -138,6 +187,8 @@ final class PanelE2EWorld {
     }
 
     func tearDown() {
+        // 闸门还关着时开闸，后台的密钥读取不再等待
+        keyGate?.open()
         panel.hide(animated: false)
         panel.clipTranslation = nil
         pasteboard.releaseGlobally()

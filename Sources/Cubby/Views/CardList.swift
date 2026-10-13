@@ -151,7 +151,7 @@ struct CardInteractions: ViewModifier {
     }
 }
 
-/// 拖出卡片：被替换进来的条目不提供拖出
+/// 拖出卡片：被替换进来的条目不提供拖出；图片交出文件承诺 + 图片数据（E9），文本与文件走 SwiftUI onDrag
 private struct CardDrag: ViewModifier {
     let item: ClipItem
     let viewModel: PanelViewModel
@@ -159,8 +159,10 @@ private struct CardDrag: ViewModifier {
     func body(content: Content) -> some View {
         if viewModel.isBlocked(item) {
             content
+        } else if item.kind == .image {
+            content.modifier(ImageDragSource(source: viewModel.imageSource(for: item), title: item.title))
         } else {
-            content.onDrag { DragProvider.provider(for: item) { viewModel.exportImage(item) } }
+            content.onDrag { DragProvider.provider(for: item) }
         }
     }
 }

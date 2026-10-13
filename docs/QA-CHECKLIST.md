@@ -388,7 +388,35 @@ Use a build whose version is lower than the latest release: set `VERSION` to, fo
 - [ ] After installing a version at least as new as the one found (restore `VERSION` and `make install`, or install the release), the blue dot, the menu item and the banner are gone.<br>
   安装不低于所发现版本的版本后（改回 `VERSION` 并 `make install`，或安装该发布版），蓝点、菜单项和横幅都消失。
 
-## 14. Uninstall · 卸载
+## 14. History encryption · 历史加密
+
+Keep Keychain Access open to inspect the item `io.github.no1coder.Cubby.history`. For the upgrade and downgrade checks, use a separate test account with demo data that includes images, rich text, favorites, translations and recognized text.<br>
+打开「钥匙串访问」以便查看 `io.github.no1coder.Cubby.history` 条目。升级与降级检查请用单独的测试账户，演示数据需包含图片、富文本、收藏、译文和已识别的文字。
+
+- [ ] **Fresh install:** with the release build on a clean account, no keychain prompt appears at first launch or later. Settings › History shows **Encryption** with **On** and "History, images and logs are stored encrypted"; the keychain item exists.<br>
+  **全新安装：** 在干净账户上安装发布版，首次启动及之后都不出现钥匙串询问。「设置 › 历史」显示「加密」「已开启」以及「历史、图片与日志以加密形式保存」；钥匙串中有该条目。
+- [ ] **Upgrade migration:** upgrade from 0.3.3 with real-sized demo history (hundreds of items, tens of MB of images). On the first launch, opening the panel at once shows the "Encrypting your history…" placeholder, and Settings › History shows the progress. Afterwards every item, image, favorite, translation and recognized text is intact, and `history.json`, `Images/` and `history.v*.bak.json` are gone from the data folder.<br>
+  **升级迁移：** 从 0.3.3 升级，演示历史数据量接近真实（数百条、数十 MB 图片）。首次启动后立即打开面板，显示「正在加密历史…」占位；「设置 › 历史」显示进度。完成后所有条目、图片、收藏、译文与已识别文字完好，数据目录中不再有 `history.json`、`Images/` 与 `history.v*.bak.json`。
+- [ ] **No plaintext on disk:** `ls -R ~/Library/Application\ Support/Cubby` shows only `Vault/` (`history.cubby`, `security-log.cubby`, `Blobs/`, `Backups/`, `.lock`). `file` on files in `Vault/` and `Vault/Blobs/` reports `data`, never PNG, TIFF or JSON; `grep -r` for a word you copied finds nothing.<br>
+  **磁盘上无明文：** `ls -R` 只看到 `Vault/`（`history.cubby`、`security-log.cubby`、`Blobs/`、`Backups/`、`.lock`）。对 `Vault/` 与 `Vault/Blobs/` 中的文件执行 `file`，结果都是 `data`，不出现 PNG、TIFF 或 JSON；用 `grep -r` 搜索复制过的词搜不到。
+- [ ] **Locked:** run a differently signed build (`SIGN_IDENTITY=- make install`) and click **Deny** in the keychain prompt. The panel shows the "History is locked" banner with **Try Again** and **Not Now**; Settings › History shows "History is locked: can't read the key from the keychain" with **Try Again**. Copy some text: it appears in the panel. Click **Try Again** and allow: the new item is merged into the existing history, and it's still there after quitting and relaunching.<br>
+  **已锁定：** 运行签名不同的构建版（`SIGN_IDENTITY=- make install`），在钥匙串询问中点「拒绝」。面板显示「历史已锁定」横幅以及「重试」「稍后」；「设置 › 历史」显示「历史已锁定：无法读取钥匙串中的密钥」和「重试」。复制一段文字，面板中能看到。点「重试」并允许：新条目合并进原有历史，退出并重新打开后仍在。
+- [ ] **Locked writes nothing:** while locked, the modification times of files in `Vault/` don't change after copying text and images.<br>
+  **锁定时不写盘：** 锁定期间复制文字和图片，`Vault/` 中文件的修改时间不变。
+- [ ] **Key missing:** quit Cubby, delete the keychain item in Keychain Access, then relaunch. Cubby starts with an empty history; Settings › History shows "Couldn't find the key for your old history, so Cubby started a new one" with **Show in Finder**, which reveals a `Vault-unreadable-<date>` folder next to the new `Vault/`. Nothing is deleted.<br>
+  **找不到密钥：** 退出 Cubby，在「钥匙串访问」中删除该条目后重新打开。Cubby 从空历史开始；「设置 › 历史」显示「找不到旧历史的密钥，已从空历史重新开始」和「在访达中显示」，点后看到新 `Vault/` 旁边的 `Vault-unreadable-<日期>` 文件夹。没有任何数据被删除。
+- [ ] **Downgrade and back:** with encrypted history, install 0.3.3: it starts with an empty history. Copy two items there and delete one item that existed before. Install the new version again: the two new items are merged in at the right times, the deleted item reappears, and `history.json` / `Images/` are gone again.<br>
+  **降级再升级：** 已有加密历史时安装 0.3.3：显示空历史。在旧版中复制两条，并删除一条原本就有的条目。再装回新版本：两条新条目按时间合并进来，被删除的条目重新出现，`history.json` / `Images/` 再次消失。
+- [ ] **Drag to Finder:** drag an image card to the Desktop: a readable image file appears, and `$TMPDIR/Cubby-Shared` doesn't exist or is empty.<br>
+  **拖到访达：** 把图片卡片拖到桌面，得到可正常打开的图片文件；`$TMPDIR/Cubby-Shared` 不存在或为空。
+- [ ] **Drag to other apps:** dragging an image card into Mail, Preview and TextEdit inserts the image. Dragging text and file cards still works as before.<br>
+  **拖到其他应用：** 把图片卡片拖进「邮件」「预览」「文本编辑」都能放入图片。拖动文本卡片和文件卡片与以前一样正常。
+- [ ] **Open with ⌘O:** opening an image with `⌘O` opens it in Preview from a copy under `$TMPDIR/Cubby-Shared/`. The copy is still there while Cubby runs, is deleted when Cubby quits, and a copy left behind by a forced quit (`kill -9`) is deleted at the next launch.<br>
+  **用 ⌘O 打开：** 用 `⌘O` 打开图片，「预览」打开的是 `$TMPDIR/Cubby-Shared/` 下的副本。Cubby 运行期间副本保留，退出 Cubby 时删除；强制退出（`kill -9`）留下的副本在下次启动时删除。
+- [ ] **Diagnostics:** Settings › About › **Copy Diagnostic Info** includes a "History encryption:" line with the current state (for example `ready`, and `locked` while locked).<br>
+  **诊断信息：** 「设置 › 关于 › 复制诊断信息」包含「History encryption:」一行，显示当前状态（例如 `ready`，锁定时为 `locked`）。
+
+## 15. Uninstall · 卸载
 
 - [ ] `brew uninstall --zap --cask cubby` quits Cubby and removes the app, `~/Library/Application Support/Cubby` and `~/Library/Preferences/io.github.no1coder.Cubby.plist`.<br>
   `brew uninstall --zap --cask cubby` 会退出 Cubby 并删除应用、数据目录与偏好设置文件。

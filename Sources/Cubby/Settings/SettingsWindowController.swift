@@ -14,6 +14,8 @@ final class SettingsWindowController {
 
     private let settings: AppSettings
     private let store: ClipStore
+    /// 加密 Vault 的状态（设置 › 历史的「加密」一行、诊断信息）
+    private let vault: VaultCoordinator?
     private let onShortcutRecordingChange: (Bool) -> Void
     private let updates: UpdateCoordinator
     /// 关于页的「使用说明」按钮
@@ -30,6 +32,7 @@ final class SettingsWindowController {
     init(
         settings: AppSettings,
         store: ClipStore,
+        vault: VaultCoordinator?,
         updates: UpdateCoordinator,
         translation: TranslationSettingsModel?,
         addressGuard: AddressGuardController,
@@ -40,6 +43,7 @@ final class SettingsWindowController {
         self.openUserGuide = openUserGuide
         self.settings = settings
         self.store = store
+        self.vault = vault
         self.translation = translation
         self.addressGuard = addressGuard
         self.onShortcutRecordingChange = onShortcutRecordingChange
@@ -134,7 +138,7 @@ final class SettingsWindowController {
         case .general:
             AnyView(GeneralSettingsPane(settings: settings, onShortcutRecordingChange: onShortcutRecordingChange))
         case .history:
-            AnyView(HistorySettingsPane(settings: settings, store: store))
+            AnyView(HistorySettingsPane(settings: settings, store: store, vault: vault))
         case .screenshots:
             AnyView(ScreenshotSettingsPane(settings: settings, onShortcutRecordingChange: onShortcutRecordingChange))
         case .translation:
@@ -145,7 +149,8 @@ final class SettingsWindowController {
             AnyView(PrivacySettingsPane(settings: settings))
         case .about:
             AnyView(
-                AboutSettingsPane(settings: settings, store: store, updates: updates, openUserGuide: openUserGuide))
+                AboutSettingsPane(
+                    settings: settings, store: store, vault: vault, updates: updates, openUserGuide: openUserGuide))
         }
     }
 }

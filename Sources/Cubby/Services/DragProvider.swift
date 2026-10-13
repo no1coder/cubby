@@ -1,17 +1,16 @@
 import AppKit
 import CubbyCore
 
-/// 为卡片拖拽提供数据：文本、图片文件、文件。
-/// 图片暂时解密成临时副本再拖出（E9；拖到访达改用文件承诺 NSFilePromiseProvider 在后续阶段完成）
+/// 为文本与文件卡片的拖出提供数据（SwiftUI onDrag）。
+/// 图片条目不经过这里：改由 ImageDragSource 交出文件承诺 + 图片数据（E9，不写临时明文副本）
 @MainActor
 enum DragProvider {
-    /// - Parameter imageFile: 图片条目才调用：生成临时副本
-    static func provider(for item: ClipItem, imageFile: () -> URL?) -> NSItemProvider {
+    static func provider(for item: ClipItem) -> NSItemProvider {
         switch item.payload {
         case .text(let text):
             return NSItemProvider(object: text as NSString)
         case .image:
-            return imageFile().flatMap(NSItemProvider.init(contentsOf:)) ?? NSItemProvider()
+            return NSItemProvider()
         case .files(let paths):
             let existing = paths.first { FileManager.default.fileExists(atPath: $0) }
             return

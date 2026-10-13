@@ -53,6 +53,7 @@ extension PanelWarning {
         case .updateAvailable: "update"
         case .updatePermission: "update-permission"
         case .paused: "paused"
+        case .historyLocked: "locked"
         default: "warning"
         }
     }

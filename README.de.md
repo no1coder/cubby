@@ -33,7 +33,7 @@ Oder lade das notarisierte DMG unter [Releases](https://github.com/no1coder/cubb
   </picture>
 </p>
 
-Cubby wohnt in deiner Menüleiste und merkt sich, was du kopierst: Text, Links, Code, Farben, Bilder und Dateien. Drück <kbd>⇧⌘V</kbd>, tippe ein paar Buchstaben und drück <kbd>↩</kbd>, um in die App einzufügen, in der du gerade warst – ganz ohne Maus. Gedacht ist Cubby für alle, die den ganzen Tag kopieren und einfügen (Entwickler, Designerinnen, Autoren, alle, die mit Adressen und Textbausteinen jonglieren) und ein schnelles Werkzeug wollen, das ihre Privatsphäre respektiert. Dein Verlauf bleibt auf deinem Mac; Cubby geht nur online, um nach einer neuen Version zu suchen (einmal täglich, abschaltbar) oder um mit einem Sprachmodell zu übersetzen, das du selbst eingerichtet hast.
+Cubby wohnt in deiner Menüleiste und merkt sich, was du kopierst: Text, Links, Code, Farben, Bilder und Dateien. Drück <kbd>⇧⌘V</kbd>, tippe ein paar Buchstaben und drück <kbd>↩</kbd>, um in die App einzufügen, in der du gerade warst – ganz ohne Maus. Gedacht ist Cubby für alle, die den ganzen Tag kopieren und einfügen (Entwickler, Designerinnen, Autoren, alle, die mit Adressen und Textbausteinen jonglieren) und ein schnelles Werkzeug wollen, das ihre Privatsphäre respektiert. Dein Verlauf bleibt verschlüsselt auf deinem Mac; Cubby geht nur online, um nach einer neuen Version zu suchen (einmal täglich, abschaltbar) oder um mit einem Sprachmodell zu übersetzen, das du selbst eingerichtet hast.
 
 **Highlights**
 
@@ -116,7 +116,7 @@ Cubby wohnt in deiner Menüleiste und merkt sich, was du kopierst: Text, Links, 
 
 **Datenschutz und Feinschliff**
 
-- Nur lokal, von Time Machine ausgeschlossen, keine Analyse oder Telemetrie. Ignoriert Inhalte aus Passwortmanagern, Apps, die du ausschließt, und Text, der wie ein API-Schlüssel, privater Schlüssel oder JWT aussieht. Die Aufzeichnung lässt sich jederzeit pausieren. Siehe [Datenschutz](#datenschutz).
+- Nur lokal und mit einem Schlüssel aus deinem Anmeldeschlüsselbund verschlüsselt, von Time Machine ausgeschlossen, keine Analyse oder Telemetrie. Ignoriert Inhalte aus Passwortmanagern, Apps, die du ausschließt, und Text, der wie ein API-Schlüssel, privater Schlüssel oder JWT aussieht. Die Aufzeichnung lässt sich jederzeit pausieren. Siehe [Datenschutz](#datenschutz).
 - Swift 6 mit SwiftUI und AppKit, keine Abhängigkeiten von Drittanbietern, Universal-Binary. Nur in der Menüleiste, kein Dock-Symbol. Oberfläche auf Englisch und vereinfachtem Chinesisch. Funktioniert mit VoiceOver, „Bewegung reduzieren“ und „Kontrast erhöhen“.
 - Ein kleiner blauer Punkt am Menüleistensymbol zeigt dir, wenn eine neue Version erschienen ist.
 
@@ -328,7 +328,7 @@ Dein API-Schlüssel wird im Anmelde-Schlüsselbund von macOS gespeichert, nie in
 
 ## Datenschutz
 
-- **Nur lokal.** Der Verlauf liegt in `~/Library/Application Support/Cubby`: Der Ordner ist nur für dich lesbar (0700), Dateien haben 0600, und er ist von Time Machine ausgeschlossen.
+- **Nur lokal, verschlüsselt.** Verlauf, Bilder und Protokolle liegen verschlüsselt in `~/Library/Application Support/Cubby/Vault`. Der Schlüssel steckt in deinem Anmeldeschlüsselbund und darf nur von Cubbys Signatur gelesen werden; andere Apps und Skripte unter deinem Benutzer sehen also nur verschlüsselte Daten. Der Ordner ist nur für dich lesbar (0700), Dateien haben 0600, und er ist von Time Machine ausgeschlossen. Gegen Schadsoftware mit Administratorrechten oder Apps, die Cubbys Fenster sehen können, hilft die Verschlüsselung nicht – lass FileVault also eingeschaltet.
 - **Ignoriert sensible Inhalte.** Einträge, die als verborgen oder flüchtig markiert sind (wie es Passwortmanager tun), Apps in deiner Liste ignorierter Apps (Settings › Privacy) und, sofern du es nicht abschaltest, Text, der wie ein API-Schlüssel, privater Schlüssel oder JWT aussieht.
 - **Fügt dort ein, wo du es erwartest.** Cubby prüft vor dem Senden von <kbd>⌘V</kbd>, ob die Ziel-App noch im Vordergrund ist und ob eine einzufügende Adresse noch die in deiner Zwischenablage ist.
 - **Der Adressschutz bleibt lokal.** Mit Eingabeüberwachung erkennt er nur <kbd>⌘C</kbd> und <kbd>⌘X</kbd>, nie, was du tippst, und sein Sicherheitsprotokoll bleibt mit nur gekürzten Werten auf deinem Mac.
@@ -387,9 +387,20 @@ Die Zwischenablage hat sich direkt nach dem Kopieren auf eine andere Adresse ode
 </details>
 
 <details>
+<summary><b>macOS fragt, ob Cubby den Schlüssel in meinem Schlüsselbund verwenden darf.</b></summary>
+
+Cubby bewahrt den Schlüssel, mit dem dein Verlauf verschlüsselt wird, in deinem Anmeldeschlüsselbund auf (`io.github.no1coder.Cubby.history`).
+
+- Der App-Name in dieser Abfrage lässt sich fälschen. Erlaube den Zugriff nur direkt nachdem du Cubby installiert oder aktualisiert hast, und nur, wenn Cubby selbst fragt. Zu jedem anderen Zeitpunkt und bei jeder anderen App klickst du auf „Ablehnen“.
+- Ablehnen kostet keine Daten. Cubby zeigt **History is locked** und behält neu Kopiertes im Arbeitsspeicher; klick auf **Try Again** und erlaube den Zugriff, dann wird es in deinen Verlauf übernommen.
+- Releases haben eine gleichbleibende Signatur, normale Updates fragen also nicht. Die Abfrage erscheint nur einmal, nachdem du einen anders signierten Build ausgeführt hast, zum Beispiel einen selbst gebauten.
+
+</details>
+
+<details>
 <summary><b>Wo werden meine Daten gespeichert?</b></summary>
 
-- Verlauf: `~/Library/Application Support/Cubby` (`history.json` plus ein Ordner `Images`)
+- Verlauf: `~/Library/Application Support/Cubby/Vault` (`history.cubby`, `security-log.cubby` und ein Ordner `Blobs` für Bilder, alles verschlüsselt)
 - Einstellungen: `~/Library/Preferences/io.github.no1coder.Cubby.plist`
 - Gesicherte Bildschirmfotos: wo du es im Sichern-Dialog wählst oder, wenn **Ask where to save each time** ausgeschaltet ist, im Ordner aus Settings › Screenshots (standardmäßig derselbe Ordner wie für die Bildschirmfotos von macOS)
 
@@ -400,7 +411,7 @@ Unter Settings › History lässt sich der Ordner im Finder anzeigen. Was genau 
 <details>
 <summary><b>Kann ich meinen Verlauf exportieren oder sichern?</b></summary>
 
-Noch nicht; Import und Export stehen auf der [Roadmap](docs/ROADMAP.md). Der Datenordner ist absichtlich von Time Machine ausgeschlossen, weil die Zwischenablage oft sensible Inhalte enthält. Bis der Export kommt, kannst du Cubby beenden und `~/Library/Application Support/Cubby` von Hand kopieren. Denk daran, dass die Kopie unverschlüsselt alles enthält, was du je kopiert hast.
+Noch nicht; Import und Export stehen auf der [Roadmap](docs/ROADMAP.md). Der Datenordner ist absichtlich von Time Machine ausgeschlossen, weil die Zwischenablage oft sensible Inhalte enthält. Bis der Export kommt, kannst du Cubby beenden und `~/Library/Application Support/Cubby` von Hand kopieren. Die Kopie ist verschlüsselt und lässt sich nur mit dem Schlüssel aus deinem Anmeldeschlüsselbund lesen; ohne ihn ist sie nutzlos.
 
 </details>
 
@@ -420,6 +431,8 @@ rm -rf /Applications/Cubby.app ~/Library/Application\ Support/Cubby
 defaults delete io.github.no1coder.Cubby
 tccutil reset All io.github.no1coder.Cubby
 ```
+
+In beiden Fällen bleibt der Verlaufsschlüssel in deinem Anmeldeschlüsselbund. Um ihn ebenfalls zu entfernen, führe `security delete-generic-password -s io.github.no1coder.Cubby.history` aus.
 
 </details>
 

@@ -33,7 +33,7 @@ Or download the notarized DMG from [Releases](https://github.com/no1coder/cubby/
   </picture>
 </p>
 
-Cubby lives in your menu bar and remembers what you copy: text, links, code, colors, images and files. Press <kbd>⇧⌘V</kbd>, type a few letters and press <kbd>↩</kbd> to paste into the app you were using, without touching the mouse. It's built for people who copy and paste all day (developers, designers, writers, anyone juggling addresses and snippets) and want a fast tool that respects their privacy. Your history stays on your Mac; Cubby only goes online to check for a new version (once a day, and you can turn that off) or to translate with a language model you set up yourself.
+Cubby lives in your menu bar and remembers what you copy: text, links, code, colors, images and files. Press <kbd>⇧⌘V</kbd>, type a few letters and press <kbd>↩</kbd> to paste into the app you were using, without touching the mouse. It's built for people who copy and paste all day (developers, designers, writers, anyone juggling addresses and snippets) and want a fast tool that respects their privacy. Your history stays on your Mac, encrypted; Cubby only goes online to check for a new version (once a day, and you can turn that off) or to translate with a language model you set up yourself.
 
 **Highlights**
 
@@ -116,7 +116,7 @@ Cubby lives in your menu bar and remembers what you copy: text, links, code, col
 
 **Privacy and polish**
 
-- Local only, excluded from Time Machine, no analytics or telemetry. Skips password-manager content, apps you ignore, and text that looks like an API key, private key or JWT. Pause recording any time. See [Privacy](#privacy).
+- Local only and encrypted with a key in your login keychain, excluded from Time Machine, no analytics or telemetry. Skips password-manager content, apps you ignore, and text that looks like an API key, private key or JWT. Pause recording any time. See [Privacy](#privacy).
 - Swift 6 with SwiftUI and AppKit, zero third-party dependencies, Universal binary. Menu bar only, no Dock icon. English and Simplified Chinese interface. Works with VoiceOver, Reduce Motion and Increase Contrast.
 - A small blue dot on the menu bar icon tells you when a new version is out.
 
@@ -328,7 +328,7 @@ Your API key is stored in the macOS login Keychain, never in preferences, histor
 
 ## Privacy
 
-- **Local only.** History lives in `~/Library/Application Support/Cubby`: the folder is readable only by you (0700), files are 0600, and it's excluded from Time Machine.
+- **Local only, encrypted.** History, images and logs are stored encrypted in `~/Library/Application Support/Cubby/Vault`, with a key in your login keychain that only Cubby's signature is trusted to read, so other apps and scripts running as you see only encrypted data. The folder is readable only by you (0700), files are 0600, and it's excluded from Time Machine. Encryption doesn't stop malware with administrator rights or apps that can see Cubby's windows, so keep FileVault on too.
 - **Skips sensitive content.** Items marked concealed or transient (as password managers do), apps in your Ignored Apps list (Settings › Privacy), and, unless you turn it off, text that looks like an API key, private key or JWT.
 - **Pastes where you expect.** Cubby checks that the target app is still frontmost before sending <kbd>⌘V</kbd>, and that an address it's about to paste is still the one in your clipboard.
 - **Address guard stays local.** With Input Monitoring it only notices <kbd>⌘C</kbd> and <kbd>⌘X</kbd>, never what you type, and its security log stays on your Mac with shortened values only.
@@ -387,9 +387,20 @@ The clipboard changed to another address or card number of the same kind right a
 </details>
 
 <details>
+<summary><b>macOS asks whether Cubby can use the key in my keychain.</b></summary>
+
+Cubby keeps the key that encrypts your history in your login keychain (`io.github.no1coder.Cubby.history`).
+
+- The app name in that prompt can be faked. Only allow it right after you've installed or updated Cubby, and only when it's Cubby itself asking. At any other time, or if any other app asks, click **Deny**.
+- Denying never loses data. Cubby shows **History is locked** and keeps new copies in memory; click **Try Again** and allow, and they're merged back into your history.
+- Releases share a stable signature, so normal updates don't ask. You'll only see the prompt once after running a differently signed build, for example one you built yourself.
+
+</details>
+
+<details>
 <summary><b>Where is my data stored?</b></summary>
 
-- History: `~/Library/Application Support/Cubby` (`history.json` plus an `Images` folder)
+- History: `~/Library/Application Support/Cubby/Vault` (`history.cubby`, `security-log.cubby` and a `Blobs` folder for images, all encrypted)
 - Preferences: `~/Library/Preferences/io.github.no1coder.Cubby.plist`
 - Saved screenshots: wherever you choose in the save dialog, or, with **Ask where to save each time** turned off, the folder in Settings › Screenshots (by default, the same folder as macOS screenshots)
 
@@ -400,7 +411,7 @@ Settings › History can reveal the folder in Finder. See [PRIVACY.md](PRIVACY.m
 <details>
 <summary><b>Can I export or back up my history?</b></summary>
 
-Not yet; import and export are on the [roadmap](docs/ROADMAP.md). The data folder is excluded from Time Machine on purpose, because clipboards often contain sensitive content. Until export ships, you can quit Cubby and copy `~/Library/Application Support/Cubby` manually. Keep in mind that the copy contains everything you have copied, unencrypted.
+Not yet; import and export are on the [roadmap](docs/ROADMAP.md). The data folder is excluded from Time Machine on purpose, because clipboards often contain sensitive content. Until export ships, you can quit Cubby and copy `~/Library/Application Support/Cubby` manually. The copy is encrypted and can be read only with the key in your login keychain, so it's of no use without that key.
 
 </details>
 
@@ -420,6 +431,8 @@ rm -rf /Applications/Cubby.app ~/Library/Application\ Support/Cubby
 defaults delete io.github.no1coder.Cubby
 tccutil reset All io.github.no1coder.Cubby
 ```
+
+Either way, the history key stays in your login keychain. To remove it too, run `security delete-generic-password -s io.github.no1coder.Cubby.history`.
 
 </details>
 

@@ -5,7 +5,10 @@ import CubbyCore
 /// 诊断信息：用于 Issue 反馈的纯文本环境摘要。**绝不包含任何剪贴板内容**。
 @MainActor
 enum Diagnostics {
-    static func report(settings: AppSettings, store: ClipStore, dataSize: Int64?) -> String {
+    /// - Parameter vaultStatus: 加密 Vault 的状态；nil 表示没有接线
+    static func report(
+        settings: AppSettings, store: ClipStore, vaultStatus: VaultStatus?, dataSize: Int64?
+    ) -> String {
         let info = Bundle.main.infoDictionary
         let version =
             info?["CFBundleShortVersionString"] as? String
@@ -48,6 +51,10 @@ enum Diagnostics {
                 comment: "Diagnostics line"
             ),
             String(localized: "Data size: \(size)", comment: "Diagnostics line"),
+            String(
+                localized: "History encryption: \(vaultStatus?.diagnosticDescription ?? "-")",
+                comment: "Diagnostics line. The value stays in English (for example: ready, locked, migrating)"
+            ),
             String(
                 localized: """
                     Data format version: \(HistoryMigrator.currentVersion), \

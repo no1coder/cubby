@@ -2,7 +2,7 @@ import CubbyCore
 import SwiftUI
 
 /// 绳上的一张照片：白边相纸（底边留白更宽）+ 夹在顶边的木夹子。
-/// 单击放大编辑（等双击判定超时后才执行）、双击复制、拖出发送图片文件副本、悬停时左上角 × 取下
+/// 单击放大编辑（等双击判定超时后才执行）、双击复制、拖出图片、悬停时左上角 × 取下
 struct ClotheslinePhotoView: View {
     let photo: ClotheslineLayout.Photo
     let entry: ClotheslineModel.Entry
@@ -27,11 +27,8 @@ struct ClotheslinePhotoView: View {
             .animation(Motion.animation(.easeOut(duration: Motion.fade), reduceMotion: reduceMotion), value: isHovered)
             // 双击优先；单击要等双击判定超时才执行（ExclusiveGesture 先等前一个手势失败）
             .gesture(TapGesture(count: 2).onEnded(onCopy).exclusively(before: TapGesture().onEnded(onEdit)))
-            .onDrag {
-                DragProvider.provider(for: entry.item) {
-                    SharedFiles.exportImage(entry.item, source: entry.imageSource)
-                }
-            }
+            // 拖出交出文件承诺 + 图片数据（E9）：拖到访达不写临时副本
+            .modifier(ImageDragSource(source: entry.imageSource, title: entry.item.title))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(accessibilityLabel)
             .accessibilityAddTraits(.isButton)
