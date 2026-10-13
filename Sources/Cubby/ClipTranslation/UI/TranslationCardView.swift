@@ -40,7 +40,7 @@ struct TranslationCardView: View {
             state
         } else if case .image(let ref) = item.payload {
             TranslationImageBody(
-                card: card, imageURL: viewModel.imageURL(for: item), ref: ref, controller: translation.card)
+                card: card, image: viewModel.imageSource(for: item), ref: ref, controller: translation.card)
         } else {
             TranslationTextBody(card: card, fallbackText: item.text ?? "")
         }

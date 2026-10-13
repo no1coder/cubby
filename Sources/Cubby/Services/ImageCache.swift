@@ -8,6 +8,7 @@ import UniformTypeIdentifiers
 @MainActor
 final class ImageCache {
     static let shared = ImageCache()
+    private nonisolated static let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "ImageCache")
 
     /// 缩略图缓存上限，按实际内存计。每张上屏的位图还对应一份等大的 CoreAnimation 渲染副本，
     /// 寿命跟随位图（剖析实测滚完全部图片后 CA 132MB + CG raster 129MB），所以成本按位图的 2 倍计。
@@ -32,15 +33,15 @@ final class ImageCache {
         icons.countLimit = 300
     }
 
-    func cachedThumbnail(for url: URL, maxPixelSize: Int) -> NSImage? {
-        thumbnails.object(forKey: Self.key(url, maxPixelSize))
+    func cachedThumbnail(for image: ClipImageSource, maxPixelSize: Int) -> NSImage? {
+        thumbnails.object(forKey: Self.key(image, maxPixelSize))
     }
 
     /// 按最长边像素生成缩略图；大图不会整张解码进内存。
     /// 解码在调用方（视图的 .task）的任务里排队等许可：视图消失、任务取消时，排队中的请求立即放弃、不再解码。
     /// 已开始的解码是一次无法中断的 ImageIO 同步调用，完成后照常写入缓存，卡片滑回时直接命中
-    func thumbnail(for url: URL, maxPixelSize: Int) async -> NSImage? {
-        let key = Self.key(url, maxPixelSize)
+    func thumbnail(for image: ClipImageSource, maxPixelSize: Int) async -> NSImage? {
+        let key = Self.key(image, maxPixelSize)
         if let cached = thumbnails.object(forKey: key) { return cached }
         if let pending = inFlight[key] { return await pending.result() }
 
@@ -55,12 +56,12 @@ final class ImageCache {
 
         let pending = PendingDecode()
         inFlight[key] = pending
-        let decoded = await Self.decodeThumbnail(url: url, maxPixelSize: maxPixelSize)
-        let image = decoded.map { store($0, key: key) }
+        let decoded = await Self.decodeThumbnail(image, maxPixelSize: maxPixelSize)
+        let result = decoded.map { store($0, key: key) }
         inFlight[key] = nil
         decodeGate.release()
-        pending.finish(image)
-        return image
+        pending.finish(result)
+        return result
     }
 
     /// 面板隐藏后延迟清空缩略图：NSCache 不会主动释放，常驻菜单栏期间这部分内存没有用处。
@@ -112,8 +113,9 @@ final class ImageCache {
         return icon
     }
 
-    private static func key(_ url: URL, _ maxPixelSize: Int) -> NSString {
-        "\(url.path)#\(maxPixelSize)" as NSString
+    /// 按存储中的文件名（由内容派生）作键：同名即同一内容
+    private static func key(_ image: ClipImageSource, _ maxPixelSize: Int) -> NSString {
+        "\(image.name)#\(maxPixelSize)" as NSString
     }
 
     /// 写入缓存，成本按位图字节数 × 渲染副本系数计
@@ -127,17 +129,17 @@ final class ImageCache {
     /// 不再像 Task.detached 那样脱离视图 .task 的取消。
     /// 这里不检查取消：能走到这一步的请求已拿到许可且未取消，而同一张图的等待者依赖它的结果，
     /// 中途放弃会让等待者拿到 nil 且不再重试。
-    /// 卡片请求优先读记录时预生成的小缩略图（720px JPEG 解码不到 1ms）；没有或不够大（预览面板的 1600px）时解码原图
+    /// 卡片请求优先读记录时预生成的小缩略图（720px JPEG 解码不到 1ms）；没有或不够大（预览面板的 1600px）时
+    /// 读取（解密）原图再解码。解密后的数据只在内存中，解码完即释放
     @concurrent
-    private nonisolated static func decodeThumbnail(url: URL, maxPixelSize: Int) async -> CGImage? {
-        if let small = ImageThumbnail.decode(forImageAt: url, maxPixelSize: maxPixelSize) { return small }
-        let options: [CFString: Any] = [
-            kCGImageSourceCreateThumbnailFromImageAlways: true,
-            kCGImageSourceCreateThumbnailWithTransform: true,
-            kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
-        ]
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
-        return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
+    private nonisolated static func decodeThumbnail(_ image: ClipImageSource, maxPixelSize: Int) async -> CGImage? {
+        if let small = ImageThumbnail.decode(thumbnailOf: image, maxPixelSize: maxPixelSize) { return small }
+        do {
+            return ImageThumbnail.decode(imageData: try image.data(), maxPixelSize: maxPixelSize)
+        } catch {
+            logger.error("Failed to read an image: \(error.localizedDescription, privacy: .public)")
+            return nil
+        }
     }
 }
 

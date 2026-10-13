@@ -17,7 +17,7 @@ extension PanelController {
             translator: translator,
             item: { [weak store] id in store?.item(id: id) },
             pasteTarget: { [weak viewModel] in viewModel?.target },
-            translatedImageURL: { [weak store] entry in store?.translatedImageURL(for: entry) },
+            translatedImage: { [weak store] entry in store?.translatedImageSource(for: entry) },
             timings: translationTimings
         )
         let controller = ClipTranslationController(environment: environment)
@@ -49,7 +49,7 @@ extension PanelController {
         }
         // 富文本条目的译文按纯文本写入时，HUD 注明「纯文本」
         let plainText =
-            request.result.imageURL == nil && request.result.richText != nil
+            request.result.image == nil && request.result.richText != nil
             && !paster.writesRichText(request.style)
         paster.deliver(
             promoting: request.item.id, copyOnly: false, target: viewModel.target, anchor: anchor,

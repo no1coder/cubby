@@ -40,7 +40,7 @@ extension ScreenshotCoordinator {
     /// Returns false when it could not start (another screenshot session is active, the image can't be decoded).
     @discardableResult
     func editHistoryImage(
-        _ item: ClipItem, imageURL: URL, on screen: NSScreen,
+        _ item: ClipItem, imageData: Data, on screen: NSScreen,
         onFinish: @escaping @MainActor (HistoryImageEditResult) -> Void
     ) -> Bool {
         guard !isActive else {
@@ -51,7 +51,7 @@ extension ScreenshotCoordinator {
             logger.error("History image edit: no display for the screen")
             return false
         }
-        guard let decoded = HistoryImageBackdrop.decode(imageURL) else {
+        guard let decoded = HistoryImageBackdrop.decode(imageData) else {
             logger.error("History image edit: couldn't decode the image")
             return false
         }

@@ -46,7 +46,20 @@ public struct HistoryKeys: Sendable {
     public func blobName(kind: String, contentHash: String) -> String {
         let message = Data((kind + Self.blobNameSeparator + contentHash).utf8)
         let code = HMAC<SHA256>.authenticationCode(for: message, using: fileNameKey)
-        return code.map { String(format: "%02x", $0) }.joined()
+        return Self.lowercaseHex(code)
+    }
+
+    private static let hexDigits = Array("0123456789abcdef".utf8)
+
+    /// 小写十六进制（每次增删历史都可能为缩略图推出文件名，避免逐字节 String(format:) 的开销）
+    private static func lowercaseHex(_ bytes: some Sequence<UInt8>) -> String {
+        var characters: [UInt8] = []
+        characters.reserveCapacity(64)
+        for byte in bytes {
+            characters.append(hexDigits[Int(byte >> 4)])
+            characters.append(hexDigits[Int(byte & 0x0f)])
+        }
+        return String(decoding: characters, as: UTF8.self)
     }
 
     private static func derive(_ master: SymmetricKey, info: Data, byteCount: Int) -> SymmetricKey {

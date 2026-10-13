@@ -122,7 +122,7 @@ struct PasteboardRichTextTests {
     func writerRoundTrip() throws {
         let formats = Fixtures.richFormats(for: "往返 📋")
         try withTemporaryPasteboard { pasteboard in
-            try PasteboardWriter.write(Fixtures.text("往返 📋"), imageURL: nil, formats: formats, to: pasteboard)
+            try PasteboardWriter.write(Fixtures.text("往返 📋"), imageData: nil, formats: formats, to: pasteboard)
 
             #expect(pasteboard.string(forType: .string) == "往返 📋")
             #expect(pasteboard.data(forType: rtfType) == formats["public.rtf"])
@@ -136,7 +136,7 @@ struct PasteboardRichTextTests {
     func writtenRTFKeepsStyle() throws {
         try withTemporaryPasteboard { pasteboard in
             try PasteboardWriter.write(
-                Fixtures.text("加粗"), imageURL: nil, formats: Fixtures.richFormats(for: "加粗"), to: pasteboard
+                Fixtures.text("加粗"), imageData: nil, formats: Fixtures.richFormats(for: "加粗"), to: pasteboard
             )
             let rtf = try #require(pasteboard.data(forType: rtfType))
             let attributed = try NSAttributedString(
@@ -151,7 +151,7 @@ struct PasteboardRichTextTests {
     @Test("formats 为空时只写纯文本")
     func writerWithoutFormats() throws {
         try withTemporaryPasteboard { pasteboard in
-            try PasteboardWriter.write(Fixtures.text("plain"), imageURL: nil, to: pasteboard)
+            try PasteboardWriter.write(Fixtures.text("plain"), imageData: nil, to: pasteboard)
             #expect(pasteboard.data(forType: rtfType) == nil)
             #expect(pasteboard.data(forType: htmlType) == nil)
             #expect(PasteboardReader.read(from: pasteboard) == .text("plain"))
@@ -167,7 +167,7 @@ struct PasteboardRichTextTests {
 
         try withTemporaryPasteboard { pasteboard in
             let formats = ["public.html": Data("<b>x</b>".utf8)]
-            try PasteboardWriter.write(Fixtures.files([file.path]), imageURL: nil, formats: formats, to: pasteboard)
+            try PasteboardWriter.write(Fixtures.files([file.path]), imageData: nil, formats: formats, to: pasteboard)
             #expect(pasteboard.data(forType: htmlType) == nil)
         }
     }
@@ -191,7 +191,7 @@ struct PasteboardRichTextTests {
         let recorded = try #require(store.record(read, source: nil))
 
         try withTemporaryPasteboard { target in
-            try PasteboardWriter.write(recorded, imageURL: nil, formats: store.formats(for: recorded), to: target)
+            try PasteboardWriter.write(recorded, imageData: nil, formats: store.formats(for: recorded), to: target)
             #expect(PasteboardReader.read(from: target) == .richText("端到端", formats: formats))
         }
     }

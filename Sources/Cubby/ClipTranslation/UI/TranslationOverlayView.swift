@@ -293,10 +293,12 @@ final class ClipTranslationBlockLayer: CALayer {
         isBold: false, textColor: .black, alignment: .leading)
 }
 
-/// 历史图片的点倍率：只读文件头的 DPI，换算规则与合成屏幕同一处（HistoryImageFrame.scale，设计文档 §5.1）
+/// 历史图片的点倍率：取原图的 DPI（需解密原图），换算规则与合成屏幕同一处（HistoryImageFrame.scale，设计文档 §5.1）
 enum ImagePointScale {
-    static func read(_ url: URL?) -> CGFloat {
-        let properties = url.flatMap { CGImageSourceCreateWithURL($0 as CFURL, nil) }
+    /// 读取（解密）原图并取其 DPI；读不到时按 1 倍
+    static func read(_ image: ClipImageSource?) -> CGFloat {
+        let properties = image.flatMap { try? $0.data() }
+            .flatMap { CGImageSourceCreateWithData($0 as CFData, nil) }
             .flatMap { CGImageSourceCopyPropertiesAtIndex($0, 0, nil) as? [CFString: Any] }
         let dpi = (properties?[kCGImagePropertyDPIWidth] as? NSNumber)?.doubleValue
         return HistoryImageFrame.scale(dpi: dpi)

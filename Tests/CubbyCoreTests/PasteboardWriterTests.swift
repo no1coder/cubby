@@ -11,7 +11,7 @@ struct PasteboardWriterTests {
     @Test("写入文本：内容可读回，带自身标记且应被监听忽略")
     func writesText() throws {
         try withTemporaryPasteboard { pasteboard in
-            try PasteboardWriter.write(Fixtures.text("hello 📋"), imageURL: nil, to: pasteboard)
+            try PasteboardWriter.write(Fixtures.text("hello 📋"), imageData: nil, to: pasteboard)
 
             #expect(pasteboard.string(forType: .string) == "hello 📋")
             #expect(types(of: pasteboard).contains(PasteboardReader.markerType))
@@ -24,21 +24,17 @@ struct PasteboardWriterTests {
     func writeReplacesExistingContent() throws {
         try withTemporaryPasteboard { pasteboard in
             pasteboard.setData(ImageFixtures.png(width: 1, height: 1), forType: .png)
-            try PasteboardWriter.write(Fixtures.text("new"), imageURL: nil, to: pasteboard)
+            try PasteboardWriter.write(Fixtures.text("new"), imageData: nil, to: pasteboard)
             #expect(!types(of: pasteboard).contains(.png))
         }
     }
 
     @Test("写入图片：同时提供 PNG 与 TIFF，并带标记")
     func writesImage() throws {
-        let dir = try TempDirectory.make()
-        defer { TempDirectory.remove(dir) }
         let png = ImageFixtures.png(width: 3, height: 2)
-        let url = dir.appendingPathComponent("img.png")
-        try png.write(to: url)
 
         try withTemporaryPasteboard { pasteboard in
-            try PasteboardWriter.write(Fixtures.image(name: "img.png"), imageURL: url, to: pasteboard)
+            try PasteboardWriter.write(Fixtures.image(name: "img.png"), imageData: png, to: pasteboard)
 
             #expect(pasteboard.data(forType: .png) == png)
             let tiff = try #require(pasteboard.data(forType: .tiff))
@@ -47,19 +43,15 @@ struct PasteboardWriterTests {
         }
     }
 
-    @Test("图片 URL 为 nil、不存在或内容无效时抛 imageUnavailable，且不清空剪贴板")
+    @Test("图片数据为 nil（读不到）或内容无效时抛 imageUnavailable，且不清空剪贴板")
     func imageUnavailable() throws {
-        let dir = try TempDirectory.make()
-        defer { TempDirectory.remove(dir) }
-        let invalid = dir.appendingPathComponent("broken.png")
-        try Data("not png".utf8).write(to: invalid)
-        let candidates: [URL?] = [nil, dir.appendingPathComponent("missing.png"), invalid]
+        let candidates: [Data?] = [nil, Data("not png".utf8)]
 
         for candidate in candidates {
             withTemporaryPasteboard { pasteboard in
                 pasteboard.setString("previous", forType: .string)
                 #expect(throws: PasteboardWriteError.imageUnavailable) {
-                    try PasteboardWriter.write(Fixtures.image(name: "x.png"), imageURL: candidate, to: pasteboard)
+                    try PasteboardWriter.write(Fixtures.image(name: "x.png"), imageData: candidate, to: pasteboard)
                 }
                 #expect(pasteboard.string(forType: .string) == "previous")
             }
@@ -76,7 +68,7 @@ struct PasteboardWriterTests {
         let item = Fixtures.files([existing.path, missing.path])
 
         try withTemporaryPasteboard { pasteboard in
-            try PasteboardWriter.write(item, imageURL: nil, to: pasteboard)
+            try PasteboardWriter.write(item, imageData: nil, to: pasteboard)
 
             guard case .files(let urls) = PasteboardReader.read(from: pasteboard) else {
                 Issue.record("应写入文件")
@@ -99,7 +91,7 @@ struct PasteboardWriterTests {
         }
 
         try withTemporaryPasteboard { pasteboard in
-            try PasteboardWriter.write(Fixtures.files(urls.map(\.path)), imageURL: nil, to: pasteboard)
+            try PasteboardWriter.write(Fixtures.files(urls.map(\.path)), imageData: nil, to: pasteboard)
             guard case .files(let read) = PasteboardReader.read(from: pasteboard) else {
                 Issue.record("应写入文件")
                 return
@@ -118,7 +110,7 @@ struct PasteboardWriterTests {
         withTemporaryPasteboard { pasteboard in
             pasteboard.setString("previous", forType: .string)
             #expect(throws: PasteboardWriteError.filesMissing) {
-                try PasteboardWriter.write(item, imageURL: nil, to: pasteboard)
+                try PasteboardWriter.write(item, imageData: nil, to: pasteboard)
             }
             #expect(pasteboard.string(forType: .string) == "previous")
         }
@@ -128,7 +120,7 @@ struct PasteboardWriterTests {
     func emptyFileList() {
         withTemporaryPasteboard { pasteboard in
             #expect(throws: PasteboardWriteError.filesMissing) {
-                try PasteboardWriter.write(Fixtures.files([]), imageURL: nil, to: pasteboard)
+                try PasteboardWriter.write(Fixtures.files([]), imageData: nil, to: pasteboard)
             }
         }
     }

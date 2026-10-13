@@ -110,11 +110,12 @@ extension ClipTranslationService {
         let target = plan.languages.target
         let cached = cachedTranslation(of: item, target: target, engine: engine)
         try Self.checkCachePromise(plan, cached: cached)
-        if let entry = cached, let url = store.translatedImageURL(for: entry) {
-            emit(.finished(imageResult(entry.plainText, url: url, engine: engine, fromCache: true)))
+        if let entry = cached, let image = store.translatedImageSource(for: entry) {
+            emit(.finished(imageResult(entry.plainText, image: image, engine: engine, fromCache: true)))
             return
         }
-        guard let url = store.imageURL(for: item), let source = await ClipImageTranslation.load(url) else {
+        guard let original = store.imageSource(for: item), let source = await ClipImageTranslation.load(original)
+        else {
             throw TranslationFailure.invalidResponse
         }
         let blocks = try await recognize(source)
@@ -122,7 +123,7 @@ extension ClipTranslationService {
         try Task.checkCancellation()
         guard !candidates.isEmpty else {
             // 没有可翻译的文字：空结果、不缓存（面板显示「没有可翻译的文字」）
-            emit(.finished(imageResult("", url: nil, engine: engine, fromCache: false)))
+            emit(.finished(imageResult("", image: nil, engine: engine, fromCache: false)))
             return
         }
         let placed = try await streamBlocks(candidates, engine: engine, languages: plan.languages, source: source) {
@@ -133,27 +134,27 @@ extension ClipTranslationService {
             target: target, source: plan.languages.source, engineName: engine.displayName,
             isOnDevice: !engine.sendsTextOffDevice, createdAt: Date(), segmentation: ClipTextSegmenter.version,
             segments: ClipTranslatedImage.segments(blockIDs: blocks.map(\.id), translations: placed.mapValues(\.text)))
-        let imageURL = try await storeImage(source, blocks: Array(placed.values), entry: entry, for: item.id)
-        emit(.finished(imageResult(entry.plainText, url: imageURL, engine: engine, fromCache: false)))
+        let image = try await storeImage(source, blocks: Array(placed.values), entry: entry, for: item.id)
+        emit(.finished(imageResult(entry.plainText, image: image, engine: engine, fromCache: false)))
     }
 
-    /// 渲染整图并写入缓存，返回译后 PNG 在图片目录中的地址。译后图片只存在于缓存里（不写临时文件）：
+    /// 渲染整图并写入缓存，返回译后 PNG 的数据来源。译后图片只存在于缓存里（不写临时文件）：
     /// 缓存失败（条目已删除、写盘失败）时按失败结束，什么都不留下
     private func storeImage(
         _ source: ClipImageTranslation.Source, blocks: [TranslatedBlock], entry: ClipTranslation, for id: UUID
-    ) async throws -> URL {
+    ) async throws -> ClipImageSource {
         guard let png = await ClipImageTranslation.render(source, blocks: blocks) else {
             throw TranslationFailure.invalidResponse
         }
         try Task.checkCancellation()
         guard let stored = await store.setTranslation(entry, imagePNG: png, for: id),
-            let url = store.translatedImageURL(for: stored)
+            let image = store.translatedImageSource(for: stored)
         else {
             logger.error("Caching the translated image failed")
             throw TranslationFailure.invalidResponse
         }
         try Task.checkCancellation()
-        return url
+        return image
     }
 
     /// 识别图中文字；识别出错按没有文字处理（与截图翻译一致，日志只记错误码），取消照常抛出
@@ -186,9 +187,11 @@ extension ClipTranslationService {
         return placed
     }
 
-    private func imageResult(_ text: String, url: URL?, engine: ClipEngine, fromCache: Bool) -> ClipTranslationResult {
+    private func imageResult(
+        _ text: String, image: ClipImageSource?, engine: ClipEngine, fromCache: Bool
+    ) -> ClipTranslationResult {
         ClipTranslationResult(
-            plainText: text, richText: nil, imageURL: url, engineName: engine.displayName,
+            plainText: text, richText: nil, image: image, engineName: engine.displayName,
             isOnDevice: !engine.sendsTextOffDevice, fromCache: fromCache)
     }
 

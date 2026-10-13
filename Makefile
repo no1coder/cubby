@@ -3,7 +3,7 @@ APP := build/Cubby.app
 RELEASE_FLAGS ?=
 FORMAT_PATHS := Sources Tests
 
-.PHONY: build test e2e e2e-panel app run install clean lint format check-cjk strings check-strings coverage dmg release
+.PHONY: build test e2e e2e-panel app run install clean lint format check-cjk strings check-strings coverage dmg release check-release-key
 
 # 调试构建
 build:
@@ -60,6 +60,10 @@ strings:
 # 只检查不写回：catalog 与源码不一致或缺少翻译时失败（CI 使用）
 check-strings:
 	./scripts/sync-strings.sh --check
+
+# E3b：Release 二进制中不得含 DEBUG 专用的测试密钥来源（构建 Release 后检查符号与字符串）
+check-release-key:
+	./scripts/check-release-test-key.sh
 
 # 运行测试并检查 CubbyCore 行覆盖率（门槛 COVERAGE_MIN，默认 95）
 coverage:

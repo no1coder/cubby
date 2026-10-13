@@ -7,7 +7,7 @@ import CubbyCore
 extension ScreenshotCoordinator {
     func startHistoryEditDemo(annotated: Bool) {
         guard let screen = NSScreen.main ?? NSScreen.screens.first,
-            let url = HistoryEditDemoImage.write()
+            let png = HistoryEditDemoImage.png()
         else {
             logger.error("History edit demo: couldn't create the demo image")
             return
@@ -16,13 +16,13 @@ extension ScreenshotCoordinator {
             kind: .image,
             payload: .image(
                 ImageRef(
-                    name: url.lastPathComponent, width: HistoryEditDemoImage.width, height: HistoryEditDemoImage.height)
+                    name: "history-edit-demo", width: HistoryEditDemoImage.width, height: HistoryEditDemoImage.height)
             ),
             source: SourceApp(bundleID: "com.apple.iWork.Keynote", name: "Keynote"),
             createdAt: Date().addingTimeInterval(-26 * 60),
             contentHash: "history-edit-demo"
         )
-        let started = editHistoryImage(item, imageURL: url, on: screen) { [logger] result in
+        let started = editHistoryImage(item, imageData: png, on: screen) { [logger] result in
             logger.notice("History edit demo finished: \(String(describing: result), privacy: .public)")
         }
         guard started, annotated, let edit = historyEdit,
@@ -38,17 +38,9 @@ private enum HistoryEditDemoImage {
     static let width = 1600
     static let height = 1000
 
-    /// 写到临时目录（每次覆盖）；DPI 144，与 Retina 截图一致
-    static func write() -> URL? {
-        guard let image = draw() else { return nil }
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("cubby-edit-history-demo.png")
-        guard let png = ScreenshotExporter.pngData(image, scale: 2) else { return nil }
-        do {
-            try png.write(to: url, options: .atomic)
-            return url
-        } catch {
-            return nil
-        }
+    /// 演示图片的 PNG（只在内存中）；DPI 144，与 Retina 截图一致
+    static func png() -> Data? {
+        draw().flatMap { ScreenshotExporter.pngData($0, scale: 2) }
     }
 
     private static func draw() -> CGImage? {

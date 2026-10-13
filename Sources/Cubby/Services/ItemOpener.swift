@@ -1,7 +1,7 @@
 import AppKit
 import CubbyCore
 
-/// 打开条目：链接用浏览器、文件用默认应用、图片用预览
+/// 打开条目：链接用浏览器、文件用默认应用、图片用预览（图片先解密成临时副本，见 SharedFiles，E9）
 @MainActor
 enum ItemOpener {
     /// 仅允许打开 http/https 链接，防止被篡改的历史文件借助自定义 scheme 执行动作
@@ -9,14 +9,15 @@ enum ItemOpener {
 
     /// 返回是否成功打开
     @discardableResult
-    static func open(_ item: ClipItem, imageURL: URL?) -> Bool {
+    /// - Parameter imageFile: 图片条目才调用：生成交给预览的临时副本
+    static func open(_ item: ClipItem, imageFile: () -> URL?) -> Bool {
         switch item.payload {
         case .text(let text):
             guard item.kind == .link, let url = safeWebURL(text) else { return false }
             return NSWorkspace.shared.open(url)
         case .image:
-            guard let imageURL else { return false }
-            return NSWorkspace.shared.open(imageURL)
+            guard let file = imageFile() else { return false }
+            return NSWorkspace.shared.open(file)
         case .files(let paths):
             let urls = paths.map { URL(fileURLWithPath: $0) }
                 .filter { FileManager.default.fileExists(atPath: $0.path) }

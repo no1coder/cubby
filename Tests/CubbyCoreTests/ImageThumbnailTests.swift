@@ -39,14 +39,24 @@ struct ImageThumbnailTests {
         #expect(!ImageThumbnail.isNeeded(width: 64, height: 64))
     }
 
-    @Test("文件名由原图名推出：<摘要>.thumb，是合法的 blob 名")
-    func nameIsDerivedFromImageName() {
-        let name = ImageThumbnail.name(forImage: "abc123.png")
+    @Test("明文时代的文件名由原图名推出：<摘要>.thumb，是合法的 blob 名（迁移时据此找到旧缩略图）")
+    func legacyNameIsDerivedFromImageName() {
+        let name = ImageThumbnail.legacyName(forImage: "abc123.png")
         #expect(name == "abc123.thumb")
         #expect(BlobStore.isValidName(name))
-        #expect(ImageThumbnail.name(forImage: "noext") == "noext.thumb")
-        let url = ImageThumbnail.url(forImageAt: URL(fileURLWithPath: "/tmp/Images/abc123.png"))
-        #expect(url.path == "/tmp/Images/abc123.thumb")
+        #expect(ImageThumbnail.legacyName(forImage: "noext") == "noext.thumb")
+    }
+
+    @Test("加密存储中的缩略图名：由原图名推出的另一个 HMAC，没有 .thumb 后缀，合法且与原图名不同")
+    func encryptedNameIsDerivedFromImageName() throws {
+        let blobs = EncryptedBlobStore(directory: URL(fileURLWithPath: "/unused"), keys: try VaultFixtures.keys())
+        let image = blobs.name(kind: .image, contentHash: "abc123")
+        let thumbnail = blobs.thumbnailName(forImage: image)
+        #expect(thumbnail != image)
+        #expect(!thumbnail.contains("."))
+        #expect(thumbnail.count == 64)
+        #expect(EncryptedBlobStore.isValidName(thumbnail))
+        #expect(blobs.thumbnailName(forImage: image) == thumbnail)
     }
 
     // MARK: - 生成
@@ -106,65 +116,60 @@ struct ImageThumbnailTests {
         #expect(ImageThumbnail.make(fromImageData: Data("not an image".utf8), width: 5000, height: 3000) == nil)
     }
 
-    @Test("从文件生成：结果与从数据生成相同的尺寸与格式")
-    func makesFromFile() throws {
-        let dir = try TempDirectory.make()
-        defer { TempDirectory.remove(dir) }
-        let url = dir.appendingPathComponent("a.png")
-        try LargeImageFixtures.png(width: 2560, height: 1440).write(to: url)
-
-        let data = try #require(ImageThumbnail.make(fromImageAt: url, width: 2560, height: 1440))
+    @Test("从原图数据生成：JPEG、长边 720")
+    func makesFromImageData() throws {
+        let png = LargeImageFixtures.png(width: 2560, height: 1440)
+        let data = try #require(ImageThumbnail.make(fromImageData: png, width: 2560, height: 1440))
         #expect(data.starts(with: LargeImageFixtures.jpegSignature))
         #expect(LargeImageFixtures.info(of: data)?.width == 720)
-        let missing = dir.appendingPathComponent("missing.png")
-        #expect(ImageThumbnail.make(fromImageAt: missing, width: 2560, height: 1440) == nil)
     }
 
     // MARK: - 读取
 
     @Test("读取：缩略图存在且不小于请求尺寸时解码缩略图，否则返回 nil（调用方退回原图）")
     func decodeUsesThumbnailOnlyWhenLargeEnough() throws {
-        let dir = try TempDirectory.make()
-        defer { TempDirectory.remove(dir) }
-        let imageURL = dir.appendingPathComponent("big.png")
+        let blobs = InMemoryClipBlobStore()
         let png = LargeImageFixtures.png(width: 2400, height: 1350)
-        try png.write(to: imageURL)
+        let name = blobs.name(kind: .image, contentHash: "big")
+        try blobs.write(png, name: name)
+        let source = ClipImageSource(name: name, blobs: blobs, hasThumbnail: true)
 
-        #expect(ImageThumbnail.decode(forImageAt: imageURL, maxPixelSize: 720) == nil)
+        #expect(ImageThumbnail.decode(thumbnailOf: source, maxPixelSize: 720) == nil)
 
         let thumbnail = try #require(ImageThumbnail.make(fromImageData: png, width: 2400, height: 1350))
-        try thumbnail.write(to: ImageThumbnail.url(forImageAt: imageURL))
+        try blobs.write(thumbnail, name: blobs.thumbnailName(forImage: name))
 
-        let decoded = try #require(ImageThumbnail.decode(forImageAt: imageURL, maxPixelSize: 720))
+        let decoded = try #require(ImageThumbnail.decode(thumbnailOf: source, maxPixelSize: 720))
         #expect(decoded.width == 720 && decoded.height == 405)
-        let smaller = try #require(ImageThumbnail.decode(forImageAt: imageURL, maxPixelSize: 360))
+        let smaller = try #require(ImageThumbnail.decode(thumbnailOf: source, maxPixelSize: 360))
         #expect(smaller.width == 360)
         // 预览面板请求 1600px：缩略图不够大
-        #expect(ImageThumbnail.decode(forImageAt: imageURL, maxPixelSize: 1600) == nil)
+        #expect(ImageThumbnail.decode(thumbnailOf: source, maxPixelSize: 1600) == nil)
+        // 来源声明没有缩略图（小图、译后图）时不读缩略图
+        let without = ClipImageSource(name: name, blobs: blobs, hasThumbnail: false)
+        #expect(ImageThumbnail.decode(thumbnailOf: without, maxPixelSize: 720) == nil)
     }
 
     @Test("读取：竖长图的缩略图（长边 2048）只服务卡片请求，预览面板的 1600px 请求退回原图")
     func tallThumbnailDoesNotServePreview() throws {
-        let dir = try TempDirectory.make()
-        defer { TempDirectory.remove(dir) }
-        let imageURL = dir.appendingPathComponent("tall.png")
         let png = LargeImageFixtures.png(width: 1000, height: 3000)
-        try png.write(to: imageURL)
         let thumbnail = try #require(ImageThumbnail.make(fromImageData: png, width: 1000, height: 3000))
-        try thumbnail.write(to: ImageThumbnail.url(forImageAt: imageURL))
 
-        let card = try #require(ImageThumbnail.decode(forImageAt: imageURL, maxPixelSize: 2048))
+        let card = try #require(ImageThumbnail.decode(thumbnailData: thumbnail, maxPixelSize: 2048))
         #expect(card.height == 2048)
-        #expect(ImageThumbnail.decode(forImageAt: imageURL, maxPixelSize: 1600) == nil)
-        #expect(ImageThumbnail.decode(forImageAt: imageURL, maxPixelSize: 720)?.height == 720)
+        #expect(ImageThumbnail.decode(thumbnailData: thumbnail, maxPixelSize: 1600) == nil)
+        #expect(ImageThumbnail.decode(thumbnailData: thumbnail, maxPixelSize: 720)?.height == 720)
     }
 
-    @Test("读取：缩略图文件损坏时返回 nil")
-    func decodeIgnoresCorruptThumbnail() throws {
-        let dir = try TempDirectory.make()
-        defer { TempDirectory.remove(dir) }
-        let imageURL = dir.appendingPathComponent("big.png")
-        try Data("garbage".utf8).write(to: ImageThumbnail.url(forImageAt: imageURL))
-        #expect(ImageThumbnail.decode(forImageAt: imageURL, maxPixelSize: 720) == nil)
+    @Test("读取：缩略图数据损坏时返回 nil")
+    func decodeIgnoresCorruptThumbnail() {
+        #expect(ImageThumbnail.decode(thumbnailData: Data("garbage".utf8), maxPixelSize: 720) == nil)
+    }
+
+    @Test("解码任意图片数据：按最长边缩小；不是图片时为 nil")
+    func decodesImageData() {
+        let png = LargeImageFixtures.png(width: 2400, height: 1350)
+        #expect(ImageThumbnail.decode(imageData: png, maxPixelSize: 1600)?.width == 1600)
+        #expect(ImageThumbnail.decode(imageData: Data("garbage".utf8), maxPixelSize: 1600) == nil)
     }
 }

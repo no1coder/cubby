@@ -74,6 +74,10 @@ jobs:
       - name: Build release (universal)
         run: swift build -c release --arch arm64 --arch x86_64
 
+      # E3b：DEBUG 专用的测试密钥来源不得进入 Release 二进制
+      - name: Check release has no test key source
+        run: ./scripts/check-release-test-key.sh "$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)/Cubby"
+
       # 先单独构建（调试 + 覆盖率插桩），下一步只剩运行测试，看门狗的「无输出」判定不受编译耗时影响
       - name: Build tests (debug, code coverage)
         run: swift build --build-tests --enable-code-coverage

@@ -24,9 +24,9 @@ public extension PasteboardWriter {
         pasteboard.setData(Data(), forType: PasteboardReader.markerType)
     }
 
-    /// 译后图片（带 DPI 的 PNG 文件）：PNG + 按需 TIFF；文件缺失或不是 PNG 时抛 imageUnavailable，且不改动剪贴板
-    static func write(pngAt url: URL, to pasteboard: NSPasteboard) throws {
-        guard let png = try? Data(contentsOf: url) else { throw PasteboardWriteError.imageUnavailable }
+    /// 译后图片（带 DPI 的 PNG）：PNG + 按需 TIFF；读不到或不是 PNG 时抛 imageUnavailable，且不改动剪贴板
+    static func write(translatedImage image: ClipImageSource, to pasteboard: NSPasteboard) throws {
+        guard let png = try? image.data() else { throw PasteboardWriteError.imageUnavailable }
         try ScreenshotPasteboard.write(png: png, to: pasteboard)
     }
 }

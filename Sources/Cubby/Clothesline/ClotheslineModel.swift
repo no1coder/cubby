@@ -8,7 +8,7 @@ import Observation
 final class ClotheslineModel {
     struct Entry: Identifiable, Equatable {
         let item: ClipItem
-        let imageURL: URL?
+        let imageSource: ClipImageSource?
 
         var id: UUID {
             item.id

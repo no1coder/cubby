@@ -5,7 +5,7 @@ import CubbyCore
 // 外部的剪贴板变化在入历史的过滤之前交给守护；Cubby 自己的写入由面板在写入时直接告知，监听器看到带写入标记的变化时再补一次
 extension AppDelegate {
     func makeAddressGuard() -> AddressGuardController {
-        let controller = AddressGuardController(settings: settings, store: Self.securityLogStore)
+        let controller = AddressGuardController(settings: settings)
         controller.writeToPasteboard = { text in
             guard (try? PasteboardWriter.write(text: text, to: .general)) != nil else { return false }
             OwnPasteboardWrites.record(.general)
@@ -17,12 +17,12 @@ extension AppDelegate {
         return controller
     }
 
-    /// 安全记录写在数据目录下。调试走查只用内存，带演示历史时读写 CUBBY_DATA_DIR 里的演示记录
-    private static var securityLogStore: SecurityLogStore? {
+    /// Vault 就绪后接上加密的安全记录。调试走查只用内存，带演示历史时读写 CUBBY_DATA_DIR 里的演示记录
+    func attachSecurityLog(keys: HistoryKeys) {
         #if DEBUG
-        if CommandLine.arguments.contains("--scenario"), !DesignDemoHistory.isRequested { return nil }
+        if CommandLine.arguments.contains("--scenario"), !DesignDemoHistory.isRequested { return }
         #endif
-        return SecurityLogStore(directory: AppPaths.root)
+        addressGuard?.attach(SecurityLogStore(dataDirectory: AppPaths.root, vault: AppPaths.vault, keys: keys))
     }
 
     func makeTamperAlert(settingsWindow: SettingsWindowController) -> TamperAlertController {

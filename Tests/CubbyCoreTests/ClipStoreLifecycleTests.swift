@@ -7,7 +7,9 @@ import Testing
 @MainActor
 struct ClipStoreLifecycleTests {
     private func makeStore(storage: InMemoryHistoryStorage, blobDir: URL, limit: Int = 10) -> ClipStore {
-        ClipStore(storage: storage, blobs: BlobStore(directory: blobDir), limit: limit, now: { Fixtures.baseDate })
+        ClipStore(
+            storage: storage, blobs: PlainDirectoryBlobStore(directory: blobDir), limit: limit,
+            now: { Fixtures.baseDate })
     }
 
     private func writeBlob(_ name: String, in dir: URL) throws {

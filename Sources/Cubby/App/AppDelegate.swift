@@ -12,6 +12,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "App")
 
     var store: ClipStore?
+    /// 加密 Vault 的准备与状态（见 AppDelegate+Vault）
+    var vault: VaultCoordinator?
     var monitor: ClipboardMonitor?
     var panel: PanelController?
     var statusBar: StatusBarController?
@@ -31,7 +33,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// 屏幕顶部的晾衣绳（第 6 步）
     var clothesline: ClotheslineController?
     /// 历史图片的本机文字识别（按图中文字搜索）
-    private var imageTextIndexer: ImageTextIndexer?
+    var imageTextIndexer: ImageTextIndexer?
     /// 各动作最近一次注册成功的快捷键，新快捷键被占用时回退到它
     var lastWorkingHotKeys: [HotKeyAction: HotKey] = [:]
     /// 截图翻译的 API Key 存储（设置页与翻译服务共用）
@@ -48,6 +50,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         DebugInputLock.installIfRequested()
         #endif
         AppPaths.prepare()
+        SharedFiles.removeLeftovers()
         AppearanceApplier.apply(settings.appearance)
         #if DEBUG
         // 剪贴板翻译演示：在创建存储之前写入演示历史（只写 CUBBY_DATA_DIR，没设置时不写、也不运行演示）
@@ -106,8 +109,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         #endif
         observeSettings()
         observeAddressGuard()
-        imageTextIndexer?.start()
-        store?.backfillThumbnails()
+        // 文字识别与缩略图回填在 Vault 就绪、切换为加密存储之后才开始（见 vaultDidBecomeReady）
+        vault?.start()
         // 更新提醒：升级后清除记住的版本、到期就查，之后每小时与唤醒时再判断（docs/UPDATE-REMINDER-DESIGN.md U1）
         updates.start()
         logger.info(
@@ -120,17 +123,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if !settings.hasCompletedOnboarding, !CommandLine.arguments.contains("--scenario") {
             showOnboarding()
         } else {
-            handleLaunchArguments(panel: panel)
+            // 走查与 --show-panel 要看到解密后的历史：等 Vault 准备完（就绪或锁定）再处理
+            Task { @MainActor [weak self] in
+                await self?.vault?.waitUntilSettled()
+                self?.handleLaunchArguments(panel: panel)
+            }
         }
     }
 
     /// 创建并连接各模块，返回面板控制器
     private func makeComponents() -> PanelController {
-        let store = ClipStore(
-            storage: JSONHistoryStorage(fileURL: AppPaths.historyFile),
-            blobs: BlobStore(directory: AppPaths.imagesDirectory),
-            limit: settings.historyLimit
-        )
+        let store = makeStoreAndVault()
         #if DEBUG
         // 演示脚本只写私有剪贴板
         let panel = PanelController(store: store, settings: settings, pasteboard: DemoPasteboard.output)
@@ -382,6 +385,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         imageTextIndexer?.stop()
         store?.discardUndo()
         store?.flush()
+        // 拖出 / 用预览打开时解密出的临时副本（E9）
+        SharedFiles.removeLeftovers()
     }
 
     // MARK: - 剪贴板

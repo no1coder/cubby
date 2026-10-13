@@ -114,7 +114,7 @@ enum StoreFactory {
         limit: Int = 10,
         now: @escaping () -> Date = { Fixtures.baseDate }
     ) -> ClipStore {
-        ClipStore(storage: storage, blobs: BlobStore(directory: dir), limit: limit, now: now)
+        ClipStore(storage: storage, blobs: PlainDirectoryBlobStore(directory: dir), limit: limit, now: now)
     }
 }
 

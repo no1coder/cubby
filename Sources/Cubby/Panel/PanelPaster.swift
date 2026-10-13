@@ -39,7 +39,7 @@ final class PanelPaster {
         let format = mode == .alternate ? settings.pasteFormat.alternate : settings.pasteFormat
         let formats = format == .original ? store.formats(for: item) : [:]
         do {
-            try PasteboardWriter.write(item, imageURL: store.imageURL(for: item), formats: formats, to: pasteboard)
+            try PasteboardWriter.write(item, imageData: store.imageData(for: item), formats: formats, to: pasteboard)
             OwnPasteboardWrites.record(pasteboard)
             return nil
         } catch {
@@ -52,8 +52,8 @@ final class PanelPaster {
     func write(_ request: TranslationPasteRequest) -> Bool {
         let result = request.result
         do {
-            if let imageURL = result.imageURL {
-                try PasteboardWriter.write(pngAt: imageURL, to: pasteboard)
+            if let image = result.image {
+                try PasteboardWriter.write(translatedImage: image, to: pasteboard)
             } else if let rich = result.richText, writesRichText(request.style) {
                 try PasteboardWriter.write(richText: rich, plainText: result.plainText, to: pasteboard)
             } else {

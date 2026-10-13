@@ -91,11 +91,9 @@ final class E2EWorld {
         settings.screenshotSaveDirectory = saveDirectory
         settings.isPaused = options.isPaused
         settings.asksWhereToSaveScreenshots = options.asksWhereToSave
-        store = ClipStore(
-            storage: JSONHistoryStorage(fileURL: directory.appendingPathComponent("history.json")),
-            blobs: BlobStore(directory: directory.appendingPathComponent("Images", isDirectory: true)),
-            limit: AppSettings.defaultHistoryLimit
-        )
+        // 随机临时密钥的加密存储：与正式版同一条存储路径，不碰钥匙串（E3b）
+        let vault = DebugHistoryKey.vaultStores(in: directory)
+        store = ClipStore(storage: vault.storage, blobs: vault.blobs, limit: AppSettings.defaultHistoryLimit)
         pins = PinnedImageController(settings: settings, pasteboard: pasteboard, savePrompt: savePrompt)
         translationProvider = options.translation.map { E2ETranslationProvider(script: $0.script) }
         stubRecognizer = options.translation?.recognizer == .stub ? E2EStubRecognizer() : nil

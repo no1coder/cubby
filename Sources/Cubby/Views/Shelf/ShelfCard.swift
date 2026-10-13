@@ -9,7 +9,7 @@ struct ShelfCard: View {
     let index: Int
     let isSelected: Bool
     let keywords: [String]
-    let imageURL: URL?
+    let imageSource: ClipImageSource?
     var translation: CardTranslationDecoration?
     var isOnClothesline = false
     /// ⌥↩ 行内问题上的按钮
@@ -66,13 +66,13 @@ struct ShelfCard: View {
     @ViewBuilder
     private func content(style: CardStyle, palette: CardPalette) -> some View {
         if let peek = translation?.peek {
-            PeekContent(peek: peek, item: item, imageURL: imageURL)
+            PeekContent(peek: peek, item: item, imageSource: imageSource)
                 .padding(ShelfMetrics.contentPadding)
                 .e2eAnchor("list.peek.\(item.id)")
         } else if let security {
             ShelfSecurityBody(marker: security, item: item, palette: palette, onDetails: onShowDetails)
         } else {
-            ShelfCardBody(item: item, style: style, palette: palette, keywords: keywords, imageURL: imageURL)
+            ShelfCardBody(item: item, style: style, palette: palette, keywords: keywords, imageSource: imageSource)
                 .overlay(alignment: .topTrailing) { if isOnClothesline { ClotheslineBadge() } }
         }
     }

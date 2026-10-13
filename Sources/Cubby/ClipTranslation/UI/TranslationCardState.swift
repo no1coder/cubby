@@ -260,7 +260,7 @@ struct TranslationPasteRequest: Sendable {
 extension ClipTranslationResult {
     /// 没有任何可用的译文（例如图片里没有可翻译的文字）：不粘贴、不复制
     var isEmpty: Bool {
-        imageURL == nil && plainText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        image == nil && plainText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
 

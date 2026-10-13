@@ -64,7 +64,7 @@ enum ClipTextTranslation {
             index: 0, original: AttributedString(document.plainText(translations: [], markup: false)),
             isTranslatable: true)
         let result = ClipTranslationResult(
-            plainText: entry.plainText, richText: nil, imageURL: nil, engineName: entry.engineName,
+            plainText: entry.plainText, richText: nil, image: nil, engineName: entry.engineName,
             isOnDevice: entry.isOnDevice, fromCache: true)
         return [
             .started(segments: [original]), .segment(index: 0, translation: AttributedString(entry.plainText)),
@@ -109,7 +109,7 @@ enum ClipTextTranslation {
     ) -> ClipTranslationResult {
         ClipTranslationResult(
             plainText: document.plainText(translations: translations, markup: markup),
-            richText: document.richText(translations: translations, markup: markup), imageURL: nil,
+            richText: document.richText(translations: translations, markup: markup), image: nil,
             engineName: engineName, isOnDevice: isOnDevice, fromCache: fromCache)
     }
 }

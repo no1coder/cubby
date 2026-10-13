@@ -27,7 +27,11 @@ struct ClotheslinePhotoView: View {
             .animation(Motion.animation(.easeOut(duration: Motion.fade), reduceMotion: reduceMotion), value: isHovered)
             // 双击优先；单击要等双击判定超时才执行（ExclusiveGesture 先等前一个手势失败）
             .gesture(TapGesture(count: 2).onEnded(onCopy).exclusively(before: TapGesture().onEnded(onEdit)))
-            .onDrag { DragProvider.provider(for: entry.item, imageURL: entry.imageURL) }
+            .onDrag {
+                DragProvider.provider(for: entry.item) {
+                    SharedFiles.exportImage(entry.item, source: entry.imageSource)
+                }
+            }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(accessibilityLabel)
             .accessibilityAddTraits(.isButton)
@@ -43,7 +47,7 @@ struct ClotheslinePhotoView: View {
             .fill(Color(red: 0.98, green: 0.97, blue: 0.95))
             .frame(width: photo.frame.width, height: photo.frame.height)
             .overlay(alignment: .topLeading) {
-                AsyncThumbnail(url: entry.imageURL, maxPixelSize: ImageThumbnail.pixelSize, contentMode: .fill)
+                AsyncThumbnail(source: entry.imageSource, maxPixelSize: ImageThumbnail.pixelSize, contentMode: .fill)
                     .frame(width: photo.imageFrame.width, height: photo.imageFrame.height)
                     .clipped()
                     .offset(x: photo.imageFrame.minX, y: photo.imageFrame.minY)

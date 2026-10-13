@@ -73,20 +73,20 @@ struct AppIconView: View {
     }
 }
 
-/// 异步加载的缩略图：命中缓存时同步显示，否则后台解码。
-/// 解码请求属于视图的 .task：视图消失（快速滚过的卡片）或 url 变化时，排队中的解码随之取消
+/// 异步加载的缩略图：命中缓存时同步显示，否则后台读取（解密）并解码。
+/// 解码请求属于视图的 .task：视图消失（快速滚过的卡片）或图片变化时，排队中的解码随之取消
 struct AsyncThumbnail: View {
-    let url: URL?
+    let source: ClipImageSource?
     let maxPixelSize: Int
     var contentMode: ContentMode = .fit
 
-    /// 已加载的图及其来源 url：url 变化后不沿用旧图
-    @State private var loaded: (url: URL, image: NSImage)?
+    /// 已加载的图及其来源：来源变化后不沿用旧图
+    @State private var loaded: (source: ClipImageSource, image: NSImage)?
 
     var body: some View {
         let image =
-            loaded.flatMap { $0.url == url ? $0.image : nil }
-            ?? url.flatMap { ImageCache.shared.cachedThumbnail(for: $0, maxPixelSize: maxPixelSize) }
+            loaded.flatMap { $0.source == source ? $0.image : nil }
+            ?? source.flatMap { ImageCache.shared.cachedThumbnail(for: $0, maxPixelSize: maxPixelSize) }
         Group {
             if let image {
                 Image(nsImage: image)
@@ -97,17 +97,17 @@ struct AsyncThumbnail: View {
                 Rectangle().fill(Color.primary.opacity(0.05))
             }
         }
-        .task(id: url) {
-            guard let url, loaded?.url != url else { return }
+        .task(id: source) {
+            guard let source, loaded?.source != source else { return }
             // 命中缓存也记下：缓存在面板隐藏后被清空或被淘汰时，视图重算不会退回占位（.task 不会重跑）
-            if let cached = ImageCache.shared.cachedThumbnail(for: url, maxPixelSize: maxPixelSize) {
-                loaded = (url, cached)
+            if let cached = ImageCache.shared.cachedThumbnail(for: source, maxPixelSize: maxPixelSize) {
+                loaded = (source, cached)
                 return
             }
-            let thumbnail = await ImageCache.shared.thumbnail(for: url, maxPixelSize: maxPixelSize)
-            // 已被取消（视图消失或 url 已变）的请求不再写回状态
+            let thumbnail = await ImageCache.shared.thumbnail(for: source, maxPixelSize: maxPixelSize)
+            // 已被取消（视图消失或图片已变）的请求不再写回状态
             guard !Task.isCancelled, let thumbnail else { return }
-            loaded = (url, thumbnail)
+            loaded = (source, thumbnail)
         }
     }
 }

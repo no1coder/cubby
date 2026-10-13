@@ -17,8 +17,8 @@ enum ClipImageTranslation {
 
     /// 读取并解码原图（整图解码），包装成原点在 (0,0) 的合成屏幕；读不到或无法解码时为 nil
     @concurrent
-    static func load(_ url: URL) async -> Source? {
-        guard let data = try? Data(contentsOf: url), let decoded = HistoryImageFrame.decode(data) else {
+    static func load(_ image: ClipImageSource) async -> Source? {
+        guard let data = try? image.data(), let decoded = HistoryImageFrame.decode(data) else {
             return nil
         }
         let made = HistoryImageFrame.make(image: decoded.image, scale: HistoryImageFrame.scale(dpi: decoded.dpi))

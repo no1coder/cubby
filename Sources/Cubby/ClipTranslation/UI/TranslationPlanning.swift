@@ -9,8 +9,8 @@ struct ClipTranslationEnvironment {
     let item: (UUID) -> ClipItem?
     /// 面板呼出时的粘贴目标（「粘贴到 <App> 时总是译为此语言」按它记住）
     let pasteTarget: () -> PasteTarget?
-    /// 缓存里译后图片的文件（右键「复制译文」直接从缓存取）
-    let translatedImageURL: (ClipTranslation) -> URL?
+    /// 缓存里的译后图片（右键「复制译文」直接从缓存取）
+    let translatedImage: (ClipTranslation) -> ClipImageSource?
     let timings: TranslationTimings
     /// 两个 BCP-47 是否同一语言（「原文已是目标语言」、语言选单的原文语言与勾选）；与翻译服务同一判定
     var isSameLanguage: (String, String) -> Bool = ClipLanguageMatch.isSameLanguage
@@ -18,10 +18,10 @@ struct ClipTranslationEnvironment {
 
 /// 由缓存条目直接拼出结果（不经翻译服务）
 enum CachedTranslation {
-    static func result(for item: ClipItem, entry: ClipTranslation, imageURL: URL?) -> ClipTranslationResult {
+    static func result(for item: ClipItem, entry: ClipTranslation, image: ClipImageSource?) -> ClipTranslationResult {
         ClipTranslationResult(
             plainText: plainText(for: item, entry: entry), richText: nil,
-            imageURL: entry.imageName == nil ? nil : imageURL,
+            image: entry.imageName == nil ? nil : image,
             engineName: entry.engineName, isOnDevice: entry.isOnDevice, fromCache: true)
     }
 

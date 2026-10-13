@@ -184,7 +184,7 @@ enum PanelWarning: Hashable, Identifiable {
         case .accessibility: AccessibilityAuthorization.requestOrOpenSettings()
         case .accessibilityStale:
             if let open = Self.openPrivacySettings { open() } else { PasteService.openAccessibilitySettings() }
-        case .persistenceDisabled: ItemOpener.revealInFinder([AppPaths.historyFile.path])
+        case .persistenceDisabled: ItemOpener.revealInFinder([AppPaths.vault.historyURL.path])
         case .runningFromTemporaryLocation: ItemOpener.revealInFinder([Bundle.main.bundlePath])
         case .historyFromNewerVersion: Self.checkForUpdates?()
         case .historyRestored(let backupURL): ItemOpener.revealInFinder([backupURL.path])

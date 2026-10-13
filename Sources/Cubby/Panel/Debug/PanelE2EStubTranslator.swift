@@ -55,11 +55,10 @@ final class PanelE2EStubTranslator: ClipTranslating {
     private var cache: Set<String> = []
     private var remembered: [String: String] = [:]
     private var chosenTarget: String?
-    private let outputDirectory: URL
+    /// 译后图片的内存存储（不写文件）
+    private let translatedImages = InMemoryClipBlobStore()
 
-    init(outputDirectory: URL) {
-        self.outputDirectory = outputDirectory
-    }
+    init() {}
 
     // MARK: - ClipTranslating
 
@@ -262,13 +261,13 @@ final class PanelE2EStubTranslator: ClipTranslating {
                 if let streamFailure { throw streamFailure }
             }
         }
-        let url = try renderTranslatedImage(texts: texts, target: target)
+        let image = try renderTranslatedImage(texts: texts, target: target)
         continuation.yield(
-            .finished(result(plain: texts.joined(separator: "\n"), rich: nil, image: url, fromCache: plan.isCached)))
+            .finished(result(plain: texts.joined(separator: "\n"), rich: nil, image: image, fromCache: plan.isCached)))
     }
 
-    private func renderTranslatedImage(texts: [String], target: String) throws -> URL {
-        let url = outputDirectory.appendingPathComponent("translated-\(target).png")
+    /// 译后图片只放在桩自己的内存存储里（与真实服务一样不落明文文件）
+    private func renderTranslatedImage(texts: [String], target: String) throws -> ClipImageSource {
         guard let source = CGImageSourceCreateWithData(try PanelE2EFixtures.imagePNG() as CFData, nil),
             let image = CGImageSourceCreateImageAtIndex(source, 0, nil),
             let context = CGContext(
@@ -283,8 +282,10 @@ final class PanelE2EStubTranslator: ClipTranslating {
             targetPixelSize: CGSize(width: image.width, height: image.height), pixelatedFrame: nil, frameOrigin: .zero)
         TranslationPainter.draw(blocks, in: context, environment: environment)
         guard let rendered = context.makeImage() else { throw PanelE2EFixtures.FixtureError.drawingFailed }
-        try PanelE2EFixtures.png(rendered, scale: PanelE2EFixtures.imageScale).write(to: url)
-        return url
+        let png = try PanelE2EFixtures.png(rendered, scale: PanelE2EFixtures.imageScale)
+        let name = translatedImages.name(kind: .translatedImage, contentHash: ContentHasher.sha256(png))
+        try translatedImages.write(png, name: name)
+        return ClipImageSource(name: name, blobs: translatedImages)
     }
 
     /// 分段算法变了的缓存：原文整条为一段，译文整条一次到达，没有富文本
@@ -306,9 +307,11 @@ final class PanelE2EStubTranslator: ClipTranslating {
     /// 译文比原文略小（中文、日文在同样的框里更紧凑）
     private static let translatedFontScale: CGFloat = 0.9
 
-    private func result(plain: String, rich: AttributedString?, image: URL?, fromCache: Bool) -> ClipTranslationResult {
+    private func result(
+        plain: String, rich: AttributedString?, image: ClipImageSource?, fromCache: Bool
+    ) -> ClipTranslationResult {
         ClipTranslationResult(
-            plainText: plain, richText: rich, imageURL: image, engineName: engine.name,
+            plainText: plain, richText: rich, image: image, engineName: engine.name,
             isOnDevice: engine.isOnDevice, fromCache: fromCache)
     }
 

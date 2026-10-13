@@ -42,7 +42,7 @@ struct ImageGrid: View {
 
     private func cell(_ item: ClipItem, index: Int, isSelected: Bool, keywords: [String]) -> some View {
         ImageGridCell(
-            item: item, index: index, isSelected: isSelected, imageURL: viewModel.imageURL(for: item),
+            item: item, index: index, isSelected: isSelected, imageSource: viewModel.imageSource(for: item),
             translation: CardTranslationDecorations.make(for: item, keywords: keywords, viewModel: viewModel),
             isOnClothesline: viewModel.isOnClothesline(item),
             onInlineAction: { viewModel.translation?.inline.performAction() }
@@ -59,7 +59,7 @@ struct ImageGridCell: View {
     let item: ClipItem
     let index: Int
     let isSelected: Bool
-    let imageURL: URL?
+    let imageSource: ClipImageSource?
     var translation: CardTranslationDecoration?
     var isOnClothesline = false
     var onInlineAction: () -> Void = {}
@@ -94,14 +94,15 @@ struct ImageGridCell: View {
     @ViewBuilder
     private var thumbnail: some View {
         if let peek = translation?.peek {
-            PeekContent(peek: peek, item: item, imageURL: imageURL)
+            PeekContent(peek: peek, item: item, imageSource: imageSource)
                 .e2eAnchor("list.peek.\(item.id)")
         } else if case .image(let ref) = item.payload {
             let isTall = ImageThumbnail.isTall(width: ref.width, height: ref.height)
             Color.primary.opacity(0.05)
                 .overlay(alignment: isTall ? .top : .center) {
                     AsyncThumbnail(
-                        url: imageURL, maxPixelSize: ImageThumbnail.pixelSize(width: ref.width, height: ref.height),
+                        source: imageSource,
+                        maxPixelSize: ImageThumbnail.pixelSize(width: ref.width, height: ref.height),
                         contentMode: .fill)
                 }
         }

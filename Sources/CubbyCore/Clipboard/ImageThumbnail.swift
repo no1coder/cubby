@@ -6,8 +6,8 @@ import UniformTypeIdentifiers
 /// 图片条目的预生成缩略图：记录时（后台）按卡片需要的尺寸缩小一次存成小文件，面板卡片只解码它。
 ///
 /// 5K 图的原图没有内嵌缩略图，每次冷缓存都要整张解码再缩放（72–149ms）；720px 的 JPEG 解码不到 1ms。
-/// - 文件名由原图名推出（`<摘要>.thumb`），不写入历史：旧版本读到的历史不变，删除 / 撤销 / 清空 / 淘汰 /
-///   孤儿清理按原图名一并处理（见 ClipStore 的 storedBlobNames）；
+/// - 文件名由原图名推出（存储的 thumbnailName(forImage:)，加密存储中是另一个 HMAC），不写入历史：
+///   删除 / 撤销 / 清空 / 淘汰 / 孤儿清理按原图名一并处理（见 ClipItem.storedBlobNames(in:)）；
 /// - 格式：不透明的图用 JPEG（体积小、解码最快、任何机器都能编码）；有透明像素的用 PNG，保留透明度。
 ///   不用 HEIC：编码依赖硬件 HEVC 编码器，部分机器（含虚拟机 / CI）不可用，解码也比 JPEG 慢（约 1.8ms 对 0.4ms）；
 /// - 文件内容自带格式签名，读取时由 ImageIO 识别，因此不需要区分扩展名。
@@ -45,12 +45,9 @@ public enum ImageThumbnail {
         width * height > minimumPixels && max(width, height) > pixelSize(width: width, height: height)
     }
 
-    public static func name(forImage imageName: String) -> String {
+    /// 明文时代（加密之前）的缩略图文件名 `<摘要>.thumb`：只在迁移旧数据时用来找到旧文件
+    public static func legacyName(forImage imageName: String) -> String {
         (imageName as NSString).deletingPathExtension + "." + fileExtension
-    }
-
-    public static func url(forImageAt imageURL: URL) -> URL {
-        imageURL.deletingLastPathComponent().appendingPathComponent(name(forImage: imageURL.lastPathComponent))
     }
 
     // MARK: - 生成
@@ -59,14 +56,6 @@ public enum ImageThumbnail {
     static func make(fromImageData data: Data, width: Int, height: Int) -> Data? {
         guard isNeeded(width: width, height: height),
             let source = CGImageSourceCreateWithData(data as CFData, nil)
-        else { return nil }
-        return make(from: source, width: width, height: height)
-    }
-
-    /// 由原图文件生成（回填旧条目时用，不把整张原图读进内存）
-    static func make(fromImageAt url: URL, width: Int, height: Int) -> Data? {
-        guard isNeeded(width: width, height: height),
-            let source = CGImageSourceCreateWithURL(url as CFURL, nil)
         else { return nil }
         return make(from: source, width: width, height: height)
     }
@@ -125,11 +114,15 @@ public enum ImageThumbnail {
 
     /// 面板卡片请求缩略图时先读预生成的小文件，返回已解码的位图。只服务卡片尺寸的请求：
     /// 恰好等于缩略图尺寸（卡片按同一规则请求），或不超过 720px。预览面板的 1600px 等更大的请求、
-    /// 文件不存在或无法识别时返回 nil，调用方退回解码原图（竖长图的缩略图长边可达 2048，但宽度不够预览用）
-    public static func decode(forImageAt imageURL: URL, maxPixelSize: Int) -> CGImage? {
-        let url = url(forImageAt: imageURL)
-        guard FileManager.default.fileExists(atPath: url.path),
-            let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+    /// 没有缩略图或无法识别时返回 nil，调用方退回解码原图（竖长图的缩略图长边可达 2048，但宽度不够预览用）
+    public static func decode(thumbnailOf image: ClipImageSource, maxPixelSize: Int) -> CGImage? {
+        guard let data = image.thumbnailData() else { return nil }
+        return decode(thumbnailData: data, maxPixelSize: maxPixelSize)
+    }
+
+    /// 同上，直接给出缩略图数据
+    static func decode(thumbnailData data: Data, maxPixelSize: Int) -> CGImage? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
             let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
             let width = properties[kCGImagePropertyPixelWidth] as? Int,
             let height = properties[kCGImagePropertyPixelHeight] as? Int
@@ -141,6 +134,17 @@ public enum ImageThumbnail {
             kCGImageSourceCreateThumbnailWithTransform: true,
             kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
         ]
+        return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
+    }
+
+    /// 解码任意尺寸的图片数据（原图、译后图），最长边缩到 maxPixelSize；无法识别时为 nil
+    public static func decode(imageData data: Data, maxPixelSize: Int) -> CGImage? {
+        let options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
+        ]
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
         return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
     }
 }

@@ -5,7 +5,7 @@ import SwiftUI
 /// 2pt 白线 + 28pt 拖柄，拖动或点过后 ← / → 微调）；悬停某块 400 ms 显示其原文气泡；按住 ⌥ 看原文
 struct TranslationImageBody: View {
     let card: TranslationCard
-    let imageURL: URL?
+    let image: ClipImageSource?
     let ref: ImageRef
     let controller: TranslationCardController
 
@@ -26,10 +26,10 @@ struct TranslationImageBody: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(PreviewMetrics.imageInset)
-        .task(id: imageURL) {
-            // 只读文件头，但仍放到后台：不在主线程做文件读取
-            let url = imageURL
-            pointScale = await Task.detached(priority: .userInitiated) { ImagePointScale.read(url) }.value
+        .task(id: image) {
+            // 要读取并解密原图：放到后台，不占主线程
+            let source = image
+            pointScale = await Task.detached(priority: .userInitiated) { ImagePointScale.read(source) }.value
         }
         .task(id: hovered) {
             bubble = nil
@@ -44,7 +44,7 @@ struct TranslationImageBody: View {
 
     private func stage(size: CGSize) -> some View {
         ZStack(alignment: .topLeading) {
-            AsyncThumbnail(url: imageURL, maxPixelSize: 1600)
+            AsyncThumbnail(source: image, maxPixelSize: 1600)
             translatedImage
             TranslationOverlayView(
                 model: overlayModel,
@@ -75,8 +75,8 @@ struct TranslationImageBody: View {
     /// 缓存命中时没有块版面（缓存只存译后成图）：直接叠译后图片，同样受卷帘与按住 ⌥ 控制
     @ViewBuilder
     private var translatedImage: some View {
-        if card.content.imageBlocks.isEmpty, let url = card.result?.imageURL {
-            AsyncThumbnail(url: url, maxPixelSize: 1600)
+        if card.content.imageBlocks.isEmpty, let translated = card.result?.image {
+            AsyncThumbnail(source: translated, maxPixelSize: 1600)
                 .mask {
                     GeometryReader { geometry in
                         let x = geometry.size.width * (overlayModel.wipe ?? 0)

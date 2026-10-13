@@ -263,12 +263,12 @@ enum PanelE2EFixtures {
     }
 
     /// 写入演示历史：文本条目直接构造，图片写入 blob；预先缓存的译文放进 ClipItem.translations
-    static func history(blobs: BlobStore, now: Date) throws -> ClipHistory {
+    static func history(blobs: any ClipBlobStoring, now: Date) throws -> ClipHistory {
         let items = try entries.map { entry in try item(for: entry, blobs: blobs, now: now) }
         return ClipHistory(items: items)
     }
 
-    private static func item(for entry: Entry, blobs: BlobStore, now: Date) throws -> ClipItem {
+    private static func item(for entry: Entry, blobs: any ClipBlobStoring, now: Date) throws -> ClipItem {
         let created = now.addingTimeInterval(-entry.minutesAgo * 60)
         let source = SourceApp(bundleID: entry.bundleID, name: entry.appName)
         let translations = cachedTranslations(entry, now: now)
@@ -282,7 +282,7 @@ enum PanelE2EFixtures {
         }
         let png = try imagePNG()
         let digest = ContentHasher.sha256(png)
-        let name = "\(digest).png"
+        let name = blobs.name(kind: .image, contentHash: digest)
         try blobs.write(png, name: name)
         return ClipItem(
             id: id(entry.key), kind: .image,

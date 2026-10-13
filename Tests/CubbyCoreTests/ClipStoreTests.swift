@@ -17,7 +17,7 @@ struct ClipStoreTests {
         let fixed = fixedNow
         return ClipStore(
             storage: storage,
-            blobs: BlobStore(directory: blobDir),
+            blobs: PlainDirectoryBlobStore(directory: blobDir),
             limit: limit,
             now: now ?? { fixed }
         )

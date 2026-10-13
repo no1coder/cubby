@@ -121,8 +121,11 @@ struct ClipStoreTranslationTests {
         #expect(store.item(id: item.id)?.translation(for: "zh-Hans") == stored)
         #expect(TempDirectory.exists(translatedName, in: dir))
         #expect(try TempDirectory.permissions(of: dir.appendingPathComponent(translatedName)) == 0o600)
-        #expect(store.translatedImageURL(for: stored) == dir.appendingPathComponent(translatedName))
-        #expect(store.translatedImageURL(for: TranslationFixtures.text()) == nil)
+        let source = try #require(store.translatedImageSource(for: stored))
+        #expect(source.name == translatedName)
+        #expect(try source.data() == translatedPNG)
+        #expect(source.thumbnailData() == nil)
+        #expect(store.translatedImageSource(for: TranslationFixtures.text()) == nil)
     }
 
     @Test("图片译文未能缓存（条目已删除、类型不对）时返回 nil，且不留下没有主人的文件")

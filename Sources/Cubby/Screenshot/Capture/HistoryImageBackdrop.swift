@@ -29,9 +29,9 @@ enum HistoryImageBackdrop {
         let dpiScale: CGFloat
     }
 
-    /// 读取图片文件；无法解码时为 nil
-    static func decode(_ url: URL) -> Decoded? {
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+    /// 解码图片数据（解密后的原图，只在内存中）；无法解码时为 nil
+    static func decode(_ data: Data) -> Decoded? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
             let image = CGImageSourceCreateImageAtIndex(
                 source, 0, [kCGImageSourceShouldCacheImmediately: true] as CFDictionary),
             image.width > 0, image.height > 0

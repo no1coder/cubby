@@ -2,10 +2,10 @@ import Foundation
 import Observation
 import os
 
-/// 从图片文件识别文字（App 层以本机 Vision 实现并注入；测试注入假实现）
+/// 从图片数据识别文字（App 层以本机 Vision 实现并注入；测试注入假实现）
 public protocol ImageTextRecognizing: Sendable {
-    /// maxPixelSize 非 nil 时先把图片等比缩小到该最长边（像素）再识别；没有文字时返回空串
-    func recognizeText(at url: URL, maxPixelSize: Int?) async throws -> String
+    /// image 为解密后的原图数据；maxPixelSize 非 nil 时先把图片等比缩小到该最长边（像素）再识别；没有文字时返回空串
+    func recognizeText(in image: Data, maxPixelSize: Int?) async throws -> String
 }
 
 /// 历史图片的文字索引，让图片可以按图中文字搜索。截图与普通剪贴板图片一样：入历史后尽快识别；
@@ -15,7 +15,8 @@ public protocol ImageTextRecognizing: Sendable {
 /// - 暂停记录时停止（进行中的结果照常保存）；关闭开关时停止、丢弃进行中的结果并清除全部已保存的识别文字；
 ///   重新开启后重新回填；
 /// - 退出时 stop()：先写回已攒的结果，进行中的识别丢弃，下次启动继续；
-/// - 历史只读（文件来自更新版本等）时不索引；日志只记录耗时与数量，绝不记录识别出的文字。
+/// - 历史只读（文件来自更新版本等）或只在内存中（已锁定）时不启动；解锁后可再调用 start()；
+///   日志只记录耗时与数量，绝不记录识别出的文字。
 @MainActor
 public final class ImageTextIndexer {
     public typealias Sleep = @Sendable (TimeInterval) async throws -> Void
@@ -64,7 +65,7 @@ public final class ImageTextIndexer {
 
     /// 开始索引。只能启动一次（stop 之后不再启动）
     public func start() {
-        guard !hasStarted, store.canPersist else { return }
+        guard !hasStarted, store.canPersist, !store.isInMemory else { return }
         hasStarted = true
         sessionStart = now()
         observe({ [settings] in _ = (settings.indexesImageText, settings.isPaused) }) { [weak self] in
@@ -157,7 +158,7 @@ public final class ImageTextIndexer {
     }
 
     private func recognize(_ item: ClipItem) async {
-        guard let image = item.image, let url = store.imageURL(for: item) else {
+        guard let image = item.image, let source = store.imageSource(for: item) else {
             failed.insert(item.id)
             return
         }
@@ -167,7 +168,9 @@ public final class ImageTextIndexer {
         let maxPixelSize = ImageTextIndexPolicy.recognitionMaxPixelSize(width: image.width, height: image.height)
         let outcome: Result<String, any Error>
         do {
-            outcome = .success(try await recognizer.recognizeText(at: url, maxPixelSize: maxPixelSize))
+            // 解密在后台执行器上进行（source.load 为 @concurrent），不占主线程
+            let data = try await source.load()
+            outcome = .success(try await recognizer.recognizeText(in: data, maxPixelSize: maxPixelSize))
         } catch {
             outcome = .failure(error)
         }

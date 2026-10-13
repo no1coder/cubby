@@ -2,8 +2,8 @@
 import AppKit
 import CubbyCore
 
-/// 剪贴板翻译演示场景（`--scenario translate-demo:text|image`）的演示历史：启动时写入 CUBBY_DATA_DIR，
-/// 覆盖其中的 history.json。内容全部虚构；要翻译的条目（英文邮件、旅行应用的欢迎页图片）排在最前面并被选中，
+/// 剪贴板翻译演示场景（`--scenario translate-demo:text|image`）的演示历史：启动时写入 CUBBY_DATA_DIR 的加密 Vault，
+/// 覆盖其中的历史（见 DebugVaultSeed）。内容全部虚构；要翻译的条目（英文邮件、旅行应用的欢迎页图片）排在最前面并被选中，
 /// 其译文在 DemoTranslationTable 里。其余条目按界面语言显示中文或英文，汉字写成 Unicode 转义。
 /// 不放链接条目：宣传图（例如小红书）里不能出现站外链接
 enum TranslationDemoHistory {
@@ -17,12 +17,13 @@ enum TranslationDemoHistory {
         """
 
     /// 写入演示历史；未设置 CUBBY_DATA_DIR 时什么都不写（绝不覆盖真实历史），返回 false
+    @MainActor
     static func seed(_ demo: PanelTranslationDemo) -> Bool {
         guard ProcessInfo.processInfo.environment["CUBBY_DATA_DIR"]?.isEmpty == false else { return false }
         do {
-            let blobs = BlobStore(directory: AppPaths.imagesDirectory)
-            let items = try entries(demo, blobs: blobs, now: Date())
-            try JSONHistoryStorage(fileURL: AppPaths.historyFile).save(ClipHistory(items: items))
+            let vault = try DebugVaultSeed.prepare()
+            let items = try entries(demo, blobs: vault.blobs, now: Date())
+            try vault.storage.save(ClipHistory(items: items))
             return true
         } catch {
             FileHandle.standardError.write(Data("Seeding the translation demo failed: \(error)\n".utf8))
@@ -30,7 +31,9 @@ enum TranslationDemoHistory {
         }
     }
 
-    private static func entries(_ demo: PanelTranslationDemo, blobs: BlobStore, now: Date) throws -> [ClipItem] {
+    private static func entries(
+        _ demo: PanelTranslationDemo, blobs: any ClipBlobStoring, now: Date
+    ) throws -> [ClipItem] {
         let copy = Copy.current
         let image = try imageItem(blobs: blobs, name: copy.preview)
         let makers: [(UUID, Date) -> ClipItem] = [
@@ -66,10 +69,10 @@ enum TranslationDemoHistory {
     }
 
     /// 把演示图片写进图片目录，返回生成条目的闭包
-    private static func imageItem(blobs: BlobStore, name: String) throws -> (UUID, Date) -> ClipItem {
+    private static func imageItem(blobs: any ClipBlobStoring, name: String) throws -> (UUID, Date) -> ClipItem {
         let png = try TranslationDemoImage.png()
         let digest = ContentHasher.sha256(png)
-        let file = "\(digest).png"
+        let file = blobs.name(kind: .image, contentHash: digest)
         try blobs.write(png, name: file)
         let size = TranslationDemoImage.pixelSize
         return { id, date in

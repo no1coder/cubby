@@ -4,7 +4,8 @@ public enum BlobStoreError: Error, Equatable {
     case invalidName(String)
 }
 
-/// 以独立文件保存图片等二进制内容
+/// 旧版本的明文图片目录（Images/）：只用于迁移时读取旧文件（PlaintextFiles）与文件名合法性检查。
+/// 正式存储是 EncryptedBlobStore；返回文件地址的接口只在模块内部使用（E10）
 public struct BlobStore: Sendable {
     public let directory: URL
 
@@ -13,7 +14,7 @@ public struct BlobStore: Sendable {
     }
 
     /// 返回文件地址；名称不合法（可能来自被篡改的历史文件）时返回 nil，防止路径穿越
-    public func url(for name: String) -> URL? {
+    func url(for name: String) -> URL? {
         guard Self.isValidName(name) else { return nil }
         return directory.appendingPathComponent(name, isDirectory: false)
     }

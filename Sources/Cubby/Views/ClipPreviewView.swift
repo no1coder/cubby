@@ -105,7 +105,7 @@ struct ClipPreviewView: View {
                 TextPreview(text: text, keywords: viewModel.keywords, allowsSelection: !viewModel.isBlocked(item))
             }
         case .image(let ref):
-            ImagePreview(url: viewModel.imageURL(for: item), ref: ref)
+            ImagePreview(source: viewModel.imageSource(for: item), ref: ref)
         case .files(let paths):
             FilesPreview(paths: paths)
         }
@@ -265,11 +265,11 @@ private struct LinkPreview: View {
 
 /// 图片按宽高比完整显示，不放大到超过原始像素尺寸（小图标不会被拉糊）
 private struct ImagePreview: View {
-    let url: URL?
+    let source: ClipImageSource?
     let ref: ImageRef
 
     var body: some View {
-        AsyncThumbnail(url: url, maxPixelSize: 1600)
+        AsyncThumbnail(source: source, maxPixelSize: 1600)
             .clipShape(RoundedRectangle(cornerRadius: Radius.control, style: .continuous))
             .shadow(color: .black.opacity(0.15), radius: 6, y: 2)
             .frame(maxWidth: CGFloat(max(ref.width, 1)), maxHeight: CGFloat(max(ref.height, 1)))

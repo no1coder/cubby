@@ -57,12 +57,13 @@ struct PasteboardWriterTranslationTests {
         let dir = try TempDirectory.make()
         defer { TempDirectory.remove(dir) }
         let png = ImageFixtures.png(width: 4, height: 3)
-        let url = dir.appendingPathComponent("translated.png")
-        try png.write(to: url)
+        let blobs = PlainDirectoryBlobStore(directory: dir)
+        try blobs.write(png, name: "translated.png")
+        let source = ClipImageSource(name: "translated.png", blobs: blobs, hasThumbnail: false)
 
         try withTemporaryPasteboard { pasteboard in
             pasteboard.setString("previous", forType: .string)
-            try PasteboardWriter.write(pngAt: url, to: pasteboard)
+            try PasteboardWriter.write(translatedImage: source, to: pasteboard)
 
             #expect(pasteboard.data(forType: .png) == png)
             #expect(pasteboard.string(forType: .string) == nil)
@@ -76,14 +77,15 @@ struct PasteboardWriterTranslationTests {
     func translatedImageUnavailable() throws {
         let dir = try TempDirectory.make()
         defer { TempDirectory.remove(dir) }
-        let invalid = dir.appendingPathComponent("broken.png")
-        try Data("not png".utf8).write(to: invalid)
+        let blobs = PlainDirectoryBlobStore(directory: dir)
+        try blobs.write(Data("not png".utf8), name: "broken.png")
 
-        for candidate in [dir.appendingPathComponent("missing.png"), invalid] {
+        for name in ["missing.png", "broken.png"] {
+            let candidate = ClipImageSource(name: name, blobs: blobs, hasThumbnail: false)
             withTemporaryPasteboard { pasteboard in
                 pasteboard.setString("previous", forType: .string)
                 #expect(throws: PasteboardWriteError.imageUnavailable) {
-                    try PasteboardWriter.write(pngAt: candidate, to: pasteboard)
+                    try PasteboardWriter.write(translatedImage: candidate, to: pasteboard)
                 }
                 #expect(pasteboard.string(forType: .string) == "previous")
             }

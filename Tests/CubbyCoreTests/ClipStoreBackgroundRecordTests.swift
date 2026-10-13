@@ -77,7 +77,7 @@ struct ClipStoreBackgroundRecordTests {
         let dir = try TempDirectory.make()
         defer { TempDirectory.remove(dir) }
         let store = StoreFactory.make(dir: dir)
-        let blobs = BlobStore(directory: dir)
+        let blobs = PlainDirectoryBlobStore(directory: dir)
 
         let prepared = try ClipStore.prepare(image("gone"), blobs: blobs)
         let name = try #require(prepared.blobName)

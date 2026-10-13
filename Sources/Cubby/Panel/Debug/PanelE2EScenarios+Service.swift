@@ -118,7 +118,7 @@ extension PanelE2EScenarios {
             try await context.command("t")
             try await context.waitForCard(.done, timeout: .seconds(2))
             context.check("… without block layouts", context.card?.content.imageBlocks.isEmpty == true)
-            context.check("… from the cached PNG", context.card?.content.result?.imageURL != nil)
+            context.check("… from the cached PNG", context.card?.content.result?.image != nil)
             context.check("… marked cached", context.card?.content.result?.fromCache == true)
         }
     }

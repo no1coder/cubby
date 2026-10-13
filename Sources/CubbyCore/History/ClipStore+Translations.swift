@@ -20,17 +20,25 @@ extension ClipStore {
         return isStored
     }
 
-    /// 写入一条图片译文：后台把译后 PNG（带 DPI）写入 blob 目录（文件名为内容哈希，0600），回主线程后写入缓存；
+    /// 写入一条图片译文：后台把译后 PNG（带 DPI）写入存储（文件名由内容推出），回主线程后写入缓存；
     /// translation.imageName 被替换为该文件名。返回已缓存的译文；未能缓存时返回 nil，且不留下没有主人的文件
     @discardableResult
     public func setTranslation(_ translation: ClipTranslation, imagePNG png: Data, for id: UUID) async
         -> ClipTranslation?
     {
-        let blobs = self.blobs
-        guard let name = await Self.writeTranslatedImage(png, blobs: blobs) else { return nil }
-        // 写入期间，同名文件可能随另一个被删除的条目一起删掉（同一张图存为了新条目）：补写
+        let digest = ContentHasher.sha256(png)
+        guard await Self.writeTranslatedImage(png, digest: digest, blobs: blobs) else { return nil }
+        // 写入期间，同名文件可能随另一个被删除的条目一起删掉（同一张图存为了新条目），
+        // 或存储已从内存切换为加密存储：按当前存储重新推出文件名，不在时补写
+        let name = blobs.name(kind: .translatedImage, contentHash: digest)
         if !blobs.exists(name) {
-            guard (try? blobs.write(png, name: name)) != nil else { return nil }
+            do {
+                try blobs.write(png, name: name)
+            } catch {
+                Self.translationLogger.error(
+                    "Failed to write translated image: \(error.localizedDescription, privacy: .public)")
+                return nil
+            }
         }
         let stored = translation.withImageName(name)
         return setTranslation(stored, for: id) ? stored : nil
@@ -45,31 +53,22 @@ extension ClipStore {
         removeUnreferencedBlobs(pendingImages)
     }
 
-    /// 译后图片的文件地址；文本译文或文件名非法时为 nil
-    public func translatedImageURL(for translation: ClipTranslation) -> URL? {
-        translation.imageName.flatMap { blobs.url(for: $0) }
+    /// 译后图片的数据来源；文本译文为 nil
+    public func translatedImageSource(for translation: ClipTranslation) -> ClipImageSource? {
+        translation.imageName.map { ClipImageSource(name: $0, blobs: blobs, hasThumbnail: false) }
     }
 
-    /// 在后台线程写入译后 PNG，返回文件名；写入失败返回 nil
+    /// 在后台线程写入译后 PNG；写入失败返回 false
     @concurrent
-    private nonisolated static func writeTranslatedImage(_ png: Data, blobs: BlobStore) async -> String? {
-        let name = ContentHasher.sha256(png) + ".png"
+    private nonisolated static func writeTranslatedImage(
+        _ png: Data, digest: String, blobs: any ClipBlobStoring
+    ) async -> Bool {
         do {
-            try blobs.write(png, name: name)
-            return name
+            try blobs.write(png, name: blobs.name(kind: .translatedImage, contentHash: digest))
+            return true
         } catch {
             translationLogger.error("Failed to write translated image: \(error.localizedDescription, privacy: .public)")
-            return nil
+            return false
         }
-    }
-}
-
-extension ClipItem {
-    /// 启动修复：丢弃译后图片已丢失的译文（例如降级到不认识译文的版本时被当作孤立文件删掉）；全部丢弃时为 nil
-    func repairingTranslations(blobExists: (String) -> Bool) -> ClipItem {
-        guard let entries = translations?.entries else { return self }
-        let intact = entries.filter { $0.imageName.map(blobExists) ?? true }
-        guard intact.count != entries.count || intact.isEmpty else { return self }
-        return withTranslations(intact.isEmpty ? nil : ClipTranslations(intact))
     }
 }

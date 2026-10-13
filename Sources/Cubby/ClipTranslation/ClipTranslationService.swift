@@ -82,8 +82,8 @@ final class ClipTranslationService: ClipTranslating {
     func saveAsNewItem(_ result: ClipTranslationResult) -> Bool {
         guard !settings.isPaused else { return false }
         let content: ClipContent
-        if let url = result.imageURL {
-            guard let image = Self.imageContent(at: url) else { return false }
+        if let translated = result.image {
+            guard let image = Self.imageContent(translated) else { return false }
             content = image
         } else {
             let text = result.plainText
@@ -112,9 +112,7 @@ final class ClipTranslationService: ClipTranslating {
         case .text:
             return entry.imageName == nil && entry.segmentation == ClipTextSegmenter.version ? entry : nil
         case .image:
-            let url = store.translatedImageURL(for: entry)
-            return url.map { FileManager.default.fileExists(atPath: $0.path(percentEncoded: false)) } == true
-                ? entry : nil
+            return entry.imageName.map(store.blobExists) == true ? entry : nil
         case .files:
             return nil
         }
@@ -157,8 +155,8 @@ final class ClipTranslationService: ClipTranslating {
     }
 
     /// 译后 PNG → 可入历史的图片内容（只读取尺寸，不整图解码）；读不到、过大或尺寸未知时为 nil
-    private static func imageContent(at url: URL) -> ClipContent? {
-        guard let png = try? Data(contentsOf: url), png.count <= CaptureLimits.maxImageBytes,
+    private static func imageContent(_ image: ClipImageSource) -> ClipContent? {
+        guard let png = try? image.data(), png.count <= CaptureLimits.maxImageBytes,
             let source = CGImageSourceCreateWithData(png as CFData, nil),
             let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
             let width = (properties[kCGImagePropertyPixelWidth] as? NSNumber)?.intValue,

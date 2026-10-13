@@ -89,7 +89,7 @@ struct CardList: View {
             index: number ?? Int.max,
             isSelected: isSelected,
             keywords: keywords,
-            imageURL: viewModel.imageURL(for: item),
+            imageSource: viewModel.imageSource(for: item),
             translation: CardTranslationDecorations.make(for: item, keywords: keywords, viewModel: viewModel),
             isOnClothesline: viewModel.isOnClothesline(item),
             onInlineAction: { viewModel.translation?.inline.performAction() },
@@ -160,7 +160,7 @@ private struct CardDrag: ViewModifier {
         if viewModel.isBlocked(item) {
             content
         } else {
-            content.onDrag { DragProvider.provider(for: item, imageURL: viewModel.imageURL(for: item)) }
+            content.onDrag { DragProvider.provider(for: item) { viewModel.exportImage(item) } }
         }
     }
 }

@@ -1,4 +1,5 @@
 import AppKit
+import CubbyCore
 import ImageIO
 
 /// 从历史贴到屏幕上的图片：解码结果与摆放位置，交给 PinnedImageController.pin(image:pixelSize:scale:at:)
@@ -33,11 +34,11 @@ enum HistoryImagePinning {
 
     /// 在给定屏幕可见区域的中央贴图；解码在后台进行，大图按显示尺寸降采样（不会整张解码 7000×5000 的原图）
     @MainActor
-    static func load(url: URL, on screen: NSScreen) async -> HistoryImagePin? {
+    static func load(_ image: ClipImageSource, on screen: NSScreen) async -> HistoryImagePin? {
         let visible = screen.visibleFrame
         let backingScale = screen.backingScaleFactor
         let decoded = await Task.detached(priority: .userInitiated) {
-            decode(url: url, visibleSize: visible.size, backingScale: backingScale)
+            decode(image, visibleSize: visible.size, backingScale: backingScale)
         }.value
         guard let decoded else { return nil }
         return HistoryImagePin(
@@ -53,8 +54,10 @@ enum HistoryImagePinning {
         let scale: CGFloat
     }
 
-    private static func decode(url: URL, visibleSize: CGSize, backingScale: CGFloat) -> Decoded? {
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
+    /// 读取（解密）原图并解码；解密后的数据只在内存中
+    private static func decode(_ image: ClipImageSource, visibleSize: CGSize, backingScale: CGFloat) -> Decoded? {
+        guard let data = try? image.data(),
+            let source = CGImageSourceCreateWithData(data as CFData, nil),
             let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
             let width = (properties[kCGImagePropertyPixelWidth] as? NSNumber)?.doubleValue,
             let height = (properties[kCGImagePropertyPixelHeight] as? NSNumber)?.doubleValue

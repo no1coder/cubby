@@ -2,8 +2,8 @@
 import AppKit
 import CubbyCore
 
-/// 设计稿走查的演示历史（`--demo-history`，与任意 `--scenario` 搭配）：启动时写入 CUBBY_DATA_DIR，覆盖其中的
-/// history.json，并且不启动剪贴板监听，截图里不会出现真实剪贴板内容。条目照着 docs/design/ui-upgrade 的画板排列，
+/// 设计稿走查的演示历史（`--demo-history`，与任意 `--scenario` 搭配）：启动时写入 CUBBY_DATA_DIR 的加密 Vault，
+/// 覆盖其中的历史（见 DebugVaultSeed），并且不启动剪贴板监听，截图里不会出现真实剪贴板内容。条目照着 docs/design/ui-upgrade 的画板排列，
 /// 全部虚构；裸可执行文件只显示英文界面，所以文案也是英文
 enum DesignDemoHistory {
     static let argument = "--demo-history"
@@ -13,19 +13,20 @@ enum DesignDemoHistory {
     }
 
     /// 写入演示历史；未设置 CUBBY_DATA_DIR 时什么都不写（绝不覆盖真实历史），返回 false
+    @MainActor
     static func seed(now: Date = Date()) -> Bool {
         guard let dataDirectory = ProcessInfo.processInfo.environment["CUBBY_DATA_DIR"], !dataDirectory.isEmpty
         else { return false }
         do {
-            let blobs = BlobStore(directory: AppPaths.imagesDirectory)
+            let vault = try DebugVaultSeed.prepare()
             let file = try demoFile(in: URL(fileURLWithPath: dataDirectory, isDirectory: true))
-            let items = try ordered(entries(blobs: blobs, file: file)).enumerated().map { index, entry in
-                try entry.item(id: id(index), now: now, blobs: blobs)
+            let items = try ordered(entries(file: file)).enumerated().map { index, entry in
+                try entry.item(id: id(index), now: now, blobs: vault.blobs)
             }
-            try JSONHistoryStorage(fileURL: AppPaths.historyFile).save(ClipHistory(items: items))
+            try vault.storage.save(ClipHistory(items: items))
             // 地址守护的演示记录：被替换进来的那一条关联到演示历史里的红色记录
             if let tampered = items.first(where: { $0.text == SecurityDemo.replacement.value }) {
-                try SecurityLogStore(directory: AppPaths.root).save(
+                try SecurityLogStore(dataDirectory: AppPaths.root, vault: AppPaths.vault, keys: vault.keys).save(
                     SecurityDemo.log(tamperedItemID: tampered.id, now: now))
             }
             return true
@@ -80,7 +81,7 @@ enum DesignDemoHistory {
 
     private static let day: Double = 24 * 60
 
-    private static func entries(blobs: BlobStore, file: String) throws -> [Entry] {
+    private static func entries(file: String) -> [Entry] {
         [
             .text(
                 "Before Thursday's release: record the demo GIF, update the Homebrew cask, and reply to issue #42 "
@@ -142,7 +143,7 @@ enum DesignDemoHistory {
             Entry(content: .files(paths), app: app, minutes: minutes)
         }
 
-        func item(id: UUID, now: Date, blobs: BlobStore) throws -> ClipItem {
+        func item(id: UUID, now: Date, blobs: any ClipBlobStoring) throws -> ClipItem {
             let source = app.map { SourceApp(bundleID: $0.bundleID, name: $0.name) }
             let date = now.addingTimeInterval(-minutes * 60)
             switch content {
@@ -158,7 +159,7 @@ enum DesignDemoHistory {
             case .image(let scene):
                 let png = try DesignDemoImages.png(scene)
                 let digest = ContentHasher.sha256(png)
-                let name = "\(digest).png"
+                let name = blobs.name(kind: .image, contentHash: digest)
                 try blobs.write(png, name: name)
                 let size = DesignDemoImages.pixelSize
                 return ClipItem(

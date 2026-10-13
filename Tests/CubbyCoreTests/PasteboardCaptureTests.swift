@@ -189,6 +189,6 @@ struct PasteboardCaptureTests {
         #expect(store.history.items.map(\.kind) == [.text, .image])
         // 大图同时生成了缩略图
         let recorded = try #require(store.history.items.last?.image)
-        #expect(TempDirectory.exists(ImageThumbnail.name(forImage: recorded.name), in: dir))
+        #expect(TempDirectory.exists(ImageThumbnail.legacyName(forImage: recorded.name), in: dir))
     }
 }

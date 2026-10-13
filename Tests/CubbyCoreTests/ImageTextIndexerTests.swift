@@ -2,7 +2,7 @@ import Foundation
 import Testing
 @testable import CubbyCore
 
-/// 可控的假识别器：按文件名返回结果；开启闸门时每次调用挂起，直到测试放行。记录调用顺序与最大并发
+/// 可控的假识别器：按图片的明文文件名（`<内容摘要>.png`，与 PlainDirectoryBlobStore 的命名相同）返回结果；开启闸门时每次调用挂起，直到测试放行。记录调用顺序与最大并发
 actor FakeImageTextRecognizer: ImageTextRecognizing {
     private var results: [String: Result<String, any Error>] = [:]
     private var gates: [CheckedContinuation<Void, Never>] = []
@@ -31,8 +31,8 @@ actor FakeImageTextRecognizer: ImageTextRecognizing {
         gates.count
     }
 
-    func recognizeText(at url: URL, maxPixelSize: Int?) async throws -> String {
-        let name = url.lastPathComponent
+    func recognizeText(in image: Data, maxPixelSize: Int?) async throws -> String {
+        let name = ContentHasher.sha256(image) + ".png"
         calls.append(name)
         maxPixelSizes.append(maxPixelSize)
         concurrent += 1

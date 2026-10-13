@@ -27,7 +27,7 @@ extension ClipTranslationSelfTest {
             "target: shared")
 
         let result = ClipTranslationResult(
-            plainText: "Guten Morgen", richText: nil, imageURL: nil, engineName: "Stub", isOnDevice: true,
+            plainText: "Guten Morgen", richText: nil, image: nil, engineName: "Stub", isOnDevice: true,
             fromCache: false)
         settings.isPaused = true
         check(!service.saveAsNewItem(result), "save: refused while paused")
@@ -66,13 +66,13 @@ extension ClipTranslationSelfTest {
         check(sent.contains { $0.localizedCaseInsensitiveContains("save your changes") }, "image: recognized text sent")
         check(!sent.contains { $0.contains("ghp_") }, "image: secret-like block never sent")
         check(!events.imageBlocks.isEmpty, "image: blocks streamed")
-        guard let url = events.result?.imageURL, let data = try? Data(contentsOf: url),
+        guard let translated = events.result?.image, let data = try? translated.data(),
             let decoded = HistoryImageFrame.decode(data)
         else { return check(false, "image: translated PNG") }
         check(decoded.image.width == 1200 && decoded.dpi == 144, "image: translated PNG keeps size and DPI")
         check(store.item(id: item.id)?.translation(for: "zh-Hans")?.imageName != nil, "image: cached as blob")
         let replay = await ClipCollectedEvents.collect(service.translate(item, plan: plan, confirmedSecret: false))
-        check(replay.result?.fromCache == true && replay.result?.imageURL == url, "image: cache replay")
+        check(replay.result?.fromCache == true && replay.result?.image == translated, "image: cache replay")
         check(replay.result.map(service.saveAsNewItem) == true, "image: save as new item")
     }
 
@@ -142,7 +142,7 @@ extension ClipTranslationSelfTest {
 extension ClipTranslationResult {
     fileprivate func with(text: String) -> ClipTranslationResult {
         ClipTranslationResult(
-            plainText: text, richText: richText, imageURL: imageURL, engineName: engineName, isOnDevice: isOnDevice,
+            plainText: text, richText: richText, image: image, engineName: engineName, isOnDevice: isOnDevice,
             fromCache: fromCache)
     }
 }

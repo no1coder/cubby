@@ -51,13 +51,13 @@ final class PanelE2EWorld {
         settings.pasteDirectly = false
         settings.isPaused = options.isPaused
         self.settings = settings
-        let blobs = BlobStore(directory: directory.appendingPathComponent("Images", isDirectory: true))
-        let storage = JSONHistoryStorage(fileURL: directory.appendingPathComponent("history.json"))
-        try storage.save(PanelE2EFixtures.history(blobs: blobs, now: Date()))
-        store = ClipStore(storage: storage, blobs: blobs, limit: AppSettings.defaultHistoryLimit)
+        // 随机临时密钥的加密存储：演示条目与图片都以密文写入，不碰钥匙串（E3b）
+        let vault = DebugHistoryKey.vaultStores(in: directory)
+        try vault.storage.save(PanelE2EFixtures.history(blobs: vault.blobs, now: Date()))
+        store = ClipStore(storage: vault.storage, blobs: vault.blobs, limit: AppSettings.defaultHistoryLimit)
         pasteboard = NSPasteboard(name: NSPasteboard.Name("io.github.no1coder.Cubby.panel-e2e.\(name)"))
         pasteboard.clearContents()
-        translator = options.translationAvailable ? Self.makeTranslator(options, directory: directory) : nil
+        translator = options.translationAvailable ? Self.makeTranslator(options) : nil
         updates = Self.makeUpdates(
             settings: settings, stub: updateStub, options: options, version: options.currentVersion,
             pasteboard: pasteboard)
@@ -109,8 +109,8 @@ final class PanelE2EWorld {
         updates.start()
     }
 
-    private static func makeTranslator(_ options: Options, directory: URL) -> PanelE2EStubTranslator {
-        let translator = PanelE2EStubTranslator(outputDirectory: directory)
+    private static func makeTranslator(_ options: Options) -> PanelE2EStubTranslator {
+        let translator = PanelE2EStubTranslator()
         translator.engine = options.engine
         translator.planFailure = options.planFailure
         translator.streamFailure = options.streamFailure

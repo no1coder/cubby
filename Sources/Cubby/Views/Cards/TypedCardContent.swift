@@ -111,7 +111,7 @@ struct ColorCardContent: View {
 struct ImageCardContent: View {
     let item: ClipItem
     let ref: ImageRef
-    let imageURL: URL?
+    let imageSource: ClipImageSource?
     let palette: CardPalette
     let accessories: CardAccessories
     var isOnClothesline = false
@@ -155,7 +155,7 @@ struct ImageCardContent: View {
             .background(palette.primary.opacity(frame.showsWholeImageByFilling ? 0 : 0.06))
             .overlay {
                 AsyncThumbnail(
-                    url: imageURL, maxPixelSize: pixelSize,
+                    source: imageSource, maxPixelSize: pixelSize,
                     contentMode: frame.showsWholeImageByFilling ? .fill : .fit)
             }
             .clipShape(RoundedRectangle(cornerRadius: Radius.cardImage, style: .continuous))

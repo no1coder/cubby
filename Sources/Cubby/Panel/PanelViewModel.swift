@@ -303,12 +303,18 @@ final class PanelViewModel {
     }
 
     func open(_ item: ClipItem) {
-        guard !ItemOpener.open(item, imageURL: store.imageURL(for: item)) else { return }
+        guard !ItemOpener.open(item, imageFile: { exportImage(item) }) else { return }
         NSSound.beep()
     }
 
-    func imageURL(for item: ClipItem) -> URL? {
-        store.imageURL(for: item)
+    /// 图片条目原图的数据来源（卡片、预览、网格在后台解密解码）
+    func imageSource(for item: ClipItem) -> ClipImageSource? {
+        store.imageSource(for: item)
+    }
+
+    /// 交给其他应用（拖出、用预览打开）的临时副本
+    func exportImage(_ item: ClipItem) -> URL? {
+        SharedFiles.exportImage(item, source: store.imageSource(for: item))
     }
 
     var isPreviewVisible: Bool {

@@ -29,7 +29,7 @@ extension PanelE2EScenarios {
             context.check("holding ⌥ shows the original image", context.card?.isPeeking == true)
             try await context.holdOption(false)
             context.check("releasing ⌥ shows the translation", context.card?.isPeeking == false)
-            let expected = context.card?.content.result?.imageURL.flatMap { try? Data(contentsOf: $0) }
+            let expected = context.card?.content.result?.image.flatMap { try? $0.data() }
             try await context.press(.returnKey)
             await context.eventually("↩ pastes the translated PNG") {
                 expected != nil && context.world.pasteboard.data(forType: .png) == expected

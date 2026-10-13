@@ -172,7 +172,7 @@ struct InlineIssueRow: View {
 struct PeekContent: View {
     let peek: TranslationPeek
     let item: ClipItem
-    let imageURL: URL?
+    let imageSource: ClipImageSource?
 
     var body: some View {
         Group {
@@ -203,7 +203,7 @@ struct PeekContent: View {
             .frame(maxWidth: .infinity)
             .frame(height: 96)
             .overlay {
-                AsyncThumbnail(url: peek.content.result?.imageURL ?? imageURL, maxPixelSize: 600, contentMode: .fill)
+                AsyncThumbnail(source: peek.content.result?.image ?? imageSource, maxPixelSize: 600, contentMode: .fill)
             }
             .overlay { if peek.isStreaming { ShimmerSweep(tint: Color.accentColor.opacity(0.3)) } }
             .clipShape(RoundedRectangle(cornerRadius: Radius.thumb, style: .continuous))

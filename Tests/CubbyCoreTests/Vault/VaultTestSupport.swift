@@ -36,3 +36,44 @@ enum VaultFixtures {
         key.withUnsafeBytes { Data($0) }
     }
 }
+
+/// 一个临时数据目录及其中的加密 Vault：ClipStore、迁移、启动流程测试共用
+struct VaultEnvironment {
+    let root: URL
+    let keys: HistoryKeys
+
+    init(keyByte: UInt8 = 0x42) throws {
+        root = try TempDirectory.make()
+        keys = try VaultFixtures.keys(keyByte)
+    }
+
+    var vault: VaultDirectory {
+        VaultDirectory(url: root.appendingPathComponent(VaultDirectory.defaultName, isDirectory: true))
+    }
+
+    var storage: EncryptedHistoryStorage {
+        EncryptedHistoryStorage(vaultDirectory: vault.url, keys: keys)
+    }
+
+    var blobs: EncryptedBlobStore {
+        EncryptedBlobStore(directory: vault.blobsDirectory, keys: keys)
+    }
+
+    /// 旧版本的明文布局
+    var plain: PlaintextFiles {
+        PlaintextFiles(dataDirectory: root)
+    }
+
+    var legacyBlobs: BlobStore {
+        BlobStore(directory: plain.imagesDirectory)
+    }
+
+    /// Blobs 目录中的文件名（不含隐藏的临时文件）
+    var encryptedFileNames: Set<String> {
+        TempDirectory.fileNames(in: vault.blobsDirectory)
+    }
+
+    func remove() {
+        TempDirectory.remove(root)
+    }
+}

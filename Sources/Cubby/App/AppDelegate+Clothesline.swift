@@ -52,12 +52,12 @@ extension AppDelegate {
     fileprivate func editOnClothesline(
         _ item: ClipItem, clothesline: ClotheslineController, screenshots: ScreenshotCoordinator
     ) {
-        guard let url = store?.imageURL(for: item),
+        guard let data = store?.imageData(for: item),
             let screen = NSScreen.screens.first(where: { NSMouseInRect(NSEvent.mouseLocation, $0.frame, false) })
                 ?? NSScreen.main
         else { return }
         clothesline.beginEditing(item.id)
-        let started = screenshots.editHistoryImage(item, imageURL: url, on: screen) { [weak clothesline] result in
+        let started = screenshots.editHistoryImage(item, imageData: data, on: screen) { [weak clothesline] result in
             guard let clothesline else { return }
             if case .hungBack(let newID) = result { clothesline.replace(item.id, with: newID) }
             clothesline.endEditing()

@@ -8,7 +8,7 @@ struct ClipCardView: View {
     let index: Int
     let isSelected: Bool
     let keywords: [String]
-    let imageURL: URL?
+    let imageSource: ClipImageSource?
     /// 翻译相关的装饰（「译」角标、译文行、⌥↩ 行内进度、按住 ⌥ 预览）；功能不可用或没有装饰时为 nil
     var translation: CardTranslationDecoration?
     /// 图片挂在晾衣绳上：缩略图右上角显示「晾着」
@@ -56,7 +56,7 @@ struct ClipCardView: View {
             // 图片卡：缩略图贴近卡片边缘，自己处理内边距
             VStack(alignment: .leading, spacing: 0) {
                 ImageCardContent(
-                    item: item, ref: ref, imageURL: imageURL, palette: palette, accessories: accessories(palette),
+                    item: item, ref: ref, imageSource: imageSource, palette: palette, accessories: accessories(palette),
                     isOnClothesline: isOnClothesline)
                 extraRows(palette)
                     .padding(.horizontal, PanelMetrics.cardPadding.leading)
@@ -75,7 +75,7 @@ struct ClipCardView: View {
     private func mainContent(style: CardStyle, palette: CardPalette) -> some View {
         if let peek = translation?.peek {
             CardHeader(item: item, palette: palette, accessories: accessories(palette))
-            PeekContent(peek: peek, item: item, imageURL: imageURL)
+            PeekContent(peek: peek, item: item, imageSource: imageSource)
                 .e2eAnchor("list.peek.\(item.id)")
         } else if let security {
             SecurityCardContent(

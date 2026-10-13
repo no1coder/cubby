@@ -9,10 +9,12 @@ public enum PasteboardWriteError: Error, Equatable {
 
 /// 将历史条目写回系统剪贴板
 public enum PasteboardWriter {
-    /// - Parameter formats: 文本条目的富文本格式（键为 UTI）；传空表示仅写入纯文本
+    /// - Parameters:
+    ///   - imageData: 图片条目的原图（解密后的 PNG）；非图片条目传 nil
+    ///   - formats: 文本条目的富文本格式（键为 UTI）；传空表示仅写入纯文本
     public static func write(
         _ item: ClipItem,
-        imageURL: URL?,
+        imageData: Data?,
         formats: [String: Data] = [:],
         to pasteboard: NSPasteboard
     ) throws {
@@ -25,8 +27,7 @@ public enum PasteboardWriter {
             }
 
         case .image:
-            guard let imageURL,
-                let png = try? Data(contentsOf: imageURL),
+            guard let png = imageData,
                 let rep = NSBitmapImageRep(data: png)
             else { throw PasteboardWriteError.imageUnavailable }
             pasteboard.clearContents()

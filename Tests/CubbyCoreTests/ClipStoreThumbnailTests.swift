@@ -13,7 +13,7 @@ struct ClipStoreThumbnailTests {
     }
 
     private func thumbnailName(of item: ClipItem) throws -> String {
-        ImageThumbnail.name(forImage: try #require(item.image?.name))
+        ImageThumbnail.legacyName(forImage: try #require(item.image?.name))
     }
 
     private func exists(_ name: String, in dir: URL) -> Bool {
@@ -44,8 +44,9 @@ struct ClipStoreThumbnailTests {
         defer { TempDirectory.remove(dir) }
         let store = StoreFactory.make(dir: dir)
 
-        let prepared = try ClipStore.prepare(bigImage(1), blobs: BlobStore(directory: dir.appendingPathComponent("p")))
-        #expect(prepared.thumbnailName == prepared.blobName.map(ImageThumbnail.name(forImage:)))
+        let prepared = try ClipStore.prepare(
+            bigImage(1), blobs: PlainDirectoryBlobStore(directory: dir.appendingPathComponent("p")))
+        #expect(prepared.thumbnailName == prepared.blobName.map(ImageThumbnail.legacyName(forImage:)))
 
         let item = try #require(await store.recordInBackground(bigImage(1), source: nil).value)
         #expect(exists(try thumbnailName(of: item), in: dir))
@@ -71,7 +72,7 @@ struct ClipStoreThumbnailTests {
         let dir = try TempDirectory.make()
         defer { TempDirectory.remove(dir) }
         let store = StoreFactory.make(dir: dir)
-        let blobs = BlobStore(directory: dir)
+        let blobs = PlainDirectoryBlobStore(directory: dir)
 
         let prepared = try ClipStore.prepare(bigImage(2), blobs: blobs)
         let name = try #require(prepared.thumbnailName)
@@ -85,7 +86,7 @@ struct ClipStoreThumbnailTests {
     func reusesExistingThumbnail() throws {
         let dir = try TempDirectory.make()
         defer { TempDirectory.remove(dir) }
-        let blobs = BlobStore(directory: dir)
+        let blobs = PlainDirectoryBlobStore(directory: dir)
 
         let first = try ClipStore.prepare(bigImage(3), blobs: blobs)
         let name = try #require(first.thumbnailName)
@@ -170,7 +171,7 @@ struct ClipStoreThumbnailTests {
     func orphanCleanupCoversThumbnails() throws {
         let dir = try TempDirectory.make()
         defer { TempDirectory.remove(dir) }
-        let blobs = BlobStore(directory: dir)
+        let blobs = PlainDirectoryBlobStore(directory: dir)
         for name in ["kept.png", "kept.thumb", "gone.thumb", "stray.png"] {
             try blobs.write(Data(name.utf8), name: name)
         }
@@ -269,7 +270,7 @@ struct ClipStoreThumbnailTests {
         let store = StoreFactory.make(dir: dir, storage: InMemoryHistoryStorage(initial: ClipHistory(items: [legacy])))
         let paused = Latch()
         let resume = Latch(fallback: .seconds(20))
-        store.thumbnailWriter = { name, url, ref, blobs in
+        store.thumbnailWriter = { name, ref, blobs in
             func pause(at here: RemovalPoint) async {
                 guard here == point else { return }
                 paused.open()
@@ -278,14 +279,14 @@ struct ClipStoreThumbnailTests {
             await pause(at: .beforeDecoding)
             if point == .whileDecoding {
                 // 模拟解码进行中：原图已读入内存，删除发生后才解码完成并写入
-                let source = try? Data(contentsOf: url)
+                let source = try? blobs.data(ref.name)
                 await pause(at: .whileDecoding)
                 guard let source,
                     let data = ImageThumbnail.make(fromImageData: source, width: ref.width, height: ref.height)
                 else { return false }
                 return (try? blobs.write(data, name: name)) != nil
             }
-            let written = await ClipStore.writeThumbnail(name: name, forImageAt: url, ref: ref, blobs: blobs)
+            let written = await ClipStore.writeThumbnail(name: name, ref: ref, blobs: blobs)
             await pause(at: .afterWriting)
             return written
         }

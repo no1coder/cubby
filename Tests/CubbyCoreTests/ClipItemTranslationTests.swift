@@ -60,7 +60,8 @@ struct ClipItemTranslationTests {
             TranslationFixtures.image("zh-Hans", blob: "t1.png"), TranslationFixtures.image("ja", blob: "t2.png"))
         #expect(image.blobNames == ["i.png", "t1.png", "t2.png"])
         #expect(image.translatedImageNames == ["t1.png", "t2.png"])
-        #expect(Set(image.storedBlobNames) == ["i.png", "t1.png", "t2.png", ImageThumbnail.name(forImage: "i.png")])
+        let blobs = PlainDirectoryBlobStore(directory: URL(fileURLWithPath: "/unused"))
+        #expect(Set(image.storedBlobNames(in: blobs)) == ["i.png", "t1.png", "t2.png", "i.thumb"])
         #expect(item.translated(chinese).blobNames.isEmpty)
         #expect(ClipHistory(items: [image]).blobNames == ["i.png", "t1.png", "t2.png"])
     }

@@ -41,19 +41,30 @@ final class AddressGuardController {
     @ObservationIgnored private var incidents: [UUID: TamperIncident] = [:]
 
     @ObservationIgnored let settings: AppSettings
-    @ObservationIgnored private let store: SecurityLogStore?
+    /// nil：只在内存里记录（历史已锁定或尚未就绪、调试走查、读不出已有记录时）
+    @ObservationIgnored private var store: SecurityLogStore?
     @ObservationIgnored private let now: () -> Date
     @ObservationIgnored private let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Security")
 
-    /// - Parameter store: nil 时只在内存里记录（调试走查）
-    init(settings: AppSettings, store: SecurityLogStore?, now: @escaping () -> Date = Date.init) {
+    /// 先只在内存里记录；加密 Vault 就绪后由 attach(_:) 接上加密的安全记录（E8 ①：锁定期间不写盘）
+    init(settings: AppSettings, now: @escaping () -> Date = Date.init) {
         self.settings = settings
-        self.store = store
         self.now = now
-        let log = store?.load() ?? SecurityLog()
-        self.log = log
-        self.blockedItemIDs = Self.blockedItems(in: log)
+        self.log = SecurityLog()
         self.state = AddressGuard(configuration: Self.configuration(settings: settings, monitorsKeystrokes: false))
+    }
+
+    /// 接上磁盘上的安全记录：读入并与内存中已有的记录合并（内存中的为准），之后的变化写盘。
+    /// 已有记录读不出来时本次运行不写盘（不能用空记录覆盖它）
+    func attach(_ store: SecurityLogStore) {
+        let loaded = store.load()
+        log = log.merging(loaded.log)
+        guard loaded.allowsSaving else {
+            logger.error("The security log could not be read; keeping it in memory for this run")
+            return
+        }
+        self.store = store
+        if log != loaded.log { persist() }
     }
 
     // MARK: - 配置

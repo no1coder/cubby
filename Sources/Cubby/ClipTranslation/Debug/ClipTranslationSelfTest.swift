@@ -38,9 +38,8 @@ final class ClipTranslationSelfTest {
     private init?() {
         guard let defaults = UserDefaults(suiteName: suiteName) else { return nil }
         settings = AppSettings(defaults: defaults)
-        store = ClipStore(
-            storage: JSONHistoryStorage(fileURL: directory.appending(path: "history.json")),
-            blobs: BlobStore(directory: directory.appending(path: "Images", directoryHint: .isDirectory)), limit: 100)
+        let vault = DebugHistoryKey.vaultStores(in: directory)
+        store = ClipStore(storage: vault.storage, blobs: vault.blobs, limit: 100)
     }
 
     private func cleanUp() {

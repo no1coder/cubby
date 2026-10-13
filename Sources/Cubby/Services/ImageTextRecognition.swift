@@ -5,7 +5,7 @@ import ImageIO
 import Vision
 
 enum ImageTextRecognitionError: Error {
-    /// 文件无法读取或不是可解码的图片
+    /// 数据不是可解码的图片
     case unreadable
 }
 
@@ -17,20 +17,22 @@ struct VisionImageTextRecognizer: ImageTextRecognizing {
     private static let queue = DispatchQueue(label: "io.github.no1coder.Cubby.image-text", qos: .utility)
 
     /// 开始前检查取消；Vision 一旦开始便无法中断，完成后的结果照常返回，由索引器决定保留还是丢弃
-    func recognizeText(at url: URL, maxPixelSize: Int?) async throws -> String {
+    func recognizeText(in image: Data, maxPixelSize: Int?) async throws -> String {
         try Task.checkCancellation()
         let fragments = try await withCheckedThrowingContinuation { continuation in
             Self.queue.async {
                 // 及时释放解码后的位图与 Vision 的中间结果，回填大量图片时内存不累积
-                let result = Result { try autoreleasepool { try Self.fragments(at: url, maxPixelSize: maxPixelSize) } }
+                let result = Result {
+                    try autoreleasepool { try Self.fragments(in: image, maxPixelSize: maxPixelSize) }
+                }
                 continuation.resume(with: result)
             }
         }
         return TextReadingOrder.text(fragments)
     }
 
-    private static func fragments(at url: URL, maxPixelSize: Int?) throws -> [TextReadingOrder.Fragment] {
-        let image = try loadImage(at: url, maxPixelSize: maxPixelSize)
+    private static func fragments(in data: Data, maxPixelSize: Int?) throws -> [TextReadingOrder.Fragment] {
+        let image = try loadImage(data, maxPixelSize: maxPixelSize)
         let request = VNRecognizeTextRequest()
         request.recognitionLevel = .accurate
         request.recognitionLanguages = TextRecognizer.languages
@@ -43,10 +45,10 @@ struct VisionImageTextRecognizer: ImageTextRecognizing {
         }
     }
 
-    /// 需要缩放时用 ImageIO 直接解码出缩略图，避免先把超大原图完整解码进内存
-    private static func loadImage(at url: URL, maxPixelSize: Int?) throws -> CGImage {
+    /// 需要缩放时用 ImageIO 直接解码出缩略图，避免先把超大原图完整解码进内存（解密后的数据只在内存中）
+    private static func loadImage(_ data: Data, maxPixelSize: Int?) throws -> CGImage {
         let sourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
-        guard let source = CGImageSourceCreateWithURL(url as CFURL, sourceOptions) else {
+        guard let source = CGImageSourceCreateWithData(data as CFData, sourceOptions) else {
             throw ImageTextRecognitionError.unreadable
         }
         let image: CGImage?

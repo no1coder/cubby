@@ -85,7 +85,7 @@ final class ClotheslineController {
         if store.canPersist, retained != settings.clothesline { settings.clothesline = retained }
         store.protectedIDs = Set(retained.itemIDs)
         let entries = retained.itemIDs.compactMap { id in
-            store.item(id: id).map { ClotheslineModel.Entry(item: $0, imageURL: store.imageURL(for: $0)) }
+            store.item(id: id).map { ClotheslineModel.Entry(item: $0, imageSource: store.imageSource(for: $0)) }
         }
         model.update(entries: entries, width: (screen ?? NSScreen.main)?.frame.width ?? 0)
         updatePolling()
@@ -193,7 +193,7 @@ final class ClotheslineController {
 
     private func copy(_ item: ClipItem) {
         do {
-            try PasteboardWriter.write(item, imageURL: store.imageURL(for: item), to: .general)
+            try PasteboardWriter.write(item, imageData: store.imageData(for: item), to: .general)
             OwnPasteboardWrites.record(.general)
             store.promote(id: item.id)
             if let anchor = HUDToast.defaultAnchor() {

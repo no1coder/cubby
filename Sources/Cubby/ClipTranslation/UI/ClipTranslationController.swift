@@ -116,7 +116,7 @@ final class ClipTranslationController {
                 ?? entries.max(by: { $0.createdAt < $1.createdAt })
         else { return nil }
         let result = CachedTranslation.result(
-            for: item, entry: entry, imageURL: environment.translatedImageURL(entry))
+            for: item, entry: entry, image: environment.translatedImage(entry))
         return result.isEmpty ? nil : result
     }
 

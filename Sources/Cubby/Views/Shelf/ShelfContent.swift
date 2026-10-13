@@ -109,7 +109,7 @@ private struct ShelfCardRow: View {
     private func card(_ item: ClipItem, number: Int?, isSelected: Bool, keywords: [String]) -> some View {
         ShelfCard(
             item: item, index: number ?? Int.max, isSelected: isSelected, keywords: keywords,
-            imageURL: viewModel.imageURL(for: item),
+            imageSource: viewModel.imageSource(for: item),
             translation: CardTranslationDecorations.make(for: item, keywords: keywords, viewModel: viewModel),
             isOnClothesline: viewModel.isOnClothesline(item),
             onInlineAction: { viewModel.translation?.inline.performAction() },

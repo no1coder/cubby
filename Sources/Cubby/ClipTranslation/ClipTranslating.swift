@@ -58,8 +58,8 @@ struct ClipTranslationResult: Equatable, Sendable {
     let plainText: String
     /// 富文本条目：保留结构的译文（粘贴时写 RTF / HTML + 纯文本）；纯文本与图片条目为 nil
     let richText: AttributedString?
-    /// 图片条目：译后 PNG（带 DPI）的文件 URL；文本条目为 nil
-    let imageURL: URL?
+    /// 图片条目：译后 PNG（带 DPI，存在加密存储里）；文本条目为 nil
+    let image: ClipImageSource?
     let engineName: String
     let isOnDevice: Bool
     let fromCache: Bool

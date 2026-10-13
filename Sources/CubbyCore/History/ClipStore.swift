@@ -2,7 +2,10 @@ import Foundation
 import Observation
 import os
 
-/// 剪贴板历史的状态中心：负责条目创建、状态变更、撤销、持久化与 blob 文件清理
+/// 剪贴板历史的状态中心：负责条目创建、状态变更、撤销、持久化与 blob 文件清理。
+///
+/// 持久化状态可在运行中切换（E8 ①）：历史已锁定或密钥尚未就绪时以 init(inMemoryWithLimit:) 创建，
+/// 条目与图片只在内存中；之后 unlock(storage:blobs:) 读入加密历史、合并内存条目、开启写盘（见 ClipStore+Unlock）
 @MainActor
 @Observable
 public final class ClipStore {
@@ -12,24 +15,30 @@ public final class ClipStore {
         public let index: Int
     }
 
-    public private(set) var history: ClipHistory
+    public internal(set) var history: ClipHistory
     public private(set) var limit: Int
     /// 每次历史变化递增，视图层可据此做缓存失效
-    public private(set) var revision = 0
+    public internal(set) var revision = 0
     /// 最近一次删除，可通过 undoRemove() 恢复
-    public private(set) var lastRemoval: Removal?
-    /// 读取失败（非损坏）或历史文件来自更新版本时为 false：本次运行不写盘、不删除 blob，避免覆盖已有数据
-    public let canPersist: Bool
+    public internal(set) var lastRemoval: Removal?
+    /// 本次运行是否把历史写盘。读取失败（非损坏）、文件来自更新版本、历史只在内存中时为 false：
+    /// 不写盘、不删除磁盘上的文件，避免覆盖已有数据
+    public internal(set) var canPersist: Bool
+    /// 历史与图片只在内存中（已锁定或尚未就绪，E8 ①）：什么都不写盘
+    public internal(set) var isInMemory: Bool
     /// 启动加载时遇到的问题（nil 表示正常），界面据此提示原因
-    public private(set) var loadIssue: LoadIssue?
+    public internal(set) var loadIssue: LoadIssue?
     /// 自动裁剪（记录新内容、setLimit）时与收藏一样保留、且不占上限名额的条目，例如晾衣绳上的条目；由应用层同步。
     /// 设置它本身不裁剪也不保存，下次裁剪时生效。remove(id:) 与 clearHistory() 不看它：清空只保留收藏
     @ObservationIgnored public var protectedIDs: Set<UUID> = []
 
-    @ObservationIgnored let blobs: BlobStore
-    @ObservationIgnored private let saver: CoalescingSaver
-    @ObservationIgnored private let now: () -> Date
-    @ObservationIgnored private let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "ClipStore")
+    @ObservationIgnored var blobs: any ClipBlobStoring
+    /// nil：历史只在内存中，没有可写的存储
+    @ObservationIgnored var saver: CoalescingSaver?
+    /// 本次运行是否允许删除磁盘上的文件：只有干净地读入历史（没有任何加载问题）且可写盘后才允许（E8 ④）
+    @ObservationIgnored var allowsDiskCleanup = false
+    @ObservationIgnored let now: () -> Date
+    @ObservationIgnored let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "ClipStore")
     /// 最近一次后台记录：后续的后台记录等它入历史后再入，保证按调用顺序
     @ObservationIgnored private var pendingRecord: Task<ClipItem?, Never>?
     /// 搜索索引：加载后在后台构建（见 ClipStore+Search），之后每次历史变化时与 history 在同一处同步增量更新；
@@ -41,9 +50,10 @@ public final class ClipStore {
     /// 回填时生成并写入一张缩略图；测试可替换为能在生成前后暂停的实现，把删除确定地插在指定的一步
     @ObservationIgnored var thumbnailWriter: ThumbnailWriter = ClipStore.writeThumbnail
 
+    /// 立即从 storage 读入历史并按结果决定本次运行是否写盘
     public init(
         storage: HistoryPersisting,
-        blobs: BlobStore,
+        blobs: any ClipBlobStoring,
         limit: Int,
         now: @escaping () -> Date = Date.init
     ) {
@@ -51,22 +61,43 @@ public final class ClipStore {
         self.saver = CoalescingSaver(storage: storage)
         self.limit = max(limit, 1)
         self.now = now
+        history = .empty
+        canPersist = false
+        isInMemory = !blobs.isPersistent
+        adoptInitialLoad(Self.loadInitialHistory(from: storage, logger: logger))
+    }
 
-        let loaded = Self.loadInitialHistory(from: storage, logger: logger)
-        self.canPersist = loaded.canPersist
-        self.loadIssue = loaded.issue
+    /// 只在内存中记录（历史已锁定或密钥尚未就绪，E8 ①）：空历史，不写盘、不读盘，之后可 unlock
+    public init(inMemoryWithLimit limit: Int, now: @escaping () -> Date = Date.init) {
+        blobs = InMemoryClipBlobStore()
+        saver = nil
+        self.limit = max(limit, 1)
+        self.now = now
+        history = .empty
+        canPersist = false
+        isInMemory = true
+        buildSearchIndex()
+    }
+
+    private func adoptInitialLoad(_ loaded: InitialLoad) {
+        canPersist = loaded.canPersist
+        loadIssue = loaded.issue
         guard loaded.canPersist else {
-            self.history = loaded.history
+            history = loaded.history
             buildSearchIndex()
             return
         }
         // 异常退出可能留下引用已删除文件的条目，启动时修正
         let repaired = Self.repairingMissingBlobs(loaded.history, blobs: blobs)
-        self.history = repaired
-        removeOrphanedBlobs()
+        history = repaired
+        // 历史损坏时备份里的条目仍引用这些文件：本次运行一个都不删（E8 ④）
+        allowsDiskCleanup = loaded.issue == nil
+        if allowsDiskCleanup {
+            removeOrphanedBlobs()
+        }
         // 修复了条目或从旧格式迁移而来时，写回一次（后者同时写入新的格式版本号）
         if loaded.needsResave || repaired != loaded.history {
-            saver.schedule(repaired)
+            saver?.schedule(repaired)
         }
         buildSearchIndex()
     }
@@ -106,7 +137,7 @@ public final class ClipStore {
     private func recordInBackground(
         source: SourceApp?,
         linkTitle: String? = nil,
-        prepare: @escaping @Sendable (BlobStore) throws -> PreparedClip
+        prepare: @escaping @Sendable (any ClipBlobStoring) throws -> PreparedClip
     ) -> Task<ClipItem?, Never> {
         let blobs = self.blobs
         let preparation = Task.detached(priority: .userInitiated) {
@@ -134,14 +165,16 @@ public final class ClipStore {
         return task
     }
 
-    /// 插入已准备好的内容；blob 若在准备后被删除（例如期间清空了历史）则补写，条目不会指向缺失的文件
+    /// 插入已准备好的内容。文件名按当前存储重新推出（准备期间可能已从内存切换到加密存储）；
+    /// blob 若不在当前存储中（期间清空了历史或刚切换了存储）则补写，条目不会指向缺失的文件
     @discardableResult
     public func record(_ prepared: PreparedClip, source: SourceApp?, linkTitle: String? = nil) -> ClipItem? {
         do {
-            for blob in [prepared.blob, prepared.thumbnail].compactMap(\.self) where !blobs.exists(blob.name) {
+            let rebased = prepared.rebased(onto: blobs)
+            for blob in [rebased.blob, rebased.thumbnail].compactMap(\.self) where !blobs.exists(blob.name) {
                 try blobs.write(blob.data, name: blob.name)
             }
-            let item = item(from: prepared, source: source, date: now(), linkTitle: linkTitle)
+            let item = item(from: rebased, source: source, date: now(), linkTitle: linkTitle)
             apply(history.inserting(item, limit: limit, keeping: protectedIDs))
             return history.items.first
         } catch {
@@ -165,7 +198,7 @@ public final class ClipStore {
         lastRemoval = Removal(item: history.items[index], index: index)
         apply(history.removing(id: id))
         if let previous {
-            removeUnreferencedBlobs(previous.item.storedBlobNames)
+            removeUnreferencedBlobs(of: previous.item)
         }
     }
 
@@ -176,7 +209,7 @@ public final class ClipStore {
         lastRemoval = nil
         apply(history.restoring(removal.item, at: removal.index))
         // 合并到现有条目时，被删条目独有的文件不再需要
-        removeUnreferencedBlobs(removal.item.storedBlobNames)
+        removeUnreferencedBlobs(of: removal.item)
         return item(id: removal.item.id)
             ?? history.items.first { $0.contentHash == removal.item.contentHash }
     }
@@ -185,7 +218,7 @@ public final class ClipStore {
     public func discardUndo() {
         guard let removal = lastRemoval else { return }
         lastRemoval = nil
-        removeUnreferencedBlobs(removal.item.storedBlobNames)
+        removeUnreferencedBlobs(of: removal.item)
     }
 
     /// 清空历史（只保留收藏；protectedIDs 中未收藏的条目也会被清掉）
@@ -229,112 +262,65 @@ public final class ClipStore {
         history.items.first { $0.id == id }
     }
 
-    public func imageURL(for item: ClipItem) -> URL? {
-        item.image.flatMap { blobs.url(for: $0.name) }
-    }
-
-    /// 读取条目的富文本格式；没有或读取失败时返回空字典（退化为纯文本）
-    public func formats(for item: ClipItem) -> [String: Data] {
-        guard let name = item.formatsName else { return [:] }
-        do {
-            return try RichFormats.decode(blobs.read(name))
-        } catch {
-            logger.error("Failed to read rich text formats: \(error.localizedDescription, privacy: .public)")
-            return [:]
-        }
-    }
-
     /// 等待所有排队中的保存完成（退出应用前、测试中使用）
     public func flush() {
-        saver.flush()
+        saver?.flush()
     }
 
     // MARK: - 内部实现
 
     func apply(_ newHistory: ClipHistory) {
         guard newHistory != history else { return }
-        let protected = Set(lastRemoval?.item.storedBlobNames ?? [])
-        let orphaned = history.storedBlobNames.subtracting(newHistory.storedBlobNames).subtracting(protected)
+        // 先比较历史里记录的文件名（便宜），只为确实不再引用的原图推出缩略图名（加密存储中要算 HMAC）
+        let referenced = newHistory.blobNames.union(lastRemoval?.item.blobNames ?? [])
+        let orphaned = history.blobNames.subtracting(referenced)
+        let orphanedImages = history.imageNames.intersection(orphaned)
         history = newHistory
         // 与 history 同步更新（只折叠新增或变化的条目），搜索不会看到过期数据
         searchIndex = searchIndex?.updated(for: newHistory.items)
         revision += 1
 
         // 文件同步删除，避免与后续写入同名文件产生竞争
-        removeBlobs(orphaned)
+        removeBlobs(orphaned.union(orphanedImages.map(blobs.thumbnailName(forImage:))))
         if canPersist {
-            saver.schedule(newHistory)
+            saver?.schedule(newHistory)
         }
     }
 
-    /// 删除不再被历史或待撤销条目引用的文件
-    func removeUnreferencedBlobs(_ names: [String]) {
-        let protected = Set(lastRemoval?.item.storedBlobNames ?? [])
-        removeBlobs(Set(names).subtracting(history.storedBlobNames).subtracting(protected))
+    /// 删除条目独有、已不再被历史或待撤销条目引用的文件（含其缩略图）
+    func removeUnreferencedBlobs(of item: ClipItem) {
+        let referenced = history.blobNames.union(lastRemoval?.item.blobNames ?? [])
+        var names = Set(item.blobNames).subtracting(referenced)
+        if let image = item.image, names.contains(image.name) {
+            names.insert(blobs.thumbnailName(forImage: image.name))
+        }
+        removeBlobs(names)
     }
 
+    /// 删除不再被历史或待撤销条目引用的文件（只用于不带缩略图的文件，如译后图片）
+    func removeUnreferencedBlobs(_ names: [String]) {
+        removeBlobs(Set(names).subtracting(history.blobNames).subtracting(lastRemoval?.item.blobNames ?? []))
+    }
+
+    /// 内存中的文件总可以删；磁盘上的只在可写盘且本次加载干净时删除——
+    /// 只读模式下磁盘上的历史仍可能引用它们（文件名基于内容，可能与本次新记录同名），损坏时留给备份（E8 ④）
     func removeBlobs(_ names: Set<String>) {
-        // 只读模式下磁盘上的历史仍可能引用这些文件（文件名基于内容哈希，可能与本次新记录同名），一律保留
-        guard canPersist, !names.isEmpty else { return }
+        guard !names.isEmpty, !blobs.isPersistent || (canPersist && allowsDiskCleanup) else { return }
         let failed = blobs.remove(names)
         if !failed.isEmpty {
             logger.error("Failed to delete files: \(failed, privacy: .public)")
         }
     }
 
-    /// 准备阶段（可在任意线程）：原始图片先转码为 PNG（转码后才计算去重摘要、检查大小上限），其余同下
-    public nonisolated static func prepare(_ image: RawImage, blobs: BlobStore) throws -> PreparedClip {
-        let normalized = try ImageNormalizer.normalize(image)
-        // 缩略图直接从未压缩的 TIFF 生成，比再解码一遍刚压好的 PNG 快
-        return try prepareImage(
-            png: normalized.png, width: normalized.width, height: normalized.height,
-            thumbnailSource: image.data, blobs: blobs)
-    }
-
-    /// 准备阶段（可在任意线程）：计算摘要、写入 blob（权限 0600），图片另生成卡片缩略图；不碰历史
-    public nonisolated static func prepare(_ content: ClipContent, blobs: BlobStore) throws -> PreparedClip {
-        switch content {
-        case .text(let text):
-            return PreparedClip(payload: .text(text, formatsName: nil), blob: nil)
-        case .richText(let text, let formats):
-            let data = try RichFormats.encode(formats)
-            let name = ContentHasher.sha256(data) + ".formats"
-            try blobs.write(data, name: name)
-            return PreparedClip(payload: .text(text, formatsName: name), blob: .init(name: name, data: data))
-        case .image(let png, let width, let height):
-            return try prepareImage(png: png, width: width, height: height, thumbnailSource: png, blobs: blobs)
-        case .files(let urls):
-            return PreparedClip(payload: .files(urls.map(\.path)), blob: nil)
-        }
-    }
-
-    /// 图片：摘要按 PNG 计算（去重），写入原图，再由 thumbnailSource 生成卡片缩略图
-    private nonisolated static func prepareImage(
-        png: Data,
-        width: Int,
-        height: Int,
-        thumbnailSource: Data,
-        blobs: BlobStore
-    ) throws -> PreparedClip {
-        let digest = ContentHasher.sha256(png)
-        let name = digest + ".png"
-        try blobs.write(png, name: name)
-        let ref = ImageRef(name: name, width: width, height: height)
-        return PreparedClip(
-            payload: .image(ref, digest: digest),
-            blob: .init(name: name, data: png),
-            thumbnail: prepareThumbnail(for: ref, source: thumbnailSource, blobs: blobs)
-        )
-    }
-
     private func item(from prepared: PreparedClip, source: SourceApp?, date: Date, linkTitle: String?) -> ClipItem {
         switch prepared.payload {
-        case .text(let text, let formatsName):
-            return textItem(text, formatsName: formatsName, source: source, date: date, linkTitle: linkTitle)
-        case .image(let ref, let digest):
+        case .text(let text):
+            return textItem(text, formatsName: prepared.blob?.name, source: source, date: date, linkTitle: linkTitle)
+        case .image(let width, let height, let digest):
+            let name = prepared.blob?.name ?? ""
             return ClipItem(
                 kind: .image,
-                payload: .image(ref),
+                payload: .image(ImageRef(name: name, width: width, height: height)),
                 source: source,
                 createdAt: date,
                 contentHash: ContentHasher.hash(imageDigest: digest)
@@ -365,10 +351,12 @@ public final class ClipStore {
         )
     }
 
-    private func removeOrphanedBlobs() {
+    /// 删除历史与待撤销条目都不再引用的文件（只在干净加载后调用）
+    func removeOrphanedBlobs() {
         do {
-            // 在用图片的缩略图不在历史里记录，按原图名推出后一并保留
-            let removed = try blobs.removeAll(except: history.storedBlobNames)
+            let keep = history.storedBlobNames(in: blobs)
+                .union(lastRemoval?.item.storedBlobNames(in: blobs) ?? [])
+            let removed = try blobs.removeAll(except: keep)
             if !removed.isEmpty {
                 logger.info("Removed \(removed.count) orphaned files")
             }
@@ -379,50 +367,10 @@ public final class ClipStore {
 
     /// 移除图片文件已丢失的条目；富文本格式丢失时退化为纯文本（其译文按富文本分段，一并丢弃）；
     /// 译后图片丢失时只丢弃该条译文，不动条目
-    private static func repairingMissingBlobs(_ history: ClipHistory, blobs: BlobStore) -> ClipHistory {
-        let items = history.items.compactMap { item -> ClipItem? in
-            if let image = item.image, !blobs.exists(image.name) { return nil }
-            if let formatsName = item.formatsName, !blobs.exists(formatsName) {
-                return item.withFormatsName(nil).withTranslations(nil)
-            }
-            return item.repairingTranslations(blobExists: blobs.exists)
+    static func repairingMissingBlobs(_ history: ClipHistory, blobs: any ClipBlobStoring) -> ClipHistory {
+        let items = history.items.compactMap { item in
+            item.rewritingBlobNames { blobs.exists($0.name) ? $0.name : nil }
         }
         return items == history.items ? history : ClipHistory(items: items)
-    }
-}
-
-/// 已在后台准备好的剪贴板内容：摘要已算好、blob 已写入，入历史只剩插入
-public struct PreparedClip: Sendable {
-    enum Payload: Sendable {
-        case text(String, formatsName: String?)
-        case image(ImageRef, digest: String)
-        case files([String])
-    }
-
-    /// 需要存在的 blob 及其内容（入历史时若已被删除则补写）
-    struct Blob: Sendable {
-        let name: String
-        let data: Data
-    }
-
-    let payload: Payload
-    let blob: Blob?
-    /// 图片的卡片缩略图（原图不大或无法生成时为 nil）
-    let thumbnail: Blob?
-
-    init(payload: Payload, blob: Blob?, thumbnail: Blob? = nil) {
-        self.payload = payload
-        self.blob = blob
-        self.thumbnail = thumbnail
-    }
-
-    /// blob 文件名（图片、富文本格式）；纯文本与文件为 nil
-    public var blobName: String? {
-        blob?.name
-    }
-
-    /// 缩略图文件名；没有生成缩略图时为 nil
-    public var thumbnailName: String? {
-        thumbnail?.name
     }
 }

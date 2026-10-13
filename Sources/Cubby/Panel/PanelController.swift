@@ -305,7 +305,7 @@ final class PanelController {
     /// 图片文件已被清理等原因贴不出来时，在原面板位置提示
     private func pinToScreen(_ item: ClipItem) {
         let anchor = CGPoint(x: panel.frame.midX, y: panel.frame.midY)
-        guard let pinImage, let url = store.imageURL(for: item),
+        guard let pinImage, let image = store.imageSource(for: item),
             let screen = panel.screen ?? screen(containing: NSEvent.mouseLocation)
         else {
             Self.showPinFailure(at: anchor)
@@ -313,7 +313,7 @@ final class PanelController {
         }
         hide(animated: false)
         Task { @MainActor [logger] in
-            guard let pin = await HistoryImagePinning.load(url: url, on: screen) else {
+            guard let pin = await HistoryImagePinning.load(image, on: screen) else {
                 logger.error("Failed to decode the image to pin")
                 Self.showPinFailure(at: anchor)
                 return

@@ -7,7 +7,7 @@ struct ShelfCardBody: View {
     let style: CardStyle
     let palette: CardPalette
     let keywords: [String]
-    let imageURL: URL?
+    let imageSource: ClipImageSource?
 
     private static let snippetLength = 300
     private static let maxLines = 7
@@ -56,7 +56,7 @@ struct ShelfCardBody: View {
         return Color.clear
             .overlay(alignment: isTall ? .top : .center) {
                 AsyncThumbnail(
-                    url: imageURL, maxPixelSize: ImageThumbnail.pixelSize(width: ref.width, height: ref.height),
+                    source: imageSource, maxPixelSize: ImageThumbnail.pixelSize(width: ref.width, height: ref.height),
                     contentMode: .fill)
             }
             .clipped()
