@@ -12,6 +12,8 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+## [0.4.0] - 2026-10-13
+
 ### Added
 
 - **Encrypted history**: everything Cubby keeps that comes from your clipboard (history, recognized text, translations, images, rich-text formats, thumbnails, translated images, the security log and backups) is now stored encrypted in a new `Vault` folder inside the data folder. The key is a random key in your login keychain that only Cubby's signature is trusted to read, so other apps and scripts running as you see only encrypted data, and copying the data folder elsewhere reveals nothing. It's always on; **Settings › History › Encryption** shows **On**. On the first launch after updating, Cubby encrypts your existing history automatically (the panel shows **Encrypting your history…** for a moment); the unencrypted `history.json` and `Images/` are deleted only after the encrypted copy has been read back and verified. Dragging an image to Finder no longer writes a temporary copy; opening an image with **Open** (`⌘O`) or dropping it on an app that only accepts a file uses a decrypted copy that's deleted when Cubby quits and at its next launch. Keep FileVault on to protect the disk itself. See [PRIVACY.md](PRIVACY.md).
@@ -157,7 +159,8 @@ Internal preview under the working name Zhantie. Not publicly released.
 
 - Menu bar clipboard history with a global shortcut to open it.
 
-[Unreleased]: https://github.com/no1coder/cubby/compare/v0.3.3...HEAD
+[Unreleased]: https://github.com/no1coder/cubby/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/no1coder/cubby/compare/v0.3.3...v0.4.0
 [0.3.3]: https://github.com/no1coder/cubby/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/no1coder/cubby/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/no1coder/cubby/compare/v0.3.0...v0.3.1
