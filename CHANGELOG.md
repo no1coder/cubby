@@ -12,6 +12,8 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+## [0.4.1] - 2026-10-13
+
 ### Fixed
 
 - Screenshots now capture floating windows such as a chat app's image viewer: hovering highlights the viewer instead of the window underneath, and the screenshot overlay now opens at the highest window level, above every app window, such as Telegram's full-screen media viewer.
@@ -163,7 +165,8 @@ Internal preview under the working name Zhantie. Not publicly released.
 
 - Menu bar clipboard history with a global shortcut to open it.
 
-[Unreleased]: https://github.com/no1coder/cubby/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/no1coder/cubby/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/no1coder/cubby/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/no1coder/cubby/compare/v0.3.3...v0.4.0
 [0.3.3]: https://github.com/no1coder/cubby/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/no1coder/cubby/compare/v0.3.1...v0.3.2
