@@ -4,7 +4,8 @@ import CubbyCore
 /// 每块屏幕一个的截图覆盖层窗口（§3.4.5）
 ///
 /// 与 `ClipPanel` 同族：不激活应用、可以成为 key；区别在于
-/// - 层级 `.statusBar`（25）：盖住菜单栏与 Dock，同时低于输入法候选窗、工具提示与弹出菜单（§2.10）；
+/// - 层级固定为系统屏蔽层（`WindowLayer.overlay`）：一出现就盖住菜单栏、Dock 与所有应用窗口
+///   （如聊天软件的看图窗口），只有第三方输入法候选窗与光标在其上（§2.10）；
 /// - 不透明、黑底、无阴影：内容就是冻结帧；
 /// - 失去 key 时**不**关闭（§2.12）：系统弹窗抢走焦点后，点击覆盖层即可恢复。
 final class OverlayWindow: NSPanel {
@@ -19,7 +20,7 @@ final class OverlayWindow: NSPanel {
             backing: .buffered,
             defer: false
         )
-        level = .statusBar
+        level = NSWindow.Level(rawValue: WindowLayer.overlay)
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary, .ignoresCycle]
         acceptsMouseMovedEvents = true
         hasShadow = false

@@ -50,7 +50,7 @@ struct WindowHitTesterTests {
         #expect(Fixture.twoScreens.selectableOwnWindowIDs.isEmpty)
     }
 
-    @Test("过滤 layer ≠ 0、全透明与小于 2×2 的窗口")
+    @Test("过滤菜单栏等系统界面、全透明与小于 2×2 的窗口")
     func filtersNonNormalWindows() {
         #expect(topmost(CGPoint(x: 1000, y: 10)) == nil)
         #expect(topmost(CGPoint(x: 850, y: 650)) == nil)

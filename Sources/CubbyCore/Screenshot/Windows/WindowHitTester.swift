@@ -33,12 +33,12 @@ public enum HoverTarget: Equatable, Sendable {
     }
 }
 
-/// 悬停窗口识别（§2.3 hovering）：按 z 序找光标下的普通窗口
+/// 悬停窗口识别（§2.3 hovering）：按 z 序找光标下的应用窗口（含浮动窗口）
 public enum WindowHitTester {
     /// 窗口宽高下限（小于它的窗口多为不可见的辅助窗口）
     private static let minimumWindowSide: CGFloat = 2
 
-    /// 第一个满足 layer == 0、alpha > 0、宽高 ≥ 2、ownerPID != excludingPID（allowing 中的窗口除外）且包含 point 的窗口
+    /// 第一个满足层级可选（`WindowLayer.isSelectable`）、alpha > 0、宽高 ≥ 2、ownerPID != excludingPID（allowing 中的窗口除外）且包含 point 的窗口
     public static func topmost(
         at point: CGPoint,
         in windows: [WindowCandidate],
@@ -85,7 +85,7 @@ public enum WindowHitTester {
         -> Bool
     {
         let frame = window.frame.standardized
-        return window.layer == 0
+        return WindowLayer.isSelectable(window.layer)
             && window.alpha > 0
             && frame.width >= minimumWindowSide
             && frame.height >= minimumWindowSide

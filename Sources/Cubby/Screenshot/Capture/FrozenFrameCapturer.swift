@@ -44,7 +44,7 @@ struct FrozenFrameCapturer: FrameSource {
             """
         )
         // 保留下来的自有窗口中，普通层级的（设置、使用说明等）可以像其他应用的窗口一样被悬停选中；
-        // 面板、晾衣绳等浮层与其他应用的浮层一样不参与悬停，可以拖选
+        // 面板、晾衣绳等自有浮层不参与悬停，可以拖选（其他应用的浮动窗口按 WindowLayer 规则参与悬停）
         let selectableOwn = windows.filter { $0.ownerPID == ownPID && $0.layer == 0 }.map(\.id)
         let topology = ScreenTopology(
             screens: screens.filter { capturedIDs.contains($0.id) },

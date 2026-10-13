@@ -45,7 +45,7 @@ enum ScenarioWindows {
     private static func eligibleWindows(on screen: CaptureScreen, topology: ScreenTopology) -> [WindowCandidate] {
         topology.windows.filter { window in
             let visible = window.frame.standardized.intersection(screen.frame)
-            return window.layer == 0 && window.alpha > 0 && window.ownerPID != topology.ownPID
+            return WindowLayer.isSelectable(window.layer) && window.alpha > 0 && window.ownerPID != topology.ownPID
                 && !visible.isNull && visible.width >= minimumSide && visible.height >= minimumSide
         }
     }

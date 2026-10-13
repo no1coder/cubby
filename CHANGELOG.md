@@ -12,6 +12,10 @@ When releasing, move these entries into a new "## [x.y.z] - YYYY-MM-DD" section 
 The release script extracts the section that starts with "## [x.y.z]".
 -->
 
+### Fixed
+
+- Screenshots now capture floating windows such as a chat app's image viewer: hovering highlights the viewer instead of the window underneath, and the screenshot overlay now opens at the highest window level, above every app window, such as Telegram's full-screen media viewer.
+
 ## [0.4.0] - 2026-10-13
 
 ### Added

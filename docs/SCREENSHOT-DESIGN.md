@@ -111,7 +111,7 @@ idle ──hotkey/menu/button──▶ capturing ──frames ready──▶ hov
 
 | 输入 | 行为 | 理由 |
 | --- | --- | --- |
-| 移动鼠标 | 用 `WindowHitTester.topmost(at:)` 找光标下最上层普通窗口（layer 0、alpha > 0、≥ 2×2 pt、非 Cubby）；命中则该窗口区域去遮罩 + 2 pt 强调色描边；没有命中则整块屏幕去遮罩 + 描边。 | 「亮的就是会被截的」：让整屏与窗口用同一套视觉语言，用户不用学两种状态。 |
+| 移动鼠标 | 用 `WindowHitTester.topmost(at:)` 找光标下最上层应用窗口（`WindowLayer.isSelectable`：0 ≤ layer < 屏蔽层且不在 Dock…状态栏 20…25，含浮动的看图窗口；alpha > 0、≥ 2×2 pt、非 Cubby）；命中则该窗口区域去遮罩 + 2 pt 强调色描边；没有命中则整块屏幕去遮罩 + 描边。 | 「亮的就是会被截的」：让整屏与窗口用同一套视觉语言，用户不用学两种状态。 |
 | 单击（窗口 / 屏幕上） | 选区 = 命中窗口的 frame ∩ 当前屏幕 frame（窗口跨屏时只取光标所在屏的部分）；无窗口则选区 = 整屏。进入 `adjusting`。 | 选区只限一块屏幕（§2.5），跨屏窗口截半张比拒绝操作更符合预期。 |
 | 拖拽 ≥ 4 pt | 进入 `selecting`，起点为按下位置。 | — |
 | 双击窗口 | 第一次单击进 `adjusting`，第二次单击落在选区内构成双击 → 完成（复制）。 | 「双击窗口即截取」是自然涌现的快捷路径，无需额外规则。 |
@@ -326,7 +326,7 @@ HUD 位置：选区中心（转换到 AppKit 坐标后交给 `HUDToast.show(_:at
 | 动效 | 覆盖层出现 / 消失：无动画；工具栏出现 0.12 s 淡入；手柄悬停放大 0.1 s |
 | 光标 | 见 §2.5 |
 
-**覆盖层窗口层级 = `.statusBar`（25）**，不是 `.screenSaver` 或 shielding。理由：25 高于菜单栏（24）与 Dock（20），满足「盖住菜单栏和 Dock」；同时低于弹出菜单（101）、工具提示（102）与输入法候选窗，所以工具栏 tooltip、贴图右键菜单、中文候选框都能显示在覆盖层之上。用 1000 级会把候选框压在下面，中文输入直接不可用。代价：其他应用的 101 级弹出窗（例如打开着的状态栏 popover）会显示在覆盖层之上；实际上覆盖层成为 key 时它们会因失焦自动关闭。
+**覆盖层窗口层级 = 系统屏蔽层 `CGShieldingWindowLevel()`（2147483628）**（`WindowLayer.overlay`），固定值，覆盖层一出现就在最上层。理由：截图必须压住一切应用窗口——聊天软件的看图窗口常用很高的层级（实测 Telegram 的全屏看图窗口是 101 级），固定 25 时它们会盖在覆盖层上，悬停也选不中。屏蔽层之上只有第三方输入法候选窗（搜狗、Rime 等 2147483629）与光标，标注文字时候选框仍可见。代价：工具提示（102）、系统自带输入法候选窗等低于屏蔽层的窗口会被覆盖层压住（需在 QA 中验证系统输入法）。
 
 ### 2.11 快捷键一览
 
@@ -364,7 +364,7 @@ HUD 位置：选区中心（转换到 AppKit 坐标后交给 `HUDToast.show(_:at
 | 多屏、缩放不同（如 2x 内置 + 1x 外接） | 每屏各自采集原生像素帧、各自一个覆盖层；选区只在一屏；导出用该屏 `scale`；放大镜格子按点定义 | §3.2 坐标约定。 |
 | 屏幕排列有空隙 / 非矩形布局 | 覆盖层只覆盖每个 `NSScreen.frame`，空隙不处理；鼠标在空隙中时不会有事件 | — |
 | Space / 全屏应用 | `.canJoinAllSpaces + .fullScreenAuxiliary`，`orderFrontRegardless()`；全屏应用之上也能显示；冻结帧就是当前 Space 的内容 | 与 `ClipPanel` 一致。 |
-| 菜单栏、Dock、桌面 | 被覆盖层盖住；悬停时它们不算「普通窗口」（layer ≠ 0），落在其上等于选整屏 | 用户要截 Dock 时框选即可。 |
+| 菜单栏、Dock、桌面 | 被覆盖层盖住；悬停时它们不算应用窗口（layer 20…25），落在其上等于选整屏 | 用户要截 Dock 时框选即可。 |
 | 光标在桌面（无窗口） | 整屏高亮 | §2.3。 |
 | 截图时面板 / HUD / 设置窗口打开 | 都**保留**在冻结帧里：开始截图那一刻 Cubby 在屏幕上的全部窗口（面板、晾衣绳、贴图、设置、提示、菜单栏图标）都作为 `exceptingWindows` 留下；之后才出现的覆盖层不在帧里。普通层级的窗口（设置等）可以悬停选中。面板上的截图按钮会先收起面板 | 2026-10-13 用户决定：方便用户截取 Cubby 本身做推广；与系统截图行为一致。 |
 | 会话中再按快捷键 | §2.1 | — |
@@ -661,7 +661,7 @@ public enum HoverTarget: Equatable, Sendable {
     public var screen: CaptureScreen
 }
 public enum WindowHitTester {
-    /// 第一个满足 layer == 0、alpha > 0、宽高 ≥ 2、ownerPID != excludingPID 且包含 point 的窗口
+    /// 第一个满足层级可选（`WindowLayer.isSelectable`）、alpha > 0、宽高 ≥ 2、ownerPID != excludingPID 且包含 point 的窗口
     public static func topmost(at point: CGPoint, in windows: [WindowCandidate], excludingPID: pid_t) -> WindowCandidate?
     public static func hoverTarget(at point: CGPoint, topology: ScreenTopology) -> HoverTarget?
 }
@@ -1223,7 +1223,7 @@ CUBBY_DATA_DIR=/tmp/cubby-c .build-c/debug/Cubby --scenario screenshot:annotatin
 | `ToolbarPlacement` | below / above / inside 三档；右对齐；左溢出右推；样式条同侧且更远；选区 = 整屏 → inside 右下。 |
 | `MagnifierPlacement` | 四角翻转；屏幕比放大镜还小时夹紧。 |
 | `SizeLabelPlacement` | 三档；`text` 在 2x 屏为像素值、四舍五入。 |
-| `WindowHitTester` | z 序取最前；过滤 layer ≠ 0、alpha 0、1×1、ownPID；跨屏窗口 `selectionRect` = 交集；无窗口 → `.screen`。 |
+| `WindowHitTester` | z 序取最前；过滤负层级、Dock…状态栏（20…25）与不低于屏蔽层的层级、alpha 0、1×1、ownPID；跨屏窗口 `selectionRect` = 交集；无窗口 → `.screen`。 |
 | `AnnotationColor` / `ToolStyles` | 8 色 hex 往返；`decode(nil)` = default；未知键忽略；每个工具默认样式；编码可回读。 |
 | `Annotation` | `bounds` 含线宽外扩（每种 shape）；`hitTest`：线条按距离、矩形按描边环（内部空白不命中）、填充类按区域、文字按排版框；`translated` 全部 shape。 |
 | `AnnotationDocument` | 增删改各入一步；undo / redo 往返；新操作清空 redo；100 步上限丢最早；`numberLabel` 删除中间后补位；`topmost` 取最后画的。 |
@@ -1272,7 +1272,7 @@ CUBBY_DATA_DIR=/tmp/cubby-c .build-c/debug/Cubby --scenario screenshot:annotatin
 | R1 | **屏幕录制权限**：`CGRequestScreenCaptureAccess` 只在第一次弹窗；授权后 macOS 常要求重启应用；ad-hoc 签名的开发版每次构建签名不同，授权失效（与辅助功能同病） | 首次体验断裂；开发期反复授权 | 引导窗口明说「可能需要退出重开」；1.5 s 轮询状态；开发者按 CONTRIBUTING 用固定证书 `SIGN_IDENTITY="Cubby Local"`；裸可执行文件的权限会算到终端头上，权限相关测试一律 `make run` |
 | R2 | **macOS 15+ 周期性确认**：系统会定期（15.0 每周、15.1 起每月）弹「Cubby 请求绕过系统窗口选择器…」，弹窗期间采集调用挂起或失败 | 用户按快捷键后「没反应」 | 采集 2 s 超时 → 取消并橙色 HUD「Couldn't capture the screen. Check the permission prompt.」；覆盖层永远在帧到达后才显示，不会留下黑屏；诊断信息含权限状态 |
 | R3 | **采集延迟**：`SCShareableContent` + 每屏 `captureImage` 在多屏 / 5K 上可能 150–300 ms | 达不到 150 ms 目标 | 各屏并行、`onScreenWindowsOnly: true`、sRGB/BGRA 直出；用 `OSSignposter` 打点，M1 单屏必须 ≤ 150 ms；仍超标时阶段 2 评估 macOS 14 上用 `CGDisplayCreateImage`（已弃用但可用）做快路径 |
-| R4 | **覆盖层层级与 key**：层级过高压住输入法候选框、tooltip、右键菜单；非激活面板成为 key 的行为在全屏 Space 上可能异常 | 中文输入不可用；快捷键失灵 | 层级定为 `.statusBar`（§2.10 理由）；`orderFrontRegardless` + `makeKey`；resignKey 不关闭；QA 清单含「全屏 Safari 上截图并输入中文」 |
+| R4 | **覆盖层层级与 key**：层级过高压住输入法候选框、tooltip、右键菜单；非激活面板成为 key 的行为在全屏 Space 上可能异常 | 中文输入不可用；快捷键失灵 | 层级固定为系统屏蔽层（§2.10 理由）；`orderFrontRegardless` + `makeKey`；resignKey 不关闭；QA 清单含「全屏 Safari 上截图并输入中文」 |
 | R5 | **坐标系混用**：AppKit 左下 / CG 左上 / 点 / 像素 / 多屏负坐标 | 选区偏移、导出错位、放大镜取错像素 | §3.2 单一约定；App 层只在 `ScreenTopologyProvider` 换算；Core 测试覆盖负坐标外接屏；`screenshot:edge` 场景在双屏走查 |
 | R6 | **内存与性能**：6K 帧 81 MB/屏，像素化副本再翻倍；放大镜每次移动采样；标注层全量重绘 | 卡顿、内存峰值数百 MB | 帧只保留 CGImage（IOSurface 背书，不复制）；像素化惰性 + 按 blockSize 缓存 + 后台线程；放大镜用 `CGImage.cropping` 取 17×17 再绘制；标注层只在文档变化时重绘，拖拽走 `liveLayer`；会话结束即释放全部位图 |
 | R7 | **中文输入法**：候选窗层级、组字中的 Esc / ↩、`NSTextView` 在非激活应用中的行为 | 文字工具不可用 | R4 层级；`hasMarkedText()` 放行；`screenshot:text` 场景专门测拼音；PanelController 已验证非激活面板可组字 |
@@ -1343,7 +1343,7 @@ CUBBY_DATA_DIR=/tmp/cubby-c .build-c/debug/Cubby --scenario screenshot:annotatin
 | Q1 | Esc 在有标注时是否直接退出（丢弃标注）？ | 直接退出，不确认（快、可预期；右键提供「退一步」） | 有标注时先 HUD「Press Esc again to discard」再退出 |
 | Q2 | 会话中再按快捷键 | 无标注时取消，有标注时忽略 | 一律忽略 / 一律取消 |
 | Q3 | ⇧ 拖拽的语义 | 正方形（PM 草案） | 与 macOS `⇧⌘4` 一致：锁定单轴（正方形改为 ⇧⌥？） |
-| Q4 | 覆盖层层级 `.statusBar`(25) 是否可接受其他应用的弹出窗（101）盖在上面？ | 接受（换取输入法候选、tooltip、菜单可用） | 用 `.popUpMenu` 并在编辑文字时临时降级（更复杂） |
+| Q4 | 覆盖层层级 `.statusBar`(25) 是否可接受其他应用的弹出窗（101）盖在上面？ | 已改为不接受：覆盖层固定在系统屏蔽层（§2.10），截图必须在最上层 | 用 `.popUpMenu` 并在编辑文字时临时降级（更复杂） |
 | Q5 | 放大镜按 `C` 复制的是当前显示格式（RGB 形式进历史为文本卡） | 是 | 始终复制 HEX（保证进颜色卡） |
 | Q6 | 文字标注是否加对比描边 / 阴影提升可读性 | 不加（与微信、系统标记一致） | 按底色亮度自动加 1 pt 黑 / 白描边 |
 | Q7 | 阶段 2 OCR 索引默认开还是关（隐私优先 vs 开箱即用） | **已定：默认开，可关**（本机识别、不上传、关闭即清除） | 默认关 |

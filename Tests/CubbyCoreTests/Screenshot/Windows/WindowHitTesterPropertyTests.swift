@@ -25,7 +25,7 @@ struct WindowHitTesterPropertyTests {
             return WindowCandidate(
                 id: UInt32(100 + index),
                 frame: frame,
-                layer: rng.chance(0.85) ? 0 : rng.pick([-1, 3, 25, 1000]),
+                layer: rng.chance(0.85) ? 0 : rng.pick([-1, 3, 20, 24, 25, 101, 1000, 1500]),
                 ownerPID: rng.chance(0.1) ? Self.ownPID : pid_t(rng.int(below: 5) + 1),
                 alpha: rng.chance(0.9) ? rng.pick([1, 0.5, 0.01]) : 0
             )
@@ -34,7 +34,7 @@ struct WindowHitTesterPropertyTests {
 
     private func isEligible(_ window: WindowCandidate, at point: CGPoint) -> Bool {
         let frame = window.frame.standardized
-        return window.layer == 0 && window.alpha > 0 && frame.width >= 2 && frame.height >= 2
+        return WindowLayer.isSelectable(window.layer) && window.alpha > 0 && frame.width >= 2 && frame.height >= 2
             && window.ownerPID != Self.ownPID && frame.contains(point)
     }
 
