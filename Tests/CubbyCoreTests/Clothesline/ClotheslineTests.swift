@@ -118,4 +118,13 @@ struct ClotheslineTests {
         let (a, b, c) = (UUID(), UUID(), UUID())
         #expect(Clothesline(itemIDs: [a, b, c]).replacing(b, with: b).itemIDs == [a, b, c])
     }
+
+    @Test("解锁合并换掉的 id：绳上的旧 id 原位改指接替者，改写后重复的只留第一个")
+    func replacingIDs() {
+        let (a, b, c, d) = (UUID(), UUID(), UUID(), UUID())
+        let line = Clothesline(itemIDs: [a, b, c])
+        #expect(line.replacingIDs([b: d]).itemIDs == [a, d, c])
+        #expect(line.replacingIDs([b: a]).itemIDs == [a, c])
+        #expect(line.replacingIDs([:]) == line)
+    }
 }

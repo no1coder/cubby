@@ -6618,6 +6618,17 @@
         }
       }
     },
+    "Read-only" : {
+      "comment" : "Settings › History: status when the history was written by a newer version, so nothing is saved",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "只读"
+          }
+        }
+      }
+    },
     "Reads the latest version number from GitHub once a day" : {
       "localizations" : {
         "zh-Hans" : {
@@ -9328,7 +9339,7 @@
       }
     },
     "Try Again" : {
-      "comment" : "Button: read the encryption key from the keychain again",
+      "comment" : "Button: read the key from the keychain again",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {

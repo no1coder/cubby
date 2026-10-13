@@ -23,7 +23,7 @@ Everything lives in `~/Library/Application Support/Cubby/Vault`, and every file 
 | `security-log.cubby` | The address guard's security log (Settings › Security): the time, the kind (for example Ethereum address), a shortened value like `0x5aAe…eAed`, the app in front, and which history item replaced your copy. Never the full value. Entries are kept for 90 days, except the ones that still keep a replaced item blocked |
 | `Backups/` | Backups Cubby makes when it upgrades the history format or finds a damaged history file |
 
-`.lock` (used so only one copy of Cubby changes the folder at a time) and, if you set a custom data folder with `CUBBY_DATA_DIR`, `vault-id` (a random identifier that tells Cubby which key belongs to the folder) contain no clipboard content.
+`.vault.lock` next to `Vault/` (used so only one copy of Cubby changes the folder at a time) and, if you set a custom data folder with `CUBBY_DATA_DIR`, `vault-id` (a random identifier that tells Cubby which key belongs to the folder) contain no clipboard content.
 
 - The folder can only be opened by your macOS user (permissions 0700), and the files can only be read by you (0600).
 - The folder is excluded from Time Machine backups.
@@ -208,7 +208,7 @@ Cubby 不收集、不上传、不分享任何数据。没有账户、统计、�
 | `security-log.cubby` | 地址守护的安全记录（设置 › 剪贴板安全）：时间、类型（如以太坊地址）、缩写的值（如 `0x5aAe…eAed`）、当时的前台应用，以及替换了你复制内容的那条历史。从不保存完整的值。记录保留 90 天，仍在禁止被替换条目的记录除外 |
 | `Backups/` | 升级历史格式或发现历史文件损坏时 Cubby 留下的备份 |
 
-`.lock`（保证同一时间只有一个 Cubby 实例修改该目录）以及用 `CUBBY_DATA_DIR` 指定自定义数据目录时的 `vault-id`（一个随机标识，用来找到该目录对应的密钥）不含任何剪贴板内容。
+`Vault/` 旁边的 `.vault.lock`（保证同一时间只有一个 Cubby 实例修改该目录）以及用 `CUBBY_DATA_DIR` 指定自定义数据目录时的 `vault-id`（一个随机标识，用来找到该目录对应的密钥）不含任何剪贴板内容。
 
 - 目录仅限你的 macOS 用户访问（权限 0700），文件仅限你读取（0600）。
 - 目录排除在 Time Machine 备份之外。

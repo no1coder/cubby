@@ -26,9 +26,7 @@ enum DebugVaultSeed {
             try FileManager.default.removeItem(at: url)
         }
         let launch = VaultLaunch(
-            dataDirectory: root, provider: HistoryKeySource.current.provider,
-            historyLimit: AppSettings.defaultHistoryLimit,
-            allowsDestructiveSteps: false)
+            dataDirectory: root, provider: HistoryKeySource.current.provider, allowsDestructiveSteps: false)
         guard case .ready(let session) = try launch.run() else { throw SeedError.keyUnavailable }
         return Stores(
             storage: EncryptedHistoryStorage(vaultDirectory: session.vault.url, keys: session.keys),

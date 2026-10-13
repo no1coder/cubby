@@ -45,6 +45,12 @@ public struct Clothesline: Equatable, Sendable {
         return Clothesline(itemIDs: replaced)
     }
 
+    /// 按 旧 id → 新 id 改写（位置不变；改写后重复的只留第一个）：解锁合并时去重换掉的条目
+    public func replacingIDs(_ replacements: [UUID: UUID]) -> Clothesline {
+        guard !replacements.isEmpty else { return self }
+        return Clothesline(itemIDs: itemIDs.map { replacements[$0] ?? $0 })
+    }
+
     public func removing(_ id: UUID) -> Clothesline {
         Clothesline(itemIDs: itemIDs.filter { $0 != id })
     }

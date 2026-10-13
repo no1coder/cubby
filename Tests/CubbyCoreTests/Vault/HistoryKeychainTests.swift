@@ -66,6 +66,19 @@ struct HistoryKeychainTests {
         #expect(throws: (any Error).self) { try HistoryKeychain.customAccount(vault: environment.vault) }
     }
 
+    @Test("S2：改名之后、把 vault-id 放回新 Vault 之前崩溃：下次仍得到同一个 account")
+    func vaultIDSurvivesCrashDuringQuarantine() throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        let account = try HistoryKeychain.customAccount(vault: environment.vault)
+        // 模拟 quarantine 的前两步：先留一份待放回的 vault-id，再改名，然后崩溃
+        try VaultRecovery.stageVaultID(of: environment.vault)
+        try FileManager.default.moveItem(
+            at: environment.vault.url, to: environment.root.appendingPathComponent("Vault-unreadable-x"))
+
+        #expect(try HistoryKeychain.customAccount(vault: environment.vault) == account)
+    }
+
     @Test("E8 ② 改名保留后，新 Vault 沿用原来的 vault-id（account 不变）")
     func quarantineKeepsVaultID() throws {
         let environment = try VaultEnvironment()

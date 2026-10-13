@@ -6,7 +6,7 @@ import CubbyCore
 extension AppDelegate {
     func makeStoreAndVault() -> ClipStore {
         let store = ClipStore(inMemoryWithLimit: settings.historyLimit)
-        let vault = VaultCoordinator(store: store) { [settings] in settings.historyLimit }
+        let vault = VaultCoordinator(store: store)
         vault.onReady = { [weak self] session in self?.vaultDidBecomeReady(session) }
         self.vault = vault
         return store

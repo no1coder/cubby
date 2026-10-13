@@ -32,6 +32,8 @@ struct EncryptionStatusRow: View {
             Text(EncryptionCopy.lockedSubtitle).foregroundStyle(.orange)
         case .resetAfterMissingKey:
             Text(EncryptionCopy.resetSubtitle).foregroundStyle(.orange)
+        case .readOnly(let reason):
+            Text(reason.warning.title).foregroundStyle(.orange)
         }
     }
 
@@ -57,6 +59,14 @@ struct EncryptionStatusRow: View {
             Button(EncryptionCopy.tryAgain) { vault.retryUnlock() }
         case .resetAfterMissingKey(let folder):
             Button(EncryptionCopy.showInFinder) { ItemOpener.revealInFinder([folder.path]) }
+        case .readOnly(.unreadable):
+            Button(EncryptionCopy.tryAgain) { vault.retryUnlock() }
+        case .readOnly(.newerVersion):
+            Label {
+                Text(EncryptionCopy.readOnly)
+            } icon: {
+                Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+            }
         }
     }
 }
@@ -92,6 +102,7 @@ struct EncryptionFooter: View {
         case .migrating: EncryptionCopy.migratingFooter
         case .locked: EncryptionCopy.lockedFooter
         case .resetAfterMissingKey(let folder): EncryptionCopy.resetFooter(folderName: folder.lastPathComponent)
+        case .readOnly(let reason): reason.warning.detail
         }
     }
 }
@@ -169,6 +180,13 @@ enum EncryptionCopy {
         )
     }
 
+    /// 历史由更新版本写入、本次不写盘时「加密」一行右侧的状态
+    static var readOnly: String {
+        String(
+            localized: "Read-only",
+            comment: "Settings › History: status when the history was written by a newer version, so nothing is saved")
+    }
+
     static var tryAgain: String {
         String(localized: "Try Again", comment: "Button: read the key from the keychain again")
     }
@@ -193,6 +211,18 @@ extension VaultStatus {
         case .ready: "ready"
         case .locked: "locked"
         case .resetAfterMissingKey: "reset after missing key"
+        case .readOnly(.newerVersion): "read-only (newer version)"
+        case .readOnly(.unreadable): "read-only (unreadable)"
+        }
+    }
+}
+
+extension VaultStatus.ReadOnlyReason {
+    /// 沿用面板上读取历史出错时的提醒文案：更新版本写入 / 无法保存
+    var warning: PanelWarning {
+        switch self {
+        case .newerVersion: .historyFromNewerVersion
+        case .unreadable: .persistenceDisabled
         }
     }
 }

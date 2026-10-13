@@ -15,12 +15,21 @@ enum VaultStatus: Equatable {
     case locked
     /// 本次启动找不到旧历史的密钥（E8 ②）：旧 Vault 已改名保留在该位置，从空历史重新开始
     case resetAfterMissingKey(URL)
+    /// 密钥可用，但加密历史读不了（更新版本写入、读取错误）：本次运行只在内存中记录、不写盘，原文件不动
+    case readOnly(ReadOnlyReason)
+
+    enum ReadOnlyReason: Equatable {
+        /// 历史由更新版本的 Cubby 写入
+        case newerVersion
+        /// 读取失败（权限、磁盘等）
+        case unreadable
+    }
 
     /// 还在准备中（面板显示占位、期间的记录先留在内存里）
     var isPreparing: Bool {
         switch self {
         case .preparing, .migrating: true
-        case .ready, .locked, .resetAfterMissingKey: false
+        case .ready, .locked, .resetAfterMissingKey, .readOnly: false
         }
     }
 }
@@ -44,7 +53,6 @@ final class VaultCoordinator {
     @ObservationIgnored private let store: ClipStore
     @ObservationIgnored private let keySource: HistoryKeySource.Choice
     @ObservationIgnored private let dataDirectory: URL
-    @ObservationIgnored private let historyLimit: () -> Int
     @ObservationIgnored private var running: Task<Void, Never>?
     @ObservationIgnored private var settledWaiters: [CheckedContinuation<Void, Never>] = []
     @ObservationIgnored private let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Vault")
@@ -52,13 +60,11 @@ final class VaultCoordinator {
     init(
         store: ClipStore,
         keySource: HistoryKeySource.Choice = HistoryKeySource.current,
-        dataDirectory: URL = AppPaths.root,
-        historyLimit: @escaping () -> Int
+        dataDirectory: URL = AppPaths.root
     ) {
         self.store = store
         self.keySource = keySource
         self.dataDirectory = dataDirectory
-        self.historyLimit = historyLimit
     }
 
     /// 启动时调用一次
@@ -67,9 +73,9 @@ final class VaultCoordinator {
         run()
     }
 
-    /// 已锁定时重新读取钥匙串（用户点「重试」）；成功后合并内存中的条目、开启写盘
+    /// 已锁定或历史读取失败时重来一次（用户点「重试」）；成功后合并内存中的条目、开启写盘
     func retryUnlock() {
-        guard status == .locked, running == nil else { return }
+        guard status == .locked || status == .readOnly(.unreadable), running == nil else { return }
         run()
     }
 
@@ -82,14 +88,13 @@ final class VaultCoordinator {
     private func run() {
         status = .preparing
         let launch = VaultLaunch(
-            dataDirectory: dataDirectory, provider: keySource.provider, historyLimit: historyLimit(),
-            allowsDestructiveSteps: !keySource.isEphemeral)
+            dataDirectory: dataDirectory, provider: keySource.provider, allowsDestructiveSteps: !keySource.isEphemeral)
         let progress: @Sendable (Int, Int) -> Void = { [weak self] done, total in
             Task { @MainActor in self?.reportProgress(done: done, total: total) }
         }
         running = Task { [weak self] in
             let outcome = await Self.perform(launch, progress: progress)
-            self?.finish(outcome)
+            await self?.finish(outcome)
         }
     }
 
@@ -106,11 +111,10 @@ final class VaultCoordinator {
         status = .migrating(done: done, total: total)
     }
 
-    private func finish(_ outcome: Result<VaultLaunch.Outcome, any Error>) {
-        running = nil
+    private func finish(_ outcome: Result<VaultLaunch.Outcome, any Error>) async {
         switch outcome {
         case .success(.ready(let session)):
-            adopt(session)
+            await adopt(session)
         case .success(.locked):
             logger.error("History is locked: recording in memory only")
             status = .locked
@@ -118,18 +122,25 @@ final class VaultCoordinator {
             logger.error("Failed to prepare the vault: \(error.localizedDescription, privacy: .public)")
             status = .locked
         }
+        running = nil
         unreadableFolders = VaultRecovery(dataDirectory: dataDirectory).unreadableFolders()
         let waiters = settledWaiters
         settledWaiters = []
         waiters.forEach { $0.resume() }
     }
 
-    private func adopt(_ session: VaultLaunch.Session) {
+    /// 切换为加密存储（读写在后台进行）。历史读不了时保持内存模式：不接安全记录、不启动后续写盘的任务
+    private func adopt(_ session: VaultLaunch.Session) async {
         let storage = EncryptedHistoryStorage(vaultDirectory: session.vault.url, keys: session.keys)
         let blobs = EncryptedBlobStore(directory: session.vault.blobsDirectory, keys: session.keys)
-        let outcome = store.unlock(storage: storage, blobs: blobs)
-        logger.info("Vault ready (\(String(describing: outcome), privacy: .public))")
+        let outcome = await store.unlock(
+            storage: storage, blobs: blobs, knownCorruption: session.corruptedHistoryBackup)
+        logger.info("Vault unlock: \(String(describing: outcome), privacy: .public)")
         migrationFailed = session.migrationFailed
+        guard outcome != .readOnly else {
+            status = .readOnly(store.loadIssue == .unreadable ? .unreadable : .newerVersion)
+            return
+        }
         status = session.quarantinedFolder.map(VaultStatus.resetAfterMissingKey) ?? .ready
         onReady?(session)
     }

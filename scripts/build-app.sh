@@ -79,6 +79,8 @@ esac
 log "编译 Release（arm64 + x86_64）"
 swift build -c release --arch arm64 --arch x86_64
 BIN_DIR="$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)"
+# E3b：DEBUG 专用的测试密钥来源不得进入 Release 二进制，否则中止打包（set -e）
+"$CUBBY_ROOT/scripts/check-release-test-key.sh" "$BIN_DIR/$CUBBY_APP_NAME"
 
 # ---------- 组装 .app ----------
 

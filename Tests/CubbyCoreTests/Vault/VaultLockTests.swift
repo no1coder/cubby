@@ -9,15 +9,15 @@ struct VaultLockTests {
     func runsBody() throws {
         let dir = try TempDirectory.make()
         defer { TempDirectory.remove(dir) }
-        let vault = dir.appendingPathComponent("Vault")
-        let lock = VaultLock(vaultDirectory: vault)
+        let data = dir.appendingPathComponent("Data")
+        let lock = VaultLock(dataDirectory: data)
 
         let value = try lock.withLock { 42 }
 
         #expect(value == 42)
-        #expect(lock.url.lastPathComponent == ".lock")
+        #expect(lock.url.lastPathComponent == ".vault.lock")
         #expect(try TempDirectory.permissions(of: lock.url) == 0o600)
-        #expect(try TempDirectory.permissions(of: vault) == 0o700)
+        #expect(try TempDirectory.permissions(of: data) == 0o700)
     }
 
     @Test("闭包抛错时透传错误并释放锁")
@@ -25,7 +25,7 @@ struct VaultLockTests {
         struct Marker: Error {}
         let dir = try TempDirectory.make()
         defer { TempDirectory.remove(dir) }
-        let lock = VaultLock(vaultDirectory: dir)
+        let lock = VaultLock(dataDirectory: dir)
 
         #expect(throws: Marker.self) { try lock.withLock { throw Marker() } }
         #expect(try lock.withLock { true })
@@ -35,7 +35,7 @@ struct VaultLockTests {
     func excludesConcurrentHolders() throws {
         let dir = try TempDirectory.make()
         defer { TempDirectory.remove(dir) }
-        let lock = VaultLock(vaultDirectory: dir)
+        let lock = VaultLock(dataDirectory: dir)
         let events = OSAllocatedUnfairLock(initialState: [String]())
         let holding = DispatchSemaphore(value: 0)
         let release = DispatchSemaphore(value: 0)
@@ -69,10 +69,10 @@ struct VaultLockTests {
         let blocker = dir.appendingPathComponent("file")
         try Data().write(to: blocker)
         // 数据目录路径被普通文件占用
-        let lock = VaultLock(vaultDirectory: blocker)
+        let lock = VaultLock(dataDirectory: blocker)
 
         #expect(throws: (any Error).self) { try lock.withLock {} }
-        let nested = VaultLock(vaultDirectory: dir)
+        let nested = VaultLock(dataDirectory: dir)
         try FileManager.default.createDirectory(at: nested.url, withIntermediateDirectories: true)
         #expect(throws: POSIXError.self) { try nested.withLock {} }
     }

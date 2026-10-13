@@ -41,6 +41,8 @@ public enum HistoryKeychain {
     /// 自定义数据目录的 account：`vault-<UUID>`，UUID 存在 Vault/vault-id（明文、不敏感），不由路径派生。
     /// 文件不存在时生成并以 link(2) 原子创建（并发的另一实例先建好时采用它的）
     public static func customAccount(vault: VaultDirectory) throws -> String {
+        // E8 ② 改名中途崩溃时 vault-id 还在暂存处：先放回，account 保持不变
+        try VaultRecovery.adoptStagedVaultID(into: vault)
         if let existing = try readVaultID(vault) { return customAccountPrefix + existing }
         try PrivateFiles.createDirectory(at: vault.url)
         let temporary = vault.url.appendingPathComponent(".vault-id.\(UUID().uuidString).tmp")

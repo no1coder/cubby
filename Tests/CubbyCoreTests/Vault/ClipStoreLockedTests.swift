@@ -40,7 +40,7 @@ struct ClipStoreLockedTests {
     }
 
     @Test("内存模式：可读出图片与富文本格式")
-    func lockedReadsFromMemory() throws {
+    func lockedReadsFromMemory() async throws {
         let store = ClipStore(inMemoryWithLimit: 10)
         let png = LargeImageFixtures.png(width: 2300, height: 1200)
         let item = try #require(store.record(.image(png: png, width: 2300, height: 1200), source: nil))
@@ -64,12 +64,14 @@ struct ClipStoreLockedTests {
         let both = try #require(store.record(.text("both"), source: nil))
         store.toggleFavorite(id: both.id)
 
-        #expect(store.unlock(storage: environment.storage, blobs: environment.blobs) == .unlocked)
+        #expect(await store.unlock(storage: environment.storage, blobs: environment.blobs) == .unlocked)
 
         #expect(!store.isInMemory && store.canPersist)
         #expect(store.history.items.count == 4)
         let merged = try #require(store.history.items.first { $0.text == "both" })
-        #expect(merged.id == duplicate.id && merged.isFavorite && merged.createdAt == Fixtures.baseDate)
+        // M1：沿用内存中的 id
+        #expect(merged.id == both.id && merged.isFavorite && merged.createdAt == Fixtures.baseDate)
+        #expect(store.replacedItemIDs == [duplicate.id: both.id])
         let movedImage = try #require(store.history.items.first { $0.kind == .image })
         let imageName = try #require(movedImage.image?.name)
         #expect(imageName == environment.blobs.name(kind: .image, contentHash: try digest(of: image)))
@@ -81,8 +83,91 @@ struct ClipStoreLockedTests {
         #expect(try environment.storage.load() == store.history)
     }
 
+    @Test("H1：解锁合并不按上限裁剪（晾衣绳的保护在内存模式下不可靠），磁盘与内存条目全部保留")
+    func unlockMergeDoesNotTrim() async throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        let items = (0..<5).map {
+            Fixtures.text("disk \($0)", at: Fixtures.baseDate.addingTimeInterval(Double(-60 - $0)))
+        }
+        try environment.storage.save(ClipHistory(items: items))
+
+        let store = ClipStore(inMemoryWithLimit: 2, now: { Fixtures.baseDate })
+        store.record(.text("memory"), source: nil)
+        _ = await store.unlock(storage: environment.storage, blobs: environment.blobs)
+
+        #expect(store.history.items.count == 6)
+        #expect(try environment.storage.load().items.count == 6)
+    }
+
+    @Test("M1：内存条目与磁盘条目重复时沿用内存中的 id（地址守护、进行中的翻译、选中项都按它持有），并报告被替换的 id")
+    func unlockKeepsInMemoryIDs() async throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        let disk = Fixtures.text("same", at: Fixtures.baseDate.addingTimeInterval(-60))
+        try environment.storage.save(ClipHistory(items: [disk]))
+
+        let store = ClipStore(inMemoryWithLimit: 10, now: { Fixtures.baseDate })
+        // 地址守护把被替换进来的条目按这个 id 禁止粘贴
+        let blocked = try #require(store.record(.text("same"), source: nil))
+        _ = await store.unlock(storage: environment.storage, blobs: environment.blobs)
+
+        #expect(store.history.items.map(\.id) == [blocked.id])
+        #expect(store.item(id: blocked.id) != nil)
+        #expect(store.replacedItemIDs == [disk.id: blocked.id])
+        #expect(try environment.storage.load().items.map(\.id) == [blocked.id])
+    }
+
+    @Test("H3：启动前的步骤已发现历史损坏（移入了 Backups）：解锁按「从损坏中恢复」处理，本次不清理文件")
+    func unlockWithKnownCorruptionSkipsCleanup() async throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        let orphan = environment.blobs.name(kind: .image, contentHash: "only-in-backup")
+        try environment.blobs.write(Data("o".utf8), name: orphan)
+        let backup = environment.vault.backupsDirectory.appendingPathComponent("history.corrupt-1-x.cubby")
+
+        let store = ClipStore(inMemoryWithLimit: 10)
+        _ = await store.unlock(storage: environment.storage, blobs: environment.blobs, knownCorruption: backup)
+
+        #expect(store.loadIssue == .restoredFromCorruption(backupURL: backup))
+        #expect(environment.blobs.exists(orphan))
+        #expect(store.canPersist)
+    }
+
+    @Test("M3：解锁进行中（后台读写期间）新记录、删除与收藏都不丢，最终写进加密历史")
+    func mutationsDuringUnlockAreKept() async throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        try environment.storage.save(
+            ClipHistory(items: [Fixtures.text("disk", at: Fixtures.baseDate.addingTimeInterval(-60))]))
+        let store = ClipStore(inMemoryWithLimit: 10, now: { Fixtures.baseDate })
+        let removed = try #require(store.record(.text("removed later"), source: nil))
+        let starred = try #require(store.record(.text("starred later"), source: nil))
+
+        let gated = GatedLoadStorage(environment.storage)
+        let unlocking = Task { await store.unlock(storage: gated, blobs: environment.blobs) }
+        // 等后台开始读取（快照已取），这些变化确定发生在后台读写期间、切换之前
+        await gated.waitUntilLoading()
+        store.remove(id: removed.id)
+        store.toggleFavorite(id: starred.id)
+        let late = try #require(store.record(.image(png: Data("late".utf8), width: 4, height: 4), source: nil))
+        let background = store.recordInBackground(.text("background"), source: nil)
+        gated.release()
+        _ = await unlocking.value
+        _ = await background.value
+        store.flush()
+
+        let texts = Set(store.history.items.compactMap(\.text))
+        #expect(texts == ["disk", "starred later", "background"])
+        #expect(store.item(id: starred.id)?.isFavorite == true)
+        let image = try #require(store.history.items.first { $0.kind == .image })
+        #expect(image.id == late.id)
+        #expect(store.imageData(for: image) == Data("late".utf8))
+        #expect(try environment.storage.load() == store.history)
+    }
+
     @Test("内存里没有新条目：解锁不裁剪、不重写磁盘上的历史（与旧版本启动时一样，上限在下次记录时才生效）")
-    func unlockWithoutIncomingKeepsHistory() throws {
+    func unlockWithoutIncomingKeepsHistory() async throws {
         let environment = try VaultEnvironment()
         defer { environment.remove() }
         let items = (0..<5).map { Fixtures.text("item \($0)", at: Fixtures.baseDate.addingTimeInterval(Double(-$0))) }
@@ -90,7 +175,7 @@ struct ClipStoreLockedTests {
         let modified = try FileManager.default.attributesOfItem(atPath: environment.storage.fileURL.path)
 
         let store = ClipStore(inMemoryWithLimit: 2)
-        #expect(store.unlock(storage: environment.storage, blobs: environment.blobs) == .unlocked)
+        #expect(await store.unlock(storage: environment.storage, blobs: environment.blobs) == .unlocked)
 
         #expect(store.history.items.count == 5)
         let after = try FileManager.default.attributesOfItem(atPath: environment.storage.fileURL.path)
@@ -102,7 +187,7 @@ struct ClipStoreLockedTests {
         let environment = try VaultEnvironment()
         defer { environment.remove() }
         let store = ClipStore(inMemoryWithLimit: 10, now: { Fixtures.baseDate })
-        store.unlock(storage: environment.storage, blobs: environment.blobs)
+        await store.unlock(storage: environment.storage, blobs: environment.blobs)
 
         let item = try #require(store.record(bigImage(2), source: nil))
         store.flush()
@@ -120,7 +205,7 @@ struct ClipStoreLockedTests {
         defer { environment.remove() }
         let store = ClipStore(inMemoryWithLimit: 10, now: { Fixtures.baseDate })
         let recording = store.recordInBackground(bigImage(3), source: nil)
-        store.unlock(storage: environment.storage, blobs: environment.blobs)
+        await store.unlock(storage: environment.storage, blobs: environment.blobs)
 
         let item = try #require(await recording.value)
         let name = try #require(item.image?.name)
@@ -130,27 +215,27 @@ struct ClipStoreLockedTests {
     }
 
     @Test("解锁时待撤销的删除一并搬进 Vault，撤销后能读出图片")
-    func pendingRemovalSurvivesUnlock() throws {
+    func pendingRemovalSurvivesUnlock() async throws {
         let environment = try VaultEnvironment()
         defer { environment.remove() }
         let store = ClipStore(inMemoryWithLimit: 10, now: { Fixtures.baseDate })
         let item = try #require(store.record(smallImage("undo"), source: nil))
         store.remove(id: item.id)
-        store.unlock(storage: environment.storage, blobs: environment.blobs)
+        await store.unlock(storage: environment.storage, blobs: environment.blobs)
 
         let restored = try #require(store.undoRemove())
         #expect(store.imageData(for: restored) == Data("png-undo".utf8))
     }
 
     @Test("加密历史来自更新版本：保持内存模式，不写盘")
-    func unlockReadOnlyStaysInMemory() throws {
+    func unlockReadOnlyStaysInMemory() async throws {
         let environment = try VaultEnvironment()
         defer { environment.remove() }
         let storage = InMemoryHistoryStorage(loadError: HistoryStorageError.unsupportedVersion(found: 99))
         let store = ClipStore(inMemoryWithLimit: 10)
         store.record(.text("kept"), source: nil)
 
-        #expect(store.unlock(storage: storage, blobs: environment.blobs) == .readOnly)
+        #expect(await store.unlock(storage: storage, blobs: environment.blobs) == .readOnly)
         #expect(store.isInMemory && !store.canPersist)
         #expect(store.loadIssue == .newerVersion(99))
         #expect(store.history.items.map(\.text) == ["kept"])
@@ -159,15 +244,15 @@ struct ClipStoreLockedTests {
     }
 
     @Test("已经写盘时再解锁：什么也不做")
-    func unlockWhenPersistent() throws {
+    func unlockWhenPersistent() async throws {
         let environment = try VaultEnvironment()
         defer { environment.remove() }
         let store = ClipStore(storage: environment.storage, blobs: environment.blobs, limit: 10)
-        #expect(store.unlock(storage: environment.storage, blobs: environment.blobs) == .alreadyPersistent)
+        #expect(await store.unlock(storage: environment.storage, blobs: environment.blobs) == .alreadyPersistent)
     }
 
     @Test("合并后的历史保存失败：照常切换，但本次运行不清理磁盘上的文件")
-    func unlockSaveFailureSkipsCleanup() throws {
+    func unlockSaveFailureSkipsCleanup() async throws {
         let environment = try VaultEnvironment()
         defer { environment.remove() }
         let orphan = environment.blobs.name(kind: .image, contentHash: "orphan")
@@ -176,13 +261,14 @@ struct ClipStoreLockedTests {
         store.record(.text("x"), source: nil)
 
         #expect(
-            store.unlock(storage: FlakyHistoryStorage(failures: 1), blobs: environment.blobs) == .unlockedWithoutSaving)
+            await store.unlock(storage: FlakyHistoryStorage(failures: 1), blobs: environment.blobs)
+                == .unlockedWithoutSaving)
         #expect(environment.blobs.exists(orphan))
         #expect(store.canPersist && !store.isInMemory)
     }
 
     @Test("解锁成功后才清理孤儿文件；内存存储随之清空")
-    func unlockCleansOrphansAfterSave() throws {
+    func unlockCleansOrphansAfterSave() async throws {
         let environment = try VaultEnvironment()
         defer { environment.remove() }
         let orphan = environment.blobs.name(kind: .image, contentHash: "orphan")
@@ -191,14 +277,14 @@ struct ClipStoreLockedTests {
         store.record(smallImage("m"), source: nil)
         let memory = try #require(store.blobs as? InMemoryClipBlobStore)
 
-        store.unlock(storage: environment.storage, blobs: environment.blobs)
+        await store.unlock(storage: environment.storage, blobs: environment.blobs)
         #expect(!environment.blobs.exists(orphan))
         #expect(memory.names.isEmpty)
         #expect(environment.encryptedFileNames.count == 1)
     }
 
     @Test("内存文件丢失的条目在搬迁时按启动修复的规则丢弃")
-    func transferDropsMissing() throws {
+    func transferDropsMissing() async throws {
         let environment = try VaultEnvironment()
         defer { environment.remove() }
         let memory = InMemoryClipBlobStore()
@@ -212,5 +298,44 @@ struct ClipStoreLockedTests {
     private func digest(of item: ClipItem) throws -> String {
         let name = try #require(item.image?.name)
         return try #require(InMemoryClipBlobStore.parse(name)).contentHash
+    }
+}
+
+/// 读取在后台开始后阻塞，直到测试放行：把主线程上的变化确定地插进解锁的后台阶段
+final class GatedLoadStorage: HistoryPersisting, @unchecked Sendable {
+    private let inner: EncryptedHistoryStorage
+    private let started = DispatchSemaphore(value: 0)
+    private let gate = DispatchSemaphore(value: 0)
+
+    init(_ inner: EncryptedHistoryStorage) {
+        self.inner = inner
+    }
+
+    func load() throws -> ClipHistory {
+        try loadReportingMigration().history
+    }
+
+    func loadReportingMigration() throws -> HistoryMigrator.Outcome {
+        started.signal()
+        gate.wait()
+        return try inner.loadReportingMigration()
+    }
+
+    func save(_ history: ClipHistory) throws {
+        try inner.save(history)
+    }
+
+    /// 在后台线程上等待，不阻塞主线程
+    func waitUntilLoading() async {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.global().async {
+                self.started.wait()
+                continuation.resume()
+            }
+        }
+    }
+
+    func release() {
+        gate.signal()
     }
 }

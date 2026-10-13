@@ -11,9 +11,9 @@ struct VaultDirectoryTests {
         #expect(vault.securityLogURL.path == "/tmp/x/Vault/security-log.cubby")
         #expect(vault.blobsDirectory.path == "/tmp/x/Vault/Blobs")
         #expect(vault.backupsDirectory.path == "/tmp/x/Vault/Backups")
-        #expect(vault.lockURL.path == "/tmp/x/Vault/.lock")
         #expect(vault.vaultIDURL.path == "/tmp/x/Vault/vault-id")
-        #expect(VaultLock(vaultDirectory: vault.url).url == vault.lockURL)
+        #expect(vault.stagedVaultIDURL.path == "/tmp/x/.vault-id.pending")
+        #expect(VaultLock(dataDirectory: URL(fileURLWithPath: "/tmp/x")).url.path == "/tmp/x/.vault.lock")
     }
 
     @Test("目录不存在、为空、只有锁文件 / vault-id / .DS_Store：视为没有加密数据")
@@ -23,7 +23,8 @@ struct VaultDirectoryTests {
         let vault = VaultDirectory(url: dir.appendingPathComponent("Vault"))
         #expect(!vault.containsEncryptedData())
 
-        try VaultLock(vaultDirectory: vault.url).withLock {}
+        try PrivateFiles.createDirectory(at: vault.url)
+        try Data().write(to: vault.url.appendingPathComponent(".lock"))
         try Data("id".utf8).write(to: vault.vaultIDURL)
         try Data().write(to: vault.url.appendingPathComponent(".DS_Store"))
         #expect(!vault.containsEncryptedData())

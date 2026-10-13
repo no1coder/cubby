@@ -109,8 +109,7 @@ final class PanelE2EWorld {
         let store = ClipStore(inMemoryWithLimit: AppSettings.defaultHistoryLimit)
         let vault = VaultCoordinator(
             store: store, keySource: HistoryKeySource.Choice(provider: gate, isEphemeral: false),
-            dataDirectory: dataDirectory
-        ) { AppSettings.defaultHistoryLimit }
+            dataDirectory: dataDirectory)
         return (store, vault, gate)
     }
 

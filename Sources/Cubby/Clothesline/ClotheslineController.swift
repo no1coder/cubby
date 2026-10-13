@@ -80,9 +80,12 @@ final class ClotheslineController {
     /// 历史或绳子变了：绳上只保留仍在历史里的图片，重建照片
     func refresh() {
         let existing = Set(store.history.items.lazy.filter { $0.kind == .image }.map(\.id))
-        let retained = settings.clothesline.retaining(existing)
-        // 历史读取失败（不落盘）时历史是空的：只在显示上过滤，不回写设置，免得下次正常启动时绳上的照片丢了
-        if store.canPersist, retained != settings.clothesline { settings.clothesline = retained }
+        // 解锁合并时去重换掉的 id：绳上按旧 id 保存的照片改指接替它的条目
+        let line = settings.clothesline.replacingIDs(store.replacedItemIDs)
+        let retained = line.retaining(existing)
+        // 历史只在内存中（Vault 尚未就绪或已锁定）或读取失败（不落盘）时历史不完整：只在显示上过滤，不回写设置，
+        // 免得 Vault 就绪或下次正常启动时绳上的照片丢了
+        if store.canPersist, !store.isInMemory, retained != settings.clothesline { settings.clothesline = retained }
         store.protectedIDs = Set(retained.itemIDs)
         let entries = retained.itemIDs.compactMap { id in
             store.item(id: id).map { ClotheslineModel.Entry(item: $0, imageSource: store.imageSource(for: $0)) }

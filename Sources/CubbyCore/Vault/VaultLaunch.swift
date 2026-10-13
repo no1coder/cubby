@@ -15,6 +15,19 @@ public struct VaultLaunch: Sendable {
         public let quarantinedFolder: URL?
         /// 迁移失败（明文原样保留，下次启动重试）
         public let migrationFailed: Bool
+        /// 还原或迁移时发现当前历史损坏、已移入 Backups 的位置：解锁时据此报告并且本次不清理图片（E8 ④）
+        public let corruptedHistoryBackup: URL?
+
+        public init(
+            keys: HistoryKeys, vault: VaultDirectory, quarantinedFolder: URL?, migrationFailed: Bool,
+            corruptedHistoryBackup: URL? = nil
+        ) {
+            self.keys = keys
+            self.vault = vault
+            self.quarantinedFolder = quarantinedFolder
+            self.migrationFailed = migrationFailed
+            self.corruptedHistoryBackup = corruptedHistoryBackup
+        }
     }
 
     public enum Outcome: Equatable, Sendable {
@@ -25,7 +38,6 @@ public struct VaultLaunch: Sendable {
 
     public let dataDirectory: URL
     private let provider: any HistoryKeyProviding
-    private let historyLimit: Int
     /// false：密钥只存在于本进程（DEBUG 的临时密钥），不得改名保留旧 Vault、不得迁移（会让明文落进用完即弃的密钥下）
     private let allowsDestructiveSteps: Bool
     private let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Vault")
@@ -33,12 +45,10 @@ public struct VaultLaunch: Sendable {
     public init(
         dataDirectory: URL,
         provider: any HistoryKeyProviding,
-        historyLimit: Int,
         allowsDestructiveSteps: Bool = true
     ) {
         self.dataDirectory = dataDirectory
         self.provider = provider
-        self.historyLimit = historyLimit
         self.allowsDestructiveSteps = allowsDestructiveSteps
     }
 
@@ -47,16 +57,18 @@ public struct VaultLaunch: Sendable {
     /// 执行全部步骤。progress(已处理, 总数) 只在迁移时回调（在调用线程上）
     public func run(progress: (_ done: Int, _ total: Int) -> Void = { _, _ in }) throws -> Outcome {
         let vault = recovery.vault
-        let first = try VaultLock(vaultDirectory: vault.url).withLock { try resolveOrQuarantine(vault) }
-        // 改名后旧锁文件随目录一起移走，重新在新的 Vault 目录上持锁
-        return try VaultLock(vaultDirectory: vault.url).withLock {
+        // 锁文件在 Vault 之外，改名保留 Vault 不影响持有的锁：整个流程在同一把锁内完成
+        return try VaultLock(dataDirectory: dataDirectory).withLock {
+            let first = try resolveOrQuarantine(vault)
+            // 改名后 Vault 只剩暂存放回的 vault-id，再解析一次即生成新密钥
             let resolution = first.quarantined == nil ? first.resolution : resolver(vault).resolve()
             guard case .ready(let keys) = resolution else { return .locked }
-            recovery.restoreFolders(matching: keys, historyLimit: historyLimit)
-            let migrationFailed = migrate(vault: vault, keys: keys, progress: progress)
+            let restored = recovery.restoreFolders(matching: keys)
+            let migration = migrate(vault: vault, keys: keys, progress: progress)
             return .ready(
                 Session(
-                    keys: keys, vault: vault, quarantinedFolder: first.quarantined, migrationFailed: migrationFailed))
+                    keys: keys, vault: vault, quarantinedFolder: first.quarantined, migrationFailed: migration.failed,
+                    corruptedHistoryBackup: restored.corruptedHistoryBackup ?? migration.corruptedHistoryBackup))
         }
     }
 
@@ -86,18 +98,19 @@ public struct VaultLaunch: Sendable {
         return (resolution, try recovery.quarantine())
     }
 
-    /// 删除迁移残留；有明文则迁移。迁移失败只记日志（明文原样保留，下次启动重试），返回是否失败
-    private func migrate(vault: VaultDirectory, keys: HistoryKeys, progress: (Int, Int) -> Void) -> Bool {
-        let migration = PlaintextMigration(
-            dataDirectory: dataDirectory, vault: vault, keys: keys, historyLimit: historyLimit)
+    /// 删除迁移残留；有明文则迁移。迁移失败只记日志（明文原样保留，下次启动重试）
+    private func migrate(
+        vault: VaultDirectory, keys: HistoryKeys, progress: (Int, Int) -> Void
+    ) -> (failed: Bool, corruptedHistoryBackup: URL?) {
+        let migration = PlaintextMigration(dataDirectory: dataDirectory, vault: vault, keys: keys)
         do {
             try migration.files.removeLeftovers()
-            guard allowsDestructiveSteps, migration.isNeeded else { return false }
-            try migration.run(progress: progress)
-            return false
+            guard allowsDestructiveSteps, migration.isNeeded else { return (false, nil) }
+            let report = try migration.run(progress: progress)
+            return (false, report.corruptedHistoryBackup)
         } catch {
             logger.error("Failed to encrypt the plaintext history: \(error.localizedDescription, privacy: .public)")
-            return true
+            return (true, nil)
         }
     }
 }

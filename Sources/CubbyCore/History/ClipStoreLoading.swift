@@ -21,7 +21,7 @@ extension ClipStore {
     }
 
     /// 启动加载的结果
-    struct InitialLoad {
+    struct InitialLoad: Sendable {
         let history: ClipHistory
         let issue: LoadIssue?
         /// 数据由旧格式迁移而来，需要以当前格式重新保存
@@ -36,7 +36,7 @@ extension ClipStore {
         }
     }
 
-    static func loadInitialHistory(from storage: HistoryPersisting, logger: Logger) -> InitialLoad {
+    nonisolated static func loadInitialHistory(from storage: HistoryPersisting, logger: Logger) -> InitialLoad {
         do {
             let outcome = try storage.loadReportingMigration()
             if outcome.didMigrate {

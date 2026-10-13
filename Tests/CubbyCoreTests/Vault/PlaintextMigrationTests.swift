@@ -59,9 +59,8 @@ struct PlaintextMigrationTests {
         Fixtures.baseDate.addingTimeInterval(minutes * 60)
     }
 
-    private func migration(_ environment: VaultEnvironment, limit: Int = 100) -> PlaintextMigration {
-        PlaintextMigration(
-            dataDirectory: environment.root, vault: environment.vault, keys: environment.keys, historyLimit: limit)
+    private func migration(_ environment: VaultEnvironment) -> PlaintextMigration {
+        PlaintextMigration(dataDirectory: environment.root, vault: environment.vault, keys: environment.keys)
     }
 
     /// 迁移后的加密数据与原明文一一对应：条目数、顺序、id、每张图片与译后图片都能解密且内容相同
@@ -222,7 +221,7 @@ struct PlaintextMigrationTests {
         #expect(TempDirectory.fileNames(in: environment.vault.backupsDirectory).count == 1)
     }
 
-    @Test("降级后再升级（E7）：与已有加密历史合并——去重、较新时间、收藏并集、加密历史的译文为准、按时间排序与上限")
+    @Test("降级后再升级（E7）：与已有加密历史合并——去重、较新时间、收藏并集、加密历史的译文为准、按时间排序，不裁剪")
     func mergesWithExistingVault() throws {
         let environment = try VaultEnvironment()
         defer { environment.remove() }
@@ -240,11 +239,11 @@ struct PlaintextMigrationTests {
         ])
         try JSONHistoryStorage(fileURL: environment.plain.historyURL).save(legacy)
 
-        // note 合并后是收藏，不占名额：上限 2 留下 plain only 与 vault only
-        try migration(environment, limit: 2).run()
+        // 合并不按上限裁剪（H1）：全部保留，按时间排序
+        try migration(environment).run()
 
         let merged = try environment.storage.load()
-        #expect(merged.items.map(\.text) == ["note", "plain only", "vault only"])
+        #expect(merged.items.map(\.text) == ["note", "plain only", "vault only", "old"])
         let note = try #require(merged.items.first)
         #expect(note.id == existing.items[0].id && note.isFavorite && note.createdAt == Self.date(20))
         #expect(note.translations == ClipTranslations([kept]))
@@ -285,6 +284,34 @@ struct PlaintextMigrationTests {
         let resumed = try migration(environment).run()
         #expect(resumed.droppedItems == 0)
         try Self.verifyMigrated(environment, legacy: legacy)
+    }
+
+    @Test("H2：校验通过之后崩溃、下次续做：与已写入的加密历史合并时不按上限裁剪，全部条目保留")
+    func resumeAfterVerifyKeepsEverything() throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        let legacy = try Self.writeLegacy(in: environment)
+        var crashing = migration(environment)
+        crashing.checkpoint = { if $0 == .historyVerified { throw SimulatedCrash() } }
+        #expect(throws: SimulatedCrash.self) { try crashing.run() }
+
+        try migration(environment).run()
+        try Self.verifyMigrated(environment, legacy: legacy)
+    }
+
+    @Test("H3：已有的加密历史损坏：迁移照常完成，并在报告中给出损坏备份的位置")
+    func reportsCorruptedExistingHistory() throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        _ = try Self.writeLegacy(in: environment)
+        try PrivateFiles.createDirectory(at: environment.vault.url)
+        var file = try EncryptedFileFormat.encrypt(Data("{}".utf8), keys: environment.keys, role: "history")
+        file[file.count - 1] ^= 0xFF
+        try file.write(to: environment.storage.fileURL)
+
+        let report = try migration(environment).run()
+        let backup = try #require(report.corruptedHistoryBackup)
+        #expect(FileManager.default.fileExists(atPath: backup.path))
     }
 
     @Test("残留的 .migrated-plain/ 在下次运行开始时删除")

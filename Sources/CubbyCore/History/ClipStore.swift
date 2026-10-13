@@ -41,6 +41,10 @@ public final class ClipStore {
     @ObservationIgnored let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "ClipStore")
     /// 最近一次后台记录：后续的后台记录等它入历史后再入，保证按调用顺序
     @ObservationIgnored private var pendingRecord: Task<ClipItem?, Never>?
+    /// 进行中的解锁（见 ClipStore+Unlock）：后台记录等它完成后再入历史，直接写进加密存储
+    @ObservationIgnored var unlocking: Task<UnlockOutcome, Never>?
+    /// 解锁合并时因去重而不再存在的 id → 接替它的 id（晾衣绳等按旧 id 保存的持有者据此改写）
+    public internal(set) var replacedItemIDs: [UUID: UUID] = [:]
     /// 搜索索引：加载后在后台构建（见 ClipStore+Search），之后每次历史变化时与 history 在同一处同步增量更新；
     /// nil 表示尚未就绪（搜索退回逐条匹配，结果相同）
     @ObservationIgnored public internal(set) var searchIndex: ClipSearchIndex?
@@ -147,6 +151,8 @@ public final class ClipStore {
         let task = Task { [weak self] () -> ClipItem? in
             _ = await previous?.value
             let result = await preparation.value
+            // 解锁进行中：等它切换完存储再入历史（record 按当前存储重新推出文件名）
+            while let unlocking = self?.unlocking { _ = await unlocking.value }
             guard let self else { return nil }
             switch result {
             case .success(let prepared):
@@ -367,7 +373,7 @@ public final class ClipStore {
 
     /// 移除图片文件已丢失的条目；富文本格式丢失时退化为纯文本（其译文按富文本分段，一并丢弃）；
     /// 译后图片丢失时只丢弃该条译文，不动条目
-    static func repairingMissingBlobs(_ history: ClipHistory, blobs: any ClipBlobStoring) -> ClipHistory {
+    nonisolated static func repairingMissingBlobs(_ history: ClipHistory, blobs: any ClipBlobStoring) -> ClipHistory {
         let items = history.items.compactMap { item in
             item.rewritingBlobNames { blobs.exists($0.name) ? $0.name : nil }
         }

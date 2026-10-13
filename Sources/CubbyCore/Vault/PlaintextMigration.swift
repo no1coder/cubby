@@ -39,21 +39,28 @@ public struct PlaintextMigration: Sendable {
         public let resultItems: Int
         /// 因文件丢失而丢弃的条目数（与旧版本启动修复的规则相同）
         public let droppedItems: Int
+        /// 已有的加密历史损坏、被移入 Backups 的位置：本次启动不得清理图片（E8 ④，见 ClipStore.unlock）
+        public let corruptedHistoryBackup: URL?
+
+        public init(legacyItems: Int, resultItems: Int, droppedItems: Int, corruptedHistoryBackup: URL? = nil) {
+            self.legacyItems = legacyItems
+            self.resultItems = resultItems
+            self.droppedItems = droppedItems
+            self.corruptedHistoryBackup = corruptedHistoryBackup
+        }
     }
 
     public let files: PlaintextFiles
     let vault: VaultDirectory
     let keys: HistoryKeys
-    let historyLimit: Int
     /// 测试注入：在检查点抛错即模拟进程在此处崩溃
     var checkpoint: @Sendable (Checkpoint) throws -> Void = { _ in }
     private let logger = Logger(subsystem: "io.github.no1coder.Cubby", category: "Vault")
 
-    public init(dataDirectory: URL, vault: VaultDirectory, keys: HistoryKeys, historyLimit: Int) {
+    public init(dataDirectory: URL, vault: VaultDirectory, keys: HistoryKeys) {
         files = PlaintextFiles(dataDirectory: dataDirectory)
         self.vault = vault
         self.keys = keys
-        self.historyLimit = max(historyLimit, 1)
     }
 
     /// 是否还有明文要迁移（含上次中断留下的一部分）
@@ -76,7 +83,7 @@ public struct PlaintextMigration: Sendable {
         try checkpoint(.blobsEncrypted)
 
         let storage = EncryptedHistoryStorage(vaultDirectory: vault.url, keys: keys)
-        let result = try writeHistory(migrated, to: storage)
+        let (result, corruptedBackup) = try writeHistory(migrated, to: storage)
         try encryptCorruptBackups()
         try checkpoint(.backupsEncrypted)
         try files.moveAside(after: { try checkpoint(.historyFileMoved) })
@@ -84,7 +91,9 @@ public struct PlaintextMigration: Sendable {
         try files.removeLeftovers()
         let dropped = legacy.items.count - migrated.count
         logger.info("Migrated \(legacy.items.count) items into the vault (\(dropped) dropped for missing files)")
-        return Report(legacyItems: legacy.items.count, resultItems: result.items.count, droppedItems: dropped)
+        return Report(
+            legacyItems: legacy.items.count, resultItems: result.items.count, droppedItems: dropped,
+            corruptedHistoryBackup: corruptedBackup)
     }
 
     // MARK: - 步骤
@@ -129,29 +138,30 @@ public struct PlaintextMigration: Sendable {
         (name as NSString).deletingPathExtension
     }
 
-    /// ③ ④ 合并（如需要）、写入并读回校验，返回写入的历史
-    private func writeHistory(_ migrated: [ClipItem], to storage: EncryptedHistoryStorage) throws -> ClipHistory {
-        let existing = try loadExistingHistory(storage)
-        guard !migrated.isEmpty else { return existing }
+    /// ③ ④ 合并（如需要，不按上限裁剪，见 HistoryMerge）、写入并读回校验，返回写入的历史与已有历史的损坏备份位置
+    private func writeHistory(
+        _ migrated: [ClipItem], to storage: EncryptedHistoryStorage
+    ) throws -> (ClipHistory, URL?) {
+        let (existing, corruptedBackup) = try loadExistingHistory(storage)
+        guard !migrated.isEmpty else { return (existing, corruptedBackup) }
         let merged =
             existing.items.isEmpty
-            ? ClipHistory(items: migrated)
-            : HistoryMerge.merging(base: existing, incoming: migrated, limit: historyLimit)
+            ? ClipHistory(items: migrated) : HistoryMerge.merging(base: existing, incoming: migrated)
         try storage.save(merged)
         try checkpoint(.historyWritten)
         guard try storage.load() == merged else { throw MigrationError.verificationFailed }
         try checkpoint(.historyVerified)
-        return merged
+        return (merged, corruptedBackup)
     }
 
-    /// 已有的加密历史：损坏的已被移入 Backups，按空历史继续；更新版本或密钥不对时中止（明文保留）
-    private func loadExistingHistory(_ storage: EncryptedHistoryStorage) throws -> ClipHistory {
+    /// 已有的加密历史：损坏的已被移入 Backups，按空历史继续并带出备份位置；更新版本或密钥不对时中止（明文保留）
+    private func loadExistingHistory(_ storage: EncryptedHistoryStorage) throws -> (ClipHistory, URL?) {
         do {
-            return try storage.load()
+            return (try storage.load(), nil)
         } catch HistoryStorageError.corrupted(let backupURL) {
             logger.error(
                 "The encrypted history is corrupted, moved to \(backupURL.lastPathComponent, privacy: .public)")
-            return .empty
+            return (.empty, backupURL)
         } catch HistoryStorageError.unsupportedVersion, HistoryStorageError.keyMismatch {
             throw MigrationError.encryptedHistoryUnusable
         }

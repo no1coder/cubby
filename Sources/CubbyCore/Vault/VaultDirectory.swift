@@ -7,6 +7,7 @@ public struct VaultDirectory: Sendable, Equatable {
     static let securityLogFileName = "security-log.cubby"
     static let blobsDirectoryName = "Blobs"
     static let backupsDirectoryName = "Backups"
+    /// 早期开发版本放在 Vault 里的锁文件名（锁文件现已移到 Vault 之外，见 VaultLock），仍按记账文件忽略
     static let lockFileName = ".lock"
     static let vaultIDFileName = "vault-id"
     /// 不算加密数据的条目：锁文件、自定义目录的 vault-id（在查找密钥之前就会创建），以及访达生成的 .DS_Store
@@ -22,8 +23,11 @@ public struct VaultDirectory: Sendable, Equatable {
     public var securityLogURL: URL { url.appendingPathComponent(Self.securityLogFileName, isDirectory: false) }
     public var blobsDirectory: URL { url.appendingPathComponent(Self.blobsDirectoryName, isDirectory: true) }
     public var backupsDirectory: URL { url.appendingPathComponent(Self.backupsDirectoryName, isDirectory: true) }
-    public var lockURL: URL { url.appendingPathComponent(Self.lockFileName, isDirectory: false) }
     public var vaultIDURL: URL { url.appendingPathComponent(Self.vaultIDFileName, isDirectory: false) }
+    /// E8 ② 改名期间暂存在 Vault 之外的 vault-id（见 VaultRecovery.stageVaultID）
+    public var stagedVaultIDURL: URL {
+        url.deletingLastPathComponent().appendingPathComponent(".\(Self.vaultIDFileName).pending", isDirectory: false)
+    }
 
     /// Vault 中是否已有加密数据（VaultKeyResolver 的 vaultHasData）。
     ///

@@ -10,7 +10,7 @@ struct VaultLaunchTests {
         _ environment: VaultEnvironment, provider: InMemoryHistoryKeyProvider, destructive: Bool = true
     ) throws -> VaultLaunch.Outcome {
         try VaultLaunch(
-            dataDirectory: environment.root, provider: provider, historyLimit: 100,
+            dataDirectory: environment.root, provider: provider,
             allowsDestructiveSteps: destructive
         ).run()
     }
@@ -166,13 +166,93 @@ struct VaultLaunchTests {
         let newer = Fixtures.text("after reset", at: Fixtures.baseDate.addingTimeInterval(60))
         try environment.storage.save(ClipHistory(items: [newer]))
 
-        #expect(recovery.restoreFolders(matching: environment.keys, historyLimit: 100) == [folder])
+        #expect(recovery.restoreFolders(matching: environment.keys).restored == [folder])
         #expect(try environment.storage.load().items.map(\.id) == [newer.id, old.id])
         #expect(try environment.blobs.data(image) == Data("png".utf8))
         #expect(TempDirectory.fileNames(in: environment.vault.backupsDirectory) == ["history.v1.bak.cubby"])
         let log = SecurityLogStore(dataDirectory: environment.root, vault: environment.vault, keys: environment.keys)
         #expect(log.load().log.entries.map(\.id) == [entry.id])
         #expect(!FileManager.default.fileExists(atPath: folder.path))
+    }
+
+    @Test("H1：还原保留目录时不按上限裁剪")
+    func restoreDoesNotTrim() throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        try environment.storage.save(ClipHistory(items: (0..<3).map { Fixtures.text("old \($0)") }))
+        let recovery = VaultRecovery(dataDirectory: environment.root)
+        _ = try recovery.quarantine(now: day)
+        try environment.storage.save(ClipHistory(items: [Fixtures.text("new")]))
+
+        recovery.restoreFolders(matching: environment.keys)
+        #expect(try environment.storage.load().items.count == 4)
+    }
+
+    @Test("H3：还原时当前历史损坏：损坏的文件移入 Backups，结果里给出位置，还原照常进行")
+    func restoreReportsCorruptedCurrentHistory() throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        try environment.storage.save(ClipHistory(items: [Fixtures.text("old")]))
+        let recovery = VaultRecovery(dataDirectory: environment.root)
+        _ = try recovery.quarantine(now: day)
+        try environment.storage.save(ClipHistory(items: [Fixtures.text("new")]))
+        try corrupt(environment.storage.fileURL)
+
+        let result = recovery.restoreFolders(matching: environment.keys)
+        let backup = try #require(result.corruptedHistoryBackup)
+        #expect(FileManager.default.fileExists(atPath: backup.path))
+        #expect(result.restored.count == 1)
+        #expect(try environment.storage.load().items.map(\.text) == ["old"])
+    }
+
+    @Test("H3：启动时迁移遇到损坏的加密历史：会话带出损坏备份的位置（解锁时据此不清理文件）")
+    func launchCarriesCorruption() throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        try environment.storage.save(ClipHistory(items: [Fixtures.text("x")]))
+        try corrupt(environment.storage.fileURL)
+        _ = try PlaintextMigrationTests.writeLegacy(in: environment)
+        let provider = InMemoryHistoryKeyProvider(key: VaultFixtures.masterKey())
+
+        let ready = try session(try launch(environment, provider: provider))
+        #expect(ready.corruptedHistoryBackup != nil)
+    }
+
+    @Test("S1：旧目录的安全记录读不出来：密文原样移进当前 Vault 的 Backups，还原后不丢")
+    func restoreKeepsUnreadableSecurityLog() throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        try environment.storage.save(ClipHistory(items: [Fixtures.text("old")]))
+        let log = SecurityLogStore(dataDirectory: environment.root, vault: environment.vault, keys: environment.keys)
+        try log.save(SecurityLog())
+        try corrupt(log.url)
+        let original = try Data(contentsOf: log.url)
+        let recovery = VaultRecovery(dataDirectory: environment.root)
+        _ = try recovery.quarantine(now: day)
+
+        #expect(recovery.restoreFolders(matching: environment.keys).restored.count == 1)
+        let backups = TempDirectory.fileNames(in: environment.vault.backupsDirectory)
+        let kept = try #require(backups.first { $0.hasPrefix("security-log") })
+        #expect(try Data(contentsOf: environment.vault.backupsDirectory.appendingPathComponent(kept)) == original)
+    }
+
+    @Test("S4：锁文件在 Vault 之外（<数据目录>/.vault.lock），改名保留时不随 Vault 移走")
+    func lockLivesOutsideVault() throws {
+        let environment = try VaultEnvironment()
+        defer { environment.remove() }
+        let lock = VaultLock(dataDirectory: environment.root)
+        #expect(lock.url.path == environment.root.appendingPathComponent(".vault.lock").path)
+        try lock.withLock {
+            try environment.storage.save(.empty)
+            _ = try VaultRecovery(dataDirectory: environment.root).quarantine(now: day)
+            #expect(FileManager.default.fileExists(atPath: lock.url.path))
+        }
+    }
+
+    private func corrupt(_ url: URL) throws {
+        var file = try Data(contentsOf: url)
+        file[file.count - 1] ^= 0xFF
+        try file.write(to: url)
     }
 
     @Test("密钥 ID 不符或没有历史文件的保留目录：原样保留")
@@ -186,7 +266,7 @@ struct VaultLaunchTests {
         try FileManager.default.createDirectory(at: environment.vault.url, withIntermediateDirectories: true)
         let empty = try recovery.quarantine(now: day)
 
-        #expect(recovery.restoreFolders(matching: environment.keys, historyLimit: 100).isEmpty)
+        #expect(recovery.restoreFolders(matching: environment.keys).restored.isEmpty)
         #expect(FileManager.default.fileExists(atPath: foreign.path))
         #expect(FileManager.default.fileExists(atPath: empty.path))
         #expect(VaultRecovery.keyID(ofVaultAt: empty) == nil)
